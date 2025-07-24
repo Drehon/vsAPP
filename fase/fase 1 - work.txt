@@ -6,4 +6,14 @@
 - INPUT ANALIZZATI: project_tutoring.txt, struttura repo, file sorgente (main.js, preload.js, renderer.js, index.html).
 - STATO RILEVATO: Struttura di base presente ma non funzionante. Logica di lettura file e navigazione da implementare a causa di percorsi errati e nomi di file/directory non corretti.
 - OUTPUT PRODOTTO: Creato il piano di lavoro dettagliato nel file `fase/fase 1 - plan.txt`.
-- PROSSIMO PASSO: Eseguire lo STEP 1 del piano (correggere `src/preload.js`).
+
+2024-07-24 06:32:30 - ESECUZIONE STEP 1
+-------------------------------------
+- TASK: Correzione e Configurazione del Preload Script.
+- FILE MODIFICATO: `src/preload.js`
+- MODIFICHE APPORTATE:
+  - Sostituito `require('fs')` con `require('fs').promises` per usare le API asincrone.
+  - Aggiunta la funzione `getAppPath` a `contextBridge` per permettere al renderer di ottenere il percorso radice dell'app in modo sicuro.
+  - Modificata la funzione `getFiles` per essere `async` e usare `ipcRenderer.invoke('get-app-path')` per costruire percorsi di file relativi alla root dell'applicazione, risolvendo il problema dei percorsi statici.
+  - Semplificata la gestione degli errori con un blocco `try...catch`.
+- PROSSIMO PASSO: Eseguire lo STEP 2 del piano (modificare `src/main.js`).
