@@ -1,0 +1,47 @@
+# Test Notes
+
+## Testing Instructions
+
+1.  **Open two separate terminals** in Visual Studio Code.
+2.  **In the first terminal, run the CSS build command:**
+    ```bash
+    npm run build:css
+    ```
+    This command will watch for changes in the CSS files and automatically recompile them. You should see a message indicating that it is watching for changes.
+3.  **In the second terminal, run the application:**
+    ```bash
+    npm start
+    ```
+    This will start the Electron application.
+
+## Expected Results
+
+*   The application window should open.
+*   The application should display a list of lessons and exercises.
+*   The application should display the version number.
+*   The application should be styled correctly.
+
+## Current Status
+
+The application is not loading the lessons, exercises, or the app version. The styling is also not being applied.
+
+## Error Log
+
+```
+[6700:0724/175841.794:ERROR:CONSOLE:1] "Request Autofill.enable failed. {"code":-32601,"message":"'Autofill.enable' wasn't found"}", source: devtools://devtools/bundled/core/protocol_client/protocol_client.js (1)
+[6700:0724/175841.794:ERROR:CONSOLE:1] "Request Autofill.setAddresses failed. {"code":-32601,"message":"'Autofill.setAddresses' wasn't found"}", source: devtools://devtools/bundled/core/protocol_client/protocol_client.js (1)
+```
+The Autofill errors are not relevant to the current issues.
+
+## Error Log 2
+
+```
+PS C:\Users\User\Documents\TEFL Personal> npm run build:css
+
+> tutoring-app@1.0.0 build:css
+> npx tailwindcss -i ./src/index.css -o ./src/style.css --watch
+
+npm error could not determine executable to run
+npm error A complete log of this run can be found in: \logs\2025-07-24T16_08_45_586Z-debug-0.log
+
+```

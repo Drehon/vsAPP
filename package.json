@@ -10,7 +10,7 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\"",
-    "build:css": "npx tailwindcss -i ./src/index.css -o ./src/style.css --watch"
+     "build:css": "npx tailwindcss -i ./src/index.css -o ./src/style.css --watch"
   },
   "keywords": [],
   "author": {

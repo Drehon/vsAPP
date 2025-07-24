@@ -23,7 +23,7 @@ async function populateFileList(type, elementId) {
 
     if (files.length === 0) {
       // Lascia il messaggio di default se non ci sono file
-      listElement.innerHTML = `<p class="text-slate-500">Nessun file trovato in /${directory}.</p>`;
+      listElement.innerHTML = `<p class="text-slate-500">Nessun file trovato in /${type}.</p>`;
       return;
     }
 
