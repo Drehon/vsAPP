@@ -6,6 +6,27 @@ module.exports = {
     asar: true,
   },
   rebuildConfig: {},
+  plugins: [
+    {
+      name: '@electron-forge/plugin-webpack',
+      config: {
+        mainConfig: './webpack.main.config.js',
+        renderer: {
+          config: './webpack.renderer.config.js',
+          entryPoints: [
+            {
+              html: './src/index.html',
+              js: './src/renderer.js',
+              name: 'main_window',
+              preload: {
+                js: './src/preload.js',
+              },
+            },
+          ],
+        },
+      },
+    },
+  ],
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
@@ -23,54 +44,5 @@ module.exports = {
       name: '@electron-forge/maker-rpm',
       config: {},
     },
-  ],
-  plugins: [
-    {
-      name: '@electron-forge/plugin-webpack',
-      config: {
-        mainConfig: {
-          entryPoints: {
-            main: './src/main.js',
-          },
-        },
-        renderer: {
-          config: {
-            // Your webpack config for renderer
-          },
-          entryPoints: [
-            {
-              html: './src/index.html',
-              js: './src/renderer.js',
-              name: 'main_window',
-              preload: {
-                js: './src/preload.js',
-              },
-            },
-          ],
-        },
-        preload: {
-          config: {
-            externals: {
-              path: 'require("path")',
-            },
-          },
-        },
-      },
-    },
-    {
-      name: '@electron-forge/plugin-auto-unpack-natives',
-      config: {},
-    },
-    // Fuses are used to enable/disable various Electron functionality
-    // at package time, before code signing the application
-    new FusesPlugin({
-      version: FuseVersion.V1,
-      [FuseV1Options.RunAsNode]: false,
-      [FuseV1Options.EnableCookieEncryption]: true,
-      [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
-      [FuseV1Options.EnableNodeCliInspectArguments]: false,
-      [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
-      [FuseV1Options.OnlyLoadAppFromAsar]: true,
-    }),
   ],
 };

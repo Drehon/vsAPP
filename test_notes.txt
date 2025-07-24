@@ -271,3 +271,59 @@ To address all issues (including breaking changes), run:
 
 Run `npm audit` for details.
 PS C:\Users\User\Documents\TEFL Personal> 
+
+
+---
+
+on npm install
+
+npm warn deprecated gar@1.0.4: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.    
+npm warn deprecated sourcemap-codec@1.4.8: Please use @jridgewell/sourcemap-codec instead
+npm warn cleanup Failed to remove some directories [
+npm warn cleanup   [
+npm warn cleanup     'C:\\Users\\User\\Documents\\TEFL Personal\\node_modules\\electron-installer-debian\\node_modules\\yargs',
+npm warn cleanup     [Error: EPERM: operation not permitted, rmdir 'C:\Users\User\Documents\TEFL Personal\node_modules\electron-installer-debian\node_modules\yargs\build\lib'] {
+npm warn cleanup       errno: -4048,
+npm warn cleanup       code: 'EPERM',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: 'C:\\Users\\User\\Documents\\TEFL Personal\\node_modules\\electron-installer-debian\\node_modules\\yargs\\build\\lib'
+npm warn cleanup     }
+npm warn cleanup   ],
+npm warn cleanup   [
+npm warn cleanup     'C:\\Users\\User\\Documents\\TEFL Personal\\node_modules\\electron-installer-redhat\\node_modules\\yargs',
+npm warn cleanup     [Error: EPERM: operation not permitted, rmdir 'C:\Users\User\Documents\TEFL Personal\node_modules\electron-installer-redhat\node_modules\yargs'] {
+npm warn cleanup       errno: -4048,
+npm warn cleanup       code: 'EPERM',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: 'C:\\Users\\User\\Documents\\TEFL Personal\\node_modules\\electron-installer-redhat\\node_modules\\yargs'
+npm warn cleanup     }
+npm warn cleanup   ]
+npm warn cleanup ]
+
+added 43 packages, changed 1 package, and audited 780 packages in 3s
+
+130 packages are looking for funding
+  run `npm fund` for details
+
+2 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+---
+
+NEW Issue
+
+when app opens
+A JavaScript error occurred in the main process
+
+Uncaught Exception:
+ReferenceError: MAIN_WINDOW_VITE_DEV_SERVER_URL is not defined
+    at createWindow (C:\Users\User\Documents\TEFL Personal\.webpack\main\index.js:21465:3)
+    at App.<anonymous> (C:\Users\User\Documents\TEFL Personal\.webpack\main\index.js:21503:3)
+    at App.emit (node:events:518:28)
+
+on terminal 
+[5528:0724/202734.928:ERROR:content\browser\network_service_instance_impl.cc:597] Network service crashed, restarting service.
