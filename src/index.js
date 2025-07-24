@@ -1,5 +1,6 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('node:path');
+const fs = require('fs').promises;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -49,3 +50,19 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+ipcMain.handle('get-app-version', () => {
+  return app.getVersion();
+});
+
+ipcMain.handle('get-lessons', async () => {
+  const lessonsPath = path.join(__dirname, 'lessons');
+  const files = await fs.readdir(lessonsPath);
+  return files.filter(file => file.endsWith('.html'));
+});
+
+ipcMain.handle('get-exercises', async () => {
+  const exercisesPath = path.join(__dirname, 'exercises');
+  const files = await fs.readdir(exercisesPath);
+  return files.filter(file => file.endsWith('.html'));
+});

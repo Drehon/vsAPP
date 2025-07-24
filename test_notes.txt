@@ -45,3 +45,75 @@ npm error could not determine executable to run
 npm error A complete log of this run can be found in: \save_logs\2025-07-24T16_08_45_586Z-debug-0.log
 
 ```
+
+## How the Tailwind Issue Was Fixed
+
+We resolved the Tailwind CSS issue by ensuring the following steps were completed:
+
+1. **Installed Tailwind CSS** as a development dependency using `npm install -D tailwindcss`.
+2. **Created a Tailwind configuration file** (`tailwind.config.js`) with `npx tailwindcss init` if it did not already exist.
+3. **Added a build script** to `package.json`:
+   ```json
+   "build:css": "npx tailwindcss -i ./src/index.css -o ./src/style.css --watch"
+   ```
+4. **Ran the build script** with `npm run build:css` to generate the CSS file.
+5. **Ensured the generated CSS file** (`src/style.css`) is correctly imported in the application’s HTML or main JS file.
+
+This setup allows Tailwind CSS to process and apply styles correctly in
+
+---
+
+## Possible Issue 1
+
+PS C:\Users\User\Documents\TEFL Personal> npm run build:css
+
+> tutoring-app@1.0.0 build:css
+> npx tailwindcss -i ./src/index.css -o ./src/style.css --watch
+
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+Rebuilding...
+
+warn - Your `content` configuration includes a pattern which looks like it's accidentally matching all of `node_modules` and can cause serious performance issues.
+warn - Pattern: `./**\*.js`
+warn - See our documentation for recommendations:
+warn - https://tailwindcss.com/docs/content-configuration#pattern-recommendations
+
+---
+
+MOST RECENT update
+Template now loads, but the autofill issue persists.
+Not sure if they are the same issue, but app still says 'nessuna lezione trovata', 'nessun esercizio trovato'. 
+basically it finds no content to load
+i looked up the developer app console (i think that's what it is) and can see the following:
+VM4 sandbox_bundle:2 Unable to load preload script: C:\Users\User\Documents\TEFL Personal\src\preload.js
+executeSandboxedPreloadScripts @ VM4 sandbox_bundle:2
+VM4 sandbox_bundle:2 Error: module not found: fs
+    at preloadRequire (VM4 sandbox_bundle:2:143993)
+    at <anonymous>:6:12
+    at runPreloadScript (VM4 sandbox_bundle:2:144262)
+    at executeSandboxedPreloadScripts (VM4 sandbox_bundle:2:143535)
+    at VM4 sandbox_bundle:2:153933
+    at VM4 sandbox_bundle:2:154135
+    at ___electron_webpack_init__ (VM4 sandbox_bundle:2:154139)
+    at VM4 sandbox_bundle:2:154262
+executeSandboxedPreloadScripts @ VM4 sandbox_bundle:2
+renderer.js:53 Uncaught (in promise) ReferenceError: directory is not defined
+    at populateFileList (renderer.js:53:56)
+    at HTMLDocument.<anonymous> (renderer.js:69:3)
+renderer.js:53 Uncaught (in promise) ReferenceError: directory is not defined
+    at populateFileList (renderer.js:53:56)
+    at HTMLDocument.<anonymous> (renderer.js:70:3)
+renderer.js:60 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'getAppVersion')
+    at displayAppVersion (renderer.js:60:38)
+    at HTMLDocument.<anonymous> (renderer.js:71:3)
+VM4 sandbox_bundle:2 Electron Security Warning (Insecure Content-Security-Policy) This renderer process has either no Content Security
+  Policy set or a policy with "unsafe-eval" enabled. This exposes users of
+  this app to unnecessary security risks.
+
+For more information and help, consult
+https://electronjs.org/docs/tutorial/security.
+This warning will not show up
+once the app is packaged.
