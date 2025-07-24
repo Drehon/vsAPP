@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <title>VSAPP - Home</title>
+    <!-- Carichiamo Tailwind CSS localmente per il funzionamento offline -->
+    <link href="src/style.css" rel="stylesheet">
+    <style>
+      /* Aggiungiamo il font Inter come da specifiche del progetto */
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-200 text-slate-800">
+    <div class="container mx-auto p-6 md:p-10 max-w-7xl">
+
+      <!-- Header -->
+      <header class="bg-white rounded-lg shadow-lg overflow-hidden mb-8 p-6">
+        <h1 class="text-3xl font-bold text-slate-900">Piattaforma Didattica</h1>
+        <p class="text-lg text-slate-600">Seleziona un contenuto per iniziare.</p>
+      </header>
+
+      <!-- Contenuto Principale -->
+      <main class="grid md:grid-cols-2 gap-8">
+        
+        <!-- Colonna Lezioni -->
+        <section class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div class="p-5 border-b border-slate-200 bg-slate-50">
+            <h2 class="text-xl font-bold text-slate-800">Lezioni</h2>
+          </div>
+          <div id="lessons-list" class="p-5 space-y-3">
+            <!-- La lista delle lezioni verrà inserita qui da JavaScript -->
+            <p class="text-slate-500">Nessuna lezione trovata.</p>
+          </div>
+        </section>
+
+        <!-- Colonna Esercizi -->
+        <section class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div class="p-5 border-b border-slate-200 bg-slate-50">
+            <h2 class="text-xl font-bold text-slate-800">Esercizi</h2>
+          </div>
+          <div id="exercises-list" class="p-5 space-y-3">
+            <!-- La lista degli esercizi verrà inserita qui da JavaScript -->
+            <p class="text-slate-500">Nessun esercizio trovato.</p>
+          </div>
+        </section>
+
+      </main>
+
+    </div>
+
+    <!-- Colleghiamo il nostro script per la logica della pagina -->
+    <script type="module" src="/src/renderer.js"></script>
+  </body>
+</html>
