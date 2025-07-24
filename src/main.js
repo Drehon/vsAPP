@@ -137,7 +137,7 @@ ipcMain.handle('get-lesson-data', async (event, filePath) => {
 
 // Funzione per ottenere i contenuti di una directory
 const getContents = async (dir) => {
-  const directoryPath = path.join(__dirname, '..', dir);
+  const directoryPath = path.join(app.getAppPath(), dir);
   try {
     const files = await fs.promises.readdir(directoryPath);
     return files.filter(file => file.endsWith('.html'));
