@@ -115,13 +115,16 @@ The application should be tested to confirm that the content now loads correctly
 
 ---
 
-issue persists
-i looked up the developer app console (i think that's what it is) and can see the following:
+issue changed, now it shows
+Impossibile caricare la lista dei file.
+below results from console.
+---
+
 VM4 sandbox_bundle:2 Unable to load preload script: C:\Users\User\Documents\TEFL Personal\src\preload.js
 executeSandboxedPreloadScripts	@	VM4 sandbox_bundle:2
-VM4 sandbox_bundle:2 Error: module not found: fs
+VM4 sandbox_bundle:2 Error: module not found: path
     at preloadRequire (VM4 sandbox_bundle:2:143993)
-    at <anonymous>:6:12
+    at <anonymous>:6:14
     at runPreloadScript (VM4 sandbox_bundle:2:144262)
     at executeSandboxedPreloadScripts (VM4 sandbox_bundle:2:143535)
     at VM4 sandbox_bundle:2:153933
@@ -129,12 +132,14 @@ VM4 sandbox_bundle:2 Error: module not found: fs
     at ___electron_webpack_init__ (VM4 sandbox_bundle:2:154139)
     at VM4 sandbox_bundle:2:154262
 executeSandboxedPreloadScripts	@	VM4 sandbox_bundle:2
-renderer.js:53 Uncaught (in promise) ReferenceError: directory is not defined
-    at populateFileList (renderer.js:53:56)
+renderer.js:53 Errore nel popolare la lista per 'lessons': TypeError: Cannot read properties of undefined (reading 'getLessons')
+    at populateFileList (renderer.js:21:26)
     at HTMLDocument.<anonymous> (renderer.js:69:3)
-renderer.js:53 Uncaught (in promise) ReferenceError: directory is not defined
-    at populateFileList (renderer.js:53:56)
+populateFileList	@	renderer.js:53
+renderer.js:53 Errore nel popolare la lista per 'exercises': TypeError: Cannot read properties of undefined (reading 'getExercises')
+    at populateFileList (renderer.js:22:26)
     at HTMLDocument.<anonymous> (renderer.js:70:3)
+populateFileList	@	renderer.js:53
 renderer.js:60 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'getAppVersion')
     at displayAppVersion (renderer.js:60:38)
     at HTMLDocument.<anonymous> (renderer.js:71:3)
