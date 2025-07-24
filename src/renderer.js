@@ -53,8 +53,18 @@ async function populateFileList(directory, elementId) {
   }
 }
 
+// Mostra la versione dell'app
+async function displayAppVersion() {
+    const version = await window.api.getAppVersion();
+    const versionElement = document.getElementById('app-version');
+    if (versionElement) {
+        versionElement.innerText = version;
+    }
+}
+
 // Quando il documento è completamente caricato, popola entrambe le liste.
 document.addEventListener('DOMContentLoaded', () => {
   populateFileList('lessons', 'lessons-list');
   populateFileList('exercises', 'exercises-list');
+  displayAppVersion();
 });

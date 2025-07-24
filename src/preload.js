@@ -43,5 +43,6 @@ contextBridge.exposeInMainWorld('api', {
   // Funzioni per il sistema di salvataggio
   saveProgress: (lesson, data) => ipcRenderer.invoke('save-progress', { lesson, data }),
   loadProgress: (lesson) => ipcRenderer.invoke('load-progress', lesson),
-  getLessonData: (filePath) => ipcRenderer.invoke('get-lesson-data', filePath)
+  getLessonData: (filePath) => ipcRenderer.invoke('get-lesson-data', filePath),
+  getAppVersion: () => ipcRenderer.invoke('get-app-version')
 });

@@ -53,6 +53,8 @@ ipcMain.handle('get-app-path', () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
+const { autoUpdater } = require('electron-updater');
+
 app.on('ready', () => {
   // Creiamo la cartella dei salvataggi se non esiste.
   const savesDir = path.join(app.getPath('userData'), 'saves');
@@ -60,6 +62,11 @@ app.on('ready', () => {
     fs.mkdirSync(savesDir, { recursive: true });
   }
   createWindow();
+  autoUpdater.checkForUpdatesAndNotify();
+});
+
+ipcMain.handle('get-app-version', (event) => {
+  return app.getVersion();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
