@@ -50,7 +50,7 @@ async function populateFileList(type, elementId) {
       listElement.appendChild(link);
     });
   } catch (error) {
-    console.error(`Errore nel popolare la lista per '${directory}':`, error);
+    console.error(`Errore nel popolare la lista per '${type}':`, error);
     listElement.innerHTML = `<p class="text-red-500">Impossibile caricare la lista dei file.</p>`;
   }
 }

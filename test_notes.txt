@@ -87,9 +87,38 @@ MOST RECENT update
 Template now loads, but the autofill issue persists.
 Not sure if they are the same issue, but app still says 'nessuna lezione trovata', 'nessun esercizio trovato'. 
 basically it finds no content to load
+
+---
+## Jules's Notes
+
+### Analysis of the Issues
+
+I've analyzed the error logs and the source code (`main.js`, `preload.js`, `renderer.js`). Here's my diagnosis:
+
+The primary issue is the failure of the `preload.js` script to execute correctly. This is indicated by the error `Error: module not found: fs`. This error is misleading; `fs` is a built-in Node.js module and should be available in the preload script's context. The actual problem is likely that the build tool (Vite or a similar bundler) is trying to bundle the `fs` module for the renderer environment, where it's not available. The line `const fs = require('fs').promises;` in `preload.js` was the likely culprit, as it was unnecessary for the script's functionality.
+
+The failure of the preload script means that the `api` object is not exposed to the `window` of the renderer process. This causes the subsequent errors in `renderer.js`:
+- `Uncaught (in promise) ReferenceError: directory is not defined`: This was a typo in an error message in `renderer.js`.
+- `Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'getAppVersion')`: This error occurs because `window.api` is `undefined`, so `window.api.getAppVersion()` fails.
+- The inability to load lessons and exercises is also because `window.api` is `undefined`, so `window.api.getLessons()` and `window.api.getExercises()` fail.
+
+### Steps Taken to Resolve the Issues
+
+1.  **Fixed `src/preload.js`:** I removed the line `const fs = require('fs').promises;` from `src/preload.js`. This module was not being used in the preload script and was likely causing the bundling error.
+2.  **Fixed `src/renderer.js`:** I corrected a typo in an error message in `src/renderer.js`, replacing the undefined variable `directory` with the correct parameter `type`.
+
+### Expected Next Steps
+
+With these changes, the `preload.js` script should now execute correctly, exposing the `api` object to the renderer process. 
+This should resolve the errors in `renderer.js` and allow the application to load the lessons, exercises, and app version as expected. 
+The application should be tested to confirm that the content now loads correctly.
+
+---
+
+issue persists
 i looked up the developer app console (i think that's what it is) and can see the following:
 VM4 sandbox_bundle:2 Unable to load preload script: C:\Users\User\Documents\TEFL Personal\src\preload.js
-executeSandboxedPreloadScripts @ VM4 sandbox_bundle:2
+executeSandboxedPreloadScripts	@	VM4 sandbox_bundle:2
 VM4 sandbox_bundle:2 Error: module not found: fs
     at preloadRequire (VM4 sandbox_bundle:2:143993)
     at <anonymous>:6:12
@@ -99,7 +128,7 @@ VM4 sandbox_bundle:2 Error: module not found: fs
     at VM4 sandbox_bundle:2:154135
     at ___electron_webpack_init__ (VM4 sandbox_bundle:2:154139)
     at VM4 sandbox_bundle:2:154262
-executeSandboxedPreloadScripts @ VM4 sandbox_bundle:2
+executeSandboxedPreloadScripts	@	VM4 sandbox_bundle:2
 renderer.js:53 Uncaught (in promise) ReferenceError: directory is not defined
     at populateFileList (renderer.js:53:56)
     at HTMLDocument.<anonymous> (renderer.js:69:3)
@@ -117,3 +146,4 @@ For more information and help, consult
 https://electronjs.org/docs/tutorial/security.
 This warning will not show up
 once the app is packaged.
+warnAboutInsecureCSP	@	VM4 sandbox_bundle:2
