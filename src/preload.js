@@ -25,20 +25,8 @@ contextBridge.exposeInMainWorld('api', {
    * @param {string} dir - La directory da cui leggere i file.
    * @returns {Promise<string[]>} Una lista di nomi di file HTML.
    */
-  getFiles: async (dir) => {
-    try {
-      // Ottiene il percorso di base dell'app dal processo main
-      const appPath = await ipcRenderer.invoke('get-app-path');
-      const directoryPath = path.join(appPath, dir);
-      
-      const files = await fs.readdir(directoryPath);
-      // Filtra per i file .html
-      return files.filter(file => file.endsWith('.html'));
-    } catch (err) {
-      console.error(`Errore nel leggere la cartella ${dir}:`, err);
-      return []; // Restituisce un array vuoto in caso di errore
-    }
-  },
+  getLessons: () => ipcRenderer.invoke('get-lessons'),
+  getExercises: () => ipcRenderer.invoke('get-exercises'),
 
   // Funzioni per il sistema di salvataggio
   saveProgress: (lesson, data) => ipcRenderer.invoke('save-progress', { lesson, data }),

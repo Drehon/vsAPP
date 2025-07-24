@@ -8,7 +8,7 @@
  * @param {string} directory - Il nome della cartella da cui caricare i file ('lessons' o 'exercises').
  * @param {string} elementId - L'ID dell'elemento HTML in cui inserire la lista.
  */
-async function populateFileList(directory, elementId) {
+async function populateFileList(type, elementId) {
   const listElement = document.getElementById(elementId);
   if (!listElement) {
     console.error(`Elemento con ID '${elementId}' non trovato.`);
@@ -17,7 +17,9 @@ async function populateFileList(directory, elementId) {
 
   try {
     // Usa l'API esposta dal preload script per ottenere i file
-    const files = await window.api.getFiles(directory);
+    const files = type === 'lessons'
+      ? await window.api.getLessons()
+      : await window.api.getExercises();
 
     if (files.length === 0) {
       // Lascia il messaggio di default se non ci sono file
@@ -41,7 +43,7 @@ async function populateFileList(directory, elementId) {
       // Aggiunge l'evento click per la navigazione
       link.addEventListener('click', (e) => {
         e.preventDefault(); // Previene il comportamento di default del link
-        const filePath = `${directory}/${file}`;
+        const filePath = `${type}/${file}`;
         window.api.navigateTo(filePath);
       });
 

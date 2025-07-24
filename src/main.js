@@ -139,3 +139,19 @@ ipcMain.handle('get-lesson-data', async (event, filePath) => {
     return null;
   }
 });
+
+// Funzione per ottenere i contenuti di una directory
+const getContents = async (dir) => {
+  const directoryPath = path.join(__dirname, '..', dir);
+  try {
+    const files = await fs.promises.readdir(directoryPath);
+    return files.filter(file => file.endsWith('.html'));
+  } catch (err) {
+    console.error(`Errore nella lettura della directory ${dir}:`, err);
+    return [];
+  }
+};
+
+// Esposizione delle funzioni per ottenere lezioni ed esercizi
+ipcMain.handle('get-lessons', () => getContents('lessons'));
+ipcMain.handle('get-exercises', () => getContents('exercises'));

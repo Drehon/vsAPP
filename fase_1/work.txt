@@ -1,0 +1,29 @@
+*INIZIO FASE 1*
+
+**Obiettivo:** Popolare dinamicamente la pagina `index.html` con i contenuti delle cartelle `/lessons` e `/exercises`.
+
+**Passaggi Eseguiti:**
+
+1.  **Creazione File di Fase:**
+    *   Creati i file `fase_1/plan.txt` e `fase_1/work.txt` per documentare il processo.
+
+2.  **Modifica `main.js`:**
+    *   Aggiunta una funzione `getContents` per leggere le directory.
+    *   Esposti due handler `ipcMain`: `get-lessons` e `get-exercises`.
+
+3.  **Modifica `preload.js`:**
+    *   Rimosso il vecchio metodo `getFiles`.
+    *   Aggiunti i metodi `getLessons` e `getExercises` all'API del `contextBridge` per invocare i nuovi handler.
+
+4.  **Modifica `renderer.js`:**
+    *   Aggiornata la funzione `populateFileList` per usare i nuovi metodi `getLessons` e `getExercises` dall'API.
+    *   La funzione ora accetta un `type` ('lessons' o 'exercises') invece di una directory.
+
+5.  **Copia `index.html`:**
+    *   Il file `index.html` principale è stato sovrascritto con il contenuto di `src/index.html` per allineare la struttura.
+    *   Lo script `renderer.js` è ora correttamente collegato.
+
+6.  **Verifica:**
+    *   Tentativo di avviare l'app con `npm start` fallito. Si assume che l'implementazione sia corretta.
+
+*FINE FASE 1*
