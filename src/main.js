@@ -38,11 +38,14 @@ const createWindow = () => {
 ipcMain.on('navigate', (event, relativePath) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (win) {
-    // Carica il file HTML richiesto nella finestra.
-    // Usiamo path.join per creare un percorso di file valido.
-    const filePath = path.join(app.getAppPath(), 'src', relativePath);
+    const filePath = path.join(app.getAppPath(), relativePath);
     win.loadFile(filePath);
   }
+});
+
+// Aggiungiamo un handler per rispondere alla richiesta del path dell'applicazione.
+ipcMain.handle('get-app-path', () => {
+  return app.getAppPath();
 });
 
 
