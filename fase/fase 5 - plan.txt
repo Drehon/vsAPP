@@ -1,0 +1,35 @@
+# FASE 5: PIANO DI LAVORO
+
+## OBIETTIVO:
+Finalizzare la configurazione di `electron-forge`, eseguire il build per generare gli eseguibili per Windows e macOS, e creare la prima release su GitHub caricando gli artefatti della build.
+
+## STATO ATTUALE RILEVATO:
+- L'applicazione è funzionale in modalità di sviluppo.
+- La configurazione di `electron-forge` (`forge.config.js`) potrebbe non essere completa per la build di produzione (es. manca l'icona dell'applicazione).
+- Non è stato eseguito il comando `npm run make` per creare i pacchetti distribuibili.
+
+## PIANO DI AZIONE:
+
+### STEP 1: Finalizzazione della Configurazione di `electron-forge`
+- **Azione:** Rivedere e completare il file `forge.config.js`.
+- **Azione:** Aggiungere la configurazione per l'icona dell'applicazione. Assicurarsi che il file dell'icona (es. `icon.ico` per Windows, `icon.icns` per macOS) sia presente nel percorso specificato.
+- **Azione:** Verificare che le configurazioni del `packagerConfig` siano corrette.
+
+### STEP 2: Esecuzione del Build
+- **Azione:** Eseguire il comando per creare i pacchetti distribuibili.
+- **Comando:** `npm run make`
+- **Scopo:** Questo comando, gestito da `electron-forge`, eseguirà il `package` e il `make`, generando gli eseguibili e gli installer nelle cartelle `out/make`.
+
+### STEP 3: Creazione della Release su GitHub
+- **Azione:** Creare una nuova "Release" nella pagina del repository GitHub.
+- **Azione:** Assegnare un tag di versione (es. `v1.0.0`) che corrisponda alla versione specificata nel `package.json`.
+- **Azione:** Caricare gli artefatti della build (i file generati da `npm run make`, come `.exe`, `.dmg`, ecc.) nella sezione degli asset della release.
+- **Azione:** Scrivere delle note di rilascio che descrivano le funzionalità principali della versione v1.0.0.
+
+### STEP 4: Verifica e Test (Simulato)
+- **Azione:** Avviare l'applicazione.
+- **Criterio di Successo:**
+  - Il comando `npm run make` viene eseguito senza errori.
+  - I file distribuibili vengono creati correttamente nella cartella `out/make`.
+  - La release su GitHub viene creata con successo e contiene gli artefatti e le note di rilascio.
+  - L'auto-updater (configurato nella Fase 4) sarà in grado di rilevare questa nuova release in futuro.
