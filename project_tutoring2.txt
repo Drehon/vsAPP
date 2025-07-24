@@ -1,0 +1,80 @@
+# Project Hub: Piano di Sviluppo
+
+Questo documento funge da piano di lavoro dinamico per lo sviluppo dell'applicazione. Traccia le decisioni prese, la roadmap delle funzionalità e la metodologia operativa per ogni fase.
+
+---
+
+## 1. Riepilogo del Progetto
+
+* **Obiettivo Finale:** Creare un'applicazione desktop (Windows, macOS) con Electron per la fruizione di contenuti didattici interattivi (lezioni ed esercizi).
+* **Problemi Risolti:** L'applicazione elimina la dipendenza dai browser, da `localStorage` e da connessioni internet, fornendo un ambiente stabile, offline e con accesso diretto al file system per un sistema di salvataggio robusto.
+
+---
+
+## 2. Architettura e Decisioni Chiave
+
+* **Framework:** Electron
+* **IDE:** Visual Studio Code
+* **Funzionalità Core Pianificate:**
+    1.  **Home Dinamica:** Un menu principale che elenca automaticamente i contenuti dalle cartelle `/lessons` e `/exercises`.
+    2.  **Sistema di Salvataggio Avanzato:** Salvataggi multipli per pagina, non distruttivi, con metadati, gestiti tramite file `.json` locali.
+    3.  **Aggiornamenti Automatici:** Un meccanismo di `autoUpdater` integrato che scarica e installa nuove versioni dell'app tramite le "Releases" di GitHub.
+
+---
+
+## 3. Metodologia di Sviluppo per Fasi
+
+Per organizzare il lavoro in modo strutturato e preparare il terreno per un futuro workflow con agenti AI, ogni fase dello sviluppo seguirà questa metodologia:
+
+* **Struttura a Cartelle:** Per ogni fase, verrà creata una cartella dedicata (es. `fase_1/`, `fase_2/`).
+* **Documentazione di Fase:** All'interno di ogni cartella di fase, verranno mantenuti due file di testo:
+    * `plan.txt`: Descrive in dettaglio gli obiettivi tecnici, i file da modificare e i passaggi logici per completare la fase. Funge da "briefing" per l'Assistente.
+    * `work.txt`: Un registro operativo che documenta il lavoro svolto, i comandi eseguiti, gli errori incontrati e le soluzioni adottate. Funge da "log" di sviluppo.
+* **Hub come Riferimento:** Questo "Project Hub" rimane il documento di riferimento strategico di alto livello.
+
+---
+
+## 4. Roadmap di Sviluppo v1.0.0
+
+### Fase 1: Creazione della "Home" e Navigazione
+* **Stato:** In Corso
+* **Obiettivi:**
+    * Creare la schermata `index.html` come hub visivo.
+    * Implementare la logica (backend e frontend) per leggere il contenuto delle cartelle `/lessons` e `/exercises`.
+    * Visualizzare i file trovati come una lista di link cliccabili.
+    * Implementare la navigazione per aprire i file HTML corrispondenti al clic.
+* **File di Riferimento:** `fase_1/plan.txt`, `fase_1/work.txt`
+
+### Fase 2: Integrazione Stile Offline (Compilazione CSS)
+* **Stato:** Da Iniziare
+* **Obiettivi:**
+    * Configurare Tailwind CSS per la compilazione locale.
+    * Creare uno script che scansioni tutti i file `.html` alla ricerca di classi di utilità.
+    * Generare un singolo file `style.css` ottimizzato e locale.
+    * Rimuovere ogni dipendenza dal CDN di Tailwind.
+* **File di Riferimento:** `fase_2/plan.txt`, `fase_2/work.txt`
+
+### Fase 3: Implementazione Sistema di Salvataggio/Caricamento
+* **Stato:** Da Iniziare
+* **Obiettivi:**
+    * Definire la posizione della cartella dei salvataggi (esterna all'app).
+    * Implementare le funzioni nel `preload.js` per creare, leggere e listare i file di salvataggio (`.json`).
+    * Sostituire `localStorage` nelle pagine di esercizio con le nuove API del backend.
+    * Costruire l'interfaccia utente per il menu di caricamento.
+* **File di Riferimento:** `fase_3/plan.txt`, `fase_3/work.txt`
+
+### Fase 4: Implementazione Auto-Updater
+* **Stato:** Da Iniziare
+* **Obiettivi:**
+    * Installare e configurare il modulo `electron-updater`.
+    * Aggiungere il codice nel `main.js` per inizializzare l'updater e collegarlo al repository GitHub.
+    * Gestire gli eventi per notificare l'utente e richiedere il riavvio per l'aggiornamento.
+* **File di Riferimento:** `fase_4/plan.txt`, `fase_4/work.txt`
+
+### Fase 5: Build e Rilascio v1.0.0
+* **Stato:** Da Iniziare
+* **Obiettivi:**
+    * Finalizzare la configurazione di `electron-forge`.
+    * Eseguire il comando `npm run make` per generare gli eseguibili per Windows e macOS.
+    * Creare la prima "Release" su GitHub e caricare gli artefatti della build.
+* **File di Riferimento:** `fase_5/pl
