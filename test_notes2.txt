@@ -13,7 +13,7 @@ checkForUpdatesAndNotify called, downloadPromise is null
 
 ## Issue B
 
-App opens, but displays the following
+App opens, but displays the following (template is also once more not loading, leaving white background black text only)
 Piattaforma Didattica
 Seleziona un contenuto per iniziare.
 Lezioni
