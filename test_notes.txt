@@ -162,6 +162,23 @@ The primary issue was the failure of the `preload.js` script to execute correctl
 
 ### Steps Taken to Resolve the Issues
 
+1.  **Installed `@electron-forge/plugin-webpack`**: I added this package to the `devDependencies` to enable proper webpack configuration.
+2.  **Fixed `forge.config.js`**: I added a `webpack` plugin configuration to `forge.config.js` to exclude the `path` module from being bundled. This allows the `preload.js` script to load correctly.
+3.  **Removed unnecessary `require('path')` from `src/preload.js`**: I removed the line `const path = require('path');` from `src/preload.js` as it was not being used and was causing a bundling error.
+
+### Expected Next Steps
+
+With these changes, the `preload.js` script should now execute correctly, exposing the `api` object to the renderer process. This should resolve the errors in `renderer.js` and allow the application to load the lessons, exercises, and app version as expected.
+
+---
+## Jules's Final Notes
+
+### Analysis of the Issues
+
+The primary issue was the failure of the `preload.js` script to execute correctly. This was caused by the build process (Webpack) attempting to bundle Node.js built-in modules (`fs` and `path`) for the renderer environment, where they are not available. This prevented the `api` object from being exposed to the renderer process, leading to the errors in `renderer.js`.
+
+### Steps Taken to Resolve the Issues
+
 1.  **Fixed `forge.config.js`:** I added a `webpack` configuration to `forge.config.js` to exclude the `path` module from being bundled. This allows the `preload.js` script to load correctly.
 2.  **Removed unnecessary `require('fs')` from `src/preload.js`:** I removed the line `const fs = require('fs').promises;` from `src/preload.js` as it was not being used and was causing a similar bundling error.
 
@@ -206,3 +223,51 @@ https://electronjs.org/docs/tutorial/security.
 This warning will not show up
 once the app is packaged.
 warnAboutInsecureCSP	@	VM4 sandbox_bundle:2
+
+
+---
+
+i'm wondering if the issue is in the node_modules
+here the console from npm install
+
+PS C:\Users\User\Documents\TEFL Personal> npm install
+npm warn skipping integrity check for git dependency ssh://git@github.com/electron/node-gyp.git
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated gar@1.0.4: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.    
+npm warn deprecated lodash.get@4.4.2: This package is deprecated. Use the optional chaining (?.) operator instead.
+npm warn deprecated @npmcli/move-file@2.0.1: This functionality has been moved to @npmcli/fs
+npm warn deprecated lodash.isequal@4.5.0: This package is deprecated. Use require('node:util').isDeepStrictEqual instead.      
+npm warn deprecated rimraf@2.6.3: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated glob@8.1.0: Glob versions prior to v9 are no longer supported
+npm warn deprecated glob@8.1.0: Glob versions prior to v9 are no longer supported
+npm warn deprecated xterm-addon-search@0.8.2: This package is now deprecated. Move to @xterm/addon-search instead.
+npm warn deprecated sudo-prompt@9.2.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated xterm-addon-fit@0.5.0: This package is now deprecated. Move to @xterm/addon-fit instead.
+npm warn deprecated boolean@3.2.0: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated xterm@4.19.0: This package is now deprecated. Move to @xterm/xterm instead.
+npm warn cleanup Failed to remove some directories [
+npm warn cleanup   [
+npm warn cleanup     'C:\\Users\\User\\Documents\\TEFL Personal\\node_modules\\electron-installer-debian',
+npm warn cleanup     [Error: EPERM: operation not permitted, rmdir 'C:\Users\User\Documents\TEFL Personal\node_modules\electron-installer-debian\node_modules\yargs\build'] {
+npm warn cleanup       errno: -4048,
+npm warn cleanup       code: 'EPERM',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: 'C:\\Users\\User\\Documents\\TEFL Personal\\node_modules\\electron-installer-debian\\node_modules\\yargs\\build'
+npm warn cleanup     }
+npm warn cleanup   ]
+npm warn cleanup ]
+
+added 736 packages, and audited 737 packages in 12s
+
+126 packages are looking for funding
+  run `npm fund` for details
+
+2 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+PS C:\Users\User\Documents\TEFL Personal> 

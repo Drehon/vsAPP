@@ -4,11 +4,6 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
   packagerConfig: {
     asar: true,
-    webpack: {
-      externals: {
-        path: 'require("path")',
-      },
-    },
   },
   rebuildConfig: {},
   makers: [
@@ -30,6 +25,38 @@ module.exports = {
     },
   ],
   plugins: [
+    {
+      name: '@electron-forge/plugin-webpack',
+      config: {
+        mainConfig: {
+          entryPoints: {
+            main: './src/main.js',
+          },
+        },
+        renderer: {
+          config: {
+            // Your webpack config for renderer
+          },
+          entryPoints: [
+            {
+              html: './src/index.html',
+              js: './src/renderer.js',
+              name: 'main_window',
+              preload: {
+                js: './src/preload.js',
+              },
+            },
+          ],
+        },
+        preload: {
+          config: {
+            externals: {
+              path: 'require("path")',
+            },
+          },
+        },
+      },
+    },
     {
       name: '@electron-forge/plugin-auto-unpack-natives',
       config: {},
