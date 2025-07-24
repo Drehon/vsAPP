@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esercizi Pratici: Il Congiuntivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e2e8f0; /* slate-200 */
+        }
+        .tab-active {
+            border-bottom-color: #4f46e5; /* indigo-600 */
+            color: #4f46e5;
+            font-weight: 600;
+        }
+        .tab-inactive {
+            border-bottom-color: transparent;
+            color: #475569; /* slate-600 */
+        }
+        .feedback-correct {
+            background-color: #dcfce7; /* green-100 */
+            border-left-color: #22c55e; /* green-500 */
+            color: #15803d; /* green-700 */
+        }
+        .feedback-incorrect {
+            background-color: #fee2e2; /* red-100 */
+            border-left-color: #ef4444; /* red-500 */
+            color: #b91c1c; /* red-700 */
+        }
+        .btn-correct {
+            background-color: #22c55e !important;
+            border-color: #16a34a !important;
+            color: white !important;
+        }
+        .btn-incorrect {
+            background-color: #ef4444 !important;
+            border-color: #dc2626 !important;
+            color: white !important;
+        }
+        .btn-neutral {
+             background-color: #f1f5f9; /* slate-100 */
+             border-color: #cbd5e1; /* slate-300 */
+             color: #334155; /* slate-700 */
+        }
+        .btn-neutral:hover {
+            background-color: #e2e8f0; /* slate-200 */
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="container mx-auto p-6 md:p-10 max-w-7xl">
+
+        <!-- Header -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
+            <header class="p-6">
+                <h1 class="text-3xl font-bold text-slate-900">Esercizi Pratici: Il Congiuntivo</h1>
+                <p class="text-lg text-slate-600">Metti in pratica la teoria con esercizi mirati.</p>
+            </header>
+            <div class="p-6 border-t border-slate-200 bg-slate-50 text-sm text-slate-600 space-y-3">
+                <h3 class="font-semibold text-slate-800">Come usare questa pagina:</h3>
+                <ul class="list-disc list-inside space-y-1">
+                    <li><strong>Salvataggio Automatico:</strong> I tuoi progressi (risposte e note) vengono salvati automaticamente nel browser.</li>
+                    <li><strong>Carica JSON:</strong> Usa questo pulsante per caricare un file di progressi salvato in precedenza.</li>
+                    <li><strong>Salva e Scarica JSON:</strong> Clicca qui per scaricare un file <code>.json</code> con tutte le tue risposte e note. **Importante:** questa azione cancellerà i dati salvati nel browser, permettendoti di ricominciare. È la funzione da usare per "consegnare" il lavoro.</li>
+                    <li><strong>Azzera Test:</strong> Rimuove tutti i progressi salvati nel browser e ripristina gli esercizi.</li>
+                </ul>
+            </div>
+            <div class="px-6 py-4 border-t border-slate-200 bg-slate-100 flex flex-wrap gap-4 justify-center items-center">
+                <button id="load-json-btn" class="text-sm bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Carica JSON</button>
+                <button id="save-json-btn" class="text-sm bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Salva e Scarica JSON</button>
+                <button id="reset-btn" class="text-sm bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Azzera Test</button>
+                <input type="file" id="json-upload" class="hidden" accept=".json">
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <!-- Tabs -->
+            <div class="border-b border-slate-200">
+                <nav class="flex space-x-6 px-6" aria-label="Tabs">
+                    <button id="tab-btn-1" class="tab-btn py-4 px-1 text-sm font-medium tab-active">Fase 1: Comprensione</button>
+                    <button id="tab-btn-2" class="tab-btn py-4 px-1 text-sm font-medium tab-inactive">Fase 2: Riconoscimento</button>
+                    <button id="tab-btn-3" class="tab-btn py-4 px-1 text-sm font-medium tab-inactive">Fase 3: Produzione</button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="p-6 md:p-8">
+                <div id="tab-content-1" class="tab-content"></div>
+                <div id="tab-content-2" class="tab-content hidden"></div>
+                <div id="tab-content-3" class="tab-content hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const exercises = {
+                fase1: [
+                    { question: "The manager insisted that everyone <b><u>attends</u></b> the meeting.", answer: false, explanation: "Dopo 'insisted that', si usa la forma base. Corretta: <i>...attend...</i>" },
+                    { question: "It is essential that she <b><u>be</u></b> informed immediately.", answer: true, explanation: "Corretto. 'be informed' è il congiuntivo passivo." },
+                    { question: "I suggest that he <b><u>takes</u></b> a break.", answer: false, explanation: "Dopo 'suggest that', si usa la forma base. Corretta: <i>...he <b>take</b>...</i>" },
+                    { question: "The board requested that the report <b><u>is</u></b> submitted by Friday.", answer: false, explanation: "Dopo 'requested that', si usa il congiuntivo passivo. Corretta: <i>...report <b>be submitted</b>...</i>" },
+                    { question: "They ask that he <b><u>not be</u></b> late.", answer: true, explanation: "Corretto. La forma negativa del congiuntivo è 'not' + forma base." },
+                    { question: "The doctor recommended that I <b><u>should stop</u></b> smoking.", answer: false, explanation: "In US English, 'should' è ridondante. Corretta: <i>...that I <b>stop</b>...</i>" },
+                    { question: "It's important that they <b><u>understand</u></b> the risks.", answer: true, explanation: "Corretto. 'understand' è la forma base." },
+                    { question: "He demanded that his lawyer <b><u>was</u></b> present.", answer: false, explanation: "Dopo 'demanded that', si usa la forma base. Corretta: <i>...lawyer <b>be</b> present.</i>" },
+                    { question: "I propose that the committee <b><u>reviews</u></b> the proposal again.", answer: false, explanation: "Dopo 'propose that', si usa la forma base. Corretta: <i>...committee <b>review</b>...</i>" },
+                    { question: "Her boss requires that she <b><u>complete</u></b> the project.", answer: true, explanation: "Corretto. 'complete' è la forma base." },
+                    { question: "It is vital that the equipment <b><u>be maintained</u></b> properly.", answer: true, explanation: "Corretto. 'be maintained' è il congiuntivo passivo." },
+                    { question: "The judge ordered that the prisoner <b><u>was released</u></b>.", answer: false, explanation: "Dopo 'ordered that', si usa il congiuntivo passivo. Corretta: <i>...prisoner <b>be released</b>.</i>" },
+                    { question: "I suggest that she <b><u>not worry</u></b> so much.", answer: true, explanation: "Corretto. 'not worry' è la forma negativa." },
+                    { question: "It is necessary that he <b><u>finds</u></b> a new job.", answer: false, explanation: "Dopo 'it is necessary that', si usa la forma base. Corretta: <i>...he <b>find</b>...</i>" },
+                    { question: "The rules require that every student <b><u>wears</u></b> a uniform.", answer: false, explanation: "Dopo 'require that', si usa la forma base. Corretta: <i>...student <b>wear</b>...</i>" },
+                    { question: "I move that the meeting <b><u>be adjourned</u></b>.", answer: true, explanation: "Corretto. 'move that' è un modo formale per fare una proposta, seguito dal congiuntivo." },
+                    { question: "Her parents insisted that she <b><u>studied</u></b> medicine.", answer: false, explanation: "Dopo 'insisted that', si usa la forma base. Corretta: <i>...she <b>study</b>...</i>" },
+                    { question: "We ask that you <b><u>not to touch</u></b> the exhibits.", answer: false, explanation: "La forma negativa non usa 'to'. Corretta: <i>...you <b>not touch</b>...</i>" },
+                    { question: "It is crucial that we <b><u>are</u></b> on time.", answer: false, explanation: "Dopo 'it is crucial that', si usa la forma base. Corretta: <i>...we <b>be</b> on time.</i>" },
+                    { question: "The professor demanded that the paper <b><u>be handed</u></b> in.", answer: true, explanation: "Corretto. 'be handed in' è il congiuntivo passivo." },
+                    { question: "I suggest that he <b><u>is</u></b> more careful.", answer: false, explanation: "Dopo 'suggest that', si usa la forma base. Corretta: <i>...he <b>be</b> more careful.</i>" },
+                    { question: "It is best that you <b><u>tell</u></b> the truth.", answer: true, explanation: "Corretto. 'tell' è la forma base." },
+                    { question: "They requested that he <b><u>spoke</u></b> more slowly.", answer: false, explanation: "Dopo 'requested that', si usa la forma base. Corretta: <i>...he <b>speak</b>...</i>" },
+                    { question: "It's advisable that she <b><u>not travel</u></b> alone.", answer: true, explanation: "Corretto. 'not travel' è la forma negativa." },
+                    { question: "The CEO asks that all reports <b><u>are written</u></b> in English.", answer: false, explanation: "Dopo 'asks that', si usa il congiuntivo passivo. Corretta: <i>...reports <b>be written</b>...</i>" },
+                    { question: "It's a good idea that he <b><u>save</u></b> some money.", answer: true, explanation: "Corretto. 'save' è la forma base." },
+                    { question: "My recommendation is that he <b><u>apologizes</u></b>.", answer: false, explanation: "Dopo 'recommendation is that', si usa la forma base. Corretta: <i>...he <b>apologize</b>.</i>" },
+                    { question: "They demand that the government <b><u>does</u></b> more.", answer: false, explanation: "Dopo 'demand that', si usa la forma base. Corretta: <i>...government <b>do</b> more.</i>" },
+                    { question: "It's imperative that you <b><u>be</u></b> there.", answer: true, explanation: "Corretto. 'be' è la forma base." },
+                    { question: "I insist that he <b><u>is not</u></b> lazy.", answer: false, explanation: "La forma negativa è 'not be'. Corretta: <i>...he <b>not be</b> lazy.</i>" },
+                    { question: "It is proposed that the company <b><u>invests</u></b> in new technology.", answer: false, explanation: "Dopo 'it is proposed that', si usa la forma base. Corretta: <i>...company <b>invest</b>...</i>" },
+                    { question: "The teacher suggests that the student <b><u>study</u></b> harder.", answer: true, explanation: "Corretto. 'study' è la forma base." },
+                    { question: "It's urgent that she <b><u>calls</u></b> a doctor.", answer: false, explanation: "Dopo 'it's urgent that', si usa la forma base. Corretta: <i>...she <b>call</b>...</i>" },
+                    { question: "We demand that the truth <b><u>be told</u></b>.", answer: true, explanation: "Corretto. 'be told' è il congiuntivo passivo." },
+                    { question: "His contract requires that he <b><u>gives</u></b> a one-month notice.", answer: false, explanation: "Dopo 'requires that', si usa la forma base. Corretta: <i>...he <b>give</b>...</i>" },
+                    { question: "It is better that they <b><u>not know</u></b> the details.", answer: true, explanation: "Corretto. 'not know' è la forma negativa." },
+                    { question: "He moved that the motion <b><u>was approved</u></b>.", answer: false, explanation: "Dopo 'moved that', si usa il congiuntivo passivo. Corretta: <i>...motion <b>be approved</b>.</i>" },
+                    { question: "I suggest that everyone <b><u>bring</u></b> a dish to the party.", answer: true, explanation: "Corretto. 'bring' è la forma base." },
+                    { question: "It is important that he <b><u>doesn't</u></b> forget.", answer: false, explanation: "La forma negativa è 'not forget'. Corretta: <i>...he <b>not forget</b>.</i>" },
+                    { question: "The law requires that this form <b><u>be signed</u></b> by a witness.", answer: true, explanation: "Corretto. 'be signed' è il congiuntivo passivo." },
+                    { question: "I demand that she <b><u>tells</u></b> me everything.", answer: false, explanation: "Dopo 'demand that', si usa la forma base. Corretta: <i>...she <b>tell</b>...</i>" },
+                    { question: "It is vital that you <b><u>are not</u></b> late for the interview.", answer: false, explanation: "La forma negativa è 'not be'. Corretta: <i>...you <b>not be</b> late.</i>" },
+                    { question: "The client requests that the changes <b><u>be made</u></b> immediately.", answer: true, explanation: "Corretto. 'be made' è il congiuntivo passivo." },
+                    { question: "His father insists that he <b><u>finds</u></b> a stable job.", answer: false, explanation: "Dopo 'insists that', si usa la forma base. Corretta: <i>...he <b>find</b>...</i>" },
+                    { question: "Our policy requires that all visitors <b><u>sign</u></b> in.", answer: true, explanation: "Corretto. 'sign' è la forma base." },
+                    { question: "I suggest he <b><u>stops</u></b> complaining.", answer: false, explanation: "Dopo 'suggest', si usa la forma base. Corretta: <i>...he <b>stop</b>...</i>" },
+                    { question: "It is imperative that the system <b><u>be updated</u></b>.", answer: true, explanation: "Corretto. 'be updated' è il congiuntivo passivo." },
+                    { question: "The commander ordered that the soldiers <b><u>advanced</u></b>.", answer: false, explanation: "Dopo 'ordered that', si usa la forma base. Corretta: <i>...soldiers <b>advance</b>.</i>" },
+                    { question: "It's crucial that she <b><u>get</u></b> enough sleep.", answer: true, explanation: "Corretto. 'get' è la forma base." },
+                    { question: "He recommended that I <b><u>bought</u></b> a new car.", answer: false, explanation: "Dopo 'recommended that', si usa la forma base. Corretta: <i>...I <b>buy</b>...</i>" }
+                ],
+                fase2: [
+                    { question: "The committee recommends that the proposal ______ rejected.", options: ["is", "be", "to be", "was"], answer: "be", explanation: "Dopo 'recommends that', si usa il congiuntivo passivo 'be' + participio passato." },
+                    { question: "I insist that he ______ us an apology.", options: ["offer", "offers", "offered", "to offer"], answer: "offer", explanation: "Dopo 'insist that', si usa la forma base del verbo." },
+                    { question: "It is vital that you ______ calm.", options: ["to remain", "remains", "remain", "remaining"], answer: "remain", explanation: "Dopo 'it is vital that', si usa la forma base del verbo." },
+                    { question: "The manager demanded that the work ______ by 5 PM.", options: ["is finished", "were finished", "be finished", "finishing"], answer: "be finished", explanation: "Dopo 'demanded that', si usa il congiuntivo passivo 'be finished'." },
+                    { question: "She suggests that we ______ the meeting.", options: ["not postpone", "don't postpone", "not to postpone", "not postponing"], answer: "not postpone", explanation: "La forma negativa del congiuntivo è 'not' + forma base." },
+                    { question: "The law requires that every citizen ______. (A) votes (B) to vote (C) vote (D) voted)", options: ["votes", "to vote", "vote", "voted"], answer: "vote", explanation: "Dopo 'requires that', si usa la forma base." },
+                    { question: "It is crucial that the hostages ______. (A) not be harmed (B) are not harmed (C) not to be harmed (D) weren't harmed)", options: ["not be harmed", "are not harmed", "not to be harmed", "weren't harmed"], answer: "not be harmed", explanation: "La forma negativa del congiuntivo passivo è 'not be' + participio." },
+                    { question: "He asked that his name ______ from the list.", options: ["was removed", "being removed", "be removed", "is removed"], answer: "be removed", explanation: "Dopo 'asked that', si usa il congiuntivo passivo." },
+                    { question: "It's important that she ______ the truth.", options: ["knows", "know", "to know", "knew"], answer: "know", explanation: "Dopo 'it's important that', si usa la forma base." },
+                    { question: "I propose that a new chairman ______. (A) be elected (B) is elected (C) was elected (D) to be elected)", options: ["be elected", "is elected", "was elected", "to be elected"], answer: "be elected", explanation: "Dopo 'propose that', si usa il congiuntivo passivo." },
+                    { question: "They requested that we ______ on time.", options: ["are", "were", "be", "to be"], answer: "be", explanation: "Dopo 'requested that', si usa la forma base." },
+                    { question: "It is necessary that he ______ a decision soon.", options: ["makes", "making", "to make", "make"], answer: "make", explanation: "Dopo 'it is necessary that', si usa la forma base." },
+                    { question: "Her suggestion is that he ______ a specialist.", options: ["sees", "see", "saw", "to see"], answer: "see", explanation: "Dopo 'suggestion is that', si usa la forma base." },
+                    { question: "The CEO ordered that a full investigation ______. (A) be launched (B) is launched (C) was launched (D) has been launched)", options: ["be launched", "is launched", "was launched", "has been launched"], answer: "be launched", explanation: "Dopo 'ordered that', si usa il congiuntivo passivo." },
+                    { question: "I demand that I ______ a full refund.", options: ["am given", "to be given", "be given", "was given"], answer: "be given", explanation: "Dopo 'demand that', si usa il congiuntivo passivo." },
+                    { question: "We suggest that you ______ your reservation in advance.", options: ["make", "makes", "to make", "made"], answer: "make", explanation: "Dopo 'suggest that', si usa la forma base." },
+                    { question: "It is imperative that he ______ the terms and conditions.", options: ["understands", "understood", "understand", "to understand"], answer: "understand", explanation: "Dopo 'it is imperative that', si usa la forma base." },
+                    { question: "The parents requested that their child ______ special attention.", options: ["is given", "was given", "be given", "has been given"], answer: "be given", explanation: "Dopo 'requested that', si usa il congiuntivo passivo." },
+                    { question: "It's advisable that she ______ her medication.", options: ["take", "takes", "took", "to take"], answer: "take", explanation: "Dopo 'it's advisable that', si usa la forma base." },
+                    { question: "The board requires that all members ______ present.", options: ["are", "be", "to be", "were"], answer: "be", explanation: "Dopo 'requires that', si usa la forma base." },
+                    { question: "I insist that he ______ so loud.", options: ["not be", "isn't", "doesn't be", "not to be"], answer: "not be", explanation: "La forma negativa del congiuntivo è 'not be'." },
+                    { question: "It is essential that the contract ______ carefully.", options: ["is reviewed", "be reviewed", "was reviewed", "has been reviewed"], answer: "be reviewed", explanation: "Dopo 'it is essential that', si usa il congiuntivo passivo." },
+                    { question: "He asks that we ______ him alone.", options: ["leave", "leaves", "left", "to leave"], answer: "leave", explanation: "Dopo 'asks that', si usa la forma base." },
+                    { question: "My advice is that you ______ for the job.", options: ["apply", "applies", "applied", "to apply"], answer: "apply", explanation: "Dopo 'advice is that', si usa la forma base." },
+                    { question: "It is crucial that the problem ______ immediately.", options: ["be addressed", "is addressed", "was addressed", "has been addressed"], answer: "be addressed", explanation: "Dopo 'it is crucial that', si usa il congiuntivo passivo." },
+                    { question: "They demand that the products ______ safe.", options: ["are", "be", "were", "to be"], answer: "be", explanation: "Dopo 'demand that', si usa la forma base." },
+                    { question: "The professor insists that all essays ______ original.", options: ["are", "were", "be", "to be"], answer: "be", explanation: "Dopo 'insists that', si usa la forma base." },
+                    { question: "We propose that the funds ______ distributed equally.", options: ["are", "were", "be", "to be"], answer: "be", explanation: "Dopo 'propose that', si usa il congiuntivo passivo." },
+                    { question: "It is necessary that everyone ______ the rules.", options: ["follow", "follows", "followed", "to follow"], answer: "follow", explanation: "Dopo 'it is necessary that', si usa la forma base." },
+                    { question: "I request that my opinion ______. (A) be considered (B) is considered (C) was considered (D) has been considered)", options: ["be considered", "is considered", "was considered", "has been considered"], answer: "be considered", explanation: "Dopo 'request that', si usa il congiuntivo passivo." }
+                ],
+                fase3: [
+                    { prompt: "The team must finish the project.", question: "The manager insisted...", answer: "that the team finish the project", explanation: "La struttura è 'insisted that' + soggetto + forma base." },
+                    { prompt: "You should not be late.", question: "It is important...", answer: "that you not be late", explanation: "La struttura è 'it is important that' + soggetto + 'not' + forma base." },
+                    { prompt: "The report needs to be submitted by Monday.", question: "The CEO requires...", answer: "that the report be submitted by Monday", explanation: "La struttura è 'requires that' + soggetto + congiuntivo passivo ('be submitted')." },
+                    { prompt: "I think we should cancel the meeting.", question: "My suggestion is...", answer: "that we cancel the meeting", explanation: "Anche dopo 'my suggestion is', si usa 'that' + soggetto + forma base." },
+                    { prompt: "All employees must attend the training.", question: "The company mandates...", answer: "that all employees attend the training", explanation: "La struttura è 'mandates that' + soggetto + forma base." },
+                    { prompt: "The government should lower taxes.", question: "The people are demanding...", answer: "that the government lower taxes", explanation: "La struttura è 'demanding that' + soggetto + forma base." },
+                    { prompt: "You shouldn't tell anyone this secret.", question: "It is crucial...", answer: "that you not tell anyone this secret", explanation: "La struttura è 'it is crucial that' + soggetto + 'not' + forma base." },
+                    { prompt: "This document must be signed.", question: "The lawyer requests...", answer: "that this document be signed", explanation: "La struttura è 'requests that' + soggetto + congiuntivo passivo." },
+                    { prompt: "He needs to see a doctor.", question: "The doctor recommended...", answer: "that he see a doctor", explanation: "La struttura è 'recommended that' + soggetto + forma base." },
+                    { prompt: "She has to be present at the hearing.", question: "The judge ordered...", answer: "that she be present at the hearing", explanation: "La struttura è 'ordered that' + soggetto + forma base." },
+                    { prompt: "You should apply for the scholarship.", question: "I advise...", answer: "that you apply for the scholarship", explanation: "La struttura è 'advise that' + soggetto + forma base." },
+                    { prompt: "The prisoners must not be mistreated.", question: "Human rights laws require...", answer: "that prisoners not be mistreated", explanation: "La struttura è 'require that' + soggetto + congiuntivo passivo negativo." },
+                    { prompt: "We must find a solution.", question: "It is essential...", answer: "that we find a solution", explanation: "La struttura è 'it is essential that' + soggetto + forma base." },
+                    { prompt: "The CEO wants a weekly report from you.", question: "The CEO asks...", answer: "that you provide a weekly report", explanation: "La struttura è 'asks that' + soggetto + forma base." },
+                    { prompt: "The old bridge will be demolished.", question: "The city council proposed...", answer: "that the old bridge be demolished", explanation: "La struttura è 'proposed that' + soggetto + congiuntivo passivo." },
+                    { prompt: "I think he should stop calling me.", question: "I insist...", answer: "that he stop calling me", explanation: "La struttura è 'insist that' + soggetto + forma base." },
+                    { prompt: "We need to check all the safety equipment.", question: "The regulations demand...", answer: "that all the safety equipment be checked", explanation: "La struttura è 'demand that' + soggetto + congiuntivo passivo." },
+                    { prompt: "You shouldn't ignore the warning signs.", question: "It is vital...", answer: "that you not ignore the warning signs", explanation: "La struttura è 'it is vital that' + soggetto + 'not' + forma base." },
+                    { prompt: "Let's postpone the decision.", question: "I move...", answer: "that the decision be postponed", explanation: "La struttura è 'move that' + soggetto + congiuntivo passivo." },
+                    { prompt: "The employees need a pay raise.", question: "The union is demanding...", answer: "that the employees be given a pay raise", explanation: "La struttura è 'demanding that' + soggetto + congiuntivo passivo." }
+                ]
+            };
+
+            let appState;
+
+            function initializeState() {
+                const defaultState = {
+                    fase1: { answers: Array(exercises.fase1.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })) },
+                    fase2: { answers: Array(exercises.fase2.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })) },
+                    fase3: { answers: Array(exercises.fase3.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })) },
+                    currentQuestion: { fase1: 0, fase2: 0, fase3: 0 }
+                };
+                appState = JSON.parse(localStorage.getItem('subjunctiveAppState')) || defaultState;
+            }
+
+            function saveState() {
+                localStorage.setItem('subjunctiveAppState', JSON.stringify(appState));
+            }
+
+            function createScoreboard(fase, container) {
+                const total = exercises[fase].length;
+                const current = appState.currentQuestion[fase] + 1;
+                const correct = appState[fase].answers.filter(a => a && a.isCorrect).length;
+                const answered = appState[fase].answers.filter(a => a && a.userAnswer !== null).length;
+                
+                const scoreboard = document.createElement('div');
+                scoreboard.className = 'flex justify-between text-sm text-slate-500 mb-4 pb-4 border-b border-slate-200';
+                scoreboard.innerHTML = `
+                    <span>Domanda: <strong>${current}/${total}</strong></span>
+                    <span>Corrette: <strong>${correct}/${answered}</strong></span>
+                `;
+                container.prepend(scoreboard);
+            }
+            
+            function createNotesArea(fase, index, container) {
+                 const notesArea = document.createElement('div');
+                 notesArea.className = 'mt-4';
+                 notesArea.innerHTML = `
+                    <label for="notes-${fase}-${index}" class="block text-sm font-medium text-slate-600">Note:</label>
+                    <textarea id="notes-${fase}-${index}" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" rows="3">${appState[fase].answers[index].note || ''}</textarea>
+                 `;
+                 container.appendChild(notesArea);
+                 
+                 const textarea = document.getElementById(`notes-${fase}-${index}`);
+                 textarea.addEventListener('keyup', () => {
+                     appState[fase].answers[index].note = textarea.value;
+                     saveState();
+                 });
+                 return textarea;
+            }
+
+            function createFeedbackArea(fase, index, container, isCorrect, explanation) {
+                const feedbackEl = document.createElement('div');
+                feedbackEl.className = 'mt-4 p-4 border-l-4 rounded-r-md';
+                feedbackEl.classList.add(isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+                
+                let markCorrectBtn = '';
+                if (!isCorrect) {
+                    markCorrectBtn = `<button class="mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-yellow-800 font-bold py-1 px-2 rounded-lg ml-4" data-fase="${fase}" data-index="${index}">Segna come Corretta</button>`;
+                }
+                
+                feedbackEl.innerHTML = explanation + markCorrectBtn;
+                container.appendChild(feedbackEl);
+
+                if (!isCorrect) {
+                    feedbackEl.querySelector('.mark-correct-btn').addEventListener('click', (e) => {
+                        const { fase, index } = e.target.dataset;
+                        appState[fase].answers[parseInt(index)].isCorrect = true;
+                        saveState();
+                        rerenderAll();
+                    });
+                }
+            }
+
+            function renderFase1() {
+                const fase = 'fase1';
+                const index = appState.currentQuestion.fase1;
+                const container = document.getElementById('tab-content-1');
+                const ex = exercises[fase][index];
+                const answerState = appState[fase].answers[index];
+                
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <p class="text-lg text-slate-600">La seguente frase è grammaticalmente corretta?</p>
+                        <div class="p-4 bg-slate-100 rounded-lg text-xl text-center font-semibold text-slate-800">${ex.question}</div>
+                        <div class="flex justify-center space-x-4 pt-4">
+                            <button class="fase1-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors" data-answer="true">Vero</button>
+                            <button class="fase1-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors" data-answer="false">Falso</button>
+                        </div>
+                        <div class="feedback-container"></div>
+                        <div class="text-center pt-2">
+                            <button id="next-fase1" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg">Prossimo</button>
+                        </div>
+                    </div>
+                `;
+                
+                createScoreboard(fase, container);
+                const notesTextarea = createNotesArea(fase, index, container.querySelector('.space-y-4'));
+                
+                if (answerState.userAnswer !== null) {
+                    notesTextarea.disabled = true;
+                    document.querySelectorAll('.fase1-btn').forEach(b => {
+                        b.disabled = true;
+                        if (String(answerState.userAnswer) === b.dataset.answer && !answerState.isCorrect) b.classList.add('btn-incorrect');
+                        if (String(ex.answer) === b.dataset.answer) b.classList.add('btn-correct');
+                        else if (String(answerState.userAnswer) !== b.dataset.answer) b.classList.add('opacity-50');
+                    });
+                    createFeedbackArea(fase, index, container.querySelector('.feedback-container'), answerState.isCorrect, ex.explanation);
+                } else {
+                    addFase1Listeners();
+                }
+
+                document.getElementById('next-fase1').addEventListener('click', () => {
+                    appState.currentQuestion.fase1 = (appState.currentQuestion.fase1 + 1) % exercises.fase1.length;
+                    saveState();
+                    renderFase1();
+                });
+            }
+
+            function addFase1Listeners() {
+                document.querySelectorAll('.fase1-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const userAnswer = e.target.dataset.answer === 'true';
+                        const fase = 'fase1';
+                        const index = appState.currentQuestion.fase1;
+                        const correctAnswer = exercises[fase][index].answer;
+                        
+                        appState[fase].answers[index].userAnswer = userAnswer;
+                        appState[fase].answers[index].isCorrect = userAnswer === correctAnswer;
+                        saveState();
+                        renderFase1();
+                    });
+                });
+                document.querySelectorAll('.fase1-btn').forEach(b => b.classList.add('btn-neutral'));
+            }
+
+            function renderFase2() {
+                const fase = 'fase2';
+                const index = appState.currentQuestion.fase2;
+                const container = document.getElementById('tab-content-2');
+                const ex = exercises[fase][index];
+                const answerState = appState[fase].answers[index];
+
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <p class="text-lg text-slate-600">Scegli l'opzione corretta per completare la frase.</p>
+                        <div class="p-4 bg-slate-100 rounded-lg text-xl text-center font-semibold text-slate-800">${ex.question}</div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                            ${ex.options.map(opt => `<button class="fase2-btn border-2 font-bold py-3 px-6 rounded-lg transition-colors" data-answer="${opt}">${opt}</button>`).join('')}
+                        </div>
+                        <div class="feedback-container"></div>
+                        <div class="text-center pt-2">
+                            <button id="next-fase2" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg">Prossimo</button>
+                        </div>
+                    </div>
+                `;
+
+                createScoreboard(fase, container);
+                const notesTextarea = createNotesArea(fase, index, container.querySelector('.space-y-4'));
+
+                if (answerState.userAnswer !== null) {
+                    notesTextarea.disabled = true;
+                    document.querySelectorAll('.fase2-btn').forEach(b => {
+                        b.disabled = true;
+                        if (b.dataset.answer === answerState.userAnswer && !answerState.isCorrect) b.classList.add('btn-incorrect');
+                        if (b.dataset.answer === ex.answer) b.classList.add('btn-correct');
+                        else if (b.dataset.answer !== answerState.userAnswer) b.classList.add('opacity-50');
+                    });
+                    createFeedbackArea(fase, index, container.querySelector('.feedback-container'), answerState.isCorrect, ex.explanation);
+                } else {
+                    addFase2Listeners();
+                }
+
+                document.getElementById('next-fase2').addEventListener('click', () => {
+                    appState.currentQuestion.fase2 = (appState.currentQuestion.fase2 + 1) % exercises.fase2.length;
+                    saveState();
+                    renderFase2();
+                });
+            }
+
+            function addFase2Listeners() {
+                document.querySelectorAll('.fase2-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const userAnswer = e.target.dataset.answer;
+                        const fase = 'fase2';
+                        const index = appState.currentQuestion.fase2;
+                        const ex = exercises[fase][index];
+                        
+                        appState[fase].answers[index].userAnswer = userAnswer;
+                        appState[fase].answers[index].isCorrect = userAnswer === ex.answer;
+                        saveState();
+                        renderFase2();
+                    });
+                });
+                document.querySelectorAll('.fase2-btn').forEach(b => b.classList.add('btn-neutral'));
+            }
+
+            function renderFase3() {
+                const fase = 'fase3';
+                const index = appState.currentQuestion.fase3;
+                const container = document.getElementById('tab-content-3');
+                const ex = exercises[fase][index];
+                const answerState = appState[fase].answers[index];
+
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <p class="text-lg text-slate-600">Riscrivi o completa la frase usando una struttura con il congiuntivo.</p>
+                        <div class="p-4 bg-slate-100 rounded-lg space-y-2">
+                            <p class="text-slate-600"><strong>Frase di partenza:</strong> "${ex.prompt}"</p>
+                            <p class="text-xl font-semibold text-slate-800">${ex.question} <input type="text" id="fase3-input" class="font-normal text-base border-b-2 border-slate-300 focus:border-indigo-500 outline-none w-1/2 bg-slate-100"></p>
+                        </div>
+                        <div class="flex justify-center space-x-4 pt-4">
+                            <button id="check-fase3" class="border-2 font-bold py-2 px-8 rounded-lg transition-colors">Controlla</button>
+                        </div>
+                        <div class="feedback-container"></div>
+                        <div class="text-center pt-2">
+                            <button id="next-fase3" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg">Prossimo</button>
+                        </div>
+                    </div>
+                `;
+
+                createScoreboard(fase, container);
+                const notesTextarea = createNotesArea(fase, index, container.querySelector('.space-y-4'));
+                const inputEl = document.getElementById('fase3-input');
+                const checkBtn = document.getElementById('check-fase3');
+
+                if (answerState.userAnswer !== null) {
+                    notesTextarea.disabled = true;
+                    inputEl.disabled = true;
+                    inputEl.value = answerState.userAnswer;
+                    checkBtn.disabled = true;
+                    checkBtn.classList.add('opacity-50');
+                    inputEl.classList.remove('border-slate-300');
+                    inputEl.classList.add(answerState.isCorrect ? 'border-green-500' : 'border-red-500');
+                    createFeedbackArea(fase, index, container.querySelector('.feedback-container'), answerState.isCorrect, `<strong>Risposta corretta:</strong> ${ex.answer}<br>${ex.explanation}`);
+                } else {
+                    addFase3Listeners();
+                }
+
+                document.getElementById('next-fase3').addEventListener('click', () => {
+                    appState.currentQuestion.fase3 = (appState.currentQuestion.fase3 + 1) % exercises.fase3.length;
+                    saveState();
+                    renderFase3();
+                });
+            }
+
+            function addFase3Listeners() {
+                const checkBtn = document.getElementById('check-fase3');
+                const inputEl = document.getElementById('fase3-input');
+
+                checkBtn.addEventListener('click', () => {
+                    const userAnswer = inputEl.value.trim();
+                    const fase = 'fase3';
+                    const index = appState.currentQuestion.fase3;
+                    const ex = exercises[fase][index];
+                    const correctAnswer = ex.answer.trim();
+
+                    appState[fase].answers[index].userAnswer = userAnswer;
+                    appState[fase].answers[index].isCorrect = userAnswer.toLowerCase().replace(/[.,]/g, '') === correctAnswer.toLowerCase().replace(/[.,]/g, '');
+                    saveState();
+                    renderFase3();
+                });
+
+                inputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') { checkBtn.click(); } });
+                checkBtn.classList.add('btn-neutral');
+            }
+
+            function rerenderAll() {
+                renderFase1();
+                renderFase2();
+                renderFase3();
+            }
+
+            document.getElementById('save-json-btn').addEventListener('click', () => {
+                const dataStr = JSON.stringify(appState, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                const exportFileDefaultName = 'subjunctive_progress.json';
+                let linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+                localStorage.removeItem('subjunctiveAppState');
+                initializeState();
+                rerenderAll();
+            });
+
+            document.getElementById('load-json-btn').addEventListener('click', () => {
+                document.getElementById('json-upload').click();
+            });
+
+            document.getElementById('json-upload').addEventListener('change', (event) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const newState = JSON.parse(e.target.result);
+                        if (newState.fase1 && newState.fase2 && newState.fase3) {
+                            appState = newState;
+                            saveState();
+                            rerenderAll();
+                        } else { throw new Error("Invalid JSON structure"); }
+                    } catch (error) { console.error("Error loading JSON:", error); }
+                };
+                reader.readAsText(event.target.files[0]);
+            });
+
+            document.getElementById('reset-btn').addEventListener('click', () => {
+                if (confirm("Sei sicuro di voler azzerare tutti i progressi? L'azione è irreversibile.")) {
+                    localStorage.removeItem('subjunctiveAppState');
+                    initializeState();
+                    rerenderAll();
+                }
+            });
+
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabNum = btn.id.split('-')[2];
+                    tabBtns.forEach(b => b.classList.replace('tab-active', 'tab-inactive'));
+                    btn.classList.replace('tab-inactive', 'tab-active');
+                    tabContents.forEach(c => c.classList.add('hidden'));
+                    document.getElementById(`tab-content-${tabNum}`).classList.remove('hidden');
+                });
+            });
+
+            initializeState();
+            rerenderAll();
+        });
+    </script>
+
+</body>
+</html>

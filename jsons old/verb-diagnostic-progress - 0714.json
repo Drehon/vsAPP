@@ -1,0 +1,38 @@
+{
+  "testState": {
+    "1": {
+      "completed": true,
+      "answers": {
+        "qA1": "B",
+        "qA2": "D",
+        "qA3": "C",
+        "qA4": "B",
+        "qA5": "C",
+        "qA6_part0": "",
+        "qA6_part1": "",
+        "qA6_part2": "had to be prepared",
+        "qA6_part3": "",
+        "qA6_part4": "",
+        "qA6_part5": "",
+        "qA7": "will be finished",
+        "qA8": "demanded that the",
+        "qA9": "il brief finale è possibile che non venga ricevuto dal team marketing the final bried is possible that didn't being received by the marketing team h",
+        "qA10": "I will arrange the new equipment that will be installed by a technician next Monday",
+        "qA11": ""
+      }
+    },
+    "2": {
+      "completed": false,
+      "answers": {}
+    },
+    "3": {
+      "completed": false,
+      "answers": {}
+    }
+  },
+  "notes": {
+    "notes-A6": "sono cresciuti - rised è \"troppo passato\" e non segue bene il during\n- non mi suona perchè il discorso è al passato, qualcosa che è successo\n- was prepared - qua secondo me c'è bisogno di una forma verbale che renda più l'idea di qualcosa che deve essere fatto\n- solves - più o meno stesso concetto di prima perchè il manager insiste sull'IT departement\n- would have disclosed - secondo me va messo al negativo \"se non avesse fatto\"\n- non mi suona bene",
+    "notes-A8": "Morri said \"we must hasten our service\"\n\nMorri ha detto che il servizio deve essere accellerato\nMorri said that the service must be hastened",
+    "notes-A10": "mi organizzerò per un tecnico per installare il nuovo equipaggiamento il prossimo lunedì\nmi organizzerò per il nuovo equipaggiamento installato da un tecnico il prossimo lunedì\norganizzero\n\nI will arrange the new equipment that will be installed by a technician next Monday"
+  }
+}

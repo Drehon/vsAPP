@@ -1,0 +1,98 @@
+{
+  "testState": {
+    "1": {
+      "completed": true,
+      "answers": {
+        "qA1": "B",
+        "qA2": "A",
+        "qA3": "C",
+        "qA4": "B",
+        "qA5": "C",
+        "qA6_part0": "arose",
+        "qA6_part1": "has caused",
+        "qA6_part2": "be prepared",
+        "qA6_part3": "solves",
+        "qA6_part4": "had disclosed",
+        "qA6_part5": "wouldn't be facing",
+        "qA7": "will have been finished",
+        "qA8": "insisted that their",
+        "qA9": "might not have been received",
+        "qA10": "have the new equipment",
+        "qA11": "urged him to reconsider"
+      }
+    },
+    "2": {
+      "completed": true,
+      "answers": {
+        "qB1": "to get",
+        "qB2": "mentioning",
+        "qB3": "discussing",
+        "qB4": "to inform",
+        "qB5": "having worked",
+        "qB6": "A",
+        "qB7": "C",
+        "qB8": "C",
+        "qB9": "D",
+        "qB10": "B",
+        "qB11": "B",
+        "qB12": "C",
+        "qB13": "to have been living",
+        "qB14": "made to work",
+        "qB15": "its accounts audited"
+      }
+    },
+    "3": {
+      "completed": true,
+      "answers": {
+        "qC1": "were, would have secured",
+        "qC2": "you need any further assistance, please do not hesitate to contact us",
+        "qC3": "would have known",
+        "qC4": "A",
+        "qC5": "C",
+        "qC6": "be submitted",
+        "qC7": "be, not be",
+        "qC8": "was supposed to be",
+        "qC9": "be re-examined",
+        "qC10": "hadn't mentioned"
+      }
+    }
+  },
+  "notes": {
+    "notes-A1": "This was a tricky one, present perfect for recent action with current relevance.",
+    "notes-A2": "I initially thought 'will submit' but then remembered the passive 'be to' structure for obligations.",
+    "notes-A3": "Modal of past possibility, seems correct.",
+    "notes-A4": "Subject-verb agreement with 'neither...nor...' is always confusing, but 'members' is plural.",
+    "notes-A5": "Causative passive 'have something done' is a key structure.",
+    "notes-A6": "Error identification requires careful reading. 'Rised' is definitely wrong. The mixed conditional was subtle.",
+    "notes-A7": "Future perfect passive transformation. Straightforward.",
+    "notes-A8": "Subjunctive after 'insisted that'.",
+    "notes-A9": "Modal perfect passive. Good test of complex modal forms.",
+    "notes-A10": "Causative structure, 'have + object + past participle'.",
+    "notes-A11": "Reporting verb pattern 'urge someone to do something'.",
+    "notes-B1": "Stop + infinitive for purpose.",
+    "notes-B2": "Remember + gerund for past memory.",
+    "notes-B3": "Go on + gerund means continue, go on + infinitive means move to next step. I got this wrong.",
+    "notes-B4": "Regret + infinitive for bad news.",
+    "notes-B5": "Perfect participle clause for prior action.",
+    "notes-B6": "Phrasal verb 'come up with' for inventing ideas.",
+    "notes-B7": "Phrasal verb 'put off' for postponing. I chose 'put up' which means tolerate.",
+    "notes-B8": "Phrasal verb 'set back' for delaying. Correct.",
+    "notes-B9": "Phrasal verb 'sort out' for resolving. Correct.",
+    "notes-B10": "Phrasal verb 'make out' for understanding with difficulty. I got this wrong.",
+    "notes-B11": "Causative 'get someone to do'. Correct.",
+    "notes-B12": "Passive gerund after 'resent'. Correct.",
+    "notes-B13": "Passive with reporting verbs, perfect infinitive for past action.",
+    "notes-B14": "Passive of 'make'. Correct.",
+    "notes-B15": "Causative 'have something done' in continuous tense. Correct.",
+    "notes-C1": "Mixed conditional type 2 -> 3. Tricky comma placement.",
+    "notes-C2": "Inverted conditional for formality. Correct.",
+    "notes-C3": "Common error in third conditional 'if' clause. Correct.",
+    "notes-C4": "Inverted third conditional. Correct.",
+    "notes-C5": "Mixed conditional type 3 -> 2 with continuous result. Correct.",
+    "notes-C6": "Passive subjunctive after 'require that'. Correct.",
+    "notes-C7": "Active and negative subjunctive. Correct.",
+    "notes-C8": "Past form of semi-modal 'be supposed to'. Correct.",
+    "notes-C9": "Passive subjunctive after 'recommended that'. Correct.",
+    "notes-C10": "'Would rather' + past perfect for past regret. Correct."
+  }
+}

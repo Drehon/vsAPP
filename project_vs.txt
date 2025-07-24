@@ -1,0 +1,132 @@
+# Project Hub: Tutoring & Writing App
+
+This document outlines the plan, features, and rules for creating a unified desktop application for all tutoring and fiction writing content. It will serve as our central reference point.
+
+---
+
+## 1. High-Level Goal
+
+The primary objective is to migrate all content from individual, browser-dependent HTML files into a single, robust, cross-platform desktop application. This will provide a stable, offline-first environment with enhanced capabilities, free from the limitations of web browsers.
+
+---
+
+## 2. Core Problems to Be Solved
+
+The current workflow using standalone `.html` files presents several critical issues that this project will eliminate:
+
+* **File System Restrictions:** Browsers block direct, automatic reading/writing of local files for security reasons, forcing clunky manual import/export of progress data (`.json`).
+* **Unreliable State Management:** Reliance on `localStorage` is fragile, as it can be cleared by the user or browser, leading to data loss.
+* **Online Dependencies:** Content relies on CDNs (Content Delivery Networks) for assets like fonts and CSS frameworks (e.g., Tailwind). The application fails to render correctly without an active internet connection.
+* **Environment Inconsistency:** The appearance and behavior of content can vary between different web browsers and operating systems.
+
+---
+
+## 3. Technical Approach & Tools
+
+* **Framework:** **Electron**. We will use the Electron framework to build the application. It solves our core problems by bundling a specific version of the Chromium browser with a Node.js backend, giving our web-based content (HTML, CSS, JS) the full capabilities of a native desktop application, including direct file system access.
+* **Development IDE:** **Visual Studio Code (VS Code)**. This is the industry-standard tool for JavaScript and Node.js development and is perfectly suited for an Electron project.
+
+---
+
+## 4. Key Application Features
+
+### 4.1. Main Hub & Content Navigation
+
+* The application will launch to a central **"Home" screen**.
+* This screen will act as a dynamic library, automatically scanning and displaying the contents of predefined folders:
+    * `/lessons`
+    * `/exercises`
+    * `/fiction`
+* Users will navigate to content simply by clicking its name in the list.
+
+### 4.2. Advanced Save/Load System
+
+This system will be designed for maximum flexibility and user clarity, inspired by videogame save mechanics.
+
+* **Save Functionality:**
+    * A "New Save" button will be present on each content page.
+    * Saving will create a new `.json` file. It will **not** overwrite previous saves.
+    * Each save file will contain the complete state of the page, plus a **metadata object** for tracking and display purposes.
+* **Load Functionality:**
+    * A "Load" button will open a custom, in-page dropdown menu.
+    * This menu will **only** show saves relevant to the currently open page.
+    * The list will display the 5 most recent saves, using the metadata to provide a rich summary (e.g., "Saved: 24/07/2025 - 5/50 answered, 3 notes").
+* **Example Save File Structure (`save-1753411714000.json`):**
+    ```json
+    {
+      "pageState": {
+        "fase1": { "answers": [/*...all answer data...*/] },
+        "fase2": { "answers": [/*...all answer data...*/] },
+        "fase3": { "answers": [/*...all answer data...*/] }
+      },
+      "metadata": {
+        "saveTimestamp": 1753411714000,
+        "pageId": "L1-congiuntivoES",
+        "questionsAnswered": 5,
+        "totalQuestions": 50,
+        "userNotesCount": 3
+      }
+    }
+    ```
+
+### 4.3. Rich Interactivity
+
+The application will support advanced interactive features that are saved with the page state.
+
+* **Text Highlighting:** Users can select and highlight text. This state will be saved and reloaded.
+* **Notepads:** A floating "notepad" window (`<textarea>`) can be opened alongside lessons for taking notes, which are saved with the lesson's progress.
+* **Dictionary Integration:** A dictionary can be implemented in two ways:
+    1.  **Online:** Double-clicking a word fetches a definition from an API.
+    2.  **Offline:** The application includes a local dictionary database file for full offline functionality.
+
+---
+
+## 5. Project Rules & Conventions (Manual Operativo)
+
+This section codifies the rules from our previous discussions to ensure consistency.
+
+### 5.1. Roles & Philosophy
+
+* **Insegnante (User):** Defines educational strategy, provides source material, reviews and approves final content, and handles fine-grained formatting.
+* **Assistente (AI):** Acts as the technical developer, building the application and its content according to the Insegnante's directives.
+
+### 5.2. Content Ecosystem
+
+The "3-Artifact" model remains the core structure for educational content:
+
+1.  **Lezione (`lezione_*.html`):** In-depth theoretical explanation.
+2.  **Appunti (`appunti_*.html`):** Distilled summary for quick reference and Anki card creation.
+3.  **Esercizi (`esercizi_*.html`):** Interactive web app for practice and assessment.
+
+### 5.3. Visual & Style Conventions
+
+The application will adhere to the established visual identity:
+
+* **Layout:** `bg-slate-200` page background, `max-w-7xl` main container.
+* **Cards:** `bg-white` with `shadow-lg` for all content cards. Section headers within cards use `bg-slate-50`.
+* **Typography:** `Inter` for main text, `Source Code Pro` for code/examples.
+* **Color Palette:** `text-slate-800` for primary text, `text-slate-600` for secondary. **Indigo** for primary accent, **Amber** for error analysis/highlights.
+
+### 5.4. Content & Language Rules
+
+* **Completeness:** No "..." or text truncation. All content is displayed in full.
+* **Line Breaks (`<br>`):** Will not be inserted automatically. Manual placement is the responsibility of the Insegnante during final review.
+* **Perspective:** The AI (Assistente) communicates directly with the User (Insegnante). All text produced for the end-user (Studente) will be from a collaborative "we" perspective.
+
+### 5.5. Code Delivery Protocol
+
+* All generated **source code** (e.g., HTML, JavaScript, CSS) will be delivered in a single, self-contained `<immersive type="code">` block.
+* The code provided will be complete and ready to be copied and pasted directly into a file (e.g., in VS Code) without requiring any manual cleanup or removal of conversational text.
+* All explanations or comments about the code will be provided either as comments within the code itself or in the conversational text outside the immersive block.
+
+### 5.6. Project License
+
+* **License:** The project will use the **MIT License**.
+* **Implication:** This is a permissive license that places almost no restrictions on what can be done with the code. For a private, personal-use project, this is a safe and standard choice that formalizes ownership and rights.
+
+### 5.7. Document Management Protocol
+
+* **Dual-Format Delivery:** This Project Hub document will always be delivered in two formats: a rendered version for display (`project_hub_main`) and a raw Markdown source version for editing (`project_hub_main_source`).
+* **Canonical Source:** The raw source document (`project_hub_main_source`) is the single source of truth. All updates will be applied to this document.
+* **User Workflow:** The user will work exclusively with the raw source document for copying, pasting, and reference. The rendered document can be ignored.
+* **Alias:** Any reference to "the hub" or "the project plan" implicitly refers to the raw source document (`project_hub_main_source`).
