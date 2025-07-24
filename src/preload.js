@@ -38,5 +38,10 @@ contextBridge.exposeInMainWorld('api', {
       console.error(`Errore nel leggere la cartella ${dir}:`, err);
       return []; // Restituisce un array vuoto in caso di errore
     }
-  }
+  },
+
+  // Funzioni per il sistema di salvataggio
+  saveProgress: (lesson, data) => ipcRenderer.invoke('save-progress', { lesson, data }),
+  loadProgress: (lesson) => ipcRenderer.invoke('load-progress', lesson),
+  getLessonData: (filePath) => ipcRenderer.invoke('get-lesson-data', filePath)
 });

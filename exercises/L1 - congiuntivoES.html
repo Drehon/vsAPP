@@ -71,10 +71,9 @@
                 </ul>
             </div>
             <div class="px-6 py-4 border-t border-slate-200 bg-slate-100 flex flex-wrap gap-4 justify-center items-center">
-                <button id="load-json-btn" class="text-sm bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Carica JSON</button>
-                <button id="save-json-btn" class="text-sm bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Salva e Scarica JSON</button>
+                <button id="save-btn" class="text-sm bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Salva Progressi</button>
+                <button id="load-btn" class="text-sm bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Carica Progressi</button>
                 <button id="reset-btn" class="text-sm bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Azzera Test</button>
-                <input type="file" id="json-upload" class="hidden" accept=".json">
             </div>
         </div>
 
@@ -210,6 +209,7 @@
             };
 
             let appState;
+            const lessonId = 'L1 - congiuntivoES.html';
 
             function initializeState() {
                 const defaultState = {
@@ -218,12 +218,11 @@
                     fase3: { answers: Array(exercises.fase3.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })) },
                     currentQuestion: { fase1: 0, fase2: 0, fase3: 0 }
                 };
-                appState = JSON.parse(localStorage.getItem('subjunctiveAppState')) || defaultState;
+                appState = defaultState;
             }
 
-            function saveState() {
-                localStorage.setItem('subjunctiveAppState', JSON.stringify(appState));
-            }
+            // Non è più necessario salvare lo stato automaticamente ad ogni azione
+            function saveState() {}
 
             function createScoreboard(fase, container) {
                 const total = exercises[fase].length;
@@ -479,41 +478,41 @@
                 renderFase3();
             }
 
-            document.getElementById('save-json-btn').addEventListener('click', () => {
-                const dataStr = JSON.stringify(appState, null, 2);
-                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-                const exportFileDefaultName = 'subjunctive_progress.json';
-                let linkElement = document.createElement('a');
-                linkElement.setAttribute('href', dataUri);
-                linkElement.setAttribute('download', exportFileDefaultName);
-                linkElement.click();
-                localStorage.removeItem('subjunctiveAppState');
-                initializeState();
-                rerenderAll();
+            document.getElementById('save-btn').addEventListener('click', async () => {
+                const result = await window.api.saveProgress(lessonId, appState);
+                if (result.success) {
+                    alert(`Progressi salvati in: ${result.path}`);
+                } else {
+                    alert(`Errore nel salvataggio: ${result.error}`);
+                }
             });
 
-            document.getElementById('load-json-btn').addEventListener('click', () => {
-                document.getElementById('json-upload').click();
-            });
+            document.getElementById('load-btn').addEventListener('click', async () => {
+                const saves = await window.api.loadProgress(lessonId);
+                if (saves.length === 0) {
+                    alert('Nessun salvataggio trovato per questa lezione.');
+                    return;
+                }
 
-            document.getElementById('json-upload').addEventListener('change', (event) => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const newState = JSON.parse(e.target.result);
-                        if (newState.fase1 && newState.fase2 && newState.fase3) {
-                            appState = newState;
-                            saveState();
-                            rerenderAll();
-                        } else { throw new Error("Invalid JSON structure"); }
-                    } catch (error) { console.error("Error loading JSON:", error); }
-                };
-                reader.readAsText(event.target.files[0]);
+                // Semplice prompt per ora, si può migliorare con una UI più carina
+                const choices = saves.map((s, i) => `${i + 1}: ${s.name}`).join('\n');
+                const choice = prompt(`Scegli un salvataggio:\n${choices}`);
+                const index = parseInt(choice) - 1;
+
+                if (!isNaN(index) && index >= 0 && index < saves.length) {
+                    const data = await window.api.getLessonData(saves[index].path);
+                    if (data) {
+                        appState = data;
+                        rerenderAll();
+                        alert('Salvataggio caricato con successo.');
+                    } else {
+                        alert('Errore nel caricamento del file di salvataggio.');
+                    }
+                }
             });
 
             document.getElementById('reset-btn').addEventListener('click', () => {
                 if (confirm("Sei sicuro di voler azzerare tutti i progressi? L'azione è irreversibile.")) {
-                    localStorage.removeItem('subjunctiveAppState');
                     initializeState();
                     rerenderAll();
                 }

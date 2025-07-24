@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const fs = require('fs');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -52,7 +53,14 @@ ipcMain.handle('get-app-path', () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+  // Creiamo la cartella dei salvataggi se non esiste.
+  const savesDir = path.join(app.getPath('userData'), 'saves');
+  if (!fs.existsSync(savesDir)) {
+    fs.mkdirSync(savesDir, { recursive: true });
+  }
+  createWindow();
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -73,3 +81,54 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+// Handler per salvare i progressi
+ipcMain.handle('save-progress', async (event, { lesson, data }) => {
+  const savesDir = path.join(app.getPath('userData'), 'saves');
+  const lessonName = path.basename(lesson, '.html');
+  const timestamp = new Date().toISOString().replace(/:/g, '-');
+  const filename = `${lessonName}-${timestamp}.json`;
+  const filePath = path.join(savesDir, filename);
+
+  try {
+    await fs.promises.writeFile(filePath, JSON.stringify(data, null, 2));
+    return { success: true, path: filePath };
+  } catch (err) {
+    console.error('Errore nel salvataggio dei progressi:', err);
+    return { success: false, error: err.message };
+  }
+});
+
+// Handler per elencare i salvataggi
+ipcMain.handle('load-progress', async (event, lesson) => {
+  const savesDir = path.join(app.getPath('userData'), 'saves');
+  const lessonName = path.basename(lesson, '.html');
+
+  try {
+    const files = await fs.promises.readdir(savesDir);
+    const lessonSaves = files.filter(file => file.startsWith(lessonName) && file.endsWith('.json'));
+    return lessonSaves.map(file => ({
+      name: file,
+      path: path.join(savesDir, file)
+    }));
+  } catch (err) {
+    console.error('Errore nel caricamento dei salvataggi:', err);
+    return [];
+  }
+});
+
+// Handler per ottenere i dati di un salvataggio
+ipcMain.handle('get-lesson-data', async (event, filePath) => {
+  try {
+    // Per sicurezza, controlliamo che il percorso sia all'interno della cartella dei salvataggi
+    const savesDir = path.join(app.getPath('userData'), 'saves');
+    if (!filePath.startsWith(savesDir)) {
+      throw new Error('Accesso non autorizzato al file.');
+    }
+    const data = await fs.promises.readFile(filePath, 'utf-8');
+    return JSON.parse(data);
+  } catch (err) {
+    console.error('Errore nella lettura del file di salvataggio:', err);
+    return null;
+  }
+});
