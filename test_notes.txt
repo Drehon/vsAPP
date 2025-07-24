@@ -152,3 +152,57 @@ https://electronjs.org/docs/tutorial/security.
 This warning will not show up
 once the app is packaged.
 warnAboutInsecureCSP	@	VM4 sandbox_bundle:2
+
+---
+## Jules's Final Notes
+
+### Analysis of the Issues
+
+The primary issue was the failure of the `preload.js` script to execute correctly. This was caused by the build process (Webpack) attempting to bundle Node.js built-in modules (`fs` and `path`) for the renderer environment, where they are not available. This prevented the `api` object from being exposed to the renderer process, leading to the errors in `renderer.js`.
+
+### Steps Taken to Resolve the Issues
+
+1.  **Fixed `forge.config.js`:** I added a `webpack` configuration to `forge.config.js` to exclude the `path` module from being bundled. This allows the `preload.js` script to load correctly.
+2.  **Removed unnecessary `require('fs')` from `src/preload.js`:** I removed the line `const fs = require('fs').promises;` from `src/preload.js` as it was not being used and was causing a similar bundling error.
+
+### Expected Next Steps
+
+With these changes, the `preload.js` script should now execute correctly, exposing the `api` object to the renderer process. This should resolve the errors in `renderer.js` and allow the application to load the lessons, exercises, and app version as expected.
+
+---
+
+# User Notes
+Issue persists, here console results from the app
+
+VM4 sandbox_bundle:2 Unable to load preload script: C:\Users\User\Documents\TEFL Personal\src\preload.js
+executeSandboxedPreloadScripts	@	VM4 sandbox_bundle:2
+VM4 sandbox_bundle:2 Error: module not found: path
+    at preloadRequire (VM4 sandbox_bundle:2:143993)
+    at <anonymous>:6:14
+    at runPreloadScript (VM4 sandbox_bundle:2:144262)
+    at executeSandboxedPreloadScripts (VM4 sandbox_bundle:2:143535)
+    at VM4 sandbox_bundle:2:153933
+    at VM4 sandbox_bundle:2:154135
+    at ___electron_webpack_init__ (VM4 sandbox_bundle:2:154139)
+    at VM4 sandbox_bundle:2:154262
+executeSandboxedPreloadScripts	@	VM4 sandbox_bundle:2
+renderer.js:53 Errore nel popolare la lista per 'lessons': TypeError: Cannot read properties of undefined (reading 'getLessons')
+    at populateFileList (renderer.js:21:26)
+    at HTMLDocument.<anonymous> (renderer.js:69:3)
+populateFileList	@	renderer.js:53
+renderer.js:53 Errore nel popolare la lista per 'exercises': TypeError: Cannot read properties of undefined (reading 'getExercises')
+    at populateFileList (renderer.js:22:26)
+    at HTMLDocument.<anonymous> (renderer.js:70:3)
+populateFileList	@	renderer.js:53
+renderer.js:60 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'getAppVersion')
+    at displayAppVersion (renderer.js:60:38)
+    at HTMLDocument.<anonymous> (renderer.js:71:3)
+VM4 sandbox_bundle:2 Electron Security Warning (Insecure Content-Security-Policy) This renderer process has either no Content Security
+  Policy set or a policy with "unsafe-eval" enabled. This exposes users of
+  this app to unnecessary security risks.
+
+For more information and help, consult
+https://electronjs.org/docs/tutorial/security.
+This warning will not show up
+once the app is packaged.
+warnAboutInsecureCSP	@	VM4 sandbox_bundle:2
