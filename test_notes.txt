@@ -42,6 +42,6 @@ PS C:\Users\User\Documents\TEFL Personal> npm run build:css
 > npx tailwindcss -i ./src/index.css -o ./src/style.css --watch
 
 npm error could not determine executable to run
-npm error A complete log of this run can be found in: \logs\2025-07-24T16_08_45_586Z-debug-0.log
+npm error A complete log of this run can be found in: \save_logs\2025-07-24T16_08_45_586Z-debug-0.log
 
 ```
