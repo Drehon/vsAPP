@@ -43,14 +43,14 @@ ipcMain.on('navigate', (event, relativePath) => {
 
 ipcMain.handle('get-home-content', async () => {
   const basePath = process.env.NODE_ENV === 'development'
-    ? __dirname // In dev, __dirname points to the 'src' folder
-    : app.getAppPath();
-  const filePath = path.join(basePath, 'index.html');
+    ? __dirname
+    : path.join(app.getAppPath(), 'src'); // In packaged app, files are in 'src'
+  const filePath = path.join(basePath, 'home-template.html');
   try {
     const content = await fs.promises.readFile(filePath, 'utf-8');
     return content;
   } catch (err) {
-    console.error(`Failed to read home content: ${err}`);
+    console.error(`Failed to read home template: ${err}`);
     return null;
   }
 });

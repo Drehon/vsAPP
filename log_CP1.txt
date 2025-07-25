@@ -41,6 +41,19 @@
 - **Action:** Delete the obsolete `src/navigation.js` file.
 - **Action:** Remove the `<script>` tag referencing `navigation.js` from all HTML files in `/lessons` and `/exercises`.
 
+### 1.5. Performance and Bug Fixes (v1.1.0 Hotfix) - COMPLETED
+- **ISSUE:** Application is extremely slow to load, home screen content does not appear, and tab-related errors occur.
+- **ROOT CAUSE:** A recursive-like loop in `renderer.js` where `render()` would call content loading functions, which in turn would call `render()` again, causing an infinite loop. Additionally, the home content was being inefficiently read from the main `index.html` on every render.
+- **FIXES IMPLEMENTED:**
+  - **Refactored `renderer.js`:**
+    - The `render()` function was renamed to `renderTabs()` and its responsibility was limited to only rendering the tab bar and setting pane visibility.
+    - Content loading functions (`loadHomeIntoTab`, `loadContentIntoActiveTab`) no longer trigger a full re-render.
+    - `addTab()` now creates the DOM element for the pane and loads the home content once.
+  - **Created `home-template.html`:**
+    - The content for the home screen was moved to a separate `src/home-template.html` file.
+  - **Updated `main.js`:**
+    - The `get-home-content` IPC handler was updated to read from `home-template.html`, improving efficiency.
+
 ---
 ## Part 2: Centralized Exercise State (v1.1.1)
 

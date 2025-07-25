@@ -16,11 +16,10 @@ const networkLabel = document.getElementById('network-label');
 // --- CORE FUNCTIONS ---
 
 /**
- * Renders the entire UI based on the current `tabs` state.
+ * Renders the tab bar and sets the visibility of content panes.
  */
-function render() {
+function renderTabs() {
   // 1. Render Tab Bar
-  // Clear all but the 'new tab' button
   while (tabBar.children.length > 1) {
     tabBar.removeChild(tabBar.firstChild);
   }
@@ -36,70 +35,59 @@ function render() {
       </button>
     `;
     
-    // Event listener for switching or reloading home
     tabEl.addEventListener('click', (e) => {
-      if (e.target.closest('.close-tab-btn')) return; // Ignore clicks on the close button
-      if (tab.active) {
+      if (e.target.closest('.close-tab-btn')) return;
+      if (tab.active && tab.view !== 'home') {
         loadHomeIntoTab(tab.id);
-      } else {
+      } else if (!tab.active) {
         switchTab(tab.id);
       }
     });
 
-    // Event listener for closing
     tabEl.querySelector('.close-tab-btn').addEventListener('click', (e) => {
-      e.stopPropagation(); // Prevent tab switch event
+      e.stopPropagation();
       closeTab(tab.id);
     });
 
     tabBar.insertBefore(tabEl, newTabBtn);
   });
   
-  // 2. Render Content Panes
-  contentPanes.innerHTML = '';
-  tabs.forEach(tab => {
-    const paneEl = document.createElement('div');
-    paneEl.id = `pane-${tab.id}`;
-    paneEl.className = `content-pane h-full w-full overflow-auto ${tab.active ? 'block' : 'none'}`;
-    // The content is injected by loader functions
-    contentPanes.appendChild(paneEl);
-  });
-
-  // 3. Render Active Content
+  // 2. Update Content Pane Visibility
   const activeTab = tabs.find(t => t.active);
-  if (activeTab) {
-    const activePane = document.getElementById(`pane-${activeTab.id}`);
-    if(activePane){
-        activePane.classList.remove('none');
-        if (activeTab.view === 'home') {
-            loadHomeIntoTab(activeTab.id, true); // force re-render of home
-        } else {
-            loadContentIntoActiveTab(activeTab.filePath, true); // force re-render of content
-        }
-    }
-  }
+  document.querySelectorAll('.content-pane').forEach(pane => {
+    pane.classList.toggle('block', pane.id === `pane-${activeTab.id}`);
+    pane.classList.toggle('none', pane.id !== `pane-${activeTab.id}`);
+  });
 }
 
 /**
- * Adds a new tab to the state and renders it.
+ * Adds a new tab, creating its pane and loading home content.
  * @param {boolean} setActive - Whether the new tab should be active.
  */
 function addTab(setActive = true) {
-  const newTab = {
-    id: nextTabId++,
-    title: `New Tab ${nextTabId - 1}`,
-    view: 'home',
-    filePath: null,
-    active: setActive,
-    exerciseState: null,
-  };
-  
   if (setActive) {
     tabs.forEach(t => t.active = false);
   }
 
+  const newTab = {
+    id: nextTabId++,
+    title: 'Home',
+    view: 'home',
+    filePath: null,
+    active: true,
+    exerciseState: null,
+  };
+
   tabs.push(newTab);
-  render();
+
+  // Create the pane element
+  const paneEl = document.createElement('div');
+  paneEl.id = `pane-${newTab.id}`;
+  paneEl.className = 'content-pane h-full w-full overflow-auto';
+  contentPanes.appendChild(paneEl);
+
+  loadHomeIntoTab(newTab.id);
+  renderTabs();
 }
 
 /**
@@ -108,134 +96,122 @@ function addTab(setActive = true) {
  */
 function switchTab(tabId) {
   tabs.forEach(t => t.active = (t.id === tabId));
-  render();
+  renderTabs();
 }
 
 /**
- * Closes a tab and handles switching to a new active tab.
+ * Closes a tab, removes its pane, and handles switching to a new active tab.
  * @param {number} tabId - The ID of the tab to close.
  */
 function closeTab(tabId) {
   const tabIndex = tabs.findIndex(t => t.id === tabId);
   if (tabIndex === -1) return;
 
+  // Remove pane from DOM
+  const pane = document.getElementById(`pane-${tabId}`);
+  if (pane) {
+    pane.remove();
+  }
+
   const wasActive = tabs[tabIndex].active;
   tabs.splice(tabIndex, 1);
 
   if (wasActive && tabs.length > 0) {
-    // Activate the previous tab, or the first one if the closed tab was the first
     const newActiveIndex = Math.max(0, tabIndex - 1);
     tabs[newActiveIndex].active = true;
   } else if (tabs.length === 0) {
-      addTab();
+    addTab();
+    return; // addTab calls renderTabs
   }
 
-  render();
+  renderTabs();
 }
 
 
 /**
  * Loads a specific file (lesson/exercise) into the active tab.
  * @param {string} filePath - The relative path to the content file.
- * @param {boolean} isRerender - Flag to avoid state change on re-render.
  */
-async function loadContentIntoActiveTab(filePath, isRerender = false) {
+async function loadContentIntoActiveTab(filePath) {
     const activeTab = tabs.find(t => t.active);
     if (!activeTab) return;
 
-    if (!isRerender) {
-        activeTab.view = 'content';
-        activeTab.filePath = filePath;
-        activeTab.title = filePath.split('/').pop().replace('.html', '');
-    }
-
+    activeTab.view = 'content';
+    activeTab.filePath = filePath;
+    activeTab.title = filePath.split('/').pop().replace('.html', '');
+    
     const content = await window.api.getFileContent(filePath);
     const activePane = document.getElementById(`pane-${activeTab.id}`);
     if (activePane && content) {
         activePane.innerHTML = content;
-        // Logic for handling exercises would go here in a future step
+        // Future logic for exercises will go here
     }
 
-    if (!isRerender) {
-        render(); // Re-render to update title and active state styling
-    }
+    renderTabs();
 }
 
 
 /**
  * Loads the "Home" view content into a specific tab.
  * @param {number} tabId - The ID of the tab to load content into.
- * @param {boolean} isRerender - Flag to avoid state change on re-render.
  */
-async function loadHomeIntoTab(tabId, isRerender = false) {
+async function loadHomeIntoTab(tabId) {
     const tab = tabs.find(t => t.id === tabId);
     if (!tab) return;
     
-    if (!isRerender) {
-        tab.view = 'home';
-        tab.filePath = null;
-        tab.title = `New Tab ${tab.id}`;
-    }
+    tab.view = 'home';
+    tab.filePath = null;
+    tab.title = 'Home';
 
-    const homeContent = await window.api.getFileContent('src/index.html');
+    // Fetch from the new home template
+    const homeContent = await window.api.getHomeContent();
     const pane = document.getElementById(`pane-${tab.id}`);
     
     if (pane && homeContent) {
-        // We need to parse the HTML and extract only the body content
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(homeContent, 'text/html');
-        const homeMainContent = doc.querySelector('body').innerHTML;
-        pane.innerHTML = homeMainContent;
-
-        // Re-attach event listeners for the new home content
+        pane.innerHTML = homeContent;
+        // Attach event listeners for the new home content
         attachHomeEventListeners(pane);
     }
     
-    if (!isRerender) {
-        render();
-    }
+    renderTabs();
 }
 
 /**
  * Attaches event listeners to the content of a "Home" tab.
  * @param {HTMLElement} paneElement - The content pane of the tab.
  */
-async function attachHomeEventListeners(paneElement) {
-    // Populate Lessons
-    const lessonsList = paneElement.querySelector('#lessons-list');
-    if (lessonsList) {
-        const lessons = await window.api.getLessons();
-        lessonsList.innerHTML = '';
-        lessons.forEach(file => {
-            const link = document.createElement('a');
-            link.href = '#';
-            link.textContent = file.replace('.html', '').replace(/-/g, ' ');
-            link.className = 'block p-3 bg-slate-100 rounded-md hover:bg-indigo-100 hover:text-indigo-800 transition-colors font-medium text-gray-800';
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                loadContentIntoActiveTab(`lessons/${file}`);
+function attachHomeEventListeners(paneElement) {
+    const populateList = async (listId, getFiles, folder) => {
+        const list = paneElement.querySelector(`#${listId}`);
+        if (!list) return;
+        
+        list.innerHTML = '<p class="text-slate-400">Loading...</p>'; // Loading indicator
+        try {
+            const files = await getFiles();
+            list.innerHTML = ''; // Clear indicator
+            if (files.length === 0) {
+                list.innerHTML = `<p class="text-slate-400">No ${folder} found.</p>`;
+                return;
+            }
+            files.forEach(file => {
+                const link = document.createElement('a');
+                link.href = '#';
+                link.textContent = file.replace('.html', '').replace(/-/g, ' ');
+                link.className = 'block p-3 bg-slate-700 rounded-md hover:bg-indigo-600 transition-colors font-medium';
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    loadContentIntoActiveTab(`${folder}/${file}`);
+                });
+                list.appendChild(link);
             });
-            lessonsList.appendChild(link);
-        });
-    }
+        } catch (error) {
+            console.error(`Failed to load ${folder}:`, error);
+            list.innerHTML = `<p class="text-red-400">Error loading ${folder}.</p>`;
+        }
+    };
 
-    // Populate Exercises
-    const exercisesList = paneElement.querySelector('#exercises-list');
-    if (exercisesList) {
-        const exercises = await window.api.getExercises();
-        exercisesList.innerHTML = '';
-        exercises.forEach(file => {
-            const link = document.createElement('a');
-            link.href = '#';
-            link.textContent = file.replace('.html', '').replace(/-/g, ' ');
-            link.className = 'block p-3 bg-slate-100 rounded-md hover:bg-indigo-100 hover:text-indigo-800 transition-colors font-medium text-gray-800';
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                loadContentIntoActiveTab(`exercises/${file}`);
-            });
-            exercisesList.appendChild(link);
-        });
-    }
+    populateList('lessons-list', window.api.getLessons, 'lessons');
+    populateList('exercises-list', window.api.getExercises, 'exercises');
 }
 
 
