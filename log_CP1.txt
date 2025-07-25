@@ -7,21 +7,21 @@
 
 **Goal:** Convert the single-view application into a multi-tab interface, allowing users to open multiple lessons and exercises simultaneously.
 
-### 1.1. Backend API Expansion (`main.js`, `preload.js`)
+### 1.1. Backend API Expansion (`main.js`, `preload.js`) - COMPLETED
 - **`main.js`:**
   - Create an IPC handler `get-home-content` that reads and returns the HTML content of the main `index.html` file. This will serve as the "Home" view for each new tab.
   - Create an IPC handler `get-file-content` that takes a relative path (e.g., `lessons/L1.html`), reads the corresponding file, and returns its content.
 - **`preload.js`:**
   - Expose the new `getHomeContent` and `getFileContent` functions via the `window.api` bridge.
 
-### 1.2. Frontend Restructuring (`index.html`)
+### 1.2. Frontend Restructuring (`index.html`) - COMPLETED
 - **Action:** Replace the `<body>` of `index.html` with a new structure:
   - A `<div id="tab-bar">` for dynamically adding/removing tab buttons.
   - A `<button id="new-tab-btn">` to create new tabs.
   - A `<div id="content-panes">` to display the active tab's content.
   - A `<footer>` to display the app version.
 
-### 1.3. Frontend Logic Overhaul (`renderer.js`)
+### 1.3. Frontend Logic Overhaul (`renderer.js`) - COMPLETED
 - **Action:** Completely rewrite `renderer.js` to manage the tabbed interface.
 - **State Management:**
   - Implement a global `tabs` array. Each object in the array represents a tab and must store its `id`, `title`, `view` ('home' or 'content'), `filePath`, and `active` status.
@@ -37,7 +37,7 @@
   - Clicks on tab elements should call `switchTab()` or, if the tab is already active, `loadHomeIntoTab()`.
   - Clicks on lesson/exercise links within a 'home' view should call `loadContentIntoActiveTab()`.
 
-### 1.4. Code Cleanup
+### 1.4. Code Cleanup - COMPLETED
 - **Action:** Delete the obsolete `src/navigation.js` file.
 - **Action:** Remove the `<script>` tag referencing `navigation.js` from all HTML files in `/lessons` and `/exercises`.
 
