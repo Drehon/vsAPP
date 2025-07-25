@@ -1,0 +1,31 @@
+# Analysis of the "Impossibile caricare la lista dei file" issue
+
+## Project Setup
+
+The project is an Electron application that uses Electron Forge with the Webpack plugin. It's structured with a main process (`src/main.js`) and a renderer process (`src/renderer.js`).
+
+The application's purpose is to display lessons and exercises from the `lessons` and `exercises` directories. The `src/main.js` file contains a function `getContents` that reads these directories and returns a list of HTML files.
+
+## The Problem
+
+When running the application in development mode using `npm start`, the main window shows "Lezioni Impossibile caricare la lista dei file." and "Esercizi Impossibile caricare la lista dei file.".
+
+## Root Cause
+
+The issue stems from how the webpack development server is configured. When `npm start` is executed, `electron-forge` starts a development server that serves the application from the `.webpack` directory. However, the `lessons` and `exercises` directories are not copied into this `.webpack` directory.
+
+The `getContents` function in `src/main.js` tries to read the `lessons` and `exercises` directories from the application's root path. In development mode, this path points to the project's root directory. The code is looking for the directories at the root of the project, but the dev server is running from `.webpack`. The `fs.readdir` call fails because the directories are not found within the context of the running application.
+
+The application works correctly when packaged with `electron-forge package` because the packaging process correctly copies the `lessons` and `exercises` directories into the final application bundle.
+
+## Proposed Solution (for future reference, as no files were modified)
+
+To fix this issue for the development environment, the `lessons` and `exercises` directories need to be copied to the webpack output directory. This can be achieved by using the `copy-webpack-plugin`.
+
+You would need to:
+
+1.  Install the plugin: `npm install --save-dev copy-webpack-plugin`
+2.  Modify the `webpack.plugins.js` file (or create it if it doesn't exist) to include the `copy-webpack-plugin` and configure it to copy the `lessons` and `exercises` directories.
+3.  Update `forge.config.js` to use this new webpack plugin.
+
+This would ensure that the necessary directories are available to the application in both development and production environments.
