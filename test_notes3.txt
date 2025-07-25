@@ -1,0 +1,9 @@
+We have moved on to implementing stuff
+
+Right now we are trying to fully implement the 'return to indice button'
+BUT, on press of the button, nothing happens
+
+Log from console
+
+navigation.js:21 Navigation API not found. Ensure the preload script is loaded correctly.
+(anonymous) @ navigation.js:21
