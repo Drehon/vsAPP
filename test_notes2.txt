@@ -79,6 +79,11 @@ ISSUE NC1
 Unable to load preload script: C:\Users\User\Documents\TEFL Personal\.webpack\main/native_modules/preload.js
 (anonymous)	@	node:electron/js2c/renderer_init:2
 
+ATTEMPT 1
+Updated `src/main.js` to use the `MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY` global variable to get the correct path to the preload script
+FAIL TO FIX
+
+
 Not fixed yet
 
 ISSUE NC2
