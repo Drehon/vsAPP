@@ -1,0 +1,139 @@
+### **Objective for v1.1.2: Overhaul Save/Load UI & File Structure**
+
+Refactor the save/load functionality to use a custom, in-app modal interface instead of system prompts, and organize save files into per-page subdirectories.
+
+---
+
+#### **Phase 0: Version Update**
+
+1.  **Update Version:**
+    * In `package.json`, change `"version"` to `"1.1.2"`.
+
+---
+
+#### **Phase 1: Backend File Structure Changes (`main.js`)**
+
+The backend needs to be updated to handle the new per-page directory structure for saves.
+
+* **File to Edit:** `src/main.js`
+* **Actions:**
+    1.  **Modify `save-progress` Handler:**
+        * Before writing the file, it must ensure a subdirectory for the lesson exists.
+        * Example: `const lessonDir = path.join(savesDir, lessonName); fs.mkdirSync(lessonDir, { recursive: true });`
+        * The save path will now be `path.join(lessonDir, filename)`.
+    2.  **Modify `load-progress` Handler:**
+        * This handler will now read the contents of the specific lesson's subdirectory: `path.join(savesDir, lessonName)`.
+    3.  **Add `open-saves-folder` Handler:**
+        * Create a new IPC handler that takes a lesson name, constructs the path to its save subfolder, and uses `shell.openPath()` to open it in the system's file explorer.
+        ```javascript
+        const { shell } = require('electron');
+        ipcMain.handle('open-saves-folder', (event, lessonName) => {
+          const savesDir = path.join(app.getPath('userData'), 'saves', lessonName);
+          shell.openPath(savesDir);
+        });
+        ```
+
+---
+
+#### **Phase 2: Frontend UI & Logic (`index.html` & `renderer.js`)**
+
+This involves creating the custom modals and wiring them up.
+
+* **File to Edit:** `src/index.html`
+    * **Action:** Add the HTML structure for the save/load modals to the `<body>`. These will be hidden by default.
+
+* **File to Edit:** `src/renderer.js`
+    * **Actions:**
+        1.  **Create Modal Functions:** Write new functions (`openSaveModal`, `openLoadModal`, `closeModals`) to control the visibility of the modals.
+        2.  **Update "Save" Button Logic:** The "Salva Progressi" button's event listener will now call `openSaveModal`. The modal will contain a text input and a "Confirm Save" button that calls the `window.api.saveProgress` function.
+        3.  **Update "Load" Button Logic:** The "Carica Progressi" button's event listener will now call `openLoadModal`. Inside `openLoadModal`:
+            * Call `window.api.loadProgress` to get the list of save files for the current page.
+            * Sort the files by date and display the 5 most recent as clickable list items.
+            * Each list item will have an event listener that calls `window.api.getLessonData` to load the selected state.
+            * Add a "Show More..." button that calls a new `window.api.openSavesFolder` function.
+
+---
+
+#### **Phase 3: Expose New Backend Function (`preload.js`)**
+
+* **File to Edit:** `src/preload.js`
+* **Action:** Expose the new `openSavesFolder` function.
+    ```javascript
+    window.api = {
+      // ... all existing functions
+      openSavesFolder: (lessonName) => ipcRenderer.invoke('open-saves-folder', lessonName),
+    };
+    ```
+
+---
+---
+
+### **Objective for v1.1.3: Implement Auto-Save & Live Tab Syncing**
+
+Introduce a persistent, auto-saving state for each page and enable real-time synchronization between tabs showing the same content.
+
+---
+
+#### **Phase 0: Version Update**
+
+1.  **Update Version:**
+    * In `package.json`, change `"version"` to `"1.1.3"`.
+
+---
+
+#### **Phase 1: Auto-Save Architecture**
+
+This creates a "live" state for each page, separate from the manual named saves.
+
+* **Backend (`main.js`):**
+    * Create a new directory: `path.join(app.getPath('userData'), 'autosaves')`.
+    * Create two new IPC handlers:
+        * `update-autosave(filePath, state)`: Writes the provided state to a file in the `autosaves` directory (e.g., `L1-congiuntivoES.json`).
+        * `get-autosave(filePath)`: Reads and returns the content of an autosave file.
+
+* **Frontend (`preload.js`):**
+    * Expose the new `updateAutosave` and `getAutosave` functions.
+
+* **Frontend (`renderer.js`):**
+    * When loading any exercise page into a tab, immediately call `window.api.getAutosave` to populate its state.
+    * On any user interaction that changes the state (answering a question, typing in a note), call `window.api.updateAutosave` with the tab's entire current exercise state.
+    * The "Salva Progressi" button is now for creating a named "snapshot" of the current auto-saved state. The "Azzera Test" button will clear both the tab's state and the corresponding autosave file.
+
+---
+
+#### **Phase 2: Live Sync Architecture**
+
+This allows two tabs showing the same exercise to update each other in real-time.
+
+* **Backend (`main.js`):**
+    * Create a new `ipcMain.on` listener: `exercise-state-changed`.
+        ```javascript
+        ipcMain.on('exercise-state-changed', (event, { filePath, newState }) => {
+          // Broadcast the change to all other windows/tabs
+          BrowserWindow.getAllWindows().forEach(win => {
+            if (win.webContents !== event.sender) {
+              win.webContents.send('state-updated-from-main', { filePath, newState });
+            }
+          });
+        });
+        ```
+
+* **Frontend (`renderer.js`):**
+    1.  **Broadcast Changes:** Modify the function that calls `updateAutosave`. Immediately after, it should also call:
+        ```javascript
+        ipcRenderer.send('exercise-state-changed', { filePath: activeTab.filePath, newState: activeTab.exerciseState });
+        ```
+    2.  **Listen for Changes:** Add a new listener that listens for broadcasts from the main process.
+        ```javascript
+        ipcRenderer.on('state-updated-from-main', (event, { filePath, newState }) => {
+          // Find any tabs that are showing this file
+          const tabsToUpdate = tabs.filter(t => t.filePath === filePath);
+          for (const tab of tabsToUpdate) {
+            // Update their state and re-render them
+            tab.exerciseState = newState;
+            if (tab.active) {
+              render(); // Or a more specific render function
+            }
+          }
+        });
+        
