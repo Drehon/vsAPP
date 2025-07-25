@@ -23,43 +23,19 @@ Nessun esercizio trovato.
 App Version:
 
 From app console
-Refused to apply style from 'http://localhost:3000/main_window/style.css' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.
-renderer.js:1  Failed to load resource: the server responded with a status of 404 (Not Found)
-index.html:14 Refused to load the stylesheet 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' because it violates the following Content Security Policy directive: "default-src 'self' 'unsafe-inline' data:". Note that 'style-src-elem' was not explicitly set, so 'default-src' is used as a fallback.
-
+ISSUE C1
 index.html:1 Refused to apply style from 'http://localhost:3000/main_window/style.css' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.
 
----
-## Jules's Notes
+ISSUE C2
+Failed to load resource: the server responded with a status of 404 (Not Found)
 
-### Analysis of the Issues
+ISSUE C3
+Refused to apply style from 'http://localhost:3000/main_window/style.css' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.
 
-I've analyzed the error logs and the source code. The main problems were:
-1.  A redundant `src/index.js` file was causing a `__dirname` error because it was being incorrectly bundled for the renderer process.
-2.  The Webpack configuration for the renderer process was incorrectly using `webpack-node-externals`, which prevented the `preload.js` script from loading correctly. This caused all the `window.api` calls to fail.
-3.  The Content Security Policy was too restrictive, blocking the application from loading Google Fonts.
-
-### Steps Taken to Resolve the Issues
-
-1.  **Consolidated main process logic:** I deleted the redundant `src/index.js` file.
-2.  **Fixed the Webpack configuration:** I removed the `externals` configuration from `webpack.renderer.config.js`.
-3.  **Fixed the Content Security Policy:** I updated the `Content-Security-Policy` in `src/index.html` to allow loading fonts from `https://fonts.googleapis.com` and `https://fonts.gstatic.com`.
-
-### Expected Next Steps
-
-With these changes, the application should now build and run correctly. The `preload.js` script should load, allowing the renderer process to communicate with the main process and load the lessons and exercises. The styling should also be applied correctly, and the Google Fonts should load.
-index.js:343 Uncaught ReferenceError: __dirname is not defined
+ISSUE C4
+Uncaught ReferenceError: __dirname is not defined
     at index.js:343:84
     at index.js:1366:12
-VM4 sandbox_bundle:2 Electron Security Warning (Insecure Content-Security-Policy) This renderer process has either no Content Security
-  Policy set or a policy with "unsafe-eval" enabled. This exposes users of
-  this app to unnecessary security risks.
 
-For more information and help, consult
-https://electronjs.org/docs/tutorial/security.
-This warning will not show up
-once the app is packaged.
-warnAboutInsecureCSP @ VM4 sandbox_bundle:2
-index.html:1 Refused to load the stylesheet 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' because it violates the following Content Security Policy directive: "default-src 'self' 'unsafe-inline' data:". Note that 'style-src-elem' was not explicitly set, so 'default-src' is used as a fallback.
-
-index.html:1 Refused to apply style from 'http://localhost:3000/main_window/style.css' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.
+ISSUE C5
+Refused to apply style from 'http://localhost:3000/main_window/style.css' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.
