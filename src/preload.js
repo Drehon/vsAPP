@@ -7,6 +7,10 @@ window.api = {
   navigateTo: (relativePath) => {
     ipcRenderer.send('navigate', relativePath);
   },
+  // Function to navigate back to the main index page
+  navigateHome: () => {
+    ipcRenderer.send('navigate-home');
+  },
   getLessons: () => ipcRenderer.invoke('get-lessons'),
   getExercises: () => ipcRenderer.invoke('get-exercises'), 
   saveProgress: (lesson, data) => ipcRenderer.invoke('save-progress', { lesson, data }),
