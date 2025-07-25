@@ -11,6 +11,8 @@ window.api = {
   navigateHome: () => {
     ipcRenderer.send('navigate-home');
   },
+  getHomeContent: () => ipcRenderer.invoke('get-home-content'),
+  getFileContent: (filePath) => ipcRenderer.invoke('get-file-content', filePath),
   getLessons: () => ipcRenderer.invoke('get-lessons'),
   getExercises: () => ipcRenderer.invoke('get-exercises'), 
   saveProgress: (lesson, data) => ipcRenderer.invoke('save-progress', { lesson, data }),

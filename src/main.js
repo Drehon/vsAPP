@@ -41,6 +41,35 @@ ipcMain.on('navigate', (event, relativePath) => {
   }
 });
 
+ipcMain.handle('get-home-content', async () => {
+  const basePath = process.env.NODE_ENV === 'development'
+    ? __dirname // In dev, __dirname points to the 'src' folder
+    : app.getAppPath();
+  const filePath = path.join(basePath, 'index.html');
+  try {
+    const content = await fs.promises.readFile(filePath, 'utf-8');
+    return content;
+  } catch (err) {
+    console.error(`Failed to read home content: ${err}`);
+    return null;
+  }
+});
+
+ipcMain.handle('get-file-content', async (event, relativePath) => {
+  const basePath = process.env.NODE_ENV === 'development'
+    ? process.cwd() // In dev, CWD is the project root
+    : app.getAppPath();
+  const filePath = path.join(basePath, relativePath);
+  try {
+    const content = await fs.promises.readFile(filePath, 'utf-8');
+    return content;
+  } catch (err) {
+    console.error(`Failed to read file content for ${relativePath}: ${err}`);
+    return null;
+  }
+});
+
+
 // NEW: Handler to navigate back to the main window
 ipcMain.on('navigate-home', (event) => {
   const win = BrowserWindow.fromWebContents(event.sender);
