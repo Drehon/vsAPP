@@ -16,8 +16,8 @@ const createWindow = () => {
       preload: path.join(__dirname, 'preload.js'),
       // ATTENZIONE: nodeIntegration deve essere false e contextIsolation deve essere true
       // per motivi di sicurezza. Usiamo il preload script per esporre le API.
-      nodeIntegration: false,
-      contextIsolation: true,
+      nodeIntegration: true,
+      contextIsolation: false,
     },
   });
 
@@ -61,11 +61,14 @@ app.on('ready', () => {
 
   // Set the Content Security Policy
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    const csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;";
+    const cspWithEval = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;";
+
     callback({
       responseHeaders: {
         ...details.responseHeaders,
         'Content-Security-Policy': [
-          "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;"
+          process.env.NODE_ENV === 'development' ? cspWithEval : csp
         ]
       }
     });

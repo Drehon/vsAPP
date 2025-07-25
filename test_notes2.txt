@@ -49,8 +49,10 @@ FAILED TO FIX (Added `__filename: false` to `webpack.renderer.config.js` to prev
 FAILED TO FIX (set `__dirname: true` in `webpack.renderer.config.js` to enable polyfilling in the renderer process)
 FAILED TO FIX  (set `nodeIntegration: true` for the renderer in `forge.config.js`)
 
-Reasoning: The error `__dirname is not defined` occurs because the renderer process, by default, does not have access to Node.js globals for security reasons. The previous attempts to fix this by modifying `webpack.renderer.config.js` were incorrect for the version of webpack being used. The correct way to enable Node.js globals in the renderer process for this version of Electron Forge is to set `nodeIntegration: true` in the renderer's configuration within `forge.config.js`. This makes `__dirname` and other Node.js globals available to the renderer's bundled code.
+ISSUE c4B - FIXED
+FIXED (set `nodeIntegration: true`, `contextIsolation: false` in `src/main.js` and added `'unsafe-eval'` to the Content Security Policy in development)
 
+Reasoning: The `__dirname is not defined` error was resolved by enabling Node.js integration in the renderer process. This, however, introduced a new error related to the Content Security Policy (CSP). The new error, `Uncaught EvalError: Refused to evaluate a string as JavaScript...`, was caused by Webpack's development server needing to use `eval()`, which was blocked by the CSP. The fix was to update the CSP in `src/main.js` to include `'unsafe-eval'` in the `script-src` directive during development.
 >
     index.js:454 Uncaught ReferenceError: __dirname is not defined
     at index.js:454:84
@@ -59,3 +61,90 @@ Reasoning: The error `__dirname is not defined` occurs because the renderer proc
 
 ISSUE C5 - FIXED? (Issue disappeared when C1 is fixed)
 Refused to apply style from 'http://localhost:3000/main_window/style.css' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.
+
+
+-----------------------
+
+AFTER fixing C4B things changed significantly
+Current display on app start:
+Lezioni
+Impossibile caricare la lista dei file.
+Esercizi
+Impossibile caricare la lista dei file.
+App Version:
+
+New list of issues from console
+
+ISSUE NC1
+Unable to load preload script: C:\Users\User\Documents\TEFL Personal\.webpack\main/native_modules/preload.js
+(anonymous)	@	node:electron/js2c/renderer_init:2
+
+Not fixed yet
+
+ISSUE NC2
+node:electron/js2c/renderer_init:2 Error: contextBridge API can only be used when contextIsolation is enabled
+    at checkContextIsolationEnabled (node:electron/js2c/renderer_init:2:5152)
+    at Object.exposeInMainWorld (node:electron/js2c/renderer_init:2:5263)
+    at Object.<anonymous> (C:\Users\User\Docume…les\preload.js:6:15)
+    at Object.<anonymous> (C:\Users\User\Docume…les\preload.js:36:3)
+    at Module._compile (node:internal/modules/cjs/loader:1738:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1904:10)
+    at Module.load (node:internal/modules/cjs/loader:1472:32)
+    at Module._load (node:internal/modules/cjs/loader:1289:12)
+    at c._load (node:electron/js2c/node_init:2:18013)
+    at s._load (node:electron/js2c/renderer_init:2:31718)
+(anonymous)	@	node:electron/js2c/renderer_init:2
+
+
+Not fixed yet
+
+ISSUE NC3
+renderer.js:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+
+Not fixed yet
+
+ISSUE NC4
+renderer.js:55 Errore nel popolare la lista per 'lessons': TypeError: Cannot read properties of undefined (reading 'getLessons')
+    at populateFileList (renderer.js:23:1)
+    at HTMLDocument.eval (renderer.js:71:1)
+populateFileList	@	renderer.js:55
+
+Not fixed yet
+
+ISSUE NC5
+Errore nel popolare la lista per 'exercises': TypeError: Cannot read properties of undefined (reading 'getExercises')
+    at populateFileList (renderer.js:24:1)
+    at HTMLDocument.eval (renderer.js:72:1)
+populateFileList	@	renderer.js:55
+
+
+Not fixed yet
+
+
+ISSUE NC6
+renderer.js:62 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'getAppVersion')
+    at displayAppVersion (renderer.js:62:1)
+    at HTMLDocument.eval (renderer.js:73:1)
+
+
+Not fixed yet
+
+ISSUE NC7
+
+
+
+Not fixed yet
+
+ISSUE NC8
+node:electron/js2c/renderer_init:2 Electron Security Warning (Insecure Content-Security-Policy) This renderer process has either no Content Security
+  Policy set or a policy with "unsafe-eval" enabled. This exposes users of
+  this app to unnecessary security risks.
+
+For more information and help, consult
+https://electronjs.org/docs/tutorial/security.
+This warning will not show up
+once the app is packaged.
+
+
+Not fixed yet
+
