@@ -10,6 +10,9 @@ module.exports = {
   module: {
     rules,
   },
+  // Explicitly tell Webpack not to handle Node.js globals.
+  // This is the key to resolving the '__dirname is not defined' error
+  // when nodeIntegration is disabled.
   node: {
     __dirname: false,
     __filename: false,

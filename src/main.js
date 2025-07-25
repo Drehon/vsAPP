@@ -14,57 +14,46 @@ const createWindow = () => {
     height: 800,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      // ATTENZIONE: nodeIntegration deve essere false e contextIsolation deve essere true
-      // per motivi di sicurezza. Usiamo il preload script per esporre le API.
-    nodeIntegration: true,
-    contextIsolation: false, // contextIsolation must be false when nodeIntegration is true
-  },
+      // CORRECT: Secure settings are required for contextBridge to work.
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
   });
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  // Apri i DevTools in sviluppo.
+  // Open the DevTools in development.
   if (process.env.NODE_ENV === 'development') {
     mainWindow.webContents.openDevTools();
   }
 };
 
-// Questo listener riceve il messaggio 'navigate' dal preload script.
+// This listener receives the 'navigate' message from the preload script.
 ipcMain.on('navigate', (event, relativePath) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (win) {
-    const filePath = path.join(app.getAppPath(), relativePath);
+    // In development, the app path is inside .webpack, so we need to go up.
+    // In production, it's the root of the app resources.
+    const basePath = process.env.NODE_ENV === 'development'
+      ? path.join(app.getAppPath(), '..', '..')
+      : app.getAppPath();
+    const filePath = path.join(basePath, relativePath);
     win.loadFile(filePath);
   }
 });
 
-// Aggiungiamo un handler per rispondere alla richiesta del path dell'applicazione.
-ipcMain.handle('get-app-path', () => {
-  return app.getAppPath();
-});
-
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-const { autoUpdater } = require('electron-updater');
-
 app.on('ready', () => {
-  // Creiamo la cartella dei salvataggi se non esiste.
   const savesDir = path.join(app.getPath('userData'), 'saves');
   if (!fs.existsSync(savesDir)) {
     fs.mkdirSync(savesDir, { recursive: true });
   }
   createWindow();
-  autoUpdater.checkForUpdatesAndNotify();
 
-  // Set the Content Security Policy
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {
         ...details.responseHeaders,
-        // main.js - Corrected
         'Content-Security-Policy': [
           `default-src 'self'; script-src 'self' 'unsafe-inline' ${process.env.NODE_ENV === 'development' ? "'unsafe-eval'" : ''}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;`
         ]
@@ -73,13 +62,10 @@ app.on('ready', () => {
   });
 });
 
-ipcMain.handle('get-app-version', (event) => {
+ipcMain.handle('get-app-version', () => {
   return app.getVersion();
 });
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
@@ -87,17 +73,12 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
-
-// Handler per salvare i progressi
+// Handler to save progress
 ipcMain.handle('save-progress', async (event, { lesson, data }) => {
   const savesDir = path.join(app.getPath('userData'), 'saves');
   const lessonName = path.basename(lesson, '.html');
@@ -109,12 +90,12 @@ ipcMain.handle('save-progress', async (event, { lesson, data }) => {
     await fs.promises.writeFile(filePath, JSON.stringify(data, null, 2));
     return { success: true, path: filePath };
   } catch (err) {
-    console.error('Errore nel salvataggio dei progressi:', err);
+    console.error('Error saving progress:', err);
     return { success: false, error: err.message };
   }
 });
 
-// Handler per elencare i salvataggi
+// Handler to list saves
 ipcMain.handle('load-progress', async (event, lesson) => {
   const savesDir = path.join(app.getPath('userData'), 'saves');
   const lessonName = path.basename(lesson, '.html');
@@ -127,45 +108,43 @@ ipcMain.handle('load-progress', async (event, lesson) => {
       path: path.join(savesDir, file)
     }));
   } catch (err) {
-    console.error('Errore nel caricamento dei salvataggi:', err);
+    console.error('Error loading saves:', err);
     return [];
   }
 });
 
-// Handler per ottenere i dati di un salvataggio
+// Handler to get save data
 ipcMain.handle('get-lesson-data', async (event, filePath) => {
   try {
-    // Per sicurezza, controlliamo che il percorso sia all'interno della cartella dei salvataggi
     const savesDir = path.join(app.getPath('userData'), 'saves');
     if (!filePath.startsWith(savesDir)) {
-      throw new Error('Accesso non autorizzato al file.');
+      throw new Error('Unauthorized file access.');
     }
     const data = await fs.promises.readFile(filePath, 'utf-8');
     return JSON.parse(data);
   } catch (err) {
-    console.error('Errore nella lettura del file di salvataggio:', err);
+    console.error('Error reading save file:', err);
     return null;
   }
 });
 
-// Funzione per ottenere i contenuti di una directory
+// Function to get directory contents
 const getContents = async (dir) => {
-  // In development, __dirname is .webpack/main; in production, it's in the asar archive.
-  // We need to navigate back to the project root in dev to find the content folders.
+  // In development, the app path is inside .webpack, so we need to go up to the project root.
+  // In production, the app path is the root of the asar archive.
   const basePath = process.env.NODE_ENV === 'development'
-    ? path.join(__dirname, '..', '..') // <-- This is the key change
-    : process.resourcesPath; // Correct path for packaged app resources
+    ? path.join(app.getAppPath(), '..', '..')
+    : app.getAppPath();
 
   const directoryPath = path.join(basePath, dir);
   try {
     const files = await fs.promises.readdir(directoryPath);
     return files.filter(file => file.endsWith('.html'));
   } catch (err) {
-    console.error(`Errore nella lettura della directory ${dir}:`, err);
+    console.error(`Error reading directory ${dir}:`, err);
     return [];
   }
 };
 
-// Esposizione delle funzioni per ottenere lezioni ed esercizi
 ipcMain.handle('get-lessons', () => getContents('lessons'));
 ipcMain.handle('get-exercises', () => getContents('exercises'));
