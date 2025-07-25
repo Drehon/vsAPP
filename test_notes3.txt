@@ -7,3 +7,6 @@ Log from console
 
 navigation.js:21 Navigation API not found. Ensure the preload script is loaded correctly.
 (anonymous) @ navigation.js:21
+
+
+FIXED
