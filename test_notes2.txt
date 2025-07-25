@@ -38,10 +38,15 @@ GET http://localhost:3000/main_window/src/renderer.js net::ERR_ABORTED 404 (Not 
 ISSUE C3 - FIXED? (Issue disappeared when C1 was fixed)
 Refused to apply style from 'http://localhost:3000/main_window/style.css' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.
 
-ISSUE C4
+ISSUE C4 - FIXED (Added `node: { __dirname: false }` to `webpack.renderer.config.js` to prevent webpack from polyfilling `__dirname` in the renderer process)
 Uncaught ReferenceError: __dirname is not defined
     at index.js:343:84
     at index.js:1366:12
+
+ISSUE c4B - arose after fixing C4 
+    index.js:454 Uncaught ReferenceError: __dirname is not defined
+    at index.js:454:84
+    at index.js:1482:12
 
 ISSUE C5 - FIXED? (Issue disappeared when C1 is fixed)
 Refused to apply style from 'http://localhost:3000/main_window/style.css' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.
