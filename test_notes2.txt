@@ -26,8 +26,12 @@ From app console
 ISSUE C1 - FIXED (Removed style.css link from index.html and imported it into renderer.js)
 index.html:1 Refused to apply style from 'http://localhost:3000/main_window/style.css' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.
 
-ISSUE C2
+ISSUE C2 - FIXED (Removed style.css link from index.html, it's now imported in renderer.js)
 Failed to load resource: the server responded with a status of 404 (Not Found)
+
+ISSUE C2B 
+Appeared after C2 got fixed
+GET http://localhost:3000/main_window/src/renderer.js net::ERR_ABORTED 404 (Not Found)
 
 ISSUE C3 - FIXED? (Issue disappeared when C1 was fixed)
 Refused to apply style from 'http://localhost:3000/main_window/style.css' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.

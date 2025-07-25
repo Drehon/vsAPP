@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>VSAPP - Home</title>
-    <!-- Carichiamo Tailwind CSS localmente per il funzionamento offline -->
+    <!-- Il file CSS viene ora importato direttamente in renderer.js -->
     <style>
       /* Aggiungiamo il font Inter come da specifiche del progetto */
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -23,7 +23,7 @@
 
       <!-- Contenuto Principale -->
       <main class="grid md:grid-cols-2 gap-8">
-
+        
         <!-- Colonna Lezioni -->
         <section class="bg-white rounded-lg shadow-lg overflow-hidden">
           <div class="p-5 border-b border-slate-200 bg-slate-50">
@@ -51,7 +51,7 @@
     </div>
 
     <!-- Colleghiamo il nostro script per la logica della pagina -->
-    <script type="module" src="renderer.js"></script>
+    <script type="module" src="src/renderer.js"></script>
     <footer class="absolute bottom-0 left-0 right-0 p-4 text-center text-xs text-gray-500">
       App Version: <span id="app-version"></span>
     </footer>
