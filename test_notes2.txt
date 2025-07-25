@@ -47,6 +47,10 @@ ISSUE c4B
 FAILED TO FIX (updated `getContents` in `main.js` to correctly locate content directories in development and production)
 FAILED TO FIX (Added `__filename: false` to `webpack.renderer.config.js` to prevent webpack from polyfilling `__filename` in the renderer process)
 FAILED TO FIX (set `__dirname: true` in `webpack.renderer.config.js` to enable polyfilling in the renderer process)
+FAILED TO FIX  (set `nodeIntegration: true` for the renderer in `forge.config.js`)
+
+Reasoning: The error `__dirname is not defined` occurs because the renderer process, by default, does not have access to Node.js globals for security reasons. The previous attempts to fix this by modifying `webpack.renderer.config.js` were incorrect for the version of webpack being used. The correct way to enable Node.js globals in the renderer process for this version of Electron Forge is to set `nodeIntegration: true` in the renderer's configuration within `forge.config.js`. This makes `__dirname` and other Node.js globals available to the renderer's bundled code.
+
 >
     index.js:454 Uncaught ReferenceError: __dirname is not defined
     at index.js:454:84
