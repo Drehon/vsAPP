@@ -13,7 +13,7 @@ module.exports = {
         mainConfig: './webpack.main.config.js',
         renderer: {
           config: './webpack.renderer.config.js',
-          nodeIntegration: true,
+          nodeIntegration: false,
           entryPoints: [
             {
               html: './src/index.html',

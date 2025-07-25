@@ -16,9 +16,9 @@ const createWindow = () => {
       preload: path.join(__dirname, 'preload.js'),
       // ATTENZIONE: nodeIntegration deve essere false e contextIsolation deve essere true
       // per motivi di sicurezza. Usiamo il preload script per esporre le API.
-      nodeIntegration: false,
-      contextIsolation: true,
-    },
+    nodeIntegration: true,
+    contextIsolation: false, // contextIsolation must be false when nodeIntegration is true
+  },
   });
 
   // and load the index.html of the app.
@@ -150,10 +150,11 @@ ipcMain.handle('get-lesson-data', async (event, filePath) => {
 
 // Funzione per ottenere i contenuti di una directory
 const getContents = async (dir) => {
-  // in production, the app path is /path/to/app.asar, so we need to go up one level
-    const basePath = process.env.NODE_ENV === 'development'
-        ? app.getAppPath()
-        : path.dirname(app.getPath('exe'));
+  // In development, __dirname is .webpack/main; in production, it's in the asar archive.
+  // We need to navigate back to the project root in dev to find the content folders.
+  const basePath = process.env.NODE_ENV === 'development'
+    ? path.join(__dirname, '..', '..') // <-- This is the key change
+    : process.resourcesPath; // Correct path for packaged app resources
 
   const directoryPath = path.join(basePath, dir);
   try {
