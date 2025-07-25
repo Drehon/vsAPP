@@ -45,6 +45,8 @@ Uncaught ReferenceError: __dirname is not defined
 
 ISSUE c4B
 FAILED TO FIX (updated `getContents` in `main.js` to correctly locate content directories in development and production)
+FAILED TO FIX (Added `__filename: false` to `webpack.renderer.config.js` to prevent webpack from polyfilling `__filename` in the renderer process)
+>
     index.js:454 Uncaught ReferenceError: __dirname is not defined
     at index.js:454:84
     at index.js:1482:12
