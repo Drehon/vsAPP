@@ -1,27 +1,27 @@
 // src/navigation.js
 
 /**
- * Questo script aggiunge un pulsante "Torna all'Indice" a tutte le pagine
- * che lo includono. Utilizza l'API esposta da preload.js per la navigazione.
+ * This script adds a "Torna all'Indice" button to all pages
+ * that include it. It uses the API exposed by preload.js for navigation.
  */
 document.addEventListener('DOMContentLoaded', () => {
-  // Crea il pulsante
+  // Create the button
   const backButton = document.createElement('button');
   backButton.textContent = 'Torna all\'Indice';
   
-  // Stile del pulsante (ricalca quello dei link in index.html)
-  backButton.className = 'absolute top-4 left-4 bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 transition-transform transform hover:scale-105';
+  // Style the button to be fixed at the bottom-right with an orange color scheme.
+  backButton.className = 'fixed bottom-4 right-4 bg-orange-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-75 transition-transform transform hover:scale-105';
 
-  // Aggiunge l'evento di click per tornare all'indice
+  // Add the click event to navigate home
   backButton.addEventListener('click', () => {
-    // Usiamo l'API esposta per navigare in modo sicuro
-    if (window.api && window.api.navigateTo) {
-      window.api.navigateTo('src/index.html');
+    if (window.api && window.api.navigateHome) {
+      // Use the dedicated function to return home
+      window.api.navigateHome();
     } else {
-      console.error('API di navigazione non trovata. Assicurati che il preload script sia caricato correttamente.');
+      console.error('Navigation API not found. Ensure the preload script is loaded correctly.');
     }
   });
 
-  // Aggiunge il pulsante al body del documento
+  // Add the button to the document body
   document.body.appendChild(backButton);
 });

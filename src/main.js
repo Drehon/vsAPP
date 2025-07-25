@@ -41,6 +41,15 @@ ipcMain.on('navigate', (event, relativePath) => {
   }
 });
 
+// NEW: Handler to navigate back to the main window
+ipcMain.on('navigate-home', (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (win) {
+    win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  }
+});
+
+
 app.on('ready', () => {
   const savesDir = path.join(app.getPath('userData'), 'saves');
   if (!fs.existsSync(savesDir)) {

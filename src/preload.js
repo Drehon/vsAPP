@@ -1,7 +1,7 @@
 const { ipcRenderer } = require('electron');
 
 // With contextIsolation disabled, we attach the API directly to the window object.
-// This is less secure but is required by the project's build tooling.
+// This is less secure but required by the project's build tooling.
 window.api = {
   getAppPath: () => ipcRenderer.invoke('get-app-path'),
   navigateTo: (relativePath) => {
