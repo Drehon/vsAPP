@@ -34,7 +34,7 @@ ipcMain.on('navigate', (event, relativePath) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (win) {
     const basePath = process.env.NODE_ENV === 'development'
-      ? path.join(app.getAppPath(), '..', '..')
+      ? process.cwd()
       : app.getAppPath();
     const filePath = path.join(basePath, relativePath);
     win.loadFile(filePath);
@@ -118,13 +118,15 @@ ipcMain.handle('get-lesson-data', async (event, filePath) => {
 
 const getContents = async (dir) => {
   const basePath = process.env.NODE_ENV === 'development'
-    ? path.join(app.getAppPath(), '..', '..')
+    ? process.cwd()
     : app.getAppPath();
+
   const directoryPath = path.join(basePath, dir);
   try {
     const files = await fs.promises.readdir(directoryPath);
     return files.filter(file => file.endsWith('.html'));
   } catch (err) {
+    console.error(`Error reading directory ${dir}:`, err);
     return [];
   }
 };

@@ -4,6 +4,10 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
   packagerConfig: {
     asar: true,
+    extraResource: [
+      './lessons',
+      './exercises'
+    ]
   },
   rebuildConfig: {},
   plugins: [
@@ -21,6 +25,8 @@ module.exports = {
               name: 'main_window',
               preload: {
                 js: './src/preload.js',
+                // This name is required to correctly bundle the preload script.
+                name: 'main_window_preload',
               },
             },
           ],
