@@ -1,0 +1,41 @@
+# FASE 3: PIANO DI LAVORO
+
+## OBIETTIVO:
+Sostituire il sistema di salvataggio basato su `localStorage` con un sistema di salvataggio/caricamento basato su file `.json` locali. Questo fornirà salvataggi persistenti, non distruttivi e multipli per ogni pagina di esercizio.
+
+## STATO ATTUALE RILEVATO:
+- Le pagine degli esercizi (`/exercises/*.html`) utilizzano `localStorage` per salvare i progressi, il che è volatile e legato al browser.
+- Non esiste un'infrastruttura backend in Electron per gestire le operazioni sul file system (creazione, lettura, scrittura di file).
+
+## PIANO DI AZIONE:
+
+### STEP 1: Definizione della Cartella di Salvataggio
+- **Azione:** Stabilire una posizione standard per la cartella dei salvataggi. Utilizzeremo `path.join(app.getPath('userData'), 'saves')`. `userData` è una directory persistente gestita da Electron, ideale per i dati dell'utente.
+- **Azione:** Nel `main.js`, assicurarsi che questa cartella venga creata all'avvio dell'applicazione se non esiste già.
+
+### STEP 2: Esposizione delle API del File System (`src/preload.js`)
+- **Azione:** Creare e esportare nuove funzioni tramite `contextBridge` per gestire i salvataggi:
+  - `saveProgress(lesson, data)`: Salva i dati di una lezione in un file JSON. Il nome del file includerà il nome della lezione e un timestamp per garantire l'univocità.
+  - `loadProgress(lesson)`: Elenca tutti i file di salvataggio disponibili per una data lezione.
+  - `getLessonData(filePath)`: Legge e restituisce il contenuto di un file di salvataggio specifico.
+- **Sicurezza:** Tutte le operazioni sui file devono essere gestite nel `main.js` e invocate tramite `ipcRenderer` per mantenere la sicurezza del contesto.
+
+### STEP 3: Implementazione della Logica nel Main Process (`src/main.js`)
+- **Azione:** Aggiungere i listener `ipcMain.handle` corrispondenti alle funzioni esposte nel `preload.js`:
+  - `'save-progress'`: Riceve i dati dal renderer, costruisce il percorso del file di salvataggio e scrive i dati in un file `.json`.
+  - `'load-progress'`: Legge la directory dei salvataggi, filtra i file per la lezione specificata e restituisce l'elenco dei file.
+  - `'get-lesson-data'`: Riceve un percorso di file, ne verifica la validità e ne restituisce il contenuto.
+
+### STEP 4: Sostituzione di `localStorage` nel Frontend (Esercizi)
+- **Azione:** Modificare i file HTML e JavaScript degli esercizi (`/exercises/*.html`).
+- **Azione:** Rimuovere tutte le chiamate a `localStorage.setItem()` e `localStorage.getItem()`.
+- **Azione:** Sostituirle con le nuove API esposte: `window.api.saveProgress()` e `window.api.loadProgress()`.
+- **Azione:** Implementare un'interfaccia utente (ad esempio, un menu a discesa o una modale) per consentire all'utente di scegliere quale salvataggio caricare dall'elenco restituito da `loadProgress`.
+
+### STEP 5: Verifica e Test
+- **Azione:** Avviare l'applicazione.
+- **Criterio di Successo:**
+  - Aprire una pagina di esercizi, fare delle scelte e salvarle.
+  - Verificare che un file `.json` corrispondente sia stato creato nella cartella `userData/saves`.
+  - Ricaricare l'applicazione, tornare alla stessa pagina di esercizi e utilizzare il menu di caricamento per ripristinare lo stato salvato.
+  - L'applicazione deve funzionare correttamente senza errori.

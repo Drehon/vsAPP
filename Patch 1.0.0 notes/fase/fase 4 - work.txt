@@ -1,0 +1,54 @@
+# FASE 4: LOG DI LAVORO
+
+2024-07-24 07:03:45 - INIZIO FASE 4
+-------------------------------------
+# FASE 4: LOG DI LAVORO
+
+2024-07-24 07:03:45 - INIZIO FASE 4
+-------------------------------------
+- TASK: Analisi iniziale e pianificazione della Fase 4.
+- INPUT ANALIZZATI: `project_tutoring2.txt`.
+- STATO RILEVATO: L'applicazione non ha un sistema di auto-aggiornamento.
+- OUTPUT PRODOTTO: Creato il piano di lavoro dettagliato nel file `fase/fase 4 - plan.txt`.
+
+2024-07-24 07:04:05 - ESECUZIONE STEP 1
+-------------------------------------
+- TASK: Installazione e Configurazione di `electron-updater`.
+- FILE MODIFICATO: `package.json`
+- MODIFICHE APPORTATE:
+  - installato `electron-updater`.
+- PROSSIMO PASSO: Eseguire lo STEP 2 del piano (implementare la logica di auto-update in `src/main.js`).
+
+2024-07-24 07:04:27 - ESECUZIONE STEP 2
+-------------------------------------
+- TASK: Implementazione della Logica di Auto-Update.
+- FILE MODIFICATO: `src/main.js`
+- MODIFICHE APPORTATE:
+  - Aggiunto `electron-updater` e la chiamata `autoUpdater.checkForUpdatesAndNotify()`.
+  - Aggiunto un handler `ipcMain` per fornire la versione dell'app al renderer.
+- PROSSIMO PASSO: Eseguire lo STEP 3 del piano (esporre le informazioni di versione in `src/preload.js`).
+
+2024-07-24 07:04:41 - ESECUZIONE STEP 3
+-------------------------------------
+- TASK: Esposizione delle Informazioni di Versione.
+- FILE MODIFICATO: `src/preload.js`
+- MODIFICHE APPORTATE:
+  - Aggiunta la funzione `getAppVersion` a `contextBridge`.
+- PROSSIMO PASSO: Eseguire lo STEP 4 del piano (visualizzare la versione in `index.html`).
+
+2024-07-24 07:04:56 - ESECUZIONE STEP 4
+-------------------------------------
+- TASK: Visualizzazione della Versione nel Frontend.
+- FILE MODIFICATO: `index.html`
+- MODIFICHE APPORTATE:
+  - Aggiunto un footer con un `<span>` per visualizzare la versione dell'app.
+- PROSSIMO PASSO: Eseguire lo STEP 5 del piano (logica di visualizzazione nel `renderer.js`).
+
+2024-07-24 07:05:42 - ESECUZIONE STEP 5
+-------------------------------------
+- TASK: Logica di Visualizzazione nel Renderer.
+- FILE MODIFICATO: `src/renderer.js`
+- MODIFICHE APPORTATE:
+  - Aggiunta la funzione `displayAppVersion` per ottenere e visualizzare la versione dell'app.
+  - Chiamata a `displayAppVersion` al caricamento del DOM.
+- STATO: FASE 4 COMPLETATA.

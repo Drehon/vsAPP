@@ -1,0 +1,106 @@
+### **Objective:**
+Refactor the application to a multi-tab interface, allowing multiple, independent views (Home, Lessons, Exercises) to be open simultaneously. This update will bring the application to version 1.1.0.
+
+### **Phase 0: Preparation & Cleanup**
+
+1. **Update Version:**
+   - In `package.json`, change `"version"` to `"1.1.0"`.
+
+2. **Delete Obsolete File:**
+   - Delete `src/navigation.js`. The floating button it creates will be replaced by making the tabs themselves the primary navigation control. Clicking an active tab showing content will return that tab to its "Home" view.
+
+3. **Clean Content Files:**
+   - Remove the `<script src="../src/navigation.js" defer></script>` line from the `<head>` of all HTML files in the `lessons` and `exercises` folders.
+
+### **Phase 1: Backend Modifications (Main & Preload)**
+
+The backend needs to provide the HTML content for both the main "Home" view and the individual lesson/exercise files.
+
+* **File: `src/main.js`**
+  - **Action 1:** Add an IPC handler to get the HTML content for the "Home" view.
+    ```javascript
+    ipcMain.handle('get-home-content', () => {
+      const filePath = path.join(app.getAppPath(), '.webpack', 'renderer', 'main_window', 'index.html');
+      return fs.promises.readFile(filePath, 'utf-8');
+    });
+    ```
+  - **Action 2:** Add an IPC handler to get the content of a specific lesson or exercise file.
+    ```javascript
+    ipcMain.handle('get-file-content', async (event, relativePath) => {
+        const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : app.getAppPath();
+        const filePath = path.join(basePath, relativePath);
+        try {
+            return await fs.promises.readFile(filePath, 'utf-8');
+        } catch (err) {
+            console.error(`Error reading file: ${filePath}`, err);
+            return null;
+        }
+    });
+    ```
+
+* **File: `src/preload.js`**
+  - **Action:** Expose both new functions through the `window.api`.
+    ```javascript
+    window.api = {
+      // ... other functions
+      getHomeContent: () => ipcRenderer.invoke('get-home-content'),
+      getFileContent: (relativePath) => ipcRenderer.invoke('get-file-content', relativePath),
+    };
+    ```
+
+### **Phase 2: Frontend HTML Restructuring (`index.html`)**
+
+The `<body>` will be replaced with a structure that supports the tab bar and content panes.
+
+* **File: `src/index.html`**
+* **Action:** Replace the entire `<body>` with the following:
+  ```html
+  <body class="bg-slate-200 text-slate-800 flex flex-col h-screen overflow-hidden">
+    <div id="tab-bar" class="flex-shrink-0 bg-slate-300 shadow-md flex items-center">
+      <!-- Tabs will be dynamically inserted here -->
+      <button id="new-tab-btn" class="p-2 m-1 rounded-md hover:bg-slate-400 font-bold">+</button>
+    </div>
+    <div id="content-panes" class="flex-grow relative">
+      <!-- Content for each tab will be dynamically inserted here -->
+    </div>
+    <footer class="flex-shrink-0 text-center text-xs text-gray-500 p-2 bg-slate-200 border-t border-slate-300">
+      App Version: <span id="app-version"></span>
+    </footer>
+  </body>
+  ```
+
+### **Phase 3: Frontend Logic Rewrite (`renderer.js`)**
+
+This is a complete rewrite to manage the browser-like tab state.
+
+* **File: `src/renderer.js`**
+* **Action:** Replace the entire file's content.
+
+**Key Concepts for the New `renderer.js`:**
+
+1. **State Management:**
+   - A global `tabs` array will hold the state. Each tab object will track its current view:
+     ```javascript
+     {
+       id: 'unique-id-string',
+       title: 'Home' || 'L1 - Congiuntivo',
+       view: 'home' || 'content', // Tracks what the tab is showing
+       filePath: null || 'lessons/L1-congiuntivo.html',
+       active: true
+     }
+     ```
+
+2. **Core Functions:**
+   - `render()`: Redraws the UI based on the `tabs` array.
+   - `addTab()`: Creates a new tab with `view: 'home'`.
+   - `switchTab(tabId)`: Changes the `active` tab.
+   - `closeTab(tabId)`: Removes a tab.
+   - `loadContentIntoActiveTab(type, filePath)`: Finds the active tab, updates its `view` to `'content'`, sets its `title` and `filePath`, and calls `render()`.
+   - `loadHomeIntoTab(tabId)`: Finds the specified tab, resets its `view` to `'home'`, and calls `render()`.
+
+3. **Event Handling:**
+   - The "New Tab" button calls `addTab()`.
+   - Clicking a tab's title will have dual functionality:
+     - If the tab is inactive, it calls `switchTab()`.
+     - If the tab is *already active* and its `view` is `'content'`, it calls `loadHomeIntoTab()`, acting as the "return to home" button.
+   - Clicking a lesson link within a "Home" view will call `loadContentIntoActiveTab()`.

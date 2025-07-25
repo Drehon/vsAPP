@@ -1,0 +1,329 @@
+# Test Notes
+
+## Testing Instructions
+
+1.  **Open two separate terminals** in Visual Studio Code.
+2.  **In the first terminal, run the CSS build command:**
+    ```bash
+    npm run build:css
+    ```
+    This command will watch for changes in the CSS files and automatically recompile them. You should see a message indicating that it is watching for changes.
+3.  **In the second terminal, run the application:**
+    ```bash
+    npm start
+    ```
+    This will start the Electron application.
+
+## Expected Results
+
+*   The application window should open.
+*   The application should display a list of lessons and exercises.
+*   The application should display the version number.
+*   The application should be styled correctly.
+
+## Current Status
+
+The application is not loading the lessons, exercises, or the app version. The styling is also not being applied.
+
+## Error Log
+
+```
+[6700:0724/175841.794:ERROR:CONSOLE:1] "Request Autofill.enable failed. {"code":-32601,"message":"'Autofill.enable' wasn't found"}", source: devtools://devtools/bundled/core/protocol_client/protocol_client.js (1)
+[6700:0724/175841.794:ERROR:CONSOLE:1] "Request Autofill.setAddresses failed. {"code":-32601,"message":"'Autofill.setAddresses' wasn't found"}", source: devtools://devtools/bundled/core/protocol_client/protocol_client.js (1)
+```
+The Autofill errors are not relevant to the current issues.
+
+## Error Log 2
+
+```
+PS C:\Users\User\Documents\TEFL Personal> npm run build:css
+
+> tutoring-app@1.0.0 build:css
+> npx tailwindcss -i ./src/index.css -o ./src/style.css --watch
+
+npm error could not determine executable to run
+npm error A complete log of this run can be found in: \save_logs\2025-07-24T16_08_45_586Z-debug-0.log
+
+```
+
+## How the Tailwind Issue Was Fixed
+
+We resolved the Tailwind CSS issue by ensuring the following steps were completed:
+
+1. **Installed Tailwind CSS** as a development dependency using `npm install -D tailwindcss`.
+2. **Created a Tailwind configuration file** (`tailwind.config.js`) with `npx tailwindcss init` if it did not already exist.
+3. **Added a build script** to `package.json`:
+   ```json
+   "build:css": "npx tailwindcss -i ./src/index.css -o ./src/style.css --watch"
+   ```
+4. **Ran the build script** with `npm run build:css` to generate the CSS file.
+5. **Ensured the generated CSS file** (`src/style.css`) is correctly imported in the application’s HTML or main JS file.
+
+This setup allows Tailwind CSS to process and apply styles correctly in
+
+---
+
+## Possible Issue 1
+
+PS C:\Users\User\Documents\TEFL Personal> npm run build:css
+
+> tutoring-app@1.0.0 build:css
+> npx tailwindcss -i ./src/index.css -o ./src/style.css --watch
+
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+Rebuilding...
+
+warn - Your `content` configuration includes a pattern which looks like it's accidentally matching all of `node_modules` and can cause serious performance issues.
+warn - Pattern: `./**\*.js`
+warn - See our documentation for recommendations:
+warn - https://tailwindcss.com/docs/content-configuration#pattern-recommendations
+
+---
+
+MOST RECENT update
+Template now loads, but the autofill issue persists.
+Not sure if they are the same issue, but app still says 'nessuna lezione trovata', 'nessun esercizio trovato'. 
+basically it finds no content to load
+
+---
+## Jules's Notes
+
+### Analysis of the Issues
+
+I've analyzed the error logs and the source code (`main.js`, `preload.js`, `renderer.js`). Here's my diagnosis:
+
+The primary issue is the failure of the `preload.js` script to execute correctly. This is indicated by the error `Error: module not found: fs`. This error is misleading; `fs` is a built-in Node.js module and should be available in the preload script's context. The actual problem is likely that the build tool (Vite or a similar bundler) is trying to bundle the `fs` module for the renderer environment, where it's not available. The line `const fs = require('fs').promises;` in `preload.js` was the likely culprit, as it was unnecessary for the script's functionality.
+
+The failure of the preload script means that the `api` object is not exposed to the `window` of the renderer process. This causes the subsequent errors in `renderer.js`:
+- `Uncaught (in promise) ReferenceError: directory is not defined`: This was a typo in an error message in `renderer.js`.
+- `Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'getAppVersion')`: This error occurs because `window.api` is `undefined`, so `window.api.getAppVersion()` fails.
+- The inability to load lessons and exercises is also because `window.api` is `undefined`, so `window.api.getLessons()` and `window.api.getExercises()` fail.
+
+### Steps Taken to Resolve the Issues
+
+1.  **Fixed `src/preload.js`:** I removed the line `const fs = require('fs').promises;` from `src/preload.js`. This module was not being used in the preload script and was likely causing the bundling error.
+2.  **Fixed `src/renderer.js`:** I corrected a typo in an error message in `src/renderer.js`, replacing the undefined variable `directory` with the correct parameter `type`.
+
+### Expected Next Steps
+
+With these changes, the `preload.js` script should now execute correctly, exposing the `api` object to the renderer process. 
+This should resolve the errors in `renderer.js` and allow the application to load the lessons, exercises, and app version as expected. 
+The application should be tested to confirm that the content now loads correctly.
+
+---
+
+issue changed, now it shows
+Impossibile caricare la lista dei file.
+below results from console.
+---
+
+VM4 sandbox_bundle:2 Unable to load preload script: C:\Users\User\Documents\TEFL Personal\src\preload.js
+executeSandboxedPreloadScripts	@	VM4 sandbox_bundle:2
+VM4 sandbox_bundle:2 Error: module not found: path
+    at preloadRequire (VM4 sandbox_bundle:2:143993)
+    at <anonymous>:6:14
+    at runPreloadScript (VM4 sandbox_bundle:2:144262)
+    at executeSandboxedPreloadScripts (VM4 sandbox_bundle:2:143535)
+    at VM4 sandbox_bundle:2:153933
+    at VM4 sandbox_bundle:2:154135
+    at ___electron_webpack_init__ (VM4 sandbox_bundle:2:154139)
+    at VM4 sandbox_bundle:2:154262
+executeSandboxedPreloadScripts	@	VM4 sandbox_bundle:2
+renderer.js:53 Errore nel popolare la lista per 'lessons': TypeError: Cannot read properties of undefined (reading 'getLessons')
+    at populateFileList (renderer.js:21:26)
+    at HTMLDocument.<anonymous> (renderer.js:69:3)
+populateFileList	@	renderer.js:53
+renderer.js:53 Errore nel popolare la lista per 'exercises': TypeError: Cannot read properties of undefined (reading 'getExercises')
+    at populateFileList (renderer.js:22:26)
+    at HTMLDocument.<anonymous> (renderer.js:70:3)
+populateFileList	@	renderer.js:53
+renderer.js:60 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'getAppVersion')
+    at displayAppVersion (renderer.js:60:38)
+    at HTMLDocument.<anonymous> (renderer.js:71:3)
+VM4 sandbox_bundle:2 Electron Security Warning (Insecure Content-Security-Policy) This renderer process has either no Content Security
+  Policy set or a policy with "unsafe-eval" enabled. This exposes users of
+  this app to unnecessary security risks.
+
+For more information and help, consult
+https://electronjs.org/docs/tutorial/security.
+This warning will not show up
+once the app is packaged.
+warnAboutInsecureCSP	@	VM4 sandbox_bundle:2
+
+---
+## Jules's Final Notes
+
+### Analysis of the Issues
+
+The primary issue was the failure of the `preload.js` script to execute correctly. This was caused by the build process (Webpack) attempting to bundle Node.js built-in modules (`fs` and `path`) for the renderer environment, where they are not available. This prevented the `api` object from being exposed to the renderer process, leading to the errors in `renderer.js`.
+
+### Steps Taken to Resolve the Issues
+
+1.  **Installed `@electron-forge/plugin-webpack`**: I added this package to the `devDependencies` to enable proper webpack configuration.
+2.  **Fixed `forge.config.js`**: I added a `webpack` plugin configuration to `forge.config.js` to exclude the `path` module from being bundled. This allows the `preload.js` script to load correctly.
+3.  **Removed unnecessary `require('path')` from `src/preload.js`**: I removed the line `const path = require('path');` from `src/preload.js` as it was not being used and was causing a bundling error.
+
+### Expected Next Steps
+
+With these changes, the `preload.js` script should now execute correctly, exposing the `api` object to the renderer process. This should resolve the errors in `renderer.js` and allow the application to load the lessons, exercises, and app version as expected.
+
+---
+## Jules's Final Notes
+
+### Analysis of the Issues
+
+The primary issue was the failure of the `preload.js` script to execute correctly. This was caused by the build process (Webpack) attempting to bundle Node.js built-in modules (`fs` and `path`) for the renderer environment, where they are not available. This prevented the `api` object from being exposed to the renderer process, leading to the errors in `renderer.js`.
+
+### Steps Taken to Resolve the Issues
+
+1.  **Fixed `forge.config.js`:** I added a `webpack` configuration to `forge.config.js` to exclude the `path` module from being bundled. This allows the `preload.js` script to load correctly.
+2.  **Removed unnecessary `require('fs')` from `src/preload.js`:** I removed the line `const fs = require('fs').promises;` from `src/preload.js` as it was not being used and was causing a similar bundling error.
+
+### Expected Next Steps
+
+With these changes, the `preload.js` script should now execute correctly, exposing the `api` object to the renderer process. This should resolve the errors in `renderer.js` and allow the application to load the lessons, exercises, and app version as expected.
+
+---
+
+# User Notes
+Issue persists, here console results from the app
+
+VM4 sandbox_bundle:2 Unable to load preload script: C:\Users\User\Documents\TEFL Personal\src\preload.js
+executeSandboxedPreloadScripts	@	VM4 sandbox_bundle:2
+VM4 sandbox_bundle:2 Error: module not found: path
+    at preloadRequire (VM4 sandbox_bundle:2:143993)
+    at <anonymous>:6:14
+    at runPreloadScript (VM4 sandbox_bundle:2:144262)
+    at executeSandboxedPreloadScripts (VM4 sandbox_bundle:2:143535)
+    at VM4 sandbox_bundle:2:153933
+    at VM4 sandbox_bundle:2:154135
+    at ___electron_webpack_init__ (VM4 sandbox_bundle:2:154139)
+    at VM4 sandbox_bundle:2:154262
+executeSandboxedPreloadScripts	@	VM4 sandbox_bundle:2
+renderer.js:53 Errore nel popolare la lista per 'lessons': TypeError: Cannot read properties of undefined (reading 'getLessons')
+    at populateFileList (renderer.js:21:26)
+    at HTMLDocument.<anonymous> (renderer.js:69:3)
+populateFileList	@	renderer.js:53
+renderer.js:53 Errore nel popolare la lista per 'exercises': TypeError: Cannot read properties of undefined (reading 'getExercises')
+    at populateFileList (renderer.js:22:26)
+    at HTMLDocument.<anonymous> (renderer.js:70:3)
+populateFileList	@	renderer.js:53
+renderer.js:60 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'getAppVersion')
+    at displayAppVersion (renderer.js:60:38)
+    at HTMLDocument.<anonymous> (renderer.js:71:3)
+VM4 sandbox_bundle:2 Electron Security Warning (Insecure Content-Security-Policy) This renderer process has either no Content Security
+  Policy set or a policy with "unsafe-eval" enabled. This exposes users of
+  this app to unnecessary security risks.
+
+For more information and help, consult
+https://electronjs.org/docs/tutorial/security.
+This warning will not show up
+once the app is packaged.
+warnAboutInsecureCSP	@	VM4 sandbox_bundle:2
+
+
+---
+
+i'm wondering if the issue is in the node_modules
+here the console from npm install
+
+PS C:\Users\User\Documents\TEFL Personal> npm install
+npm warn skipping integrity check for git dependency ssh://git@github.com/electron/node-gyp.git
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated gar@1.0.4: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.    
+npm warn deprecated lodash.get@4.4.2: This package is deprecated. Use the optional chaining (?.) operator instead.
+npm warn deprecated @npmcli/move-file@2.0.1: This functionality has been moved to @npmcli/fs
+npm warn deprecated lodash.isequal@4.5.0: This package is deprecated. Use require('node:util').isDeepStrictEqual instead.      
+npm warn deprecated rimraf@2.6.3: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated glob@8.1.0: Glob versions prior to v9 are no longer supported
+npm warn deprecated glob@8.1.0: Glob versions prior to v9 are no longer supported
+npm warn deprecated xterm-addon-search@0.8.2: This package is now deprecated. Move to @xterm/addon-search instead.
+npm warn deprecated sudo-prompt@9.2.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated xterm-addon-fit@0.5.0: This package is now deprecated. Move to @xterm/addon-fit instead.
+npm warn deprecated boolean@3.2.0: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated xterm@4.19.0: This package is now deprecated. Move to @xterm/xterm instead.
+npm warn cleanup Failed to remove some directories [
+npm warn cleanup   [
+npm warn cleanup     'C:\\Users\\User\\Documents\\TEFL Personal\\node_modules\\electron-installer-debian',
+npm warn cleanup     [Error: EPERM: operation not permitted, rmdir 'C:\Users\User\Documents\TEFL Personal\node_modules\electron-installer-debian\node_modules\yargs\build'] {
+npm warn cleanup       errno: -4048,
+npm warn cleanup       code: 'EPERM',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: 'C:\\Users\\User\\Documents\\TEFL Personal\\node_modules\\electron-installer-debian\\node_modules\\yargs\\build'
+npm warn cleanup     }
+npm warn cleanup   ]
+npm warn cleanup ]
+
+added 736 packages, and audited 737 packages in 12s
+
+126 packages are looking for funding
+  run `npm fund` for details
+
+2 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+PS C:\Users\User\Documents\TEFL Personal> 
+
+
+---
+
+on npm install
+
+npm warn deprecated gar@1.0.4: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.    
+npm warn deprecated sourcemap-codec@1.4.8: Please use @jridgewell/sourcemap-codec instead
+npm warn cleanup Failed to remove some directories [
+npm warn cleanup   [
+npm warn cleanup     'C:\\Users\\User\\Documents\\TEFL Personal\\node_modules\\electron-installer-debian\\node_modules\\yargs',
+npm warn cleanup     [Error: EPERM: operation not permitted, rmdir 'C:\Users\User\Documents\TEFL Personal\node_modules\electron-installer-debian\node_modules\yargs\build\lib'] {
+npm warn cleanup       errno: -4048,
+npm warn cleanup       code: 'EPERM',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: 'C:\\Users\\User\\Documents\\TEFL Personal\\node_modules\\electron-installer-debian\\node_modules\\yargs\\build\\lib'
+npm warn cleanup     }
+npm warn cleanup   ],
+npm warn cleanup   [
+npm warn cleanup     'C:\\Users\\User\\Documents\\TEFL Personal\\node_modules\\electron-installer-redhat\\node_modules\\yargs',
+npm warn cleanup     [Error: EPERM: operation not permitted, rmdir 'C:\Users\User\Documents\TEFL Personal\node_modules\electron-installer-redhat\node_modules\yargs'] {
+npm warn cleanup       errno: -4048,
+npm warn cleanup       code: 'EPERM',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: 'C:\\Users\\User\\Documents\\TEFL Personal\\node_modules\\electron-installer-redhat\\node_modules\\yargs'
+npm warn cleanup     }
+npm warn cleanup   ]
+npm warn cleanup ]
+
+added 43 packages, changed 1 package, and audited 780 packages in 3s
+
+130 packages are looking for funding
+  run `npm fund` for details
+
+2 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+---
+
+NEW Issue
+
+when app opens
+A JavaScript error occurred in the main process
+
+Uncaught Exception:
+ReferenceError: MAIN_WINDOW_VITE_DEV_SERVER_URL is not defined
+    at createWindow (C:\Users\User\Documents\TEFL Personal\.webpack\main\index.js:21465:3)
+    at App.<anonymous> (C:\Users\User\Documents\TEFL Personal\.webpack\main\index.js:21503:3)
+    at App.emit (node:events:518:28)
+
+on terminal 
+[5528:0724/202734.928:ERROR:content\browser\network_service_instance_impl.cc:597] Network service crashed, restarting service.

@@ -1,0 +1,51 @@
+# Test Notes 2
+# Continuation of testing results
+
+Issues will be written chronologically, meaning the end of the txt has the most up to date information
+
+## Issue A
+On npm start the following appears in the terminal
+
+Skip checkForUpdates because application is not packed and dev update config is not forced
+checkForUpdatesAndNotify called, downloadPromise is null
+[10832:0724/205558.512:ERROR:CONSOLE:1] "Request Autofill.enable failed. {"code":-32601,"message":"'Autofill.enable' wasn't found"}", source: devtools://devtools/bundled/core/protocol_client/protocol_client.js (1)
+[10832:0724/205558.513:ERROR:CONSOLE:1] "Request Autofill.setAddresses failed. {"code":-32601,"message":"'Autofill.setAddresses' wasn't found"}", source: devtools://devtools/bundled/core/protocol_client/protocol_client.js (1)
+
+## Issue B
+
+App opens, but displays the following (template is also once more not loading, leaving white background black text only)
+Piattaforma Didattica
+Seleziona un contenuto per iniziare.
+Lezioni
+Nessuna lezione trovata.
+Esercizi
+Nessun esercizio trovato.
+App Version:
+
+From app console
+ISSUE c1 - FIXED
+>
+Uncaught EvalError: Refused to evaluate a string as JavaScript because 'unsafe-eval' is not an allowed source of script in the following Content Security Policy directive: "script-src 'self' 'unsafe-inline'".
+
+    at ./node_modules/webpack-dev-server/client/index.js?protocol=ws%3A&hostname=0.0.0.0&port=3000&pathname=%2Fws&logging=none&overlay=true&reconnect=10&hot=true&live-reload=true (index.js:140:1)
+    at __webpack_require__ (index.js:305:32)
+    at index.js:1343:11
+    at index.js:1347:12
+
+ISSUE C2
+renderer.js:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+
+ISSUE C3
+index.js:454 Uncaught ReferenceError: __dirname is not defined
+    at index.js:454:84
+    at index.js:1482:12
+
+ISSUE C4
+index.js:322 Uncaught ReferenceError: __dirname is not defined
+    at index.js:322:84
+    at index.js:1350:12
+
+ISSUE C5
+index.js:322 Uncaught ReferenceError: __dirname is not defined
+    at index.js:322:84
+    at index.js:1350:12

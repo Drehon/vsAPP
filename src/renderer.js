@@ -1,3 +1,5 @@
+import './style.css';
+
 /**
  * Questo script gestisce la logica per la schermata Home (index.html).
  * Il suo compito è recuperare la lista dei file di contenuto e visualizzarli come link.
@@ -8,7 +10,7 @@
  * @param {string} directory - Il nome della cartella da cui caricare i file ('lessons' o 'exercises').
  * @param {string} elementId - L'ID dell'elemento HTML in cui inserire la lista.
  */
-async function populateFileList(directory, elementId) {
+async function populateFileList(type, elementId) {
   const listElement = document.getElementById(elementId);
   if (!listElement) {
     console.error(`Elemento con ID '${elementId}' non trovato.`);
@@ -17,11 +19,13 @@ async function populateFileList(directory, elementId) {
 
   try {
     // Usa l'API esposta dal preload script per ottenere i file
-    const files = await window.api.getFiles(directory);
+    const files = type === 'lessons'
+      ? await window.api.getLessons()
+      : await window.api.getExercises();
 
     if (files.length === 0) {
       // Lascia il messaggio di default se non ci sono file
-      listElement.innerHTML = `<p class="text-slate-500">Nessun file trovato in /${directory}.</p>`;
+      listElement.innerHTML = `<p class="text-slate-500">Nessun file trovato in /${type}.</p>`;
       return;
     }
 
@@ -41,20 +45,30 @@ async function populateFileList(directory, elementId) {
       // Aggiunge l'evento click per la navigazione
       link.addEventListener('click', (e) => {
         e.preventDefault(); // Previene il comportamento di default del link
-        const filePath = `${directory}/${file}`;
+        const filePath = `${type}/${file}`;
         window.api.navigateTo(filePath);
       });
 
       listElement.appendChild(link);
     });
   } catch (error) {
-    console.error(`Errore nel popolare la lista per '${directory}':`, error);
+    console.error(`Errore nel popolare la lista per '${type}':`, error);
     listElement.innerHTML = `<p class="text-red-500">Impossibile caricare la lista dei file.</p>`;
   }
+}
+
+// Mostra la versione dell'app
+async function displayAppVersion() {
+    const version = await window.api.getAppVersion();
+    const versionElement = document.getElementById('app-version');
+    if (versionElement) {
+        versionElement.innerText = version;
+    }
 }
 
 // Quando il documento è completamente caricato, popola entrambe le liste.
 document.addEventListener('DOMContentLoaded', () => {
   populateFileList('lessons', 'lessons-list');
   populateFileList('exercises', 'exercises-list');
+  displayAppVersion();
 });

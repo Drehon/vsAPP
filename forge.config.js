@@ -4,8 +4,36 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
   packagerConfig: {
     asar: true,
+    extraResource: [
+      './lessons',
+      './exercises'
+    ]
   },
   rebuildConfig: {},
+  plugins: [
+    {
+      name: '@electron-forge/plugin-webpack',
+      config: {
+        mainConfig: './webpack.main.config.js',
+        renderer: {
+          config: './webpack.renderer.config.js',
+          nodeIntegration: true,
+          entryPoints: [
+            {
+              html: './src/index.html',
+              js: './src/renderer.js',
+              name: 'main_window',
+              preload: {
+                js: './src/preload.js',
+                // This name is required to correctly bundle the preload script.
+                name: 'main_window_preload',
+              },
+            },
+          ],
+        },
+      },
+    },
+  ],
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
@@ -23,22 +51,5 @@ module.exports = {
       name: '@electron-forge/maker-rpm',
       config: {},
     },
-  ],
-  plugins: [
-    {
-      name: '@electron-forge/plugin-auto-unpack-natives',
-      config: {},
-    },
-    // Fuses are used to enable/disable various Electron functionality
-    // at package time, before code signing the application
-    new FusesPlugin({
-      version: FuseVersion.V1,
-      [FuseV1Options.RunAsNode]: false,
-      [FuseV1Options.EnableCookieEncryption]: true,
-      [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
-      [FuseV1Options.EnableNodeCliInspectArguments]: false,
-      [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
-      [FuseV1Options.OnlyLoadAppFromAsar]: true,
-    }),
   ],
 };

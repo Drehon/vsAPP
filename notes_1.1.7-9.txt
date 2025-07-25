@@ -1,0 +1,146 @@
+Objective for v1.1.7: Foundational Import/Export & Save Management
+
+Implement the core backend logic for bundling/unbundling multiple save files and add basic UI hooks for renaming and management.
+Phase 0: Version Update & Dependencies
+
+    Update Version:
+
+        In package.json, change "version" to "1.1.7".
+
+    Add Dependency:
+
+        Add a zipping library to your project: npm install jszip --save-dev.
+
+Phase 1: Backend Import/Export Logic (main.js)
+
+    File to Edit: src/main.js
+
+    Actions:
+
+        Import Modules: At the top of main.js, import dialog from Electron and the jszip library.
+
+        Create export-saves Handler:
+
+            Takes an array of lesson names (e.g., ['L1-congiuntivoES', 'L2-periodo-ipoteticoES']).
+
+            Creates a new JSZip instance.
+
+            For each lesson name, it reads the corresponding save subfolder and adds all its .json files to the zip archive.
+
+            Uses dialog.showSaveDialog to ask the user where to save the single .zip export file.
+
+            Writes the generated zip file to the chosen location.
+
+        Create import-saves Handler:
+
+            Uses dialog.showOpenDialog to let the user select a .zip file.
+
+            Reads the selected zip file.
+
+            Uses JSZip to decompress the archive in memory.
+
+            Iterates through the files in the zip, determines the correct lesson subfolder based on the file's path within the zip, and writes each file to the corresponding location in the app's saves directory, handling potential conflicts.
+
+        Create rename-save Handler:
+
+            Takes an existing file path and a new desired name.
+
+            Performs a fs.rename operation, ensuring the new name is sanitized to prevent invalid characters.
+
+Phase 2: Frontend Integration (preload.js & renderer.js)
+
+    File to Edit: src/preload.js
+
+        Action: Expose the new exportSaves, importSaves, and renameSave functions through the window.api.
+
+    File to Edit: src/renderer.js
+
+        Action:
+
+            In the "Load" dropdown menu, add a small "Rename" icon next to each save file. Clicking it will make the file name an editable text input. On blur or Enter, it will call window.api.renameSave.
+
+            Add temporary "Import" and "Export All" buttons to the main "Home" view's header. These will be moved to the Save Library later. The "Export All" button will call exportSaves with a list of all known exercise folders.
+
+Objective for v1.1.8: Create the Save Library UI
+
+Build the dedicated "Save Library" page that will serve as the central hub for managing all save files.
+Phase 0: Version Update
+
+    Update Version:
+
+        In package.json, change "version" to "1.1.8".
+
+Phase 1: Create the Save Library View
+
+    File to Edit: renderer.js
+
+    Actions:
+
+        Add "Save Library" Tab: Modify the tab creation logic to allow for a special "Save Library" tab type. Add a button (e.g., a floppy disk icon) to the main tab bar to open it.
+
+        Create renderSaveLibrary() Function: This function will be responsible for building the UI of the library.
+
+            It will create a two-column layout: a narrow sidebar on the left and a large content area on the right.
+
+            Sidebar: It will call getLessons and getExercises to populate the sidebar with a clickable list of all available content.
+
+            Content Area: When a lesson/exercise is clicked in the sidebar, this area will be populated by calling loadProgress and displaying each save file.
+
+        Design Save Icons: Each save file will be represented by a medium-sized icon. The icon could be a generic file icon with the lesson number (L1, L2) overlaid, and the save name displayed below it.
+
+Phase 2: Implement Multi-Select & Actions
+
+    File to Edit: renderer.js
+
+    Actions:
+
+        Implement Selection Logic: Add event listeners to the save icons to handle selection:
+
+            Single click: Selects one file.
+
+            Ctrl + Click: Adds/removes a file from the selection.
+
+            Shift + Click: Selects a range of files.
+
+        Integrate Import/Export: Move the "Import" and "Export" buttons into the Save Library's header. The "Export" button will now operate on the currently selected files.
+
+Objective for v1.1.9: Implement Virtual Folders
+
+Add the ability for users to create custom "virtual" folders within the Save Library to organize their saves without changing the underlying file structure.
+Phase 0: Version Update
+
+    Update Version:
+
+        In package.json, change "version" to "1.1.9".
+
+Phase 1: Backend for Virtual Folders (main.js)
+
+    File to Edit: src/main.js
+
+    Actions:
+
+        Create Layout File: On app startup, check for a save-library-layout.json file in the userData directory. If it doesn't exist, create it with a default structure.
+
+        Create IPC Handlers:
+
+            get-layout(): Reads and returns the parsed save-library-layout.json.
+
+            save-layout(newLayout): Takes a JSON object and writes it to the layout file.
+
+Phase 2: Frontend Virtual Folder Logic (renderer.js)
+
+    File to Edit: src/renderer.js
+
+    Actions:
+
+        Fetch Layout: When the Save Library is opened, call window.api.getLayout().
+
+        Update renderSaveLibrary(): Modify the rendering logic to:
+
+            Display virtual folders alongside the save file icons for the selected lesson.
+
+            Read the layout file to determine which saves belong inside which virtual folders.
+
+        Implement Folder Creation: Add a "New Folder" button. This will add a new folder object to the layout data and trigger a call to window.api.saveLayout().
+
+        Implement Drag-and-Drop: Add drag-and-drop functionality to allow users to move save icons into virtual folder icons. Dropping a save on a folder will update the layout data in the renderer's state and then call window.api.saveLayout() to persist the change.

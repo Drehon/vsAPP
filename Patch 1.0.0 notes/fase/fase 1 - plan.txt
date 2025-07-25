@@ -1,0 +1,30 @@
+# FASE 1: PIANO DI LAVORO
+
+## OBIETTIVO:
+Implementare una schermata Home dinamica che legga e visualizzi i contenuti dalle cartelle /lessons e /exercises, e permetta la navigazione verso di essi.
+
+## STATO ATTUALE RILEVATO:
+La struttura di base del progetto è presente, ma la logica di interazione tra i processi (main, renderer, preload) è incompleta o errata. In particolare:
+- Il file `renderer.js` non veniva caricato a causa di un errore nel nome (`render.js`).
+- La directory `exercises` era nominata `excercises`.
+- La logica di lettura dei file in `preload.js` è errata perché cerca le cartelle in un percorso non corretto (`process.resourcesPath`).
+- La navigazione in `main.js` non carica correttamente i file HTML delle lezioni/esercizi.
+
+## PIANO DI AZIONE:
+
+### STEP 1: Correzione e Configurazione del Preload Script (`src/preload.js`)
+- **Azione:** Modificare la funzione `getFiles` per leggere in modo asincrono il contenuto delle directory `lessons` ed `exercises` relative alla root dell'applicazione, usando `path.join(app.getAppPath(), dir)`. Questo richiede di ottenere `app.getAppPath()` dal processo main tramite `ipcRenderer.invoke`.
+- **Azione:** Esportare una nuova funzione `getAppPath` tramite `contextBridge` per permettere al renderer di richiedere il path di base dell'applicazione.
+
+### STEP 2: Gestione della Navigazione e Path nel Main Process (`src/main.js`)
+- **Azione:** Aggiungere un listener `ipcMain.handle('get-app-path', ...)` per fornire `app.getAppPath()` al renderer process quando richiesto.
+- **Azione:** Correggere il listener `ipcMain.on('navigate', ...)` per costruire il percorso del file da caricare usando `path.join(app.getAppPath(), relativePath)` invece che un percorso basato su `__dirname`. Questo assicura che i file vengano trovati sia in sviluppo che in produzione.
+
+### STEP 3: Implementazione della Logica nel Frontend (`src/renderer.js`)
+- **Azione:** Modificare la funzione `populateFileList` per chiamare la nuova `window.api.getAppPath()` e passare il path ottenuto a `window.api.getFiles()`. Questo non è più necessario, `preload.js` gestirà il path.
+- **Azione:** Assicurarsi che la funzione `populateFileList` chiami `window.api.getFiles('lessons')` e `window.api.getFiles('exercises')` e popoli correttamente le liste nel DOM.
+- **Azione:** Verificare che l'event listener 'click' su ogni link chiami `window.api.navigateTo()` con il percorso relativo corretto (es. `lessons/L1 - congiuntivo.html`).
+
+### STEP 4: Verifica e Test
+- **Azione:** Eseguire l'applicazione con `npm start`.
+- **Criterio di Successo:** L'applicazione si avvia e la schermata Home mostra correttamente i link ai file presenti nelle cartelle `/lessons` e `/exercises`. Cliccando su un link, la pagina corrispondente viene caricata correttamente nella finestra.

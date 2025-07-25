@@ -1,0 +1,34 @@
+# FASE 2: PIANO DI LAVORO
+
+## OBIETTIVO:
+Integrare Tailwind CSS nel progetto in modo che gli stili siano compilati localmente in un unico file `style.css`. Questo elimina la dipendenza dal CDN di Tailwind, garantendo che l'applicazione funzioni offline e che gli stili siano ottimizzati.
+
+## STATO ATTUALE RILEVATO:
+- I file HTML (`index.html`, lezioni, esercizi) utilizzano classi di utilità di Tailwind, ma fanno affidamento su un link al CDN di Tailwind per il rendering.
+- Non esiste un processo di build per il CSS, il che rende l'applicazione dipendente da una connessione Internet per il corretto caricamento degli stili.
+
+## PIANO DI AZIONE:
+
+### STEP 1: Installazione e Configurazione di Tailwind CSS
+- **Azione:** Installare le dipendenze di sviluppo necessarie: `tailwindcss`.
+- **Comando:** `npm install -D tailwindcss`
+- **Azione:** Creare il file di configurazione di Tailwind.
+- **Comando:** `npx tailwindcss init`
+- **Azione:** Configurare il file `tailwind.config.js` per specificare i file di contenuto (tutti i file `.html` nel progetto) in modo che Tailwind possa scansionarli alla ricerca di classi utilizzate.
+
+### STEP 2: Creazione del File CSS di Input
+- **Azione:** Creare un file CSS di input, ad esempio `src/index.css`, che contenga le direttive `@tailwind` di base (`base`, `components`, `utilities`). Questo file servirà come punto di partenza per il processo di compilazione di Tailwind.
+
+### STEP 3: Creazione dello Script di Build per il CSS
+- **Azione:** Aggiungere uno script `build:css` al file `package.json`.
+- **Script:** `tailwindcss -i ./src/index.css -o ./src/style.css --watch`
+- **Scopo:** Questo script avvierà il processo di compilazione di Tailwind. L'opzione `--watch` manterrà il processo in esecuzione, monitorando le modifiche ai file HTML e al file CSS di input e rigenerando automaticamente il file `style.css` di output.
+
+### STEP 4: Aggiornamento dei File HTML
+- **Azione:** Modificare tutti i file HTML (inclusi `index.html` e tutti i file in `/lessons` e `/exercises`) per rimuovere il link al CDN di Tailwind.
+- **Azione:** Aggiungere un link al nuovo file di stile locale `style.css` in ogni file HTML. Il percorso dovrà essere relativo alla posizione del file HTML.
+
+### STEP 5: Verifica e Test
+- **Azione:** Eseguire lo script `npm run build:css` in un terminale per avviare il processo di compilazione.
+- **Azione:** In un altro terminale, avviare l'applicazione con `npm start`.
+- **Criterio di Successo:** L'applicazione si avvia e tutti gli stili vengono visualizzati correttamente, come quando si utilizzava il CDN. Verificare che il file `src/style.css` sia stato generato e non sia vuoto. L'applicazione ora funziona completamente offline.
