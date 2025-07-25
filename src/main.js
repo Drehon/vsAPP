@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, session } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -58,6 +58,18 @@ app.on('ready', () => {
   }
   createWindow();
   autoUpdater.checkForUpdatesAndNotify();
+
+  // Set the Content Security Policy
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;"
+        ]
+      }
+    });
+  });
 });
 
 ipcMain.handle('get-app-version', (event) => {
@@ -137,7 +149,7 @@ ipcMain.handle('get-lesson-data', async (event, filePath) => {
 
 // Funzione per ottenere i contenuti di una directory
 const getContents = async (dir) => {
-  const directoryPath = path.join(app.getAppPath(), dir);
+  const directoryPath = path.join(__dirname, '..', dir);
   try {
     const files = await fs.promises.readdir(directoryPath);
     return files.filter(file => file.endsWith('.html'));
