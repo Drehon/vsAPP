@@ -14,7 +14,7 @@ module.exports = {
   // This is the key to resolving the '__dirname is not defined' error
   // when nodeIntegration is disabled.
   node: {
-    __dirname: false,
+    __dirname: true,
     __filename: false,
   },
 };
