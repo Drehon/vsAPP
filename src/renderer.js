@@ -1,3 +1,5 @@
+import './style.css';
+
 /**
  * Questo script gestisce la logica per la schermata Home (index.html).
  * Il suo compito è recuperare la lista dei file di contenuto e visualizzarli come link.
