@@ -149,7 +149,12 @@ ipcMain.handle('get-lesson-data', async (event, filePath) => {
 
 // Funzione per ottenere i contenuti di una directory
 const getContents = async (dir) => {
-  const directoryPath = path.join(__dirname, '..', dir);
+  // in production, the app path is /path/to/app.asar, so we need to go up one level
+    const basePath = process.env.NODE_ENV === 'development'
+        ? app.getAppPath()
+        : path.dirname(app.getPath('exe'));
+
+  const directoryPath = path.join(basePath, dir);
   try {
     const files = await fs.promises.readdir(directoryPath);
     return files.filter(file => file.endsWith('.html'));
