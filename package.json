@@ -10,7 +10,7 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\"",
-    "build:css": "npx tailwindcss -i ./src/index.css -o ./src/style.css --watch"
+    "build:css": "node_modules\\.bin\\tailwindcss -i ./src/index.css -o ./src/style.css --watch"
   },
   "keywords": [],
   "author": {
@@ -37,10 +37,7 @@
     "electron": "37.2.4",
     "node-loader": "^2.1.0",
     "style-loader": "^4.0.0",
-    "tailwindcss": "^4.1.11",
+    "tailwindcss": "^3.4.17",
     "webpack-node-externals": "^3.0.0"
-  },
-  "overrides": {
-    "webpack-dev-server": "^5.2.0"
   }
 }
