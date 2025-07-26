@@ -147,5 +147,5 @@
 - **FIX (Jump to Question):**
   - A numeric input field and a "Vai" (Go) button will be added to the scoreboard area, allowing users to jump directly to a specific question number.
 
-### 1.20 - user final request
+### 1.20 - user final request - COMPLETED
 one more thing, the note area for question is good. but i'd like another note area for the whole phase below the first one. basically that acts as more of place for notes for the whole set of questions, like 'i struggled with questions 13,23 and 33' for example. also the grey of the notes area is SLIGHTLY too intense, can you make it less intense by just 10-15%?
