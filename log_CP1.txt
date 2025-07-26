@@ -41,25 +41,10 @@
 - **Action:** Delete the obsolete `src/navigation.js` file.
 - **Action:** Remove the `<script>` tag referencing `navigation.js` from all HTML files in `/lessons` and `/exercises`.
 
-### 1.5. Performance and Bug Fixes (v1.1.0 Hotfix) - COMPLETED
-- **ISSUE:** Application is extremely slow to load, home screen content does not appear, and tab-related errors occur.
-- **ROOT CAUSE:** A recursive-like loop in `renderer.js` where `render()` would call content loading functions, which in turn would call `render()` again, causing an infinite loop. Additionally, the home content was being inefficiently read from the main `index.html` on every render.
-- **FIXES IMPLEMENTED:**
-  - **Refactored `renderer.js`:**
-    - The `render()` function was renamed to `renderTabs()` and its responsibility was limited to only rendering the tab bar and setting pane visibility.
-    - Content loading functions (`loadHomeIntoTab`, `loadContentIntoActiveTab`) no longer trigger a full re-render.
-    - `addTab()` now creates the DOM element for the pane and loads the home content once.
-  - **Created `home-template.html`:**
-    - The content for the home screen was moved to a separate `src/home-template.html` file.
-  - **Updated `main.js`:**
-    - The `get-home-content` IPC handler was updated to read from `home-template.html`, improving efficiency.
-
-### 1.6. Post-Release Bug Fixes (v1.1.0 Hotfix 2) - COMPLETED
-- **ISSUE:** On application startup, the home screen is blank, tabs behave incorrectly (appearing to stack vertically), and a `Failed to read home template` error appears in the console.
-- **ROOT CAUSE:** The `home-template.html` file was not being included in the Webpack build output, so it could not be found at runtime in the packaged application. The path resolution in `main.js` for development was also incorrect.
-- **FIXES IMPLEMENTED:**
-  - **Installed `copy-webpack-plugin`:** Added the plugin to handle copying static assets.
-  - **Modified `webpack.main.config.js`:** Configured the plugin to copy `home-template.html` from `/src` to the `.webpack/main` output directory during the build process, ensuring it's available at the expected location.
+### 1.5.-1.20 - COMPLETED
+- Multiple hotfixes
+- Refer to log110.txt for more information
+- Ready to proceed with Part 2 (v1.1.1)
 
 ---
 ## Part 2: Centralized Exercise State (v1.1.1)
