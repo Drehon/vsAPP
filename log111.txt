@@ -1,0 +1,23 @@
+## Part 2: Centralized Exercise State (v1.1.1)
+
+**Goal:** Refactor exercises to store their state centrally in `renderer.js`, ensuring notes and progress persist across tab switches.
+
+### 2.1. Refactor Exercise HTML
+- **Action:** For all files in the `/exercises` directory:
+  - **Remove Logic:** Delete the entire `<script>` block containing the exercise logic (e.g., `renderFase1`, `saveState`).
+  - **Isolate Data:** Move the `exercises` data object into its own `<script id="exercise-data" type="application/json">` tag. The rest of the HTML becomes a static template.
+  - **Standardize IDs:** Ensure HTML elements for questions, options, and notes have consistent IDs for generic manipulation.
+
+### 2.2. Centralize Logic in `renderer.js`
+- **Enhance Tab State:** Add an `exerciseState` property to the tab state object (e.g., `{ questions: [], answers: [], currentQuestion: 0, notes: {} }`).
+- **Create Generic Exercise Functions:**
+  - `initializeExerciseState(tabId, exerciseData)`: Populates the `exerciseState` for a tab.
+  - `renderExerciseUI(tabId)`: Displays the current question/options/notes based on the tab's `exerciseState`.
+  - `handleExerciseAnswer(tabId, answer)`: Updates `exerciseState` and re-renders the UI.
+  - `saveNote(tabId, questionId, noteText)`: Saves a note into the `exerciseState.notes` object.
+- **Update Content Loading:**
+  - Modify `loadContentIntoActiveTab` to detect when an exercise is loaded.
+  - When detected, it must parse the `<script id="exercise-data">` content, call `initializeExerciseState`, and then call `renderExerciseUI`.
+
+---
+
