@@ -1,24 +1,15 @@
 const rules = require('./webpack.rules');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 rules.push({
   test: /\.css$/,
-  use: [
-    { loader: MiniCssExtractPlugin.loader },
-    { loader: 'css-loader' },
-    { loader: 'postcss-loader' }
-  ],
+  use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
 });
 
 module.exports = {
+  // Put your normal webpack config below here
   module: {
     rules,
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: 'style.css', // Output CSS into a separate file
-    }),
-  ],
   // REQUIRED FOR THIS TEMPLATE: Provide Node.js globals.
   node: {
     __dirname: true,

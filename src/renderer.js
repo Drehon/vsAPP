@@ -55,14 +55,9 @@ function renderTabs() {
   // 2. Update Content Pane Visibility
   const activeTab = tabs.find(t => t.active);
   document.querySelectorAll('.content-pane').forEach(pane => {
-    pane.style.display = 'none';
+    pane.classList.toggle('block', pane.id === `pane-${activeTab.id}`);
+    pane.classList.toggle('none', pane.id !== `pane-${activeTab.id}`);
   });
-  if (activeTab) {
-    const activePane = document.getElementById(`pane-${activeTab.id}`);
-    if (activePane) {
-      activePane.style.display = 'block';
-    }
-  }
 }
 
 /**
@@ -70,12 +65,6 @@ function renderTabs() {
  * @param {boolean} setActive - Whether the new tab should be active.
  */
 function addTab(setActive = true) {
-  const existingHomeTab = tabs.find(t => t.view === 'home');
-  if (existingHomeTab) {
-    switchTab(existingHomeTab.id);
-    return;
-  }
-
   if (setActive) {
     tabs.forEach(t => t.active = false);
   }
