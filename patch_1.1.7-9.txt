@@ -83,3 +83,11 @@
 - **Drag-and-Drop Functionality:**
   - Implement drag-and-drop for the save file icons.
   - Dropping a save icon onto a folder icon will update the local layout state (e.g., `layout['L1-congiuntivoES']['My Folder'].push('save-file-name.json')`) and then immediately call `window.api.saveLayout()` to save the new structure.
+
+
+
+----
+
+additional functions
+bookmark
+index
