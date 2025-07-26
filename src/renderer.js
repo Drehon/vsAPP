@@ -197,10 +197,11 @@ function initializeExercise(paneElement, tab) {
     let appState;
 
     function initializeState() {
+        // Initialize state with a new 'phaseNote' for each fase
         const defaultState = {
-            fase1: { answers: Array(exercises.fase1.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })) },
-            fase2: { answers: Array(exercises.fase2.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })) },
-            fase3: { answers: Array(exercises.fase3.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })) },
+            fase1: { answers: Array(exercises.fase1.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })), phaseNote: "" },
+            fase2: { answers: Array(exercises.fase2.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })), phaseNote: "" },
+            fase3: { answers: Array(exercises.fase3.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })), phaseNote: "" },
             currentQuestion: { fase1: 0, fase2: 0, fase3: 0 }
         };
         appState = JSON.parse(localStorage.getItem(storageKey)) || defaultState;
@@ -210,13 +211,15 @@ function initializeExercise(paneElement, tab) {
         localStorage.setItem(storageKey, JSON.stringify(appState));
     }
 
-    function createScoreboard(fase, container) {
+    // Modified to return the scoreboard element instead of prepending
+    function createScoreboard(fase) {
         const total = exercises[fase].length;
         const current = appState.currentQuestion[fase] + 1;
         const correct = appState[fase].answers.filter(a => a && a.isCorrect).length;
         const answered = appState[fase].answers.filter(a => a && a.userAnswer !== null).length;
         
         const scoreboard = document.createElement('div');
+        scoreboard.id = `scoreboard-${fase}`; // Add ID for easier selection
         scoreboard.className = 'flex justify-between items-center text-sm text-slate-500 mb-4 pb-4 border-b border-slate-200';
         scoreboard.innerHTML = `
             <div class="flex items-center gap-4">
@@ -228,15 +231,16 @@ function initializeExercise(paneElement, tab) {
             </div>
             <span>Corrette: <strong>${correct}/${answered}</strong></span>
         `;
-        container.prepend(scoreboard);
+        return scoreboard; // Return the element
     }
     
+    // Function to create question-specific notes area
     function createNotesArea(fase, index, container) {
          const notesArea = document.createElement('div');
          notesArea.className = 'mt-4';
          notesArea.innerHTML = `
-            <label for="notes-${fase}-${index}" class="block text-sm font-medium text-slate-600">Note:</label>
-            <textarea id="notes-${fase}-${index}" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" rows="3">${appState[fase].answers[index].note || ''}</textarea>
+            <label for="notes-${fase}-${index}" class="block text-sm font-medium text-slate-600">Note per la domanda:</label>
+            <textarea id="notes-${fase}-${index}" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-slate-50" rows="3">${appState[fase].answers[index].note || ''}</textarea>
          `;
          container.appendChild(notesArea);
          
@@ -245,7 +249,25 @@ function initializeExercise(paneElement, tab) {
              appState[fase].answers[index].note = textarea.value;
              saveState();
          });
-         return textarea;
+         return notesArea; // Return the element for consistency, though not used for insertion here
+    }
+
+    // Modified to return the phase notes element instead of appending
+    function createPhaseNotesArea(fase) {
+        let phaseNotesEl = document.createElement('div');
+        phaseNotesEl.id = `phase-notes-container-${fase}`;
+        phaseNotesEl.className = 'mt-6 p-4 rounded-lg border border-slate-300 bg-slate-50'; // Apply lighter background
+        phaseNotesEl.innerHTML = `
+            <label for="phase-notes-${fase}" class="block text-sm font-medium text-slate-600">Note per questa fase:</label>
+            <textarea id="phase-notes-${fase}" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-slate-50" rows="4"></textarea>
+        `;
+        const textarea = phaseNotesEl.querySelector('textarea');
+        textarea.value = appState[fase].phaseNote || '';
+        textarea.addEventListener('keyup', () => {
+            appState[fase].phaseNote = textarea.value;
+            saveState();
+        });
+        return phaseNotesEl; // Return the element
     }
 
     function createFeedbackArea(fase, index, container, isCorrect, explanation) {
@@ -276,16 +298,35 @@ function initializeExercise(paneElement, tab) {
         const container = paneElement.querySelector(`#${containerId}`);
         if (!container) return;
 
+        // Remove existing dynamic elements to re-render them in correct order
+        // This is crucial for a clean render without clearing static tab-content structure
+        let existingPhaseNotes = container.querySelector(`#phase-notes-container-${fase}`);
+        if (existingPhaseNotes) existingPhaseNotes.remove();
+
+        let existingScoreboard = container.querySelector(`#scoreboard-${fase}`);
+        if (existingScoreboard) existingScoreboard.remove();
+
+        let existingQuestionWrapper = container.querySelector('.question-wrapper');
+        if (existingQuestionWrapper) existingQuestionWrapper.remove();
+
+        // 1. Create and append the Scoreboard first
+        const scoreboard = createScoreboard(fase);
+        container.appendChild(scoreboard);
+
+        // 2. Create and append the Question Wrapper
+        const questionWrapper = document.createElement('div');
+        questionWrapper.className = 'question-wrapper';
+        container.appendChild(questionWrapper);
+
         const index = appState.currentQuestion[fase];
         if (index >= exercises[fase].length) {
-            container.innerHTML = `<div class="text-center p-8"><h3 class="text-xl font-bold">Fase Completata!</h3><p>${appState[fase].answers.filter(a=>a.isCorrect).length} / ${exercises[fase].length} corrette.</p></div>`;
-            createScoreboard(fase, container);
-             // Add navigation buttons even on completion screen
+            questionWrapper.innerHTML = `<div class="text-center p-8"><h3 class="text-xl font-bold">Fase Completata!</h3><p>${appState[fase].answers.filter(a=>a.isCorrect).length} / ${exercises[fase].length} corrette.</p></div>`;
+            
             const navContainer = document.createElement('div');
             navContainer.className = "flex justify-center items-center gap-4 pt-4";
             navContainer.innerHTML = `<button id="prev-${fase}" class="bg-slate-500 text-white font-bold py-2 px-6 rounded-lg">Precedente</button>`;
-            container.appendChild(navContainer);
-            addNavigationListeners(fase, container);
+            questionWrapper.appendChild(navContainer); // Append navigation to questionWrapper
+            addNavigationListeners(fase, questionWrapper); // Listeners on questionWrapper
             return;
         }
 
@@ -326,17 +367,22 @@ function initializeExercise(paneElement, tab) {
                 </div>`;
         }
 
-        container.innerHTML = `<div class="question-container">${contentHTML}<div class="feedback-container mt-4"></div><div class="flex justify-center items-center gap-4 pt-4"><button id="prev-${fase}" class="bg-slate-500 text-white font-bold py-2 px-6 rounded-lg">Precedente</button><button id="next-${fase}" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg">Prossimo</button></div></div>`;
+        questionWrapper.innerHTML = `${contentHTML}<div class="feedback-container mt-4"></div><div class="flex justify-center items-center gap-4 pt-4"><button id="prev-${fase}" class="bg-slate-500 text-white font-bold py-2 px-6 rounded-lg">Precedente</button><button id="next-${fase}" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg">Prossimo</button></div>`;
         
-        createScoreboard(fase, container);
-        createNotesArea(fase, index, container.querySelector('.question-container'));
+        // Create and append the question-specific notes area
+        createNotesArea(fase, index, questionWrapper); 
+
+        // Create and append the Phase Notes Area within the questionWrapper, AFTER the question-specific notes
+        const phaseNotesEl = createPhaseNotesArea(fase);
+        questionWrapper.appendChild(phaseNotesEl);
+
 
         if (answerState.userAnswer !== null) {
-            const feedbackContainer = container.querySelector('.feedback-container');
+            const feedbackContainer = questionWrapper.querySelector('.feedback-container');
             createFeedbackArea(fase, index, feedbackContainer, answerState.isCorrect, ex.explanation);
             
             if(fase === 'fase1' || fase === 'fase2') {
-                container.querySelectorAll('.fase-btn').forEach(b => {
+                questionWrapper.querySelectorAll('.fase-btn').forEach(b => {
                     b.disabled = true;
                     const isCorrectAnswer = String(ex.answer) === b.dataset.answer;
                     const isUserAnswer = String(answerState.userAnswer) === b.dataset.answer;
@@ -345,17 +391,17 @@ function initializeExercise(paneElement, tab) {
                     if (!isCorrectAnswer && !isUserAnswer) b.classList.add('opacity-50');
                 });
             } else { // fase3
-                const inputEl = container.querySelector('#fase3-input');
+                const inputEl = questionWrapper.querySelector('#fase3-input');
                 inputEl.value = answerState.userAnswer;
                 inputEl.disabled = true;
-                container.querySelector('#check-fase3').disabled = true;
+                questionWrapper.querySelector('#check-fase3').disabled = true;
             }
 
         } else {
-            addPhaseListeners(fase, container);
+            addPhaseListeners(fase, questionWrapper);
         }
 
-        addNavigationListeners(fase, container);
+        addNavigationListeners(fase, questionWrapper);
     }
     
     function addNavigationListeners(fase, container) {
@@ -374,13 +420,16 @@ function initializeExercise(paneElement, tab) {
             nextBtn.textContent = 'Fine';
         }
         
-        prevBtn.addEventListener('click', () => {
-            if (appState.currentQuestion[fase] > 0) {
-                appState.currentQuestion[fase]--;
-                saveState();
-                renderFase(fase);
-            }
-        });
+        // Ensure prevBtn exists before adding listener
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (appState.currentQuestion[fase] > 0) {
+                    appState.currentQuestion[fase]--;
+                    saveState();
+                    renderFase(fase);
+                }
+            });
+        }
 
         if(nextBtn) {
             nextBtn.addEventListener('click', () => {
@@ -392,17 +441,26 @@ function initializeExercise(paneElement, tab) {
             });
         }
 
-        jumpBtn.addEventListener('click', () => {
-            const questionNum = parseInt(jumpInput.value);
-            if (questionNum >= 1 && questionNum <= total) {
-                appState.currentQuestion[fase] = questionNum - 1;
-                saveState();
-                renderFase(fase);
-            }
-        });
-        jumpInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') jumpBtn.click();
-        });
+        // Ensure jumpBtn exists before adding listener
+        if (jumpBtn) {
+            jumpBtn.addEventListener('click', () => {
+                const questionNum = parseInt(jumpInput.value);
+                if (questionNum >= 1 && questionNum <= total) { // Corrected condition: <= total
+                    appState.currentQuestion[fase] = questionNum - 1;
+                    saveState();
+                    renderFase(fase);
+                }
+            });
+        }
+        
+        // Ensure jumpInput exists before adding listener
+        if (jumpInput) {
+            jumpInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && jumpBtn) { // Also ensure jumpBtn exists for click
+                    jumpBtn.click();
+                }
+            });
+        }
     }
 
     function addPhaseListeners(fase, container) {
