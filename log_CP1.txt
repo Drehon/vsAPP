@@ -61,6 +61,14 @@
   - **Installed `copy-webpack-plugin`:** Added the plugin to handle copying static assets.
   - **Modified `webpack.main.config.js`:** Configured the plugin to copy `home-template.html` from `/src` to the `.webpack/main` output directory during the build process, ensuring it's available at the expected location.
 
+### 1.7. Post-Release Bug Fixes (v1.1.0 Hotfix 3) - COMPLETED
+- **ISSUE:** Template colors are off and a number of issues have arisen compared to pre-patch, with excercises not working right among other issues. Refused to apply style from 'http://localhost:3000/src/style.css' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled. For every new tab something odd STILL happens, it's like the new tab is opened BELOW the first one, a scrollbar appears on the right. And for every new tab you now get one more HOME below the one already open.
+- **ROOT CAUSE:** The webpack development server was not configured to handle CSS files correctly, serving `index.html` instead of the CSS file. The tabbing issue was caused by a flaw in the `renderTabs` function, which was not correctly hiding the inactive tabs. The exercise issue was caused by the removal of the `window.api` calls in the exercise files.
+- **FIXES IMPLEMENTED:**
+  - **Modified `webpack.renderer.config.js`:** Configured the webpack to use `mini-css-extract-plugin` to extract the CSS into a separate file.
+  - **Modified `src/renderer.js`:** Fixed the `renderTabs` function to correctly hide and show the content panes.
+  - **Modified `exercises/L1 - congiuntivoES.html` and `exercises/L2 - periodo ipoteticoES.html`:** Re-introduced the `window.api` calls to save and load the user's progress.
+
 ---
 ## Part 2: Centralized Exercise State (v1.1.1)
 
