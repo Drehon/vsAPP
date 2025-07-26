@@ -55,6 +55,7 @@ ipcMain.handle('get-home-content', async () => {
   }
 });
 
+// MODIFIED: This handler now extracts only the content within the <body> tag.
 ipcMain.handle('get-file-content', async (event, relativePath) => {
   const basePath = process.env.NODE_ENV === 'development'
     ? process.cwd() // In dev, CWD is the project root
@@ -62,7 +63,10 @@ ipcMain.handle('get-file-content', async (event, relativePath) => {
   const filePath = path.join(basePath, relativePath);
   try {
     const content = await fs.promises.readFile(filePath, 'utf-8');
-    return content;
+    // Use a regular expression to find the content inside the <body> tag.
+    const bodyContentMatch = content.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    // If a match is found, return the captured group; otherwise, return the full content as a fallback.
+    return bodyContentMatch ? bodyContentMatch[1] : content;
   } catch (err) {
     console.error(`Failed to read file content for ${relativePath}: ${err}`);
     return null;

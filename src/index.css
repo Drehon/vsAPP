@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  /* Custom styles NOT handled by the typography plugin */
+  .trigger-list span {
+      @apply bg-indigo-50 text-indigo-700 font-medium py-1 px-3 rounded-full;
+  }
+  .case-study-card {
+      @apply bg-amber-50 border-l-4 border-amber-500;
+  }
+  .key-rule {
+      @apply inline-block bg-yellow-100 text-yellow-800 px-4 py-2 rounded-md font-bold border-2 border-yellow-300 mt-2;
+      transform: rotate(-1deg);
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+  .student-response {
+      @apply bg-slate-50 border border-slate-200 rounded-lg p-3 mt-3;
+  }
+  .student-response blockquote {
+      @apply italic text-slate-600;
+  }
+}

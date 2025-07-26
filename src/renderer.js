@@ -54,10 +54,11 @@ function renderTabs() {
   
   // 2. Update Content Pane Visibility
   const activeTab = tabs.find(t => t.active);
-  document.querySelectorAll('.content-pane').forEach(pane => {
-    pane.classList.toggle('block', pane.id === `pane-${activeTab.id}`);
-    pane.classList.toggle('none', pane.id !== `pane-${activeTab.id}`);
-  });
+  if (activeTab) {
+    document.querySelectorAll('.content-pane').forEach(pane => {
+      pane.style.display = pane.id === `pane-${activeTab.id}` ? 'block' : 'none';
+    });
+  }
 }
 
 /**
@@ -143,7 +144,9 @@ async function loadContentIntoActiveTab(filePath) {
     const content = await window.api.getFileContent(filePath);
     const activePane = document.getElementById(`pane-${activeTab.id}`);
     if (activePane && content) {
-        activePane.innerHTML = content;
+        // MODIFIED: Wrap content in a div that provides the correct theme context.
+        // This prevents style conflicts with the main application shell.
+        activePane.innerHTML = `<div class="bg-slate-200 text-slate-700 h-full overflow-y-auto">${content}</div>`;
         // Future logic for exercises will go here
     }
 
@@ -168,6 +171,7 @@ async function loadHomeIntoTab(tabId) {
     const pane = document.getElementById(`pane-${tab.id}`);
     
     if (pane && homeContent) {
+        // MODIFIED: Simply set the innerHTML. The pane will inherit the dark theme.
         pane.innerHTML = homeContent;
         // Attach event listeners for the new home content
         attachHomeEventListeners(pane);
