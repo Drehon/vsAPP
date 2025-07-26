@@ -144,10 +144,8 @@ async function loadContentIntoActiveTab(filePath) {
     const content = await window.api.getFileContent(filePath);
     const activePane = document.getElementById(`pane-${activeTab.id}`);
     if (activePane && content) {
-        // MODIFIED: Wrap content in a div that provides the correct theme context.
-        // This prevents style conflicts with the main application shell.
-        activePane.innerHTML = `<div class="bg-slate-200 text-slate-700 h-full overflow-y-auto">${content}</div>`;
-        // Future logic for exercises will go here
+        // CORRECTED: Added 'lesson-content' and 'p-4' to the wrapper div.
+        activePane.innerHTML = `<div class="lesson-content bg-slate-200 text-slate-700 p-4 h-full overflow-y-auto">${content}</div>`;
     }
 
     renderTabs();
@@ -166,14 +164,11 @@ async function loadHomeIntoTab(tabId) {
     tab.filePath = null;
     tab.title = 'Home';
 
-    // Fetch from the new home template
     const homeContent = await window.api.getHomeContent();
     const pane = document.getElementById(`pane-${tab.id}`);
     
     if (pane && homeContent) {
-        // MODIFIED: Simply set the innerHTML. The pane will inherit the dark theme.
         pane.innerHTML = homeContent;
-        // Attach event listeners for the new home content
         attachHomeEventListeners(pane);
     }
     
@@ -189,10 +184,10 @@ function attachHomeEventListeners(paneElement) {
         const list = paneElement.querySelector(`#${listId}`);
         if (!list) return;
         
-        list.innerHTML = '<p class="text-slate-400">Loading...</p>'; // Loading indicator
+        list.innerHTML = '<p class="text-slate-400">Loading...</p>';
         try {
             const files = await getFiles();
-            list.innerHTML = ''; // Clear indicator
+            list.innerHTML = '';
             if (files.length === 0) {
                 list.innerHTML = `<p class="text-slate-400">No ${folder} found.</p>`;
                 return;
@@ -249,15 +244,12 @@ function updateNetworkStatus() {
 // --- INITIALIZATION ---
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Setup initial UI
   displayAppVersion();
   updateNetworkStatus();
   
-  // Setup event listeners
   newTabBtn.addEventListener('click', () => addTab(true));
   window.addEventListener('online', updateNetworkStatus);
   window.addEventListener('offline', updateNetworkStatus);
   
-  // Create the first tab
   addTab(true);
 });

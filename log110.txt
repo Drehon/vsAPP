@@ -98,14 +98,35 @@
 - **ROOT CAUSE:** The typography plugin applies a comprehensive set of base styles to any element within a `.prose` container. Simply adding custom component classes is not the intended way to modify these base styles.
 - **FIX:** The correct method is to use the plugin's built-in customization API. The styles for `.prose code` and `.prose strong` will be moved from `src/index.css` into the `theme.typography.extend` object within `tailwind.config.js`. This tells Tailwind to merge our custom styles directly into the plugin's default styles with the correct specificity. Other custom component classes (like `.key-rule`) that are not part of the `.prose` scope will remain in `src/index.css`.
 
-### 1.14. Post-Release Bug Fixes (v1.1.0 Hotfix 10) - COMPLETED
-- **ISSUE:** The application fails to start, or styles are not applied, because the CSS build process is not running concurrently with the application start process.
-- **ROOT CAUSE:** The `npm start` script only launches the Electron application. The `npm run build:css` command must be run separately in another terminal, which is inefficient and error-prone.
-- **FIX:** Install `concurrently` as a dev dependency (`npm install -D concurrently`). Modify the `start` script in `package.json` to `"start": "concurrently \"npm:build:css\" \"electron-forge start\""`. This ensures the CSS watcher and the application launch simultaneously with a single command.
+### 1.1 - 1.14 (Completed, see previous logs)
 
-### 1.15. Post-Release Bug Fixes (v1.1.0 Hotfix 11) - IN PROGRESS
+### 1.15. Post-Release Bug Fixes (v1.1.0 Hotfix 11) - COMPLETED
 - **ISSUE:** The line spacing in lesson content is too large compared to the original design. Additionally, the terminal processes do not exit when the application is closed.
 - **ROOT CAUSE (Styling):** The `@tailwindcss/typography` plugin's `.prose` class applies its own default line-height and margins, which are larger than the original design.
 - **ROOT CAUSE (Process):** The `concurrently` command, by default, does not terminate background processes when the main process exits.
 - **FIX (Styling):** Remove the `.prose` and `prose-lg` classes from the `<main>` element in all lesson/exercise HTML files. This will prevent the typography plugin from applying its default spacing, reverting to a more compact layout.
 - **FIX (Process):** Add the `--kill-others` (`-k`) flag to the `concurrently` command in the `package.json` `start` script. This will ensure that when the Electron application is closed, the Tailwind CSS watch process is also terminated.
+
+### 1.16. Style Restoration and Redesign - COMPLETED
+- **ISSUE:** The "red highlight" styles for `<code>` and `<strong>` tags disappeared after removing the `.prose` class. The `.key-rule` component and styling for trigger words were also missing or incorrect.
+- **ROOT CAUSE:** The removal of `.prose` in fix 1.15 also removed the styling context provided by the typography plugin.
+- **FIX (Red Highlights):**
+  - Created a new scoped class, `.lesson-content`, in `src/index.css`.
+  - Defined styles for `.lesson-content code` to restore the red highlights with a grey background and bold text.
+  - Defined styles for `.lesson-content strong` to be bold without changing its color.
+  - Modified `renderer.js` to wrap all injected lesson/exercise content in a `<div class="lesson-content ...">`, applying the scope.
+- **FIX (Key Rule):**
+  - Redesigned the `.key-rule` component in `src/index.css` to use a yellow, inset style with bold text.
+- **FIX (Trigger Words):**
+  - Added individual `<span>` tags with appropriate Tailwind classes to the trigger words in `L1 - congiuntivo.html` to style them as individual blue, bolded pills.
+
+### 1.17. Content & Styling Overhaul - COMPLETED
+- **ISSUE:** Legacy lesson and exercise files were not updated to the new styling architecture, causing visual inconsistencies, incorrect colors, and spacing problems.
+- **ROOT CAUSE:** Files still contained the `.prose` class, used outdated inline styles, and had hardcoded HTML tags (`<b>`, `<u>`) in JSON data instead of the semantic `<code>` tag.
+- **FIX (Global):**
+  - Removed the `.prose` class from all remaining lesson (`L2 - periodo ipotetico.html`, `L1 - congiuntivoAN.html`) and exercise files to resolve vertical spacing issues.
+- **FIX (Styling Consistency):**
+  - Updated `L1 - congiuntivoAN.html` to use consistent "pill" styling for all trigger words (verbs and adjectives) and adjusted layout padding for better visual balance.
+- **FIX (Exercise Data):**
+  - Corrected the JSON data within `L1 - congiuntivoES.html` and `L2 - periodo ipoteticoES.html` by replacing all instances of `<b>` and `<u>` with the centrally-styled `<code>` tag, ensuring consistent highlighting.
+
