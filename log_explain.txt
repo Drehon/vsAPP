@@ -19,3 +19,9 @@ This approach ensures that the renderer process only attempts to use the APIs af
 
 ------
 
+## ISSUE 1 - FIX IMPLEMENTATION
+
+I have now implemented the fix for the race condition.
+
+1.  **`src/renderer.js`:** I've wrapped the entire application logic within the `api-ready` event listener. This ensures that all the code that depends on `window.api` is executed only after the API has been initialized in the preload script. This prevents any race conditions from occurring on startup.
+
