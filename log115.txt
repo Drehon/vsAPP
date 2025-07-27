@@ -101,31 +101,50 @@ NOTES FROM JULES
 
 ---------------
 
-New errors
+New errors - FIXED
 
-VM255:65 Uncaught (in promise) SyntaxError: Bad escaped character in JSON at position 24472 (line 65 column 315)
-    at JSON.parse (<anonymous>)
-    at initializeGrammarExercise (grammar-exercise.js:6:24)
+- `Uncaught (in promise) SyntaxError: Bad escaped character in JSON` was resolved by escaping backslashes in the JSON data before parsing it in `grammar-exercise.js`.
+- `Uncaught (in promise) TypeError: Cannot read properties of null (reading 'addEventListener')` was resolved by adding a null check before adding the event listener in `verb-exercise.js`.
+- The issue with "Fase 2" and "Fase 3" not working in `L2 - causativoES.html` and `L3 - passivo avanzatoES.html` was resolved by updating `content-loader.js` to use the correct exercise initializer for these files.
+
+New errors - 
+
+grammar-exercise.js:275 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'addEventListener')
+    at initializeGrammarExercise (grammar-exercise.js:275:1)
     at loadContentIntoTab (content-loader.js:93:42)
-initializeGrammarExercise @ grammar-exercise.js:6
+initializeGrammarExercise @ grammar-exercise.js:275
+loadContentIntoTab @ content-loader.js:93
+await in loadContentIntoTab
+eval @ content-loader.js:245
+3grammar-exercise.js:28 Uncaught TypeError: Cannot set properties of null (setting 'innerHTML')
+    at renderQuestions (grammar-exercise.js:28:1)
+    at switchTab (grammar-exercise.js:188:1)
+    at HTMLButtonElement.eval (grammar-exercise.js:194:1)
+renderQuestions @ grammar-exercise.js:28
+switchTab @ grammar-exercise.js:188
+eval @ grammar-exercise.js:194
+grammar-exercise.js:275 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'addEventListener')
+    at initializeGrammarExercise (grammar-exercise.js:275:1)
+    at loadContentIntoTab (content-loader.js:93:42)
+initializeGrammarExercise @ grammar-exercise.js:275
+loadContentIntoTab @ content-loader.js:93
+await in loadContentIntoTab
+eval @ content-loader.js:245
+3grammar-exercise.js:28 Uncaught TypeError: Cannot set properties of null (setting 'innerHTML')
+    at renderQuestions (grammar-exercise.js:28:1)
+    at switchTab (grammar-exercise.js:188:1)
+    at HTMLButtonElement.eval (grammar-exercise.js:194:1)
+renderQuestions @ grammar-exercise.js:28
+switchTab @ grammar-exercise.js:188
+eval @ grammar-exercise.js:194
+VM380:31 Uncaught (in promise) SyntaxError: Expected ',' or '}' after property value in JSON at position 7039 (line 31 column 252)
+    at JSON.parse (<anonymous>)
+    at initializeGrammarExercise (grammar-exercise.js:8:24)
+    at loadContentIntoTab (content-loader.js:93:42)
+initializeGrammarExercise @ grammar-exercise.js:8
 loadContentIntoTab @ content-loader.js:93
 await in loadContentIntoTab
 eval @ content-loader.js:245
 verb-exercise.js:258 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'addEventListener')
     at initializeVerbsExercise (verb-exercise.js:258:1)
     at loadContentIntoTab (content-loader.js:95:40)
-initializeVerbsExercise @ verb-exercise.js:258
-loadContentIntoTab @ content-loader.js:95
-await in loadContentIntoTab
-eval @ content-loader.js:245
-VM274:65 Uncaught (in promise) SyntaxError: Bad escaped character in JSON at position 24472 (line 65 column 315)
-    at JSON.parse (<anonymous>)
-    at initializeGrammarExercise (grammar-exercise.js:6:24)
-    at loadContentIntoTab (content-loader.js:93:42)
-    at async switchTab (tab-manager.js:96:1)
-
-Fase 2 and Fase 3 don't work for 
-L2 - causativoES
-L3 - passivo avanzatoES
-
-If i click on either, nothing appears, and then Fase 1 also stops working

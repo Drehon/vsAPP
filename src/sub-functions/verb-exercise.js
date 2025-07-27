@@ -547,11 +547,14 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
             });
         }
 
-        paneElement.querySelector('#back-to-review-btn').addEventListener('click', () => {
-            diagnosticsView.classList.add('hidden');
-            testContainer.classList.remove('hidden');
-            paneElement.querySelector('#intro-view').classList.remove('hidden');
-        });
+        const backToReviewBtn = paneElement.querySelector('#back-to-review-btn');
+        if (backToReviewBtn) {
+            backToReviewBtn.addEventListener('click', () => {
+                diagnosticsView.classList.add('hidden');
+                testContainer.classList.remove('hidden');
+                paneElement.querySelector('#intro-view').classList.remove('hidden');
+            });
+        }
 
         function switchDiagTab(tabName) {
             const targetId = `diag-content-${tabName}`;

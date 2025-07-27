@@ -2,7 +2,9 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
     const exerciseDataEl = paneElement.querySelector('#exercise-data');
     if (!exerciseDataEl) return;
 
-    const jsonText = exerciseDataEl.textContent.replace(/\s*\/\/.*$/gm, '');
+    const jsonText = exerciseDataEl.textContent
+        .replace(/\\/g, "\\\\") // Escape backslashes
+        .replace(/\s*\/\/.*$/gm, ''); // Remove comments
     const { testData } = JSON.parse(jsonText);
     let chartInstances = {};
     let currentBlock = 1;
