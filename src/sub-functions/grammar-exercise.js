@@ -2,9 +2,13 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
     const exerciseDataEl = paneElement.querySelector('#exercise-data');
     if (!exerciseDataEl) return;
 
+    // Escape backslashes, newlines, and carriage returns, then remove comments
     const jsonText = exerciseDataEl.textContent
-        .replace(/\\/g, "\\\\") // Escape backslashes
+        .replace(/\\/g, "\\\\") // Escape existing backslashes
+        .replace(/\n/g, '\\n')  // Escape newlines
+        .replace(/\r/g, '\\r')  // Escape carriage returns
         .replace(/\s*\/\/.*$/gm, ''); // Remove comments
+    
     const { testData } = JSON.parse(jsonText);
     let chartInstances = {};
     let currentBlock = 1;
@@ -131,7 +135,11 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                 <button type="button" id="submit-block-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300 shadow-md">
                     Submit Block ${String.fromCharCode(64 + currentBlock)}
                 </button>`;
-            paneElement.querySelector('#submit-block-btn').addEventListener('click', handleBlockSubmit);
+            // Null check for submit-block-btn before adding event listener
+            const submitBlockBtn = paneElement.querySelector('#submit-block-btn');
+            if (submitBlockBtn) {
+                submitBlockBtn.addEventListener('click', handleBlockSubmit);
+            }
         }
         
         const completedBlocks = Object.values(testState).filter(b => b.completed).length;
@@ -144,14 +152,25 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                 <button type="button" id="retake-test-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300 shadow-md">Retake Full Test</button>
              `;
              submissionArea.appendChild(buttonContainer);
-             paneElement.querySelector('#view-diagnostics-btn').addEventListener('click', showDiagnostics);
-             paneElement.querySelector('#retake-test-btn').addEventListener('click', () => {
-                // Using a custom modal for confirmation instead of alert/confirm
-                if(confirm('Are you sure you want to retake the entire test? All your progress and notes will be lost.')) {
-                    localStorage.clear();
-                    window.location.reload();
-                }
-            });
+             
+             // Null checks for these buttons
+             const viewDiagnosticsBtn = paneElement.querySelector('#view-diagnostics-btn');
+             if (viewDiagnosticsBtn) {
+                 viewDiagnosticsBtn.addEventListener('click', showDiagnostics);
+             }
+
+             const retakeTestBtn = paneElement.querySelector('#retake-test-btn');
+             if (retakeTestBtn) {
+                 retakeTestBtn.addEventListener('click', () => {
+                    // Using a custom modal for confirmation instead of alert/confirm
+                    // This still uses `confirm` which is problematic in an iframe.
+                    // A custom modal UI should be implemented here.
+                    if(confirm('Are you sure you want to retake the entire test? All your progress and notes will be lost.')) {
+                        localStorage.clear();
+                        window.location.reload();
+                    }
+                });
+             }
         }
     }
 
@@ -299,11 +318,12 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                         }
                     }
                     switchTab(blockToRender);
-                    alert('Progress loaded successfully!');
+                    // Replaced alert with console.log as alerts are not allowed
+                    console.log('Progress loaded successfully!');
 
                 } catch (error) {
-                    alert('Error loading progress: Invalid JSON file or data structure.');
-                    console.error('Error loading progress:', error);
+                    // Replaced alert with console.error as alerts are not allowed
+                    console.error('Error loading progress: Invalid JSON file or data structure.', error);
                 }
             };
             reader.readAsText(file);
@@ -458,26 +478,43 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
             wrapper.appendChild(explanationContent);
         });
 
+        // Null check for explain-btn before adding event listener
         paneElement.querySelectorAll('.explain-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const content = e.target.closest('.question-block').querySelector('.explanation-content');
-                content.classList.toggle('hidden');
-                e.target.textContent = content.classList.contains('hidden') ? 'Explain' : 'Hide';
-            });
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    const content = e.target.closest('.question-block').querySelector('.explanation-content');
+                    if (content) { // Null check for content
+                        content.classList.toggle('hidden');
+                        e.target.textContent = content.classList.contains('hidden') ? 'Explain' : 'Hide';
+                    }
+                });
+            }
         });
     }
     
     function showDiagnostics() {
         testContainer.classList.add('hidden');
-        paneElement.querySelector('#intro-view').classList.add('hidden');
+        // Null check for intro-view
+        const introView = paneElement.querySelector('#intro-view');
+        if (introView) {
+            introView.classList.add('hidden');
+        }
         diagnosticsView.classList.remove('hidden');
         
         const allCompleted = testState[1].completed && testState[2].completed && testState[3].completed;
         
-        paneElement.querySelector('#diag-tab-block-a').disabled = !testState[1].completed;
-        paneElement.querySelector('#diag-tab-block-b').disabled = !testState[2].completed;
-        paneElement.querySelector('#diag-tab-block-c').disabled = !testState[3].completed;
-        paneElement.querySelector('#diag-tab-overall').disabled = !allCompleted;
+        // Null checks for diagnostic tabs
+        const diagTabBlockA = paneElement.querySelector('#diag-tab-block-a');
+        if (diagTabBlockA) diagTabBlockA.disabled = !testState[1].completed;
+        
+        const diagTabBlockB = paneElement.querySelector('#diag-tab-block-b');
+        if (diagTabBlockB) diagTabBlockB.disabled = !testState[2].completed;
+        
+        const diagTabBlockC = paneElement.querySelector('#diag-tab-block-c');
+        if (diagTabBlockC) diagTabBlockC.disabled = !testState[3].completed;
+        
+        const diagTabOverall = paneElement.querySelector('#diag-tab-overall');
+        if (diagTabOverall) diagTabOverall.disabled = !allCompleted;
 
         let firstActiveTab = '';
         if (allCompleted) firstActiveTab = 'overall';
@@ -529,10 +566,13 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
             return { category: cat, score, raw: `${correctCount}Q/${totalCount}Q` };
         });
 
-        const ctx = paneElement.querySelector(`#${canvasId}`).getContext('2d');
+        const ctx = paneElement.querySelector(`#${canvasId}`);
+        if (!ctx) return; // Null check for canvas context
+
+        const context2D = ctx.getContext('2d');
         if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
         
-        chartInstances[canvasId] = new Chart(ctx, {
+        chartInstances[canvasId] = new Chart(context2D, {
             type: 'bar',
             data: {
                 labels: categoryData.map(d => d.category),
@@ -564,21 +604,17 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
         });
     }
 
-    paneElement.querySelector('#back-to-review-btn').addEventListener('click', () => {
-        diagnosticsView.classList.add('hidden');
-        testContainer.classList.remove('hidden');
-        paneElement.querySelector('#intro-view').classList.remove('hidden');
-        renderQuestions(currentBlock); 
-    });
-
-    function switchDiagTab(tabName) {
-        const targetId = `diag-content-${tabName}`;
-        diagTabs.forEach(t => {
-            t.classList.toggle('tab-active', t.dataset.tab === tabName);
-            t.classList.toggle('tab-inactive', t.dataset.tab !== tabName);
-        });
-        paneElement.querySelectorAll('.diag-content').forEach(content => {
-            content.classList.toggle('hidden', content.id !== targetId);
+    // Null check for back-to-review-btn
+    const backToReviewBtn = paneElement.querySelector('#back-to-review-btn');
+    if (backToReviewBtn) {
+        backToReviewBtn.addEventListener('click', () => {
+            diagnosticsView.classList.add('hidden');
+            testContainer.classList.remove('hidden');
+            const introView = paneElement.querySelector('#intro-view');
+            if (introView) { // Null check for intro-view
+                introView.classList.remove('hidden');
+            }
+            renderQuestions(currentBlock); 
         });
     }
 
