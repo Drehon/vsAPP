@@ -69,28 +69,6 @@
   - When detected, it must parse the `<script id="exercise-data">` content, call `initializeExerciseState`, and then call `renderExerciseUI`.
 
 ---
-## Part 3: Save/Load System Overhaul (v1.1.2)
-
-**Goal:** Replace system file prompts with a custom in-app modal and organize save files into per-lesson subdirectories.
-
-### 3.1. Backend File Structure (`main.js`, `preload.js`)
-- **`main.js`:**
-  - **Modify `save-progress`:** Before saving, ensure a subdirectory exists within `userData/saves/` that matches the lesson name (e.g., `saves/L1-congiuntivoES/`).
-  - **Modify `load-progress`:** Update the handler to read files from the lesson-specific subdirectory.
-  - **Add `open-saves-folder`:** Create a new handler that uses `shell.openPath()` to open the relevant save subfolder in the system's file explorer.
-- **`preload.js`:**
-  - Expose the new `openSavesFolder` function.
-
-### 3.2. Frontend UI (`index.html`, `renderer.js`)
-- **`index.html`:**
-  - Add hidden HTML structures for the custom save and load modals.
-- **`renderer.js`:**
-  - **Modal Logic:** Create `openSaveModal`, `openLoadModal`, and `closeModals` functions to control modal visibility.
-  - **Update Button Hooks:**
-    - The "Save" button now calls `openSaveModal`. The modal will contain the logic to call the `save-progress` IPC handler.
-    - The "Load" button now calls `openLoadModal`, which will fetch the list of saves, display the 5 most recent, and include a "Show More..." button that calls the new `openSavesFolder` function.
-
----
 ## Part 4: Auto-Save & Live Tab Syncing (v1.1.3)
 
 **Goal:** Automatically save user progress in the background and synchronize state across multiple tabs showing the same content.

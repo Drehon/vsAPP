@@ -16,11 +16,16 @@ window.addEventListener('api-ready', () => {
 
   // --- CORE FUNCTIONS ---
 
+  /**
+   * Renders the tab bar and manages content pane visibility based on the current tabs state.
+   */
   function renderTabs() {
+    // Clear existing tab elements, except for the new tab button
     while (tabBar.children.length > 1) {
       tabBar.removeChild(tabBar.firstChild);
     }
 
+    // Create and append tab elements for each tab in the state
     tabs.forEach(tab => {
       const tabEl = document.createElement('div');
       tabEl.id = `tab-${tab.id}`;
@@ -31,24 +36,29 @@ window.addEventListener('api-ready', () => {
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
       `;
-      
+
+      // Event listener for clicking on a tab (to switch or go home)
       tabEl.addEventListener('click', (e) => {
-        if (e.target.closest('.close-tab-btn')) return;
+        if (e.target.closest('.close-tab-btn')) return; // Ignore clicks on the close button
         if (tab.active && tab.view !== 'home') {
+          // If active tab is clicked and it's not home, go to home view for that tab
           loadHomeIntoTab(tab.id);
         } else if (!tab.active) {
+          // If inactive tab is clicked, switch to it
           switchTab(tab.id);
         }
       });
 
+      // Event listener for closing a tab
       tabEl.querySelector('.close-tab-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
+        e.stopPropagation(); // Prevent the tab click event from firing
         closeTab(tab.id);
       });
 
-      tabBar.insertBefore(tabEl, newTabBtn);
+      tabBar.insertBefore(tabEl, newTabBtn); // Insert tab before the "New Tab" button
     });
-    
+
+    // Show/hide content panes based on the active tab
     const activeTab = tabs.find(t => t.active);
     if (activeTab) {
       document.querySelectorAll('.content-pane').forEach(pane => {
@@ -57,531 +67,705 @@ window.addEventListener('api-ready', () => {
     }
   }
 
+  /**
+   * Adds a new tab to the application.
+   * @param {boolean} [setActive=true] - Whether to make the new tab active.
+   * @param {string} [filePath=null] - Optional file path to load into the new tab.
+   */
   function addTab(setActive = true, filePath = null) {
     if (setActive) {
-        tabs.forEach(t => t.active = false);
+      tabs.forEach(t => t.active = false); // Deactivate all other tabs if setting new one active
     }
 
     const newTab = {
-        id: nextTabId++,
-        title: 'Home',
-        view: 'home',
-        filePath: null,
-        active: true,
-        exerciseState: null, // Initial state
+      id: nextTabId++,
+      title: 'Home',
+      view: 'home',
+      filePath: null,
+      active: true,
+      exerciseState: null, // Initialize exercise state as null
     };
     tabs.push(newTab);
 
-    // Create pane for the new tab
+    // Create a new content pane for the tab
     const paneEl = document.createElement('div');
     paneEl.id = `pane-${newTab.id}`;
     paneEl.className = 'content-pane h-full w-full overflow-auto';
     contentPanes.appendChild(paneEl);
 
     if (filePath) {
-        // A specific file is requested, load it directly
-        loadContentIntoTab(newTab.id, filePath);
+      // If a file path is provided, load content into this new tab
+      loadContentIntoTab(newTab.id, filePath);
     } else {
-        // Default to home page
-        loadHomeIntoTab(newTab.id);
+      // Otherwise, load the home page into the new tab
+      loadHomeIntoTab(newTab.id);
     }
 
-    // Ensure the new tab is marked as active before rendering
+    // Ensure the new tab is marked as active before rendering, or just render if not setting active
     if (setActive) {
-        switchTab(newTab.id);
+      switchTab(newTab.id);
     } else {
-        renderTabs();
+      renderTabs();
     }
-}
-
-  function switchTab(tabId) {
-    tabs.forEach(t => t.active = (t.id === tabId));
-    renderTabs();
   }
 
+  /**
+   * Switches the active tab to the specified tabId.
+   * @param {number} tabId - The ID of the tab to activate.
+   */
+  async function switchTab(tabId) { // Made async to await content loading
+    const previouslyActiveTab = tabs.find(t => t.active);
+    tabs.forEach(t => t.active = (t.id === tabId)); // Set active flag for the selected tab
+
+    const newActiveTab = tabs.find(t => t.id === tabId);
+
+    // If the new active tab has content (lesson/exercise), reload it to ensure latest state
+    if (newActiveTab && newActiveTab.view === 'content' && newActiveTab.filePath) {
+      // This will re-fetch the content and re-initialize the exercise state from the file system
+      await loadContentIntoTab(newActiveTab.id, newActiveTab.filePath);
+    }
+
+    renderTabs(); // Re-render the tab bar and content panes
+  }
+
+  /**
+   * Closes the specified tab.
+   * @param {number} tabId - The ID of the tab to close.
+   */
   function closeTab(tabId) {
     const tabIndex = tabs.findIndex(t => t.id === tabId);
-    if (tabIndex === -1) return;
+    if (tabIndex === -1) return; // Tab not found
 
     const pane = document.getElementById(`pane-${tabId}`);
-    if (pane) pane.remove();
+    if (pane) pane.remove(); // Remove the content pane from the DOM
 
     const wasActive = tabs[tabIndex].active;
-    tabs.splice(tabIndex, 1);
+    tabs.splice(tabIndex, 1); // Remove the tab from the array
 
+    // If the closed tab was active and there are other tabs, activate the nearest one
     if (wasActive && tabs.length > 0) {
-      const newActiveIndex = Math.max(0, tabIndex - 1);
-      tabs[newActiveIndex].active = true;
+      const newActiveIndex = Math.max(0, tabIndex - 1); // Activate previous tab or first if none
+      switchTab(tabs[newActiveIndex].id); // Use switchTab to trigger potential reload
     } else if (tabs.length === 0) {
+      // If no tabs left, add a new default home tab
       addTab();
       return;
     }
 
-    renderTabs();
+    renderTabs(); // Re-render the UI
   }
 
+  /**
+   * Loads content from a specified file path into a given tab.
+   * This function also handles loading and initializing exercise states.
+   * @param {number} tabId - The ID of the tab to load content into.
+   * @param {string} filePath - The relative path to the HTML file (e.g., 'lessons/L1.html').
+   */
   async function loadContentIntoTab(tabId, filePath) {
     const tab = tabs.find(t => t.id === tabId);
     if (!tab) return;
 
     tab.view = 'content';
     tab.filePath = filePath;
-    tab.title = filePath.split('/').pop().replace('.html', '');
-    
-    const content = await window.api.getFileContent(filePath);
+    tab.title = filePath.split('/').pop().replace('.html', ''); // Set tab title from filename
+
+    const content = await window.api.getFileContent(filePath); // Fetch file content from main process
     const pane = document.getElementById(`pane-${tab.id}`);
-    
+
     if (pane && content) {
-        const wrapper = document.createElement('div');
-        wrapper.className = "lesson-content bg-slate-200 text-slate-700 h-full overflow-y-auto";
-        wrapper.innerHTML = content;
-        pane.innerHTML = '';
-        pane.appendChild(wrapper);
+      // Create a wrapper div for lesson/exercise content to apply specific styling
+      const wrapper = document.createElement('div');
+      wrapper.className = "lesson-content bg-slate-200 text-slate-700 h-full overflow-y-auto";
+      wrapper.innerHTML = content;
+      pane.innerHTML = ''; // Clear existing content
+      pane.appendChild(wrapper); // Append the new content wrapper
 
-        if (wrapper.querySelector('#exercise-data')) {
-            initializeExercise(wrapper, tab);
+      // Check if the loaded content is an exercise and initialize it
+      if (wrapper.querySelector('#exercise-data')) {
+        // Attempt to load saved exercise state
+        const savedState = await window.api.loadExerciseState(filePath);
+        if (savedState) {
+          tab.exerciseState = savedState;
+          console.log(`Loaded saved state for ${filePath}`);
+        } else {
+          tab.exerciseState = null; // Ensure it's null if no saved state found
+          console.log(`No saved state found for ${filePath}, initializing new.`);
         }
+        initializeExercise(wrapper, tab); // Initialize the exercise logic
+      }
     }
-    renderTabs();
-}
+    renderTabs(); // Re-render tabs to update title etc.
+  }
 
+  /**
+   * Loads the home page content into a given tab.
+   * @param {number} tabId - The ID of the tab to load home content into.
+   */
   async function loadHomeIntoTab(tabId) {
-      const tab = tabs.find(t => t.id === tabId);
-      if (!tab) return;
-      
-      tab.view = 'home';
-      tab.filePath = null;
-      tab.title = 'Home';
+    const tab = tabs.find(t => t.id === tabId);
+    if (!tab) return;
 
-      const homeContent = await window.api.getHomeContent();
-      const pane = document.getElementById(`pane-${tab.id}`);
-      
-      if (pane && homeContent) {
-          pane.innerHTML = homeContent;
-          attachHomeEventListeners(pane);
-      }
-      
-      renderTabs();
+    tab.view = 'home';
+    tab.filePath = null;
+    tab.title = 'Home';
+
+    const homeContent = await window.api.getHomeContent(); // Fetch home content from main process
+    const pane = document.getElementById(`pane-${tab.id}`);
+
+    if (pane && homeContent) {
+      pane.innerHTML = homeContent; // Set home content
+      attachHomeEventListeners(pane); // Attach event listeners for lesson/exercise links
+    }
+
+    renderTabs(); // Re-render tabs to update title etc.
   }
 
+  /**
+   * Attaches event listeners to lesson and exercise links on the home page.
+   * @param {HTMLElement} paneElement - The DOM element containing the home page content.
+   */
   function attachHomeEventListeners(paneElement) {
-      const populateList = async (listId, getFiles, folder) => {
-          const list = paneElement.querySelector(`#${listId}`);
-          if (!list) return;
-          
-          list.innerHTML = '<p class="text-slate-400">Loading...</p>';
-          try {
-              const files = await getFiles();
-              list.innerHTML = '';
-              if (files.length === 0) {
-                  list.innerHTML = `<p class="text-slate-400">No ${folder} found.</p>`;
-                  return;
-              }
-              files.forEach(file => {
-                  const link = document.createElement('a');
-                  link.href = '#';
-                  link.textContent = file.replace('.html', '').replace(/-/g, ' ');
-                  link.className = 'block p-3 bg-slate-700 rounded-md hover:bg-indigo-600 transition-colors font-medium';
-                  link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const activeTab = tabs.find(t => t.active);
-                    if (activeTab.view === 'home') {
-                        loadContentIntoTab(activeTab.id, `${folder}/${file}`);
-                    } else {
-                        addTab(true, `${folder}/${file}`);
-                    }
-                });
-                  list.appendChild(link);
-              });
-          } catch (error) {
-              console.error(`Failed to load ${folder}:`, error);
-              list.innerHTML = `<p class="text-red-400">Error loading ${folder}.</p>`;
-          }
-      };
+    /**
+     * Populates a list of lessons or exercises.
+     * @param {string} listId - The ID of the list container.
+     * @param {Function} getFiles - IPC function to get file list (e.g., `window.api.getLessons`).
+     * @param {string} folder - The folder name (e.g., 'lessons', 'exercises').
+     */
+    const populateList = async (listId, getFiles, folder) => {
+      const list = paneElement.querySelector(`#${listId}`);
+      if (!list) return;
 
-      populateList('lessons-list', window.api.getLessons, 'lessons');
-      populateList('exercises-list', window.api.getExercises, 'exercises');
+      list.innerHTML = '<p class="text-slate-400">Loading...</p>';
+      try {
+        const files = await getFiles();
+        list.innerHTML = '';
+        if (files.length === 0) {
+          list.innerHTML = `<p class="text-slate-400">No ${folder} found.</p>`;
+          return;
+        }
+        files.forEach(file => {
+          const link = document.createElement('a');
+          link.href = '#';
+          link.textContent = file.replace('.html', '').replace(/-/g, ' ');
+          link.className = 'block p-3 bg-slate-700 rounded-md hover:bg-indigo-600 transition-colors font-medium';
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const activeTab = tabs.find(t => t.active);
+            if (activeTab.view === 'home') {
+              // If current tab is home, load content into it
+              loadContentIntoTab(activeTab.id, `${folder}/${file}`);
+            } else {
+              // Otherwise, open in a new tab
+              addTab(true, `${folder}/${file}`);
+            }
+          });
+          list.appendChild(link);
+        });
+      }
+      catch (error) {
+        console.error(`Failed to load ${folder}:`, error);
+        list.innerHTML = `<p class="text-red-400">Error loading ${folder}.</p>`;
+      }
+    };
+
+    populateList('lessons-list', window.api.getLessons, 'lessons');
+    populateList('exercises-list', window.api.getExercises, 'exercises');
   }
 
-  // --- EXERCISE INITIALIZATION LOGIC ---
+  // --- EXERCISE INITIALIZATION & LOGIC ---
 
+  /**
+   * Saves the current exercise state to the main process for persistence.
+   * @param {object} tab - The current tab object containing filePath and exerciseState.
+   */
+  async function saveExerciseState(tab) {
+    if (tab.filePath && tab.exerciseState) {
+      const result = await window.api.saveExerciseState(tab.filePath, tab.exerciseState);
+      if (!result.success) {
+        console.error('Failed to auto-save exercise state:', result.error);
+      }
+    }
+  }
+
+  /**
+   * Initializes and manages the interactive exercise logic for a given tab.
+   * @param {HTMLElement} paneElement - The DOM element containing the exercise content.
+   * @param {object} tab - The tab object associated with this exercise.
+   */
   function initializeExercise(paneElement, tab) {
-      const exerciseDataEl = paneElement.querySelector('#exercise-data');
-      if (!exerciseDataEl) return;
+    const exerciseDataEl = paneElement.querySelector('#exercise-data');
+    if (!exerciseDataEl) return;
 
-      const exercises = JSON.parse(exerciseDataEl.textContent);
-      let appState;
+    const exercises = JSON.parse(exerciseDataEl.textContent);
+    let appState; // Reference to the tab's exerciseState
 
-      function initializeState() {
-          if (tab.exerciseState) {
-              appState = tab.exerciseState;
-              return;
-          }
+    /**
+     * Initializes or re-initializes the exercise state for the current tab.
+     * If tab.exerciseState already exists (e.g., loaded from file), it's used.
+     * Otherwise, a new default state is created.
+     */
+    function initializeState() {
+      if (tab.exerciseState) {
+        appState = tab.exerciseState;
+        console.log("Using existing exercise state:", appState);
+      } else {
+        // Initialize state with a new 'phaseNote' for each fase
+        const defaultState = {
+          fase1: { answers: Array(exercises.fase1.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })), phaseNote: "" },
+          fase2: { answers: Array(exercises.fase2.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })), phaseNote: "" },
+          fase3: { answers: Array(exercises.fase3.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })), phaseNote: "" },
+          currentQuestion: { fase1: 0, fase2: 0, fase3: 0 }
+        };
+        appState = defaultState;
+        tab.exerciseState = appState; // Assign the new state to the tab
+        console.log("Initialized new exercise state:", appState);
+      }
+    }
 
-          // Initialize state with a new 'phaseNote' for each fase
-          const defaultState = {
-              fase1: { answers: Array(exercises.fase1.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })), phaseNote: "" },
-              fase2: { answers: Array(exercises.fase2.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })), phaseNote: "" },
-              fase3: { answers: Array(exercises.fase3.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })), phaseNote: "" },
-              currentQuestion: { fase1: 0, fase2: 0, fase3: 0 }
+    /**
+     * Creates or updates the scoreboard for a given fase.
+     * @param {string} fase - The current fase (e.g., 'fase1').
+     * @returns {HTMLElement} The scoreboard element.
+     */
+    function createScoreboard(fase) {
+      const total = exercises[fase].length;
+      const current = appState.currentQuestion[fase] + 1;
+      const correct = appState[fase].answers.filter(a => a && a.isCorrect).length;
+      const answered = appState[fase].answers.filter(a => a && a.userAnswer !== null).length;
+
+      let scoreboard = paneElement.querySelector(`#scoreboard-${fase}`);
+      if (!scoreboard) {
+        scoreboard = document.createElement('div');
+        scoreboard.id = `scoreboard-${fase}`;
+        scoreboard.className = 'flex justify-between items-center text-sm text-slate-500 mb-4 pb-4 border-b border-slate-200';
+      }
+
+      scoreboard.innerHTML = `
+        <div class="flex items-center gap-4">
+            <span>Domanda: <strong>${current > total ? total : current}/${total}</strong></span>
+            <div class="flex items-center gap-1">
+                <input type="number" id="jump-to-${fase}" class="w-16 text-center border border-slate-300 rounded-md text-sm p-1" min="1" max="${total}" value="${current > total ? total : current}">
+                <button id="jump-btn-${fase}" class="text-xs bg-slate-200 hover:bg-slate-300 font-bold py-1 px-2 rounded-lg">Vai</button>
+            </div>
+        </div>
+        <span>Corrette: <strong>${correct}/${answered}</strong></span>
+      `;
+      return scoreboard;
+    }
+
+    /**
+     * Creates or updates the question-specific notes area.
+     * @param {string} fase - The current fase.
+     * @param {number} index - The current question index.
+     * @returns {HTMLElement} The notes area element.
+     */
+    function createNotesArea(fase, index) {
+      let notesArea = paneElement.querySelector(`#notes-container-${fase}-${index}`);
+      if (!notesArea) {
+        notesArea = document.createElement('div');
+        notesArea.id = `notes-container-${fase}-${index}`;
+        // Added classes for visual consistency with phase notes area
+        notesArea.className = 'mt-4 p-4 rounded-lg border border-slate-300 bg-slate-100';
+        notesArea.innerHTML = `
+            <label for="notes-${fase}-${index}" class="block text-sm font-medium text-slate-600">Note per la domanda:</label>
+            <textarea id="notes-${fase}-${index}" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-slate-100" rows="3"></textarea>
+        `;
+      }
+
+      const textarea = notesArea.querySelector('textarea');
+      textarea.value = appState[fase].answers[index].note || '';
+      // Ensure the listener is added only once or properly cleaned up
+      textarea.onkeyup = () => { // Using onkeyup to avoid multiple listeners
+        appState[fase].answers[index].note = textarea.value;
+        saveExerciseState(tab); // Auto-save on note change
+      };
+      return notesArea;
+    }
+
+    /**
+     * Creates or updates the phase-specific notes area.
+     * @param {string} fase - The current fase.
+     * @returns {HTMLElement} The phase notes area element.
+     */
+    function createPhaseNotesArea(fase) {
+      let phaseNotesEl = paneElement.querySelector(`#phase-notes-container-${fase}`);
+      if (!phaseNotesEl) {
+        phaseNotesEl = document.createElement('div');
+        phaseNotesEl.id = `phase-notes-container-${fase}`;
+        phaseNotesEl.className = 'mt-6 p-4 rounded-lg border border-slate-300 bg-slate-100'; // Lighter background
+        phaseNotesEl.innerHTML = `
+            <label for="phase-notes-${fase}" class="block text-sm font-medium text-slate-600">Note per questa fase:</label>
+            <textarea id="phase-notes-${fase}" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-slate-100" rows="4"></textarea>
+        `;
+      }
+      const textarea = phaseNotesEl.querySelector('textarea');
+      textarea.value = appState[fase].phaseNote || '';
+      // Ensure the listener is added only once or properly cleaned up
+      textarea.onkeyup = () => { // Using onkeyup to avoid multiple listeners
+        appState[fase].phaseNote = textarea.value;
+        saveExerciseState(tab); // Auto-save on phase note change
+      };
+      return phaseNotesEl;
+    }
+
+    /**
+     * Creates or updates the feedback area for an answer.
+     * @param {string} fase - The current fase.
+     * @param {number} index - The current question index.
+     * @param {boolean} isCorrect - Whether the answer was correct.
+     * @param {string} explanation - The explanation text.
+     * @returns {HTMLElement} The feedback element.
+     */
+    function createFeedbackArea(fase, index, isCorrect, explanation) {
+      let feedbackEl = paneElement.querySelector(`#feedback-${fase}-${index}`);
+      if (!feedbackEl) {
+        feedbackEl = document.createElement('div');
+        feedbackEl.id = `feedback-${fase}-${index}`;
+        feedbackEl.className = 'mt-4 p-4 border-l-4 rounded-r-lg';
+      }
+      feedbackEl.className = feedbackEl.className.replace(/feedback-(correct|incorrect)/g, ''); // Remove old classes
+      feedbackEl.classList.add(isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+
+      let markCorrectBtn = '';
+      if (!isCorrect) {
+        markCorrectBtn = `<button class="mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-yellow-800 font-bold py-1 px-2 rounded-lg ml-4" data-fase="${fase}" data-index="${index}">Segna come Corretta</button>`;
+      }
+
+      feedbackEl.innerHTML = explanation + markCorrectBtn;
+
+      if (!isCorrect) {
+        const markBtn = feedbackEl.querySelector('.mark-correct-btn');
+        if (markBtn) {
+          markBtn.onclick = (e) => { // Use onclick to avoid multiple listeners
+            const { fase, index } = e.target.dataset;
+            appState[fase].answers[parseInt(index)].isCorrect = true;
+            saveExerciseState(tab); // Auto-save on marking correct
+            rerenderAll();
           };
-          appState = defaultState;
-          tab.exerciseState = appState;
+        }
+      }
+      return feedbackEl;
+    }
+
+    /**
+     * Renders a specific fase of the exercise.
+     * This function now focuses on updating existing DOM elements where possible
+     * to prevent flickering and improve performance.
+     * @param {string} fase - The fase to render (e.g., 'fase1', 'fase2', 'fase3').
+     */
+    function renderFase(fase) {
+      const containerId = `tab-content-${fase.slice(-1)}`;
+      const container = paneElement.querySelector(`#${containerId}`);
+      if (!container) return;
+
+      // Ensure the main question wrapper exists or create it
+      let questionWrapper = container.querySelector('.question-wrapper');
+      if (!questionWrapper) {
+        questionWrapper = document.createElement('div');
+        questionWrapper.className = 'question-wrapper';
+        container.appendChild(questionWrapper);
       }
 
-      // Modified to return the scoreboard element instead of prepending
-      function createScoreboard(fase) {
-          const total = exercises[fase].length;
-          const current = appState.currentQuestion[fase] + 1;
-          const correct = appState[fase].answers.filter(a => a && a.isCorrect).length;
-          const answered = appState[fase].answers.filter(a => a && a.userAnswer !== null).length;
-          
-          const scoreboard = document.createElement('div');
-          scoreboard.id = `scoreboard-${fase}`; // Add ID for easier selection
-          scoreboard.className = 'flex justify-between items-center text-sm text-slate-500 mb-4 pb-4 border-b border-slate-200';
-          scoreboard.innerHTML = `
-              <div class="flex items-center gap-4">
-                  <span>Domanda: <strong>${current > total ? total : current}/${total}</strong></span>
-                  <div class="flex items-center gap-1">
-                      <input type="number" id="jump-to-${fase}" class="w-16 text-center border border-slate-300 rounded-md text-sm p-1" min="1" max="${total}" value="${current > total ? total : current}">
-                      <button id="jump-btn-${fase}" class="text-xs bg-slate-200 hover:bg-slate-300 font-bold py-1 px-2 rounded-lg">Vai</button>
-                  </div>
-              </div>
-              <span>Corrette: <strong>${correct}/${answered}</strong></span>
-          `;
-          return scoreboard; // Return the element
-      }
-      
-      // Function to create question-specific notes area
-      function createNotesArea(fase, index, container) {
-           const notesArea = document.createElement('div');
-           notesArea.className = 'mt-4';
-           notesArea.innerHTML = `
-              <label for="notes-${fase}-${index}" class="block text-sm font-medium text-slate-600">Note per la domanda:</label>
-              <textarea id="notes-${fase}-${index}" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-slate-50" rows="3">${appState[fase].answers[index].note || ''}</textarea>
-           `;
-           container.appendChild(notesArea);
-           
-           const textarea = notesArea.querySelector('textarea');
-           textarea.addEventListener('keyup', () => {
-               appState[fase].answers[index].note = textarea.value;
-           });
-           return notesArea; // Return the element for consistency, though not used for insertion here
+      // Update/Append Scoreboard
+      const scoreboard = createScoreboard(fase);
+      // Prepend scoreboard if not already the first child
+      if (container.firstChild !== scoreboard) {
+        container.insertBefore(scoreboard, container.firstChild);
       }
 
-      // Modified to return the phase notes element instead of appending
-      function createPhaseNotesArea(fase) {
-          let phaseNotesEl = document.createElement('div');
-          phaseNotesEl.id = `phase-notes-container-${fase}`;
-          phaseNotesEl.className = 'mt-6 p-4 rounded-lg border border-slate-300 bg-slate-50'; // Apply lighter background
-          phaseNotesEl.innerHTML = `
-              <label for="phase-notes-${fase}" class="block text-sm font-medium text-slate-600">Note per questa fase:</label>
-              <textarea id="phase-notes-${fase}" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-slate-50" rows="4"></textarea>
-          `;
-          const textarea = phaseNotesEl.querySelector('textarea');
-          textarea.value = appState[fase].phaseNote || '';
-          textarea.addEventListener('keyup', () => {
-              appState[fase].phaseNote = textarea.value;
+      const index = appState.currentQuestion[fase];
+      if (index >= exercises[fase].length) {
+        // Fase completed view
+        questionWrapper.innerHTML = `<div class="text-center p-8"><h3 class="text-xl font-bold">Fase Completata!</h3><p>${appState[fase].answers.filter(a => a.isCorrect).length} / ${exercises[fase].length} corrette.</p></div>`;
+
+        const navContainer = document.createElement('div');
+        navContainer.className = "flex justify-center items-center gap-4 pt-4";
+        navContainer.innerHTML = `<button id="prev-${fase}" class="bg-slate-500 text-white font-bold py-2 px-6 rounded-lg">Precedente</button>`;
+        questionWrapper.appendChild(navContainer);
+        addNavigationListeners(fase, questionWrapper);
+        return;
+      }
+
+      const ex = exercises[fase][index];
+      const answerState = appState[fase].answers[index];
+
+      let contentHTML = '';
+      if (fase === 'fase1') {
+        contentHTML = `
+            <div class="space-y-4">
+                <p class="text-lg text-slate-600">La seguente frase è grammaticalmente corretta?</p>
+                <div class="p-4 bg-slate-100 rounded-lg text-xl text-center font-semibold text-slate-800">${ex.question}</div>
+                <div class="flex justify-center space-x-4 pt-4">
+                    <button class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors" data-fase="fase1" data-answer="true">Vero</button>
+                    <button class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors" data-fase="fase1" data-answer="false">Falso</button>
+                </div>
+            </div>`;
+      } else if (fase === 'fase2') {
+        contentHTML = `
+            <div class="space-y-4">
+                <p class="text-lg text-slate-600">Scegli l'opzione corretta per completare la frase.</p>
+                <div class="p-4 bg-slate-100 rounded-lg text-xl text-center font-semibold text-slate-800">${ex.question}</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                    ${ex.options.map(opt => `<button class="fase-btn border-2 font-bold py-3 px-6 rounded-lg transition-colors" data-fase="fase2" data-answer="${opt}">${opt}</button>`).join('')}
+                </div>
+            </div>`;
+      } else if (fase === 'fase3') {
+        contentHTML = `
+            <div class="space-y-4">
+                <p class="text-lg text-slate-600">Riscrivi o completa la frase usando una struttura con il congiuntivo.</p>
+                <div class="p-4 bg-slate-100 rounded-lg space-y-2">
+                    <p class="text-slate-600"><strong>Frase di partenza:</strong> "${ex.prompt}"</p>
+                    <p class="text-xl font-semibold text-slate-800">${ex.question} <input type="text" id="fase3-input" class="font-normal text-base border-b-2 border-slate-300 focus:border-indigo-500 outline-none w-1/2 bg-slate-100"></p>
+                </div>
+                <div class="flex justify-center space-x-4 pt-4">
+                    <button id="check-fase3" class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors">Controlla</button>
+                </div>
+            </div>`;
+      }
+
+      // Update question content and navigation buttons
+      questionWrapper.innerHTML = `${contentHTML}<div class="feedback-container mt-4"></div><div class="flex justify-center items-center gap-4 pt-4"><button id="prev-${fase}" class="bg-slate-500 text-white font-bold py-2 px-6 rounded-lg">Precedente</button><button id="next-${fase}" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg">Prossimo</button></div>`;
+
+      // Append/Update notes areas
+      const notesArea = createNotesArea(fase, index);
+      questionWrapper.appendChild(notesArea);
+
+      const phaseNotesEl = createPhaseNotesArea(fase);
+      questionWrapper.appendChild(phaseNotesEl); // Phase notes below question notes
+
+      // Handle feedback and disable inputs if answered
+      if (answerState.userAnswer !== null) {
+        const feedbackContainer = questionWrapper.querySelector('.feedback-container');
+        const feedbackEl = createFeedbackArea(fase, index, answerState.isCorrect, ex.explanation);
+        feedbackContainer.innerHTML = ''; // Clear previous feedback
+        feedbackContainer.appendChild(feedbackEl);
+
+        if (fase === 'fase1' || fase === 'fase2') {
+          questionWrapper.querySelectorAll('.fase-btn').forEach(b => {
+            b.disabled = true;
+            const isCorrectAnswer = String(ex.answer) === b.dataset.answer;
+            const isUserAnswer = String(answerState.userAnswer) === b.dataset.answer;
+            if (isCorrectAnswer) b.classList.add('btn-correct');
+            if (isUserAnswer && !answerState.isCorrect) b.classList.add('btn-incorrect');
+            if (!isCorrectAnswer && !isUserAnswer) b.classList.add('opacity-50');
           });
-          return phaseNotesEl; // Return the element
+        } else { // fase3
+          const inputEl = questionWrapper.querySelector('#fase3-input');
+          inputEl.value = answerState.userAnswer;
+          inputEl.disabled = true;
+          questionWrapper.querySelector('#check-fase3').disabled = true;
+        }
+
+      } else {
+        // Clear feedback if question is not answered
+        const feedbackContainer = questionWrapper.querySelector('.feedback-container');
+        if (feedbackContainer) feedbackContainer.innerHTML = '';
+        addPhaseListeners(fase, questionWrapper); // Re-attach listeners for unanswered questions
       }
 
-      function createFeedbackArea(fase, index, container, isCorrect, explanation) {
-          const feedbackEl = document.createElement('div');
-          feedbackEl.className = 'mt-4 p-4 border-l-4 rounded-r-lg';
-          feedbackEl.classList.add(isCorrect ? 'feedback-correct' : 'feedback-incorrect');
-          
-          let markCorrectBtn = '';
-          if (!isCorrect) {
-              markCorrectBtn = `<button class="mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-yellow-800 font-bold py-1 px-2 rounded-lg ml-4" data-fase="${fase}" data-index="${index}">Segna come Corretta</button>`;
-          }
-          
-          feedbackEl.innerHTML = explanation + markCorrectBtn;
-          container.appendChild(feedbackEl);
+      addNavigationListeners(fase, questionWrapper); // Always attach navigation listeners
+    }
 
-          if (!isCorrect) {
-              feedbackEl.querySelector('.mark-correct-btn').addEventListener('click', (e) => {
-                  const { fase, index } = e.target.dataset;
-                  appState[fase].answers[parseInt(index)].isCorrect = true;
-                  rerenderAll();
-              });
+    /**
+     * Attaches navigation listeners (Previous, Next, Jump) for a given fase.
+     * @param {string} fase - The current fase.
+     * @param {HTMLElement} container - The DOM element containing the navigation buttons.
+     */
+    function addNavigationListeners(fase, container) {
+      const prevBtn = container.querySelector(`#prev-${fase}`);
+      const nextBtn = container.querySelector(`#next-${fase}`);
+      const jumpBtn = container.querySelector(`#jump-btn-${fase}`);
+      const jumpInput = container.querySelector(`#jump-to-${fase}`);
+      const index = appState.currentQuestion[fase];
+      const total = exercises[fase].length;
+
+      // Disable 'Previous' button if at the first question
+      if (prevBtn) {
+        prevBtn.disabled = index <= 0;
+        prevBtn.classList.toggle('opacity-50', index <= 0);
+        prevBtn.classList.toggle('cursor-not-allowed', index <= 0);
+        prevBtn.onclick = () => { // Use onclick for single listener
+          if (appState.currentQuestion[fase] > 0) {
+            appState.currentQuestion[fase]--;
+            renderFase(fase);
+            saveExerciseState(tab); // Auto-save on navigation
           }
+        };
       }
 
-      function renderFase(fase) {
-          const containerId = `tab-content-${fase.slice(-1)}`;
-          const container = paneElement.querySelector(`#${containerId}`);
-          if (!container) return;
-
-          // Remove existing dynamic elements to re-render them in correct order
-          // This is crucial for a clean render without clearing static tab-content structure
-          let existingPhaseNotes = container.querySelector(`#phase-notes-container-${fase}`);
-          if (existingPhaseNotes) existingPhaseNotes.remove();
-
-          let existingScoreboard = container.querySelector(`#scoreboard-${fase}`);
-          if (existingScoreboard) existingScoreboard.remove();
-
-          let existingQuestionWrapper = container.querySelector('.question-wrapper');
-          if (existingQuestionWrapper) existingQuestionWrapper.remove();
-
-          // 1. Create and append the Scoreboard first
-          const scoreboard = createScoreboard(fase);
-          container.appendChild(scoreboard);
-
-          // 2. Create and append the Question Wrapper
-          const questionWrapper = document.createElement('div');
-          questionWrapper.className = 'question-wrapper';
-          container.appendChild(questionWrapper);
-
-          const index = appState.currentQuestion[fase];
-          if (index >= exercises[fase].length) {
-              questionWrapper.innerHTML = `<div class="text-center p-8"><h3 class="text-xl font-bold">Fase Completata!</h3><p>${appState[fase].answers.filter(a=>a.isCorrect).length} / ${exercises[fase].length} corrette.</p></div>`;
-              
-              const navContainer = document.createElement('div');
-              navContainer.className = "flex justify-center items-center gap-4 pt-4";
-              navContainer.innerHTML = `<button id="prev-${fase}" class="bg-slate-500 text-white font-bold py-2 px-6 rounded-lg">Precedente</button>`;
-              questionWrapper.appendChild(navContainer); // Append navigation to questionWrapper
-              addNavigationListeners(fase, questionWrapper); // Listeners on questionWrapper
-              return;
+      // Update 'Next' button text if at the last question
+      if (nextBtn) {
+        nextBtn.textContent = index >= total - 1 ? 'Fine' : 'Prossimo';
+        nextBtn.onclick = () => { // Use onclick for single listener
+          if (appState.currentQuestion[fase] < total) {
+            appState.currentQuestion[fase]++;
+            renderFase(fase);
+            saveExerciseState(tab); // Auto-save on navigation
           }
-
-          const ex = exercises[fase][index];
-          const answerState = appState[fase].answers[index];
-          
-          let contentHTML = '';
-          if (fase === 'fase1') {
-              contentHTML = `
-                  <div class="space-y-4">
-                      <p class="text-lg text-slate-600">La seguente frase è grammaticalmente corretta?</p>
-                      <div class="p-4 bg-slate-100 rounded-lg text-xl text-center font-semibold text-slate-800">${ex.question}</div>
-                      <div class="flex justify-center space-x-4 pt-4">
-                          <button class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors" data-fase="fase1" data-answer="true">Vero</button>
-                          <button class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors" data-fase="fase1" data-answer="false">Falso</button>
-                      </div>
-                  </div>`;
-          } else if (fase === 'fase2') {
-              contentHTML = `
-                  <div class="space-y-4">
-                      <p class="text-lg text-slate-600">Scegli l'opzione corretta per completare la frase.</p>
-                      <div class="p-4 bg-slate-100 rounded-lg text-xl text-center font-semibold text-slate-800">${ex.question}</div>
-                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                          ${ex.options.map(opt => `<button class="fase-btn border-2 font-bold py-3 px-6 rounded-lg transition-colors" data-fase="fase2" data-answer="${opt}">${opt}</button>`).join('')}
-                      </div>
-                  </div>`;
-          } else if (fase === 'fase3') {
-              contentHTML = `
-                  <div class="space-y-4">
-                      <p class="text-lg text-slate-600">Riscrivi o completa la frase usando una struttura con il congiuntivo.</p>
-                      <div class="p-4 bg-slate-100 rounded-lg space-y-2">
-                          <p class="text-slate-600"><strong>Frase di partenza:</strong> "${ex.prompt}"</p>
-                          <p class="text-xl font-semibold text-slate-800">${ex.question} <input type="text" id="fase3-input" class="font-normal text-base border-b-2 border-slate-300 focus:border-indigo-500 outline-none w-1/2 bg-slate-100"></p>
-                      </div>
-                      <div class="flex justify-center space-x-4 pt-4">
-                          <button id="check-fase3" class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors">Controlla</button>
-                      </div>
-                  </div>`;
-          }
-
-          questionWrapper.innerHTML = `${contentHTML}<div class="feedback-container mt-4"></div><div class="flex justify-center items-center gap-4 pt-4"><button id="prev-${fase}" class="bg-slate-500 text-white font-bold py-2 px-6 rounded-lg">Precedente</button><button id="next-${fase}" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg">Prossimo</button></div>`;
-          
-          // Create and append the question-specific notes area
-          createNotesArea(fase, index, questionWrapper); 
-
-          // Create and append the Phase Notes Area within the questionWrapper, AFTER the question-specific notes
-          const phaseNotesEl = createPhaseNotesArea(fase);
-          questionWrapper.appendChild(phaseNotesEl);
-
-
-          if (answerState.userAnswer !== null) {
-              const feedbackContainer = questionWrapper.querySelector('.feedback-container');
-              createFeedbackArea(fase, index, feedbackContainer, answerState.isCorrect, ex.explanation);
-              
-              if(fase === 'fase1' || fase === 'fase2') {
-                  questionWrapper.querySelectorAll('.fase-btn').forEach(b => {
-                      b.disabled = true;
-                      const isCorrectAnswer = String(ex.answer) === b.dataset.answer;
-                      const isUserAnswer = String(answerState.userAnswer) === b.dataset.answer;
-                      if (isCorrectAnswer) b.classList.add('btn-correct');
-                      if (isUserAnswer && !answerState.isCorrect) b.classList.add('btn-incorrect');
-                      if (!isCorrectAnswer && !isUserAnswer) b.classList.add('opacity-50');
-                  });
-              } else { // fase3
-                  const inputEl = questionWrapper.querySelector('#fase3-input');
-                  inputEl.value = answerState.userAnswer;
-                  inputEl.disabled = true;
-                  questionWrapper.querySelector('#check-fase3').disabled = true;
-              }
-
-          } else {
-              addPhaseListeners(fase, questionWrapper);
-          }
-
-          addNavigationListeners(fase, questionWrapper);
-      }
-      
-      function addNavigationListeners(fase, container) {
-          const prevBtn = container.querySelector(`#prev-${fase}`);
-          const nextBtn = container.querySelector(`#next-${fase}`);
-          const jumpBtn = container.querySelector(`#jump-btn-${fase}`);
-          const jumpInput = container.querySelector(`#jump-to-${fase}`);
-          const index = appState.currentQuestion[fase];
-          const total = exercises[fase].length;
-
-          if (index <= 0) {
-              prevBtn.disabled = true;
-              prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
-          }
-          if (nextBtn && index >= total - 1) {
-              nextBtn.textContent = 'Fine';
-          }
-          
-          // Ensure prevBtn exists before adding listener
-          if (prevBtn) {
-              prevBtn.addEventListener('click', () => {
-                  if (appState.currentQuestion[fase] > 0) {
-                      appState.currentQuestion[fase]--;
-                      renderFase(fase);
-                  }
-              });
-          }
-
-          if(nextBtn) {
-              nextBtn.addEventListener('click', () => {
-                  if (appState.currentQuestion[fase] < total) {
-                      appState.currentQuestion[fase]++;
-                      renderFase(fase);
-                  }
-              });
-          }
-
-          // Ensure jumpBtn exists before adding listener
-          if (jumpBtn) {
-              jumpBtn.addEventListener('click', () => {
-                  const questionNum = parseInt(jumpInput.value);
-                  if (questionNum >= 1 && questionNum <= total) { // Corrected condition: <= total
-                      appState.currentQuestion[fase] = questionNum - 1;
-                      renderFase(fase);
-                  }
-              });
-          }
-          
-          // Ensure jumpInput exists before adding listener
-          if (jumpInput) {
-              jumpInput.addEventListener('keydown', (e) => {
-                  if (e.key === 'Enter' && jumpBtn) { // Also ensure jumpBtn exists for click
-                      jumpBtn.click();
-                  }
-              });
-          }
+        };
       }
 
-      function addPhaseListeners(fase, container) {
-          if (fase === 'fase1' || fase === 'fase2') {
-              container.querySelectorAll('.fase-btn').forEach(btn => {
-                  btn.classList.add('btn-neutral');
-                  btn.addEventListener('click', (e) => {
-                      const userAnswer = e.target.dataset.answer === 'true' ? true : e.target.dataset.answer === 'false' ? false : e.target.dataset.answer;
-                      const index = appState.currentQuestion[fase];
-                      appState[fase].answers[index].userAnswer = userAnswer;
-                      appState[fase].answers[index].isCorrect = userAnswer === exercises[fase][index].answer;
-                      renderFase(fase);
-                  });
-              });
-          } else { // fase3
-              const checkBtn = container.querySelector('#check-fase3');
-              const inputEl = container.querySelector('#fase3-input');
-              checkBtn.classList.add('btn-neutral');
-              checkBtn.addEventListener('click', () => {
-                  const userAnswer = inputEl.value.trim();
-                  const index = appState.currentQuestion[fase];
-                  const correctAnswer = exercises.fase3[index].answer.trim();
-                  appState.fase3.answers[index].userAnswer = userAnswer;
-                  appState.fase3.answers[index].isCorrect = userAnswer.toLowerCase().replace(/[.,]/g, '') === correctAnswer.toLowerCase().replace(/[.,]/g, '');
-                  renderFase('fase3');
-              });
-              inputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') checkBtn.click(); });
+      // Jump to question functionality
+      if (jumpBtn && jumpInput) {
+        jumpBtn.onclick = () => { // Use onclick for single listener
+          const questionNum = parseInt(jumpInput.value);
+          if (!isNaN(questionNum) && questionNum >= 1 && questionNum <= total) {
+            appState.currentQuestion[fase] = questionNum - 1;
+            renderFase(fase);
+            saveExerciseState(tab); // Auto-save on jump
           }
+        };
+        jumpInput.onkeydown = (e) => { // Use onkeydown for single listener
+          if (e.key === 'Enter') {
+            jumpBtn.click();
+          }
+        };
       }
-      
-      function rerenderAll() {
-          renderFase('fase1');
-          renderFase('fase2');
-          renderFase('fase3');
-      }
+    }
 
-      // Main execution for exercise
-      initializeState();
-      rerenderAll();
-
-      // Attach event listeners for tabs and global buttons
-      paneElement.querySelectorAll('.tab-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-              const tabNum = btn.id.split('-')[2];
-              paneElement.querySelectorAll('.tab-btn').forEach(b => b.classList.replace('tab-active', 'tab-inactive'));
-              btn.classList.replace('tab-inactive', 'tab-active');
-              paneElement.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-              paneElement.querySelector(`#tab-content-${tabNum}`).classList.remove('hidden');
-          });
-      });
-
-      paneElement.querySelector('#reset-btn').addEventListener('click', () => {
-          // Replaced confirm() with direct action
-          tab.exerciseState = null;
-          initializeState();
-          rerenderAll();
-      });
-      
-      // Save/Load functionality
-      const saveBtn = paneElement.querySelector('#save-btn');
-      const loadBtn = paneElement.querySelector('#load-btn');
-      const fileInput = document.createElement('input');
-      fileInput.type = 'file';
-      fileInput.accept = '.json';
-
-      saveBtn.addEventListener('click', () => {
-          const dataStr = JSON.stringify(tab.exerciseState, null, 2);
-          const blob = new Blob([dataStr], {type: "application/json"});
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `${tab.title}-progress.json`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-      });
-
-      loadBtn.addEventListener('click', () => {
-          fileInput.click();
-      });
-
-      fileInput.addEventListener('change', (event) => {
-          const file = event.target.files[0];
-          if (!file) return;
-          const reader = new FileReader();
-          reader.onload = (e) => {
-              try {
-                  const newState = JSON.parse(e.target.result);
-                  if (newState.fase1 && newState.fase2 && newState.fase3) {
-                      tab.exerciseState = newState;
-                      initializeState();
-                      rerenderAll();
-                  } else { throw new Error("Invalid JSON structure"); }
-              } catch (error) { console.error("Error loading JSON:", error); }
+    /**
+     * Attaches listeners for answering questions in each fase.
+     * @param {string} fase - The current fase.
+     * @param {HTMLElement} container - The DOM element containing the question inputs/buttons.
+     */
+    function addPhaseListeners(fase, container) {
+      if (fase === 'fase1' || fase === 'fase2') {
+        container.querySelectorAll('.fase-btn').forEach(btn => {
+          btn.classList.add('btn-neutral'); // Ensure neutral style initially
+          btn.onclick = (e) => { // Use onclick for single listener
+            const userAnswer = e.target.dataset.answer === 'true' ? true : e.target.dataset.answer === 'false' ? false : e.target.dataset.answer;
+            const index = appState.currentQuestion[fase];
+            appState[fase].answers[index].userAnswer = userAnswer;
+            appState[fase].answers[index].isCorrect = userAnswer === exercises[fase][index].answer;
+            saveExerciseState(tab); // Auto-save on answer
+            renderFase(fase);
           };
-          reader.readAsText(file);
-          fileInput.value = ''; // Reset for next load
-      });
+        });
+      } else { // fase3
+        const checkBtn = container.querySelector('#check-fase3');
+        const inputEl = container.querySelector('#fase3-input');
+        if (checkBtn && inputEl) {
+          checkBtn.classList.add('btn-neutral'); // Ensure neutral style initially
+          checkBtn.onclick = () => { // Use onclick for single listener
+            const userAnswer = inputEl.value.trim();
+            const index = appState.currentQuestion[fase];
+            const correctAnswer = exercises.fase3[index].answer.trim();
+            appState.fase3.answers[index].userAnswer = userAnswer;
+            // Case-insensitive and punctuation-agnostic comparison
+            appState.fase3.answers[index].isCorrect = userAnswer.toLowerCase().replace(/[.,]/g, '') === correctAnswer.toLowerCase().replace(/[.,]/g, '');
+            saveExerciseState(tab); // Auto-save on answer
+            renderFase('fase3');
+          };
+          inputEl.onkeydown = (e) => { // Use onkeydown for single listener
+            if (e.key === 'Enter') checkBtn.click();
+          };
+        }
+      }
+    }
+
+    /**
+     * Rerenders all fases of the exercise.
+     */
+    function rerenderAll() {
+      renderFase('fase1');
+      renderFase('fase2');
+      renderFase('fase3');
+    }
+
+    // Main execution for exercise initialization
+    initializeState(); // Load or create initial state
+    rerenderAll(); // Render the UI based on the state
+
+    // Attach event listeners for phase tab buttons
+    paneElement.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.onclick = () => { // Use onclick for single listener
+        const tabNum = btn.id.split('-')[2];
+        paneElement.querySelectorAll('.tab-btn').forEach(b => b.classList.replace('tab-active', 'tab-inactive'));
+        btn.classList.replace('tab-inactive', 'tab-active');
+        paneElement.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        paneElement.querySelector(`#tab-content-${tabNum}`).classList.remove('hidden');
+      };
+    });
+
+    // Reset button functionality
+    paneElement.querySelector('#reset-btn').onclick = async () => { // Use onclick for single listener
+      const confirmReset = true; // No confirm dialog as per instructions
+      if (confirmReset) {
+        // Reset state in main process (deletes file)
+        await window.api.resetExerciseState(tab.filePath);
+        // Reset local state
+        tab.exerciseState = null;
+        initializeState(); // Re-initialize state to default
+        rerenderAll(); // Re-render UI
+        console.log(`Exercise state reset for ${tab.filePath}`);
+      }
+    };
+
+    // Save/Load functionality (manual - now uses Electron dialog for saving)
+    const saveBtn = paneElement.querySelector('#save-btn');
+    const loadBtn = paneElement.querySelector('#load-btn');
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.json';
+
+    if (saveBtn) {
+      saveBtn.onclick = async () => { // Changed to async to await IPC call
+        const dataStr = JSON.stringify(tab.exerciseState, null, 2);
+        const defaultFilename = `${tab.title}-manual-progress.json`; // Suggest a default filename
+
+        const result = await window.api.showSaveDialogAndSaveFile(defaultFilename, dataStr);
+
+        if (result.success) {
+          console.log(`Manually saved progress for ${tab.title} to: ${result.path}`);
+        } else if (!result.canceled) {
+          console.error('Failed to manually save progress:', result.error);
+        }
+      };
+    }
+
+    if (loadBtn) {
+      loadBtn.onclick = () => { // Use onclick for single listener
+        fileInput.click();
+      };
+    }
+
+    fileInput.onchange = (event) => { // Use onchange for single listener
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const newState = JSON.parse(e.target.result);
+          if (newState.fase1 && newState.fase2 && newState.fase3) {
+            tab.exerciseState = newState;
+            initializeState(); // Re-initialize with loaded state
+            rerenderAll(); // Re-render UI
+            saveExerciseState(tab); // Auto-save the newly loaded state
+            console.log(`Manually loaded progress for ${tab.title}`);
+          } else { throw new Error("Invalid JSON structure"); }
+        } catch (error) {
+          console.error("Error loading JSON:", error);
+        }
+      };
+      reader.readAsText(file);
+      fileInput.value = ''; // Reset for next load
+    };
   }
 
 
   // --- UTILITY & SETUP FUNCTIONS ---
 
+  /**
+   * Displays the application version in the footer.
+   */
   async function displayAppVersion() {
     const version = await window.api.getAppVersion();
     if (appVersionSpan) appVersionSpan.innerText = version;
   }
 
+  /**
+   * Updates the network status indicator.
+   */
   function updateNetworkStatus() {
     const isOnline = navigator.onLine;
     if (networkIndicator) {
@@ -594,17 +778,22 @@ window.addEventListener('api-ready', () => {
 
   // --- INITIALIZATION ---
 
+  /**
+   * Initializes the main application components and event listeners.
+   */
   function initializeApp() {
     displayAppVersion();
     updateNetworkStatus();
-    
+
     newTabBtn.addEventListener('click', () => addTab(true));
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
-    
+
+    // Add initial tab on app startup
     addTab(true);
   }
 
+  // Ensure the app initializes after the DOM is fully loaded
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeApp);
   } else {
