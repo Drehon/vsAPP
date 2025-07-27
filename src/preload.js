@@ -20,3 +20,6 @@ window.api = {
   getLessonData: (filePath) => ipcRenderer.invoke('get-lesson-data', filePath),
   getAppVersion: () => ipcRenderer.invoke('get-app-version')
 };
+
+// Inform the renderer that the API is ready
+window.dispatchEvent(new Event('api-ready'));

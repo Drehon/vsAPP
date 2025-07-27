@@ -578,7 +578,7 @@ function updateNetworkStatus() {
 
 // --- INITIALIZATION ---
 
-document.addEventListener('DOMContentLoaded', () => {
+function initializeApp() {
   displayAppVersion();
   updateNetworkStatus();
   
@@ -587,4 +587,13 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('offline', updateNetworkStatus);
   
   addTab(true);
+}
+
+// Wait for the preload script to signal that the API is ready
+window.addEventListener('api-ready', () => {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApp);
+  } else {
+    initializeApp();
+  }
 });
