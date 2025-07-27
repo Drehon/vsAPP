@@ -25,3 +25,12 @@ I have now implemented the fix for the race condition.
 
 1.  **`src/renderer.js`:** I've wrapped the entire application logic within the `api-ready` event listener. This ensures that all the code that depends on `window.api` is executed only after the API has been initialized in the preload script. This prevents any race conditions from occurring on startup.
 
+------
+
+## ISSUE 2 - APP STUCK ON LOADING
+
+The application was getting stuck on "App Version: Loading..." because of a race condition between the preload script and the renderer script.
+
+The preload script was dispatching an `api-ready` event immediately after setting up the `window.api` object. However, the renderer script might not have been ready to receive this event, especially if the DOM was still loading. This meant the event was often missed, and the part of the code responsible for updating the app version was never called.
+
+To fix this, I've modified `src/preload.js` to wait for the `DOMContentLoaded` event before it dispatches the `api-ready` event. This ensures that the renderer process is ready and listening for the event, resolving the race condition and allowing the app to initialize correctly.

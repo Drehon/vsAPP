@@ -22,4 +22,6 @@ window.api = {
 };
 
 // Inform the renderer that the API is ready
-window.dispatchEvent(new Event('api-ready'));
+window.addEventListener('DOMContentLoaded', () => {
+  window.dispatchEvent(new Event('api-ready'));
+});
