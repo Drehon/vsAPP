@@ -178,11 +178,11 @@ window.addEventListener('api-ready', () => {
 
         // Create the main content wrapper
         const contentWrapper = document.createElement('div');
-        contentWrapper.className = "lesson-content bg-slate-200 text-slate-700 flex-grow flex flex-col";
+        contentWrapper.className = "lesson-content bg-slate-200 text-slate-700 flex-grow flex flex-col h-full";
 
         // Create the toolbar
         const toolbar = document.createElement('div');
-        toolbar.className = "sticky top-0 z-10 bg-slate-700 border-b border-slate-600 px-4 py-1 flex justify-between items-center";
+        toolbar.className = "flex-shrink-0 sticky top-0 z-10 bg-slate-700 border-b border-slate-600 px-4 py-1 flex justify-between items-center";
 
         // Left group: Home and Reload
         const leftGroup = document.createElement('div');
