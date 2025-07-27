@@ -43,3 +43,9 @@
 - **Frontend (`index.html` & `renderer.js`):**
   - **`index.html`:** Add an `<input type="text" id="search-bar">` to the static HTML structure of the "Home" view.
   - **`renderer.js`:** Attach an `input` event listener to the search bar. This listener will filter the list of lessons and exercises displayed on the "Home" view in real-time based on the user's input.
+
+  ---
+
+### EXECUTION - ADD NOTES FROM JULES BELOW
+
+>
