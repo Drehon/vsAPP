@@ -57,3 +57,6 @@ Also, i think on 'save button' test gets immediatly reset, can we decouple that?
 Basically each 'temp save' should remain 'CONSTANT' unless another save is loaded or a test is reset
 This includes, across tabs, if a tab is reloaded or even if the whole app is closed and opened once more
 I imagine to do this, EVERY time you open/switch tab you need to refresh the display (refer to temp save) and the temp save should update itself every time an answer is given or something is added to any note with input from user
+
+i'd propose creating a 'temp' folder in the main directory
+and call each save 'name of lesson or exercise'_templog
