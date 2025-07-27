@@ -29,7 +29,6 @@ window.addEventListener('api-ready', () => {
     tabs.forEach(tab => {
       const tabEl = document.createElement('div');
       tabEl.id = `tab-${tab.id}`;
-      // MODIFIED: Reduced height from h-10 to h-9 for a sleeker look.
       tabEl.className = `flex items-center justify-between h-9 px-4 cursor-pointer border-r border-slate-700 ${tab.active ? 'bg-indigo-600' : 'bg-slate-800 hover:bg-slate-700'}`;
       tabEl.innerHTML = `
         <span class="truncate pr-2">${tab.title}</span>
@@ -74,7 +73,7 @@ window.addEventListener('api-ready', () => {
    * @param {string} [filePath=null] - Optional file path to load into the new tab.
    * @param {string} [type='home'] - The type of content to load ('home', 'content', 'settings').
    */
-  function addTab(setActive = true, filePath = null, type = 'home') {
+  async function addTab(setActive = true, filePath = null, type = 'home') {
     if (setActive) {
       tabs.forEach(t => t.active = false); // Deactivate all other tabs if setting new one active
     }
@@ -96,16 +95,16 @@ window.addEventListener('api-ready', () => {
     contentPanes.appendChild(paneEl);
 
     if (type === 'content' && filePath) {
-      loadContentIntoTab(newTab.id, filePath);
+      await loadContentIntoTab(newTab.id, filePath);
     } else if (type === 'settings') {
-      loadSettingsIntoTab(newTab.id);
+      await loadSettingsIntoTab(newTab.id);
     } else {
-      loadHomeIntoTab(newTab.id);
+      await loadHomeIntoTab(newTab.id);
     }
 
     // Ensure the new tab is marked as active before rendering, or just render if not setting active
     if (setActive) {
-      switchTab(newTab.id);
+      await switchTab(newTab.id);
     } else {
       renderTabs();
     }
@@ -209,14 +208,14 @@ window.addEventListener('api-ready', () => {
 
         // Content area that will scroll
         const scrollableContent = document.createElement('div');
-        scrollableContent.className = 'flex-grow overflow-y-auto'; // This div will scroll
+        scrollableContent.className = 'flex-grow overflow-y-auto p-6 md:p-10';
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = content;
 
-        // Remove the old hard-coded buttons
-        const oldButtons = tempDiv.querySelector('.px-6.py-4.border-t.border-slate-200.bg-slate-100');
-        if (oldButtons) {
-            oldButtons.parentNode.removeChild(oldButtons);
+        // FIX: More robust selector for removing old buttons.
+        const oldButtonContainer = tempDiv.querySelector('#save-btn')?.parentNode;
+        if (oldButtonContainer && oldButtonContainer.querySelector('#load-btn')) {
+            oldButtonContainer.remove();
         }
 
         scrollableContent.innerHTML = tempDiv.innerHTML;
@@ -928,7 +927,7 @@ window.addEventListener('api-ready', () => {
   /**
    * Initializes the main application components and event listeners.
    */
-  function initializeApp() {
+  async function initializeApp() {
     displayAppVersion();
     updateNetworkStatus();
 
@@ -936,8 +935,8 @@ window.addEventListener('api-ready', () => {
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
 
-    // Add initial tab on app startup
-    addTab(true);
+    // Add initial tab on app startup and wait for it to complete
+    await addTab(true);
   }
 
   // Ensure the app initializes after the DOM is fully loaded

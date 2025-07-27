@@ -50,69 +50,15 @@
 ### EXECUTION - ADD NOTES FROM JULES BELOW
 
 > Part 1.1 has been implemented. The content toolbar has been added, and the old buttons have been removed from the exercise content.
-USER NOTES: Ideally both tabs and content toolbar should always be visible on screen. 
-For consistency tool bar should also be in the home page too, even if lacking most buttons (they could simply be greyed out instead of gone too)
-Tool bar is also a bit too bulky vertically, it should be sleeker, closer to that of an internet browser like mozilla visually
-Similarly, the tabs are a bit too bulky too
-Also, the open on github should open with default internet browser the linking
-Also, we need a setting page, accessible by a symbol in toolbar at the right side. 
-For now we can put two settings there.
-Location of save and save state folder:
-Browser used to open web links like the github one:
+USER NOTES: 
+Both tabs and content toolbar should always be visible on screen instead of being at the top of the page. 
+For consistency the tool bar should have the same background color it has on the home page on the various lessons and excercises
 
----
-### Phase 1: UI Layout and Polish
+Finally, currently there are two errors in the app console
+Visually the app works right except for the stuff just mentioned, still, here the errors:
 
-**Goal:** Address the immediate visual feedback regarding the size and persistence of the main UI elements.
+1)
+index.html:13 Refused to load the stylesheet 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' because it violates the following Content Security Policy directive: "style-src 'self' 'unsafe-inline'". Note that 'style-src-elem' was not explicitly set, so 'style-src' is used as a fallback.
 
-1.  **Refine Component Size:**
-    * **Action:** Modify `src/style.css` (or `src/index.css` if using `@layer components`) to reduce the `padding` and `height` for the main tab bar (`#tab-bar`) and the dynamically generated content toolbars. This will create a sleeker, less bulky appearance.
-2.  **Make Toolbar Persistent:**
-    * **Action:** Update the `loadHomeIntoTab` function in `src/renderer.js`. It will be modified to create and prepend the same toolbar structure used for content pages.
-3.  **Implement Disabled Buttons on Home:**
-    * **Action:** When rendering the toolbar for the "Home" view, the "Save", "Load", and "Reset" buttons will be created with the `disabled` attribute. They will be styled with greyed-out colors (e.g., `bg-slate-400`, `cursor-not-allowed`) to indicate they are not active on the home screen.
-
----
-### Phase 2: Functional Fixes & Settings Page Foundation
-
-**Goal:** Correct the "Open on GitHub" functionality and lay the groundwork for the new settings page.
-
-1.  **Fix External Link Behavior:**
-    * **Action (`main.js`):** Create a new IPC handler, `open-external-link`, that uses `shell.openExternal()` to securely open URLs in the user's default system browser.
-    * **Action (`preload.js`):** Expose the new `openExternalLink` function via the `window.api` bridge.
-    * **Action (`renderer.js`):** Change the GitHub icon in the toolbar from an `<a>` tag to a `<button>` that calls `window.api.openExternalLink` with the repository URL on click.
-2.  **Create Settings Page Structure:**
-    * **Action (`renderer.js`):** Add a new "Settings" icon-button to the right side of the toolbar. This button will open a dedicated "Settings" tab, similar to how content is loaded.
-    * **Action (New File):** Create a `src/settings-template.html` file to define the basic layout for the settings page. It will include headers and input placeholders for the configurable options.
-    * **Action (`main.js`):** Add a `get-settings-content` IPC handler to read and serve the `settings-template.html` file.
-    * **Action (`webpack.main.config.js`):** Update the `CopyWebpackPlugin` configuration to ensure `settings-template.html` is included in the application build.
-
----
-### Phase 3: Implement Save Path Configuration
-
-**Goal:** Enable users to customize the storage location for their save files and auto-saves.
-
-1.  **Backend Configuration Management:**
-    * **Action (`main.js`):** Implement logic that checks for a `config.json` file in the `userData` directory on startup. If it doesn't exist, create it with default paths.
-    * **Action (`main.js`):** Create `get-config` and `save-config` IPC handlers to read from and write to this `config.json` file.
-    * **Action (`main.js`):** Refactor all functions that access save paths (e.g., `save-progress`, `load-progress`, auto-save functions) to first read the custom path from the configuration file before falling back to the default location.
-2.  **Frontend Integration:**
-    * **Action (`preload.js`):** Expose the `getConfig` and `saveConfig` functions.
-    * **Action (`renderer.js`):** When the settings tab is rendered, it will call `window.api.getConfig()` and populate the input fields with the saved paths.
-3.  **Implement Folder Selection Dialog:**
-    * **Action (`main.js`):** Create a new `open-directory-dialog` IPC handler that uses Electron's `dialog.showOpenDialog` with the `openDirectory` property.
-    * **Action (`preload.js`):** Expose the new dialog function.
-    * **Action (`renderer.js`):** Add "Browse..." buttons to the settings page. On click, they will call the dialog function. The selected path will then be used to update the input field and saved via `window.api.saveConfig()`.
-
----
-### Phase 4: Implement External Link Browser Selection
-
-**Goal:** Allow the user to specify a preferred browser for opening external links. *Note: This is an advanced feature that goes beyond Electron's default behavior and will require system-level commands.*
-
-1.  **Backend Logic for Specific Browser Launch:**
-    * **Action (`main.js`):** The `open-external-link` IPC handler will be modified. It will check the user's configuration file for a preferred browser setting.
-    * If the setting is "Default", it will use `shell.openExternal()` as before.
-    * If a specific browser (e.g., "Chrome", "Firefox") is selected, it will use Node's `child_process` module (specifically `spawn`) to execute a platform-specific command to open the URL with that application (e.g., `start chrome "URL"` on Windows, `open -a "Google Chrome" "URL"` on macOS).
-2.  **Frontend UI for Browser Selection:**
-    * **Action (`settings-template.html`):** Add a `<select>` dropdown menu to the settings page with options for "Default", "Google Chrome", "Mozilla Firefox", etc.
-    * **Action (`renderer.js`):** When the settings page loads, fetch and display the currently saved browser preference. When the user changes the selection, call `window.api.saveConfig()` to update the `config.json` file.
+2) 
+index.html:1 Refused to load the stylesheet 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' because it violates the following Content Security Policy directive: "style-src 'self' 'unsafe-inline'". Note that 'style-src-elem' was not explicitly set, so 'style-src' is used as a fallback.
