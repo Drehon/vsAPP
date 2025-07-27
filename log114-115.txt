@@ -48,4 +48,8 @@
 
 ### EXECUTION - ADD NOTES FROM JULES BELOW
 
->
+> Part 1.1 has been implemented. The content toolbar has been added, and the old buttons have been removed from the exercise content.
+USER NOTES: Ideally both tabs and content toolbar should always be visible on screen. 
+For consistency tool bar should also be in the home page too, even if lacking most buttons (they could simply be greyed out instead of gone too)
+Tool bar is also a bit too bulky vertically, it should be sleeker, closer to that of an internet browser like mozilla visually
+Similarly, the tabs are a bit too bulky too

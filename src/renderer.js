@@ -169,33 +169,74 @@ window.addEventListener('api-ready', () => {
     tab.filePath = filePath;
     tab.title = filePath.split('/').pop().replace('.html', ''); // Set tab title from filename
 
-    const content = await window.api.getFileContent(filePath); // Fetch file content from main process
+    const content = await window.api.getFileContent(filePath);
     const pane = document.getElementById(`pane-${tab.id}`);
 
     if (pane && content) {
-      // Create a wrapper div for lesson/exercise content to apply specific styling
-      const wrapper = document.createElement('div');
-      wrapper.className = "lesson-content bg-slate-200 text-slate-700 h-full overflow-y-auto";
-      wrapper.innerHTML = content;
-      pane.innerHTML = ''; // Clear existing content
-      pane.appendChild(wrapper); // Append the new content wrapper
+        pane.innerHTML = ''; // Clear existing content
 
-      // Check if the loaded content is an exercise and initialize it
-      if (wrapper.querySelector('#exercise-data')) {
-        // Attempt to load saved exercise state
-        const savedState = await window.api.loadExerciseState(filePath);
-        if (savedState) {
-          tab.exerciseState = savedState;
-          console.log(`Loaded saved state for ${filePath}`);
-        } else {
-          tab.exerciseState = null; // Ensure it's null if no saved state found
-          console.log(`No saved state found for ${filePath}, initializing new.`);
+        // Create the main content wrapper
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = "lesson-content bg-slate-200 text-slate-700 h-full flex flex-col"; // Use flex-col
+
+        // Create the toolbar
+        const toolbar = document.createElement('div');
+        toolbar.className = "flex-shrink-0 bg-slate-100 border-b border-slate-300 px-4 py-2 flex justify-between items-center";
+
+        // Left group: Home and Reload
+        const leftGroup = document.createElement('div');
+        leftGroup.className = 'flex items-center gap-2';
+        leftGroup.innerHTML = `
+            <button id="home-btn-${tab.id}" title="Go Home" class="p-2 rounded-md hover:bg-slate-300"><svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg></button>
+            <button id="reload-btn-${tab.id}" title="Reload Content" class="p-2 rounded-md hover:bg-slate-300"><svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 4l16 16"></path></svg></button>
+        `;
+        toolbar.appendChild(leftGroup);
+
+        // Right group: Actions and Info
+        const rightGroup = document.createElement('div');
+        rightGroup.className = 'flex items-center gap-2';
+        // Placeholder for Save, Load, Reset, GitHub, and Notification
+        rightGroup.innerHTML = `
+            <button id="save-btn-${tab.id}" class="text-sm bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Salva</button>
+            <button id="load-btn-${tab.id}" class="text-sm bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Carica</button>
+            <button id="reset-btn-${tab.id}" class="text-sm bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Azzera</button>
+            <a href="https://github.com/tuo-username/tuo-repo" target="_blank" title="Open on GitHub" class="p-2 rounded-md hover:bg-slate-300"><svg class="w-6 h-6 text-slate-600" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+            <div id="update-badge-${tab.id}" class="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full border-2 border-slate-100 hidden" title="Update available!"></div>
+        `;
+        toolbar.appendChild(rightGroup);
+
+        // Content area that will scroll
+        const scrollableContent = document.createElement('div');
+        scrollableContent.className = 'flex-grow overflow-y-auto'; // This div will scroll
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = content;
+
+        // Remove the old hard-coded buttons
+        const oldButtons = tempDiv.querySelector('.px-6.py-4.border-t.border-slate-200.bg-slate-100');
+        if (oldButtons) {
+            oldButtons.parentNode.removeChild(oldButtons);
         }
-        initializeExercise(wrapper, tab); // Initialize the exercise logic
-      }
+
+        scrollableContent.innerHTML = tempDiv.innerHTML;
+
+        // Assemble the pane
+        contentWrapper.appendChild(toolbar);
+        contentWrapper.appendChild(scrollableContent);
+        pane.appendChild(contentWrapper);
+
+        // Attach event listeners to the new toolbar buttons
+        document.getElementById(`home-btn-${tab.id}`).addEventListener('click', () => loadHomeIntoTab(tab.id));
+        document.getElementById(`reload-btn-${tab.id}`).addEventListener('click', () => loadContentIntoTab(tab.id, filePath));
+
+        // Check if the loaded content is an exercise and initialize it
+        if (scrollableContent.querySelector('#exercise-data')) {
+            const savedState = await window.api.loadExerciseState(filePath);
+            tab.exerciseState = savedState ? savedState : null;
+            initializeExercise(scrollableContent, tab); // Pass the scrollable area
+        }
     }
     renderTabs(); // Re-render tabs to update title etc.
-  }
+}
 
   /**
    * Loads the home page content into a given tab.
@@ -688,45 +729,45 @@ window.addEventListener('api-ready', () => {
     });
 
     // Reset button functionality
-    paneElement.querySelector('#reset-btn').onclick = async () => { // Use onclick for single listener
-      const confirmReset = true; // No confirm dialog as per instructions
-      if (confirmReset) {
-        // Reset state in main process (deletes file)
-        await window.api.resetExerciseState(tab.filePath);
-        // Reset local state
-        tab.exerciseState = null;
-        initializeState(); // Re-initialize state to default
-        rerenderAll(); // Re-render UI
-        console.log(`Exercise state reset for ${tab.filePath}`);
-      }
-    };
+    const resetBtn = document.getElementById(`reset-btn-${tab.id}`);
+    if (resetBtn) {
+        resetBtn.onclick = async () => {
+            const confirmReset = true; // No confirm dialog
+            if (confirmReset) {
+                await window.api.resetExerciseState(tab.filePath);
+                tab.exerciseState = null;
+                initializeState();
+                rerenderAll();
+                console.log(`Exercise state reset for ${tab.filePath}`);
+            }
+        };
+    }
 
-    // Save/Load functionality (manual - now uses Electron dialog for saving)
-    const saveBtn = paneElement.querySelector('#save-btn');
-    const loadBtn = paneElement.querySelector('#load-btn');
+
+    // Save/Load functionality
+    const saveBtn = document.getElementById(`save-btn-${tab.id}`);
+    const loadBtn = document.getElementById(`load-btn-${tab.id}`);
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = '.json';
 
     if (saveBtn) {
-      saveBtn.onclick = async () => { // Changed to async to await IPC call
-        const dataStr = JSON.stringify(tab.exerciseState, null, 2);
-        const defaultFilename = `${tab.title}-manual-progress.json`; // Suggest a default filename
-
-        const result = await window.api.showSaveDialogAndSaveFile(defaultFilename, dataStr);
-
-        if (result.success) {
-          console.log(`Manually saved progress for ${tab.title} to: ${result.path}`);
-        } else if (!result.canceled) {
-          console.error('Failed to manually save progress:', result.error);
-        }
-      };
+        saveBtn.onclick = async () => {
+            const dataStr = JSON.stringify(tab.exerciseState, null, 2);
+            const defaultFilename = `${tab.title}-manual-progress.json`;
+            const result = await window.api.showSaveDialogAndSaveFile(defaultFilename, dataStr);
+            if (result.success) {
+                console.log(`Manually saved progress to: ${result.path}`);
+            } else if (!result.canceled) {
+                console.error('Failed to manually save progress:', result.error);
+            }
+        };
     }
 
     if (loadBtn) {
-      loadBtn.onclick = () => { // Use onclick for single listener
-        fileInput.click();
-      };
+        loadBtn.onclick = () => {
+            fileInput.click();
+        };
     }
 
     fileInput.onchange = (event) => { // Use onchange for single listener
