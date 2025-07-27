@@ -109,10 +109,13 @@ New errors - FIXED
 
 New errors - 
 
-grammar-exercise.js:275 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'addEventListener')
-    at initializeGrammarExercise (grammar-exercise.js:275:1)
+- `grammar-exercise.js:275 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'addEventListener')` was resolved by adding a null check before adding the event listener in `grammar-exercise.js`.
+
+
+Uncaught (in promise) TypeError: Cannot read properties of null (reading 'addEventListener')
+    at initializeGrammarExercise (grammar-exercise.js:567:1)
     at loadContentIntoTab (content-loader.js:93:42)
-initializeGrammarExercise @ grammar-exercise.js:275
+initializeGrammarExercise @ grammar-exercise.js:567
 loadContentIntoTab @ content-loader.js:93
 await in loadContentIntoTab
 eval @ content-loader.js:245
@@ -123,21 +126,21 @@ eval @ content-loader.js:245
 renderQuestions @ grammar-exercise.js:28
 switchTab @ grammar-exercise.js:188
 eval @ grammar-exercise.js:194
-grammar-exercise.js:275 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'addEventListener')
-    at initializeGrammarExercise (grammar-exercise.js:275:1)
+grammar-exercise.js:567 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'addEventListener')
+    at initializeGrammarExercise (grammar-exercise.js:567:1)
     at loadContentIntoTab (content-loader.js:93:42)
-initializeGrammarExercise @ grammar-exercise.js:275
+initializeGrammarExercise @ grammar-exercise.js:567
 loadContentIntoTab @ content-loader.js:93
 await in loadContentIntoTab
 eval @ content-loader.js:245
-3grammar-exercise.js:28 Uncaught TypeError: Cannot set properties of null (setting 'innerHTML')
+2grammar-exercise.js:28 Uncaught TypeError: Cannot set properties of null (setting 'innerHTML')
     at renderQuestions (grammar-exercise.js:28:1)
     at switchTab (grammar-exercise.js:188:1)
     at HTMLButtonElement.eval (grammar-exercise.js:194:1)
 renderQuestions @ grammar-exercise.js:28
 switchTab @ grammar-exercise.js:188
 eval @ grammar-exercise.js:194
-VM380:31 Uncaught (in promise) SyntaxError: Expected ',' or '}' after property value in JSON at position 7039 (line 31 column 252)
+VM364:31 Uncaught (in promise) SyntaxError: Expected ',' or '}' after property value in JSON at position 7039 (line 31 column 252)
     at JSON.parse (<anonymous>)
     at initializeGrammarExercise (grammar-exercise.js:8:24)
     at loadContentIntoTab (content-loader.js:93:42)

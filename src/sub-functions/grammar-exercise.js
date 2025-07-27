@@ -269,42 +269,46 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
     }
     
     function loadProgress() {
-        loadFileInput.click();
+        if (loadFileInput) {
+            loadFileInput.click();
+        }
     }
 
-    loadFileInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (!file) {
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const loadedData = JSON.parse(e.target.result);
-                
-                if (loadedData) {
-                    tab.exerciseState = loadedData;
-                    testState = loadedData;
-                }
-                
-                let blockToRender = 1;
-                for (let i = 1; i <= 3; i++) {
-                    if (!testState[i].completed) {
-                        blockToRender = i;
-                        break;
-                    }
-                }
-                switchTab(blockToRender);
-                alert('Progress loaded successfully!');
-
-            } catch (error) {
-                alert('Error loading progress: Invalid JSON file or data structure.');
-                console.error('Error loading progress:', error);
+    if (loadFileInput) {
+        loadFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
             }
-        };
-        reader.readAsText(file);
-    });
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const loadedData = JSON.parse(e.target.result);
+                    
+                    if (loadedData) {
+                        tab.exerciseState = loadedData;
+                        testState = loadedData;
+                    }
+                    
+                    let blockToRender = 1;
+                    for (let i = 1; i <= 3; i++) {
+                        if (!testState[i].completed) {
+                            blockToRender = i;
+                            break;
+                        }
+                    }
+                    switchTab(blockToRender);
+                    alert('Progress loaded successfully!');
+
+                } catch (error) {
+                    alert('Error loading progress: Invalid JSON file or data structure.');
+                    console.error('Error loading progress:', error);
+                }
+            };
+            reader.readAsText(file);
+        });
+    }
 
     function enterReviewMode(block, userAnswers) {
         paneElement.querySelectorAll(`form input, form select, form textarea`).forEach(el => {
