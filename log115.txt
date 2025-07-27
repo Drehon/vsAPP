@@ -1,3 +1,17 @@
+## UI/UX Improvements (1.1.6)
+
+### 1.2. Update Notification System 
+- **Backend (`main.js`):**
+  - Import `autoUpdater` from `electron-updater`.
+  - On `app.ready`, call `autoUpdater.checkForUpdatesAndNotify()`.
+  - Create a listener: `autoUpdater.on('update-available', ...)` that sends an `update-available` IPC message to the renderer process.
+- **Frontend (`preload.js` & `renderer.js`):**
+  - **`preload.js`:** Expose an `onUpdateAvailable` listener function.
+  - **`renderer.js`:** Use `window.api.onUpdateAvailable` to listen for the message. When received, make the notification badge on the toolbar visible.
+
+//
+//
+
 NEXT STEPS
 user NOTES
 
