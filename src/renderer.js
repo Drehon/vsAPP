@@ -67,6 +67,7 @@ function addTab(setActive = true) {
     view: 'home',
     filePath: null,
     active: true,
+    exerciseState: null,
   };
 
   tabs.push(newTab);
@@ -193,10 +194,14 @@ function initializeExercise(paneElement, tab) {
     if (!exerciseDataEl) return;
 
     const exercises = JSON.parse(exerciseDataEl.textContent);
-    const storageKey = `exerciseState-${tab.filePath}`;
     let appState;
 
     function initializeState() {
+        if (tab.exerciseState) {
+            appState = tab.exerciseState;
+            return;
+        }
+
         // Initialize state with a new 'phaseNote' for each fase
         const defaultState = {
             fase1: { answers: Array(exercises.fase1.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })), phaseNote: "" },
@@ -204,11 +209,8 @@ function initializeExercise(paneElement, tab) {
             fase3: { answers: Array(exercises.fase3.length).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" })), phaseNote: "" },
             currentQuestion: { fase1: 0, fase2: 0, fase3: 0 }
         };
-        appState = JSON.parse(localStorage.getItem(storageKey)) || defaultState;
-    }
-
-    function saveState() {
-        localStorage.setItem(storageKey, JSON.stringify(appState));
+        appState = defaultState;
+        tab.exerciseState = appState;
     }
 
     // Modified to return the scoreboard element instead of prepending
@@ -247,7 +249,6 @@ function initializeExercise(paneElement, tab) {
          const textarea = notesArea.querySelector('textarea');
          textarea.addEventListener('keyup', () => {
              appState[fase].answers[index].note = textarea.value;
-             saveState();
          });
          return notesArea; // Return the element for consistency, though not used for insertion here
     }
@@ -265,7 +266,6 @@ function initializeExercise(paneElement, tab) {
         textarea.value = appState[fase].phaseNote || '';
         textarea.addEventListener('keyup', () => {
             appState[fase].phaseNote = textarea.value;
-            saveState();
         });
         return phaseNotesEl; // Return the element
     }
@@ -287,7 +287,6 @@ function initializeExercise(paneElement, tab) {
             feedbackEl.querySelector('.mark-correct-btn').addEventListener('click', (e) => {
                 const { fase, index } = e.target.dataset;
                 appState[fase].answers[parseInt(index)].isCorrect = true;
-                saveState();
                 rerenderAll();
             });
         }
@@ -425,7 +424,6 @@ function initializeExercise(paneElement, tab) {
             prevBtn.addEventListener('click', () => {
                 if (appState.currentQuestion[fase] > 0) {
                     appState.currentQuestion[fase]--;
-                    saveState();
                     renderFase(fase);
                 }
             });
@@ -435,7 +433,6 @@ function initializeExercise(paneElement, tab) {
             nextBtn.addEventListener('click', () => {
                 if (appState.currentQuestion[fase] < total) {
                     appState.currentQuestion[fase]++;
-                    saveState();
                     renderFase(fase);
                 }
             });
@@ -447,7 +444,6 @@ function initializeExercise(paneElement, tab) {
                 const questionNum = parseInt(jumpInput.value);
                 if (questionNum >= 1 && questionNum <= total) { // Corrected condition: <= total
                     appState.currentQuestion[fase] = questionNum - 1;
-                    saveState();
                     renderFase(fase);
                 }
             });
@@ -472,7 +468,6 @@ function initializeExercise(paneElement, tab) {
                     const index = appState.currentQuestion[fase];
                     appState[fase].answers[index].userAnswer = userAnswer;
                     appState[fase].answers[index].isCorrect = userAnswer === exercises[fase][index].answer;
-                    saveState();
                     renderFase(fase);
                 });
             });
@@ -486,7 +481,6 @@ function initializeExercise(paneElement, tab) {
                 const correctAnswer = exercises.fase3[index].answer.trim();
                 appState.fase3.answers[index].userAnswer = userAnswer;
                 appState.fase3.answers[index].isCorrect = userAnswer.toLowerCase().replace(/[.,]/g, '') === correctAnswer.toLowerCase().replace(/[.,]/g, '');
-                saveState();
                 renderFase('fase3');
             });
             inputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') checkBtn.click(); });
@@ -516,7 +510,7 @@ function initializeExercise(paneElement, tab) {
 
     paneElement.querySelector('#reset-btn').addEventListener('click', () => {
         // Replaced confirm() with direct action
-        localStorage.removeItem(storageKey);
+        tab.exerciseState = null;
         initializeState();
         rerenderAll();
     });
@@ -529,7 +523,7 @@ function initializeExercise(paneElement, tab) {
     fileInput.accept = '.json';
 
     saveBtn.addEventListener('click', () => {
-        const dataStr = JSON.stringify(appState, null, 2);
+        const dataStr = JSON.stringify(tab.exerciseState, null, 2);
         const blob = new Blob([dataStr], {type: "application/json"});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -553,8 +547,8 @@ function initializeExercise(paneElement, tab) {
             try {
                 const newState = JSON.parse(e.target.result);
                 if (newState.fase1 && newState.fase2 && newState.fase3) {
-                    appState = newState;
-                    saveState();
+                    tab.exerciseState = newState;
+                    initializeState();
                     rerenderAll();
                 } else { throw new Error("Invalid JSON structure"); }
             } catch (error) { console.error("Error loading JSON:", error); }

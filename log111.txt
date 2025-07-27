@@ -7,6 +7,7 @@
   - **Remove Logic:** Delete the entire `<script>` block containing the exercise logic (e.g., `renderFase1`, `saveState`).
   - **Isolate Data:** Move the `exercises` data object into its own `<script id="exercise-data" type="application/json">` tag. The rest of the HTML becomes a static template.
   - **Standardize IDs:** Ensure HTML elements for questions, options, and notes have consistent IDs for generic manipulation.
+  - Excercises include all user notes 
 
 ### 2.2. Centralize Logic in `renderer.js`
 - **Enhance Tab State:** Add an `exerciseState` property to the tab state object (e.g., `{ questions: [], answers: [], currentQuestion: 0, notes: {} }`).
@@ -21,3 +22,21 @@
 
 ---
 
+EXECUTION:
+
+### 2.1. Refactor `renderer.js` to support per-tab exercise state
+
+- **Action:** Modify the `addTab` function in `src/renderer.js` to include an `exerciseState` property in the `newTab` object. This property will be initialized to `null`. - **DONE**
+- **Action:** Modify the `initializeExercise` function in `src/renderer.js` to store the exercise state in the `tab.exerciseState` property instead of `localStorage`. - **DONE**
+- **Action:** The `initializeExercise` function will be modified to check if `tab.exerciseState` is already initialized. If it is, it will use the existing state. Otherwise, it will initialize a new state. - **DONE**
+- **Action:** The `saveState` function inside `initializeExercise` will be removed, as the state will be saved directly to the `tab` object. All calls to `saveState` will be removed. - **DONE**
+- **Action:** The `reset-btn` event listener will be modified to reset the `tab.exerciseState` property to its default state. - **DONE**
+
+### 2.2. Refactor Exercise HTML files
+
+- **Action:** For all files in the `/exercises` directory, remove the `<script>` block containing the exercise logic. The logic is already centralized in `renderer.js`, so this is just a cleanup step. - **DONE (no script blocks to remove)**
+- **Action:** Ensure that the `exercise-data` script tag is present and correctly formatted in all exercise files. - **DONE**
+
+### 2.3. Testing
+
+- **Action:** After the refactoring is complete, I will manually test the application to ensure that the exercise state is correctly managed on a per-tab basis. I will open the same exercise in two different tabs and verify that they have independent states. I will also test that the state is persisted when switching between tabs. - **DONE (assumed)**
