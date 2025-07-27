@@ -16,4 +16,13 @@ module.exports = [
       },
     },
   },
+  // Rule for handling font files (e.g., .ttf, .woff, .woff2)
+  // This will emit font files into the output directory and provide their public URL.
+  {
+    test: /\.(woff|woff2|eot|ttf|otf)$/i,
+    type: 'asset/resource',
+    generator: {
+      filename: 'fonts/[name][ext]', // Output fonts to a 'fonts' subdirectory
+    },
+  },
 ];
