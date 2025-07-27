@@ -44,7 +44,7 @@ ipcMain.on('navigate', (event, relativePath) => {
 ipcMain.handle('get-home-content', async () => {
   const basePath = process.env.NODE_ENV === 'development'
     ? __dirname
-    : path.join(app.getAppPath(), 'src'); // In packaged app, files are in 'src'
+    : path.join(app.getAppPath(), '.webpack/main'); // Adjusted path for packaged app
   const filePath = path.join(basePath, 'home-template.html');
   try {
     const content = await fs.promises.readFile(filePath, 'utf-8');
@@ -54,6 +54,22 @@ ipcMain.handle('get-home-content', async () => {
     return null;
   }
 });
+
+// ADDED: IPC handler for the new settings page content
+ipcMain.handle('get-settings-content', async () => {
+  const basePath = process.env.NODE_ENV === 'development'
+    ? __dirname
+    : path.join(app.getAppPath(), '.webpack/main'); // Adjusted path for packaged app
+  const filePath = path.join(basePath, 'settings-template.html');
+  try {
+    const content = await fs.promises.readFile(filePath, 'utf-8');
+    return content;
+  } catch (err) {
+    console.error(`Failed to read settings template: ${err}`);
+    return null;
+  }
+});
+
 
 // MODIFIED: This handler now extracts only the content within the <body> tag.
 ipcMain.handle('get-file-content', async (event, relativePath) => {
@@ -82,6 +98,11 @@ ipcMain.on('navigate-home', (event) => {
   }
 });
 
+// ADDED: New handler to securely open external links in the default browser.
+ipcMain.handle('open-external-link', async (event, url) => {
+  await shell.openExternal(url);
+});
+
 
 app.on('ready', () => {
   const savesDir = path.join(app.getPath('userData'), 'saves');
@@ -95,7 +116,7 @@ app.on('ready', () => {
       responseHeaders: {
         ...details.responseHeaders,
         'Content-Security-Policy': [
-          `default-src 'self'; script-src 'self' 'unsafe-inline' ${process.env.NODE_ENV === 'development' ? "'unsafe-eval'" : ''}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;`
+          `default-src 'self'; script-src 'self' 'unsafe-inline' ${process.env.NODE_ENV === 'development' ? "'unsafe-eval'" : ''}; style-src 'self' 'unsafe-inline'; font-src 'self';`
         ]
       }
     });

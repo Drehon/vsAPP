@@ -29,7 +29,11 @@ window.api = {
   openSavesFolder: () => ipcRenderer.invoke('open-saves-folder'),
 
   // New IPC handler to show a save dialog and save a file (for manual saves)
-  showSaveDialogAndSaveFile: (defaultFilename, data) => ipcRenderer.invoke('show-save-dialog-and-save-file', { defaultFilename, data })
+  showSaveDialogAndSaveFile: (defaultFilename, data) => ipcRenderer.invoke('show-save-dialog-and-save-file', { defaultFilename, data }),
+
+  // ADDED: New handlers for Phase 2
+  openExternalLink: (url) => ipcRenderer.invoke('open-external-link', url),
+  getSettingsContent: () => ipcRenderer.invoke('get-settings-content'),
 };
 
 // Inform the renderer that the API is ready

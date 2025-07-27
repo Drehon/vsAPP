@@ -29,7 +29,8 @@ window.addEventListener('api-ready', () => {
     tabs.forEach(tab => {
       const tabEl = document.createElement('div');
       tabEl.id = `tab-${tab.id}`;
-      tabEl.className = `flex items-center justify-between h-10 px-4 cursor-pointer border-r border-slate-700 ${tab.active ? 'bg-indigo-600' : 'bg-slate-800 hover:bg-slate-700'}`;
+      // MODIFIED: Reduced height from h-10 to h-9 for a sleeker look.
+      tabEl.className = `flex items-center justify-between h-9 px-4 cursor-pointer border-r border-slate-700 ${tab.active ? 'bg-indigo-600' : 'bg-slate-800 hover:bg-slate-700'}`;
       tabEl.innerHTML = `
         <span class="truncate pr-2">${tab.title}</span>
         <button class="close-tab-btn w-6 h-6 rounded-full hover:bg-slate-600 flex-shrink-0 flex items-center justify-center">
@@ -71,8 +72,9 @@ window.addEventListener('api-ready', () => {
    * Adds a new tab to the application.
    * @param {boolean} [setActive=true] - Whether to make the new tab active.
    * @param {string} [filePath=null] - Optional file path to load into the new tab.
+   * @param {string} [type='home'] - The type of content to load ('home', 'content', 'settings').
    */
-  function addTab(setActive = true, filePath = null) {
+  function addTab(setActive = true, filePath = null, type = 'home') {
     if (setActive) {
       tabs.forEach(t => t.active = false); // Deactivate all other tabs if setting new one active
     }
@@ -93,11 +95,11 @@ window.addEventListener('api-ready', () => {
     paneEl.className = 'content-pane h-full w-full overflow-auto';
     contentPanes.appendChild(paneEl);
 
-    if (filePath) {
-      // If a file path is provided, load content into this new tab
+    if (type === 'content' && filePath) {
       loadContentIntoTab(newTab.id, filePath);
+    } else if (type === 'settings') {
+      loadSettingsIntoTab(newTab.id);
     } else {
-      // Otherwise, load the home page into the new tab
       loadHomeIntoTab(newTab.id);
     }
 
@@ -181,7 +183,7 @@ window.addEventListener('api-ready', () => {
 
         // Create the toolbar
         const toolbar = document.createElement('div');
-        toolbar.className = "flex-shrink-0 bg-slate-100 border-b border-slate-300 px-4 py-2 flex justify-between items-center";
+        toolbar.className = "flex-shrink-0 bg-slate-100 border-b border-slate-300 px-4 py-1 flex justify-between items-center";
 
         // Left group: Home and Reload
         const leftGroup = document.createElement('div');
@@ -195,12 +197,12 @@ window.addEventListener('api-ready', () => {
         // Right group: Actions and Info
         const rightGroup = document.createElement('div');
         rightGroup.className = 'flex items-center gap-2';
-        // Placeholder for Save, Load, Reset, GitHub, and Notification
         rightGroup.innerHTML = `
-            <button id="save-btn-${tab.id}" class="text-sm bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Salva</button>
-            <button id="load-btn-${tab.id}" class="text-sm bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Carica</button>
-            <button id="reset-btn-${tab.id}" class="text-sm bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Azzera</button>
-            <a href="https://github.com/tuo-username/tuo-repo" target="_blank" title="Open on GitHub" class="p-2 rounded-md hover:bg-slate-300"><svg class="w-6 h-6 text-slate-600" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+            <button id="save-btn-${tab.id}" class="text-sm bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-lg transition-colors">Salva</button>
+            <button id="load-btn-${tab.id}" class="text-sm bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded-lg transition-colors">Carica</button>
+            <button id="reset-btn-${tab.id}" class="text-sm bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-lg transition-colors">Azzera</button>
+            <button id="github-btn-${tab.id}" title="Open on GitHub" class="p-2 rounded-md hover:bg-slate-300"><svg class="w-6 h-6 text-slate-600" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></button>
+            <button id="settings-btn-${tab.id}" title="Settings" class="p-2 rounded-md hover:bg-slate-300"><svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></button>
             <div id="update-badge-${tab.id}" class="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full border-2 border-slate-100 hidden" title="Update available!"></div>
         `;
         toolbar.appendChild(rightGroup);
@@ -227,6 +229,9 @@ window.addEventListener('api-ready', () => {
         // Attach event listeners to the new toolbar buttons
         document.getElementById(`home-btn-${tab.id}`).addEventListener('click', () => loadHomeIntoTab(tab.id));
         document.getElementById(`reload-btn-${tab.id}`).addEventListener('click', () => loadContentIntoTab(tab.id, filePath));
+        document.getElementById(`github-btn-${tab.id}`).addEventListener('click', () => window.api.openExternalLink('https://github.com/Drehon/vsapp'));
+        document.getElementById(`settings-btn-${tab.id}`).addEventListener('click', () => addTab(true, null, 'settings'));
+
 
         // Check if the loaded content is an exercise and initialize it
         if (scrollableContent.querySelector('#exercise-data')) {
@@ -250,15 +255,118 @@ window.addEventListener('api-ready', () => {
     tab.filePath = null;
     tab.title = 'Home';
 
-    const homeContent = await window.api.getHomeContent(); // Fetch home content from main process
+    const homeContent = await window.api.getHomeContent();
     const pane = document.getElementById(`pane-${tab.id}`);
 
     if (pane && homeContent) {
-      pane.innerHTML = homeContent; // Set home content
-      attachHomeEventListeners(pane); // Attach event listeners for lesson/exercise links
+        pane.innerHTML = ''; // Clear existing content
+
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = "h-full flex flex-col bg-slate-800 text-white"; // Home theme
+
+        // Create the toolbar for Home
+        const toolbar = document.createElement('div');
+        toolbar.className = "flex-shrink-0 bg-slate-700 border-b border-slate-600 px-4 py-1 flex justify-between items-center";
+
+        // Left group: Home and Reload
+        const leftGroup = document.createElement('div');
+        leftGroup.className = 'flex items-center gap-2';
+        leftGroup.innerHTML = `
+            <button id="home-btn-${tab.id}" title="Go Home" class="p-2 rounded-md" disabled><svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg></button>
+            <button id="reload-btn-${tab.id}" title="Reload Home" class="p-2 rounded-md hover:bg-slate-600"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 4l16 16"></path></svg></button>
+        `;
+        toolbar.appendChild(leftGroup);
+
+        // Right group: Actions and Info (disabled)
+        const rightGroup = document.createElement('div');
+        rightGroup.className = 'flex items-center gap-2';
+        rightGroup.innerHTML = `
+            <button disabled class="text-sm bg-slate-500 text-white font-bold py-1 px-3 rounded-lg transition-colors cursor-not-allowed">Salva</button>
+            <button disabled class="text-sm bg-slate-500 text-white font-bold py-1 px-3 rounded-lg transition-colors cursor-not-allowed">Carica</button>
+            <button disabled class="text-sm bg-slate-500 text-white font-bold py-1 px-3 rounded-lg transition-colors cursor-not-allowed">Azzera</button>
+            <button id="github-btn-${tab.id}" title="Open on GitHub" class="p-2 rounded-md hover:bg-slate-600"><svg class="w-6 h-6 text-slate-400" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></button>
+            <button id="settings-btn-${tab.id}" title="Settings" class="p-2 rounded-md hover:bg-slate-600"><svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></button>
+            <div id="update-badge-${tab.id}" class="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full border-2 border-slate-700 hidden" title="Update available!"></div>
+        `;
+        toolbar.appendChild(rightGroup);
+
+        // Content area that will scroll
+        const scrollableContent = document.createElement('div');
+        scrollableContent.className = 'flex-grow overflow-y-auto';
+        scrollableContent.innerHTML = homeContent;
+
+        // Assemble the pane
+        contentWrapper.appendChild(toolbar);
+        contentWrapper.appendChild(scrollableContent);
+        pane.appendChild(contentWrapper);
+
+        // Attach event listeners
+        document.getElementById(`reload-btn-${tab.id}`).addEventListener('click', () => loadHomeIntoTab(tab.id));
+        document.getElementById(`github-btn-${tab.id}`).addEventListener('click', () => window.api.openExternalLink('https://github.com/Drehon/vsapp'));
+        document.getElementById(`settings-btn-${tab.id}`).addEventListener('click', () => addTab(true, null, 'settings'));
+        attachHomeEventListeners(scrollableContent);
     }
 
-    renderTabs(); // Re-render tabs to update title etc.
+    renderTabs();
+  }
+  
+  /**
+   * Loads the settings page content into a given tab.
+   * @param {number} tabId - The ID of the tab to load settings into.
+   */
+  async function loadSettingsIntoTab(tabId) {
+    const tab = tabs.find(t => t.id === tabId);
+    if (!tab) return;
+
+    tab.view = 'settings';
+    tab.filePath = null;
+    tab.title = 'Settings';
+
+    const settingsContent = await window.api.getSettingsContent();
+    const pane = document.getElementById(`pane-${tab.id}`);
+
+    if (pane && settingsContent) {
+      pane.innerHTML = ''; // Clear existing content
+
+      const contentWrapper = document.createElement('div');
+      contentWrapper.className = "h-full flex flex-col bg-slate-800 text-white"; // Settings theme
+
+      // Create the toolbar for Settings
+      const toolbar = document.createElement('div');
+      toolbar.className = "flex-shrink-0 bg-slate-700 border-b border-slate-600 px-4 py-1 flex justify-between items-center";
+      
+      // Left group
+      const leftGroup = document.createElement('div');
+      leftGroup.className = 'flex items-center gap-2';
+      leftGroup.innerHTML = `
+          <button id="home-btn-${tab.id}" title="Go Home" class="p-2 rounded-md hover:bg-slate-600"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg></button>
+          <button id="reload-btn-${tab.id}" title="Reload Settings" class="p-2 rounded-md hover:bg-slate-600"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 4l16 16"></path></svg></button>
+      `;
+      toolbar.appendChild(leftGroup);
+
+      // Right group
+      const rightGroup = document.createElement('div');
+      rightGroup.className = 'flex items-center gap-2';
+      rightGroup.innerHTML = `
+          <button id="github-btn-${tab.id}" title="Open on GitHub" class="p-2 rounded-md hover:bg-slate-600"><svg class="w-6 h-6 text-slate-400" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></button>
+          <button id="settings-btn-${tab.id}" title="Settings" class="p-2 rounded-md" disabled><svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></button>
+      `;
+      toolbar.appendChild(rightGroup);
+
+      const scrollableContent = document.createElement('div');
+      scrollableContent.className = 'flex-grow overflow-y-auto';
+      scrollableContent.innerHTML = settingsContent;
+
+      contentWrapper.appendChild(toolbar);
+      contentWrapper.appendChild(scrollableContent);
+      pane.appendChild(contentWrapper);
+
+      // Attach event listeners
+      document.getElementById(`home-btn-${tab.id}`).addEventListener('click', () => loadHomeIntoTab(tab.id));
+      document.getElementById(`reload-btn-${tab.id}`).addEventListener('click', () => loadSettingsIntoTab(tab.id));
+      document.getElementById(`github-btn-${tab.id}`).addEventListener('click', () => window.api.openExternalLink('https://github.com/Drehon/vsapp'));
+    }
+    renderTabs();
   }
 
   /**
@@ -293,11 +401,9 @@ window.addEventListener('api-ready', () => {
             e.preventDefault();
             const activeTab = tabs.find(t => t.active);
             if (activeTab.view === 'home') {
-              // If current tab is home, load content into it
               loadContentIntoTab(activeTab.id, `${folder}/${file}`);
             } else {
-              // Otherwise, open in a new tab
-              addTab(true, `${folder}/${file}`);
+              addTab(true, `${folder}/${file}`, 'content');
             }
           });
           list.appendChild(link);
