@@ -163,22 +163,47 @@ app.on('ready', () => {
     });
   });
 
+  // Force electron-updater to check for updates even in development mode
+  autoUpdater.forceDevUpdateConfig = true; 
+
   // Update check logic
   const request = net.request('https://www.github.com');
   request.on('response', () => {
-    console.log('Connection successful, checking for updates.');
+    console.log('Main Process: Connection successful, checking for updates.');
     autoUpdater.checkForUpdatesAndNotify();
   });
   request.on('error', (error) => {
-    console.log('No internet connection, skipping update check.', error.message);
+    console.log('Main Process: No internet connection, skipping update check.', error.message);
+    const win = BrowserWindow.getAllWindows()[0];
+    if (win) {
+      win.webContents.send('update-check-error'); // Notify renderer about no internet
+    }
   });
   request.end();
 
   // Listener for update available event
-  autoUpdater.on('update-available', () => {
+  autoUpdater.on('update-available', (info) => {
+    console.log('Main Process: Update available! Version:', info.version);
     const win = BrowserWindow.getAllWindows()[0];
     if (win) {
       win.webContents.send('update-available');
+    }
+  });
+
+  // Listener for update not available event
+  autoUpdater.on('update-not-available', (info) => {
+    console.log('Main Process: Update not available. Current version:', app.getVersion(), 'Latest available:', info.version);
+    const win = BrowserWindow.getAllWindows()[0];
+    if (win) {
+      win.webContents.send('update-not-available');
+    }
+  });
+
+  autoUpdater.on('error', (error) => {
+    console.error('Main Process: AutoUpdater error:', error.message);
+    const win = BrowserWindow.getAllWindows()[0];
+    if (win) {
+      win.webContents.send('update-check-error');
     }
   });
 

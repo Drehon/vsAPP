@@ -33,6 +33,8 @@ window.api = {
   // Exposes a listener for 'update-available' IPC messages from the main process.
   // The callback function will be executed when an update is available.
   onUpdateAvailable: (callback) => ipcRenderer.on('update-available', callback),
+  onUpdateNotAvailable: (callback) => ipcRenderer.on('update-not-available', callback),
+  onUpdateCheckError: (callback) => ipcRenderer.on('update-check-error', callback),
 };
 
 window.addEventListener('DOMContentLoaded', () => {
