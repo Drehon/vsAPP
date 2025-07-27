@@ -1,9 +1,11 @@
 import './style.css';
 import { initializeTabManager } from './sub-functions/tab-manager.js';
 import { loadContentIntoTab, loadHomeIntoTab, loadSettingsIntoTab } from './sub-functions/content-loader.js';
-import { initializeExercise } from './sub-functions/exercise-initializer.js';
-import { initializeGrammarExercise } from './sub-functions/grammar-exercise.js';
-import { initializeVerbsExercise } from './sub-functions/verb-exercise.js';
+// The following imports are for exercise initialization, but the actual initialization
+// is now handled within content-loader.js based on the file path.
+// import { initializeExercise } from './sub-functions/exercise-initializer.js';
+// import { initializeGrammarExercise } from './sub-functions/grammar-exercise.js';
+// import { initializeVerbsExercise } from './sub-functions/verb-exercise.js';
 
 window.addEventListener('api-ready', () => {
   // --- STATE MANAGEMENT ---
@@ -26,6 +28,7 @@ window.addEventListener('api-ready', () => {
     tabBar,
     newTabBtn,
     contentPanes,
+    // Callbacks for loading content into tabs, passed to tab-manager
     (tabId) => loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerciseState),
     (tabId, filePath) => loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState),
     (tabId) => loadSettingsIntoTab(tabId, tabs, renderTabs)
@@ -95,7 +98,12 @@ window.addEventListener('api-ready', () => {
     displayAppVersion();
     updateNetworkStatus();
 
-    newTabBtn.addEventListener('click', () => addTab(true));
+    // Attach event listener for the new tab button
+    if (newTabBtn) { // Null check
+        newTabBtn.addEventListener('click', () => addTab(true));
+    }
+    
+    // Attach event listeners for network status changes
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
 

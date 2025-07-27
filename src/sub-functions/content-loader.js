@@ -84,17 +84,22 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
             });
         }
 
-
         // Check if the loaded content is an exercise and initialize it
+        // Only initialize with external JS if it's student-grammar or student-verbs
         if (scrollableContent.querySelector('#exercise-data')) {
             const savedState = await window.api.loadExerciseState(filePath);
             tab.exerciseState = savedState ? savedState : null;
-            if (filePath.includes('student-grammar') || filePath.includes('causativoES') || filePath.includes('passivo avanzatoES')) {
+            
+            if (filePath.includes('student-grammar')) {
                 initializeGrammarExercise(scrollableContent, tab, saveExerciseState);
             } else if (filePath.includes('student-verbs')) {
                 initializeVerbsExercise(scrollableContent, tab, saveExerciseState);
-            } else {
-                initializeExercise(scrollableContent, tab, saveExerciseState); // Pass the scrollable area
+            } 
+            // For other exercise files like causativoES and passivo avanzatoES,
+            // they are expected to have their own inline JavaScript for initialization.
+            // No external initializer is called for them here.
+            else {
+                initializeExercise(scrollableContent, tab, saveExerciseState); // Fallback for generic exercises if needed
             }
         }
     }
@@ -109,7 +114,20 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerc
     tab.filePath = null;
     tab.title = 'Home';
 
-    const homeContent = await window.api.getHomeContent();
+    let homeContent = '';
+    try {
+        homeContent = await window.api.getHomeContent();
+        console.log("Home content fetched successfully.");
+    } catch (error) {
+        console.error("Error fetching home content:", error);
+        // Provide a fallback or error message to the user
+        homeContent = `<div class="p-6 text-red-700 bg-red-100 rounded-lg">
+                            <h2 class="font-bold text-lg">Error Loading Home Page</h2>
+                            <p>Could not load the home page content. Please try reloading the application.</p>
+                            <p>Details: ${error.message}</p>
+                        </div>`;
+    }
+
     const pane = document.getElementById(`pane-${tab.id}`);
 
     if (pane && homeContent) {
@@ -158,7 +176,14 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerc
         document.getElementById(`reload-btn-${tab.id}`).addEventListener('click', () => loadHomeIntoTab(tab.id, tabs, renderTabs, addTab, saveExerciseState));
         document.getElementById(`github-btn-${tab.id}`).addEventListener('click', () => window.api.openExternalLink('https://github.com/Drehon/vsapp'));
         document.getElementById(`settings-btn-${tab.id}`).addEventListener('click', () => addTab(true, null, 'settings'));
-        attachHomeEventListeners(scrollableContent, tabs, addTab, renderTabs, saveExerciseState);
+        
+        try {
+            attachHomeEventListeners(scrollableContent, tabs, addTab, renderTabs, saveExerciseState);
+            console.log("Home event listeners attached.");
+        } catch (error) {
+            console.error("Error attaching home event listeners:", error);
+            // Log the error but allow the rest of the function to proceed
+        }
     }
 
     renderTabs();
@@ -223,7 +248,10 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs) {
 function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExerciseState) {
     const populateList = async (listId, getFiles, folder) => {
       const list = paneElement.querySelector(`#${listId}`);
-      if (!list) return;
+      if (!list) {
+          console.warn(`Home: List element with ID '${listId}' not found.`);
+          return;
+      }
 
       list.innerHTML = '<p class="text-slate-400">Loading...</p>';
       try {
@@ -249,13 +277,15 @@ function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExe
           });
           list.appendChild(link);
         });
+        console.log(`Home: Successfully populated ${listId}.`);
       }
       catch (error) {
-        console.error(`Failed to load ${folder}:`, error);
+        console.error(`Home: Failed to load ${folder}:`, error);
         list.innerHTML = `<p class="text-red-400">Error loading ${folder}.</p>`;
       }
     };
 
+    // Call populateList for both lessons and exercises
     populateList('lessons-list', window.api.getLessons, 'lessons');
     populateList('exercises-list', window.api.getExercises, 'exercises');
-  }
+}

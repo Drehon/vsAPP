@@ -2,14 +2,41 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
     const exerciseDataEl = paneElement.querySelector('#exercise-data');
     if (!exerciseDataEl) return;
 
-    // Escape backslashes, newlines, and carriage returns, then remove comments
-    const jsonText = exerciseDataEl.textContent
-        .replace(/\\/g, "\\\\") // Escape existing backslashes
-        .replace(/\n/g, '\\n')  // Escape newlines
-        .replace(/\r/g, '\\r')  // Escape carriage returns
-        .replace(/\s*\/\/.*$/gm, ''); // Remove comments
+    let rawText = exerciseDataEl.textContent;
+
+    // Step 1: Remove comments first. This is crucial to prevent comments from interfering with other replacements.
+    let cleanedText = rawText.replace(/\s*\/\/.*$/gm, '');
+
+    // Step 2: Normalize all non-standard whitespace and control characters to a single space.
+    // This is a more aggressive approach to catch any invisible characters (like non-breaking spaces \u00A0)
+    // that might be causing issues and are not standard JSON whitespace.
+    cleanedText = cleanedText.replace(/[\u0000-\u001F\u007F-\u009F\u00A0\u2000-\u200A\u202F\u205F\u3000]/g, ' ');
+
+    // Step 3: Ensure literal backslashes are properly escaped.
+    // This regex matches a backslash that is NOT followed by a valid JSON escape character (", \, /, b, f, n, r, t, u).
+    // This prevents double-escaping already valid escape sequences while fixing unescaped backslashes.
+    cleanedText = cleanedText.replace(/\\(?![/"bfnrtu])/g, '\\\\');
+
+    // Step 4: Escape newlines and carriage returns.
+    // These are necessary for JSON string values that span multiple lines.
+    cleanedText = cleanedText.replace(/\n/g, '\\n');
+    cleanedText = cleanedText.replace(/\r/g, '\\r');
     
-    const { testData } = JSON.parse(jsonText);
+    // Attempt to parse JSON.
+    let testData;
+    try {
+        testData = JSON.parse(cleanedText).testData;
+    } catch (e) {
+        console.error("Failed to parse exercise data JSON:", e);
+        // Display a user-friendly error message in the pane
+        paneElement.innerHTML = `<div class="p-6 text-red-700 bg-red-100 rounded-lg">
+                                    <h2 class="font-bold text-lg">Error Loading Exercise</h2>
+                                    <p>There was an error loading the exercise data. Please check the exercise file for valid JSON format.</p>
+                                    <p>Details: ${e.message}</p>
+                                </div>`;
+        return; // Stop further execution if JSON parsing fails
+    }
+
     let chartInstances = {};
     let currentBlock = 1;
     let testState = tab.exerciseState || {
@@ -23,12 +50,15 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
     const diagnosticsView = paneElement.querySelector('#diagnostics-view');
     const questionsContainer = paneElement.querySelector('#questions-container');
     const submissionArea = paneElement.querySelector('#submission-area');
-    const form = paneElement.querySelector('#diagnostic-form');
     const tabs = paneElement.querySelectorAll('.tab-btn');
     const diagTabs = paneElement.querySelectorAll('.diag-tab-btn');
     const loadFileInput = paneElement.querySelector('#load-file-input');
 
     const renderQuestions = (block) => {
+        if (!questionsContainer) {
+            console.error("questionsContainer element not found.");
+            return; // Exit if the container is missing
+        }
         questionsContainer.innerHTML = '';
         
         const blockQuestions = testData.filter(q => q.block === block);
@@ -123,6 +153,10 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
     };
     
     function renderSubmissionArea() {
+        if (!submissionArea) {
+            console.error("submissionArea element not found.");
+            return;
+        }
         submissionArea.innerHTML = '';
         if (testState[currentBlock].completed) {
             const p = document.createElement('p');
@@ -257,11 +291,15 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
             });
         });
         paneElement.querySelectorAll('.notes-toggle-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const content = e.target.nextElementSibling;
-                content.classList.toggle('hidden');
-                e.target.textContent = content.classList.contains('hidden') ? 'Show Notes' : 'Hide Notes';
-            });
+            if (btn) { // Null check for the button
+                btn.addEventListener('click', (e) => {
+                    const content = e.target.nextElementSibling;
+                    if (content) { // Null check for content
+                        content.classList.toggle('hidden');
+                        e.target.textContent = content.classList.contains('hidden') ? 'Show Notes' : 'Hide Notes';
+                    }
+                });
+            }
         });
     }
 
@@ -367,7 +405,7 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                             markCorrectBtn.addEventListener('click', (e) => {
                                 inputEl.classList.remove('incorrect-answer');
                                 inputEl.classList.add('correct-answer');
-                                e.target.parentElement.remove();
+                                if (e.target.parentElement) e.target.parentElement.remove(); // Null check
                             });
 
                             feedbackContainer.appendChild(correctAnswerEl);
@@ -436,7 +474,7 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                         markCorrectBtn.addEventListener('click', (e) => {
                             inputEl.classList.remove('incorrect-answer');
                             inputEl.classList.add('correct-answer');
-                            e.target.parentElement.remove();
+                            if (e.target.parentElement) e.target.parentElement.remove(); // Null check
                         });
                         
                         feedbackContainer.appendChild(correctAnswerEl);
@@ -478,9 +516,8 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
             wrapper.appendChild(explanationContent);
         });
 
-        // Null check for explain-btn before adding event listener
         paneElement.querySelectorAll('.explain-btn').forEach(btn => {
-            if (btn) {
+            if (btn) { // Null check for the button
                 btn.addEventListener('click', (e) => {
                     const content = e.target.closest('.question-block').querySelector('.explanation-content');
                     if (content) { // Null check for content
@@ -493,6 +530,10 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
     }
     
     function showDiagnostics() {
+        if (!testContainer || !diagnosticsView) {
+            console.error("Diagnostic view elements not found.");
+            return;
+        }
         testContainer.classList.add('hidden');
         // Null check for intro-view
         const introView = paneElement.querySelector('#intro-view');
@@ -567,7 +608,10 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
         });
 
         const ctx = paneElement.querySelector(`#${canvasId}`);
-        if (!ctx) return; // Null check for canvas context
+        if (!ctx) { // Null check for canvas element
+            console.warn(`Canvas element with ID '${canvasId}' not found.`);
+            return;
+        }
 
         const context2D = ctx.getContext('2d');
         if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
@@ -604,12 +648,11 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
         });
     }
 
-    // Null check for back-to-review-btn
     const backToReviewBtn = paneElement.querySelector('#back-to-review-btn');
-    if (backToReviewBtn) {
+    if (backToReviewBtn) { // Null check for back-to-review-btn
         backToReviewBtn.addEventListener('click', () => {
-            diagnosticsView.classList.add('hidden');
-            testContainer.classList.remove('hidden');
+            if (diagnosticsView) diagnosticsView.classList.add('hidden'); // Null check
+            if (testContainer) testContainer.classList.remove('hidden'); // Null check
             const introView = paneElement.querySelector('#intro-view');
             if (introView) { // Null check for intro-view
                 introView.classList.remove('hidden');
@@ -618,10 +661,21 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
         });
     }
 
+    function switchDiagTab(tabName) {
+        const targetId = `diag-content-${tabName}`;
+        diagTabs.forEach(t => {
+            t.classList.toggle('tab-active', t.dataset.tab === tabName);
+            t.classList.toggle('tab-inactive', t.dataset.tab !== tabName);
+        });
+        paneElement.querySelectorAll('.diag-content').forEach(content => {
+            content.classList.toggle('hidden', content.id !== targetId);
+        });
+    }
+
     diagTabs.forEach(tab => {
         tab.addEventListener('click', () => { if(!tab.disabled) switchDiagTab(tab.dataset.tab); });
     });
 
-
+    // Initial render
     switchTab(currentBlock);
-  }
+}
