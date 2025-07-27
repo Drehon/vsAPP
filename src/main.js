@@ -1,6 +1,44 @@
-const { app, BrowserWindow, ipcMain, session, Menu, shell, dialog } = require('electron'); // Added dialog
+const { app, BrowserWindow, ipcMain, session, Menu, shell, dialog } = require('electron');
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs').promises;
+const fsSync = require('fs');
+
+// --- Configuration Management ---
+const configPath = path.join(app.getPath('userData'), 'config.json');
+let appConfig = {};
+
+function loadConfig() {
+  try {
+    if (fsSync.existsSync(configPath)) {
+      const rawData = fsSync.readFileSync(configPath);
+      appConfig = JSON.parse(rawData);
+    } else {
+      // Create default config if it doesn't exist
+      appConfig = {
+        savePath: path.join(app.getPath('userData'), 'saves'),
+        externalBrowser: 'Default Browser'
+      };
+      fsSync.writeFileSync(configPath, JSON.stringify(appConfig, null, 2));
+    }
+  } catch (error) {
+    console.error('Failed to load or create config file:', error);
+    // Fallback to defaults in case of error
+    appConfig = {
+      savePath: path.join(app.getPath('userData'), 'saves'),
+      externalBrowser: 'Default Browser'
+    };
+  }
+}
+
+function getSavesDir() {
+    // Ensure the configured directory exists
+    const savesDir = appConfig.savePath || path.join(app.getPath('userData'), 'saves');
+    if (!fsSync.existsSync(savesDir)) {
+        fsSync.mkdirSync(savesDir, { recursive: true });
+    }
+    return savesDir;
+}
+
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -14,74 +52,83 @@ const createWindow = () => {
     height: 800,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      // REQUIRED FOR THIS TEMPLATE: Insecure settings to match build tools.
       nodeIntegration: true,
       contextIsolation: false,
     },
   });
 
-  // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  // Open the DevTools in development.
   if (process.env.NODE_ENV === 'development') {
     mainWindow.webContents.openDevTools();
   }
 };
 
-// This listener receives the 'navigate' message from the preload script.
+// --- IPC Handlers ---
+
+ipcMain.handle('get-config', () => {
+  return appConfig;
+});
+
+ipcMain.handle('save-config', async (event, newConfig) => {
+  try {
+    await fs.writeFile(configPath, JSON.stringify(newConfig, null, 2));
+    appConfig = newConfig; // Update in-memory config
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to save config:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('open-directory-dialog', async () => {
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+        properties: ['openDirectory']
+    });
+    if (canceled) {
+        return { canceled: true };
+    } else {
+        return { canceled: false, path: filePaths[0] };
+    }
+});
+
 ipcMain.on('navigate', (event, relativePath) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (win) {
-    const basePath = process.env.NODE_ENV === 'development'
-      ? process.cwd()
-      : app.getAppPath();
+    const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : app.getAppPath();
     const filePath = path.join(basePath, relativePath);
     win.loadFile(filePath);
   }
 });
 
 ipcMain.handle('get-home-content', async () => {
-  const basePath = process.env.NODE_ENV === 'development'
-    ? __dirname
-    : path.join(app.getAppPath(), '.webpack/main'); // Adjusted path for packaged app
+  const basePath = process.env.NODE_ENV === 'development' ? __dirname : path.join(app.getAppPath(), '.webpack/main');
   const filePath = path.join(basePath, 'home-template.html');
   try {
-    const content = await fs.promises.readFile(filePath, 'utf-8');
-    return content;
+    return await fs.readFile(filePath, 'utf-8');
   } catch (err) {
     console.error(`Failed to read home template: ${err}`);
     return null;
   }
 });
 
-// ADDED: IPC handler for the new settings page content
 ipcMain.handle('get-settings-content', async () => {
-  const basePath = process.env.NODE_ENV === 'development'
-    ? __dirname
-    : path.join(app.getAppPath(), '.webpack/main'); // Adjusted path for packaged app
+  const basePath = process.env.NODE_ENV === 'development' ? __dirname : path.join(app.getAppPath(), '.webpack/main');
   const filePath = path.join(basePath, 'settings-template.html');
   try {
-    const content = await fs.promises.readFile(filePath, 'utf-8');
-    return content;
+    return await fs.readFile(filePath, 'utf-8');
   } catch (err) {
     console.error(`Failed to read settings template: ${err}`);
     return null;
   }
 });
 
-
-// MODIFIED: This handler now extracts only the content within the <body> tag.
 ipcMain.handle('get-file-content', async (event, relativePath) => {
-  const basePath = process.env.NODE_ENV === 'development'
-    ? process.cwd() // In dev, CWD is the project root
-    : app.getAppPath();
+  const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : app.getAppPath();
   const filePath = path.join(basePath, relativePath);
   try {
-    const content = await fs.promises.readFile(filePath, 'utf-8');
-    // Use a regular expression to find the content inside the <body> tag.
+    const content = await fs.readFile(filePath, 'utf-8');
     const bodyContentMatch = content.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-    // If a match is found, return the captured group; otherwise, return the full content as a fallback.
     return bodyContentMatch ? bodyContentMatch[1] : content;
   } catch (err) {
     console.error(`Failed to read file content for ${relativePath}: ${err}`);
@@ -89,8 +136,6 @@ ipcMain.handle('get-file-content', async (event, relativePath) => {
   }
 });
 
-
-// NEW: Handler to navigate back to the main window
 ipcMain.on('navigate-home', (event) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (win) {
@@ -98,17 +143,12 @@ ipcMain.on('navigate-home', (event) => {
   }
 });
 
-// ADDED: New handler to securely open external links in the default browser.
 ipcMain.handle('open-external-link', async (event, url) => {
   await shell.openExternal(url);
 });
 
-
 app.on('ready', () => {
-  const savesDir = path.join(app.getPath('userData'), 'saves');
-  if (!fs.existsSync(savesDir)) {
-    fs.mkdirSync(savesDir, { recursive: true });
-  }
+  loadConfig();
   createWindow();
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
@@ -122,7 +162,6 @@ app.on('ready', () => {
     });
   });
 
-  // Define the application menu
   const menuTemplate = [
     {
       label: 'File',
@@ -130,20 +169,11 @@ app.on('ready', () => {
         {
           label: 'Open Save States Folder',
           click: () => {
-            shell.openPath(savesDir); // Open the saves directory for auto-saved states
-          }
-        },
-        {
-          label: 'Open Manual Saves Folder', // New menu item for manual saves
-          click: () => {
-            // If manual saves are directed to 'savesDir', this will open the same folder.
-            // If they are to be in a different default location (e.g., Downloads),
-            // this path would need to be adjusted accordingly.
-            shell.openPath(savesDir);
+            shell.openPath(getSavesDir());
           }
         },
         { type: 'separator' },
-        { role: 'quit' } // Standard quit menu item
+        { role: 'quit' }
       ]
     },
     {
@@ -166,7 +196,6 @@ app.on('ready', () => {
         {
           label: 'Learn More',
           click: async () => {
-            const { shell } = require('electron');
             await shell.openExternal('https://electronjs.org');
           }
         }
@@ -194,158 +223,78 @@ app.on('activate', () => {
   }
 });
 
-// Save/Load Handlers (Existing)
-ipcMain.handle('save-progress', async (event, { lesson, data }) => {
-  const savesDir = path.join(app.getPath('userData'), 'saves');
-  const lessonName = path.basename(lesson, '.html');
-  const timestamp = new Date().toISOString().replace(/:/g, '-');
-  const filename = `${lessonName}-${timestamp}.json`;
-  const filePath = path.join(savesDir, filename);
-  try {
-    await fs.promises.writeFile(filePath, JSON.stringify(data, null, 2));
-    return { success: true, path: filePath };
-  } catch (err) {
-    return { success: false, error: err.message };
-  }
-});
+// --- Save/Load Handlers ---
 
-ipcMain.handle('load-progress', async (event, lesson) => {
-  const savesDir = path.join(app.getPath('userData'), 'saves');
-  const lessonName = path.basename(lesson, '.html');
-  try {
-    const files = await fs.promises.readdir(savesDir);
-    const lessonSaves = files.filter(file => file.startsWith(lessonName) && file.endsWith('.json'));
-    return lessonSaves.map(file => ({ name: file, path: path.join(savesDir, file) }));
-  } catch (err) {
-    return [];
-  }
-});
-
-ipcMain.handle('get-lesson-data', async (event, filePath) => {
-  try {
-    const savesDir = path.join(app.getPath('userData'), 'saves');
-    if (!filePath.startsWith(savesDir)) {
-      throw new Error('Unauthorized file access.');
-    }
-    const data = await fs.promises.readFile(filePath, 'utf-8');
-    return JSON.parse(data);
-  } catch (err) {
-    return null;
-  }
-});
-
-const getContents = async (dir) => {
-  const basePath = process.env.NODE_ENV === 'development'
-    ? process.cwd()
-    : app.getAppPath();
-
-  const directoryPath = path.join(basePath, dir);
-  try {
-    const files = await fs.promises.readdir(directoryPath);
-    return files.filter(file => file.endsWith('.html'));
-  } catch (err) {
-    console.error(`Error reading directory ${dir}:`, err);
-    return [];
-  }
-};
-
-ipcMain.handle('get-lessons', () => getContents('lessons'));
-ipcMain.handle('get-exercises', () => getContents('exercises'));
-
-// Helper function to get a sanitized save path for an exercise
 const getExerciseSavePath = (exerciseFilePath) => {
-  const savesDir = path.join(app.getPath('userData'), 'saves');
-  // Sanitize the file path to create a valid filename
-  // Replace slashes and colons with hyphens, remove file extension
-  const sanitizedFileName = exerciseFilePath
-    .replace(/[\\/:]/g, '-')
-    .replace(/\.html$/, '')
-    .toLowerCase();
+  const savesDir = getSavesDir();
+  const sanitizedFileName = exerciseFilePath.replace(/[\\/:]/g, '-').replace(/\.html$/, '').toLowerCase();
   return path.join(savesDir, `${sanitizedFileName}_state.json`);
 };
 
-// NEW: IPC handler to save exercise state (auto-save)
 ipcMain.handle('save-exercise-state', async (event, filePath, state) => {
   const savePath = getExerciseSavePath(filePath);
   try {
-    await fs.promises.writeFile(savePath, JSON.stringify(state, null, 2));
-    console.log(`Exercise state saved for ${filePath} to ${savePath}`);
+    await fs.writeFile(savePath, JSON.stringify(state, null, 2));
     return { success: true };
   } catch (err) {
-    console.error(`Failed to save exercise state for ${filePath}: ${err}`);
     return { success: false, error: err.message };
   }
 });
 
-// NEW: IPC handler to load exercise state (auto-load)
 ipcMain.handle('load-exercise-state', async (event, filePath) => {
   const savePath = getExerciseSavePath(filePath);
   try {
-    const data = await fs.promises.readFile(savePath, 'utf-8');
-    console.log(`Exercise state loaded for ${filePath} from ${savePath}`);
+    const data = await fs.readFile(savePath, 'utf-8');
     return JSON.parse(data);
   } catch (err) {
-    // If file doesn't exist, it's not an error, just means no saved state
-    if (err.code === 'ENOENT') {
-      console.log(`No saved state found for ${filePath}`);
-      return null;
-    }
-    console.error(`Failed to load exercise state for ${filePath}: ${err}`);
+    if (err.code === 'ENOENT') return null;
     return null;
   }
 });
 
-// NEW: IPC handler to reset (delete) exercise state
 ipcMain.handle('reset-exercise-state', async (event, filePath) => {
   const savePath = getExerciseSavePath(filePath);
   try {
-    if (fs.existsSync(savePath)) {
-      await fs.promises.unlink(savePath);
-      console.log(`Exercise state reset (deleted) for ${filePath} at ${savePath}`);
-      return { success: true };
+    if (fsSync.existsSync(savePath)) {
+      await fs.unlink(savePath);
     }
-    console.log(`No saved state file to reset for ${filePath}`);
-    return { success: true, message: 'No file to delete' }; // Already reset or never existed
-  } catch (err) {
-    console.error(`Failed to reset exercise state for ${filePath}: ${err}`);
-    return { success: false, error: err.message };
-  }
-});
-
-// NEW: IPC handler to open the saves folder (for auto-saved states)
-ipcMain.handle('open-saves-folder', async () => {
-  const savesDir = path.join(app.getPath('userData'), 'saves');
-  try {
-    await shell.openPath(savesDir);
     return { success: true };
   } catch (err) {
-    console.error(`Failed to open saves folder: ${err}`);
     return { success: false, error: err.message };
   }
 });
 
-// NEW: IPC handler to show a save dialog and save a file (for manual saves)
 ipcMain.handle('show-save-dialog-and-save-file', async (event, { defaultFilename, data }) => {
   const window = BrowserWindow.fromWebContents(event.sender);
-  const savesDir = path.join(app.getPath('userData'), 'saves'); // Default to the app's saves directory
+  const savesDir = getSavesDir();
 
   const { canceled, filePath } = await dialog.showSaveDialog(window, {
     defaultPath: path.join(savesDir, defaultFilename),
-    filters: [
-      { name: 'JSON Files', extensions: ['json'] },
-      { name: 'All Files', extensions: ['*'] }
-    ]
+    filters: [{ name: 'JSON Files', extensions: ['json'] }, { name: 'All Files', extensions: ['*'] }]
   });
 
   if (canceled) {
     return { success: false, canceled: true };
   } else {
     try {
-      await fs.promises.writeFile(filePath, data);
+      await fs.writeFile(filePath, data);
       return { success: true, path: filePath };
     } catch (err) {
-      console.error(`Failed to save file via dialog: ${err}`);
       return { success: false, error: err.message };
     }
   }
 });
+
+const getContents = async (dir) => {
+  const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : app.getAppPath();
+  const directoryPath = path.join(basePath, dir);
+  try {
+    const files = await fs.readdir(directoryPath);
+    return files.filter(file => file.endsWith('.html'));
+  } catch (err) {
+    return [];
+  }
+};
+
+ipcMain.handle('get-lessons', () => getContents('lessons'));
+ipcMain.handle('get-exercises', () => getContents('exercises'));
