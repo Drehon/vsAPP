@@ -29,9 +29,17 @@
     <!-- Footer -->
     <footer class="flex-shrink-0 bg-slate-900 text-slate-400 text-xs p-2 flex justify-between items-center">
       <div>App Version: <span id="app-version">Loading...</span></div>
-      <div id="network-status" class="flex items-center">
-        <span class="w-3 h-3 rounded-full mr-2" id="network-indicator"></span>
-        <span id="network-label"></span>
+      <div class="flex items-center space-x-4"> <!-- Container for network and update status -->
+        <!-- Network Status -->
+        <div id="network-status" class="flex items-center">
+          <span class="w-3 h-3 rounded-full mr-2" id="network-indicator"></span>
+          <span id="network-label"></span>
+        </div>
+        <!-- Update Status -->
+        <div id="update-status" class="flex items-center">
+          <span class="w-3 h-3 rounded-full mr-2 bg-gray-400" id="update-indicator"></span> <!-- Initial grey dot -->
+          <span id="update-label">Checking for updates...</span> <!-- Initial text -->
+        </div>
       </div>
     </footer>
     
