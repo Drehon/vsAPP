@@ -4,64 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Esercizi Pratici: I Passivi Avanzati</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f1f5f9; /* bg-slate-200 */
-        }
-        .key-rule {
-            background-color: #eef2ff; /* bg-indigo-50 */
-            color: #4338ca; /* text-indigo-800 */
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-        .tab-active {
-            border-bottom: 2px solid #4f46e5; /* border-indigo-600 */
-            color: #4f46e5; /* text-indigo-600 */
-            font-weight: 600;
-        }
-        .tab-inactive {
-            color: #64748b; /* text-slate-500 */
-            border-bottom: 2px solid transparent;
-        }
-        .tab-btn:hover {
-            color: #334155; /* text-slate-700 */
-        }
-        .feedback-correct {
-            background-color: #f0fdf4; /* bg-green-50 */
-            color: #166534; /* text-green-800 */
-        }
-        .feedback-incorrect {
-            background-color: #fef2f2; /* bg-red-50 */
-            color: #b91c1c; /* text-red-800 */
-        }
-        code, .font-mono {
-            font-family: 'Source Code Pro', monospace;
-        }
-        .notes-content {
-            transition: max-height 0.3s ease-in-out;
-            max-height: 500px;
-            overflow: hidden;
-        }
-        .notes-content.hidden {
-            max-height: 0;
-        }
-    </style>
 </head>
-<body class="text-slate-800">
+<body class="text-slate-700">
 
-    <div class="container mx-auto p-4 md:p-10 max-w-7xl">
+    <div class="container mx-auto p-6 md:p-10 max-w-7xl">
 
         <!-- Header -->
         <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
-            <header class="p-6 md:p-8">
+            <header class="p-6">
                 <h1 class="text-3xl font-bold text-slate-900">Esercizi Pratici: I Passivi Avanzati</h1>
-                <p class="text-lg text-slate-600 mt-1">Metti in pratica la teoria con esercizi mirati.</p>
+                <p class="text-lg text-slate-600">Metti in pratica la teoria con esercizi mirati.</p>
             </header>
             <div class="p-6 border-t border-slate-200 bg-slate-50 text-sm text-slate-600 space-y-3">
                 <h3 class="font-semibold text-slate-800">Come usare questa pagina:</h3>
@@ -75,106 +27,333 @@
         <!-- Main Content -->
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             <!-- Tabs -->
-            <div class="border-b border-slate-200 flex justify-between items-center px-6">
-                <nav class="flex flex-wrap sm:flex-nowrap space-x-2 md:space-x-6" aria-label="Tabs">
-                    <button data-tab="1" id="tab-block-1" class="tab-btn py-4 px-2 md:px-4 text-sm font-medium tab-active">Fase 1: Comprensione</button>
-                    <button data-tab="2" id="tab-block-2" class="tab-btn py-4 px-2 md:px-4 text-sm font-medium tab-inactive">Fase 2: Riconoscimento</button>
-                    <button data-tab="3" id="tab-block-3" class="tab-btn py-4 px-2 md:px-4 text-sm font-medium tab-inactive">Fase 3: Produzione</button>
+            <div class="border-b border-slate-200">
+                <nav class="flex space-x-6 px-6" aria-label="Tabs">
+                    <button id="tab-btn-1" class="tab-btn py-4 px-1 text-sm font-medium tab-active">Fase 1: Comprensione</button>
+                    <button id="tab-btn-2" class="tab-btn py-4 px-1 text-sm font-medium tab-inactive">Fase 2: Riconoscimento</button>
+                    <button id="tab-btn-3" class="tab-btn py-4 px-1 text-sm font-medium tab-inactive">Fase 3: Produzione</button>
                 </nav>
-                <div id="go-to-container" class="flex items-center text-sm">
-                    <label for="jump-to" class="text-slate-600 mr-2">Vai a:</label>
-                    <input type="number" id="jump-to" class="w-20 border-slate-300 rounded-md shadow-sm text-sm" min="1">
-                    <button id="jump-btn" class="ml-2 px-3 py-1 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 text-sm">Vai</button>
-                </div>
             </div>
 
             <!-- Tab Content -->
             <div class="p-6 md:p-8">
-                <div id="test-view">
-                    <form id="diagnostic-form" class="p-0">
-                        <div id="questions-container"></div>
-                        <div id="submission-area" class="mt-8 text-center"></div>
-                    </form>
-                </div>
+                <div id="tab-content-1" class="tab-content"></div>
+                <div id="tab-content-2" class="tab-content hidden"></div>
+                <div id="tab-content-3" class="tab-content hidden"></div>
             </div>
         </div>
-
-        <section id="diagnostics-view" class="hidden">
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                <header class="p-6 flex justify-between items-center bg-slate-50 border-b border-slate-200">
-                    <h2 class="text-2xl font-bold text-slate-800">Performance Diagnostics</h2>
-                    <button id="back-to-review-btn" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 shadow-md">
-                        &larr; Back to Test Review
-                    </button>
-                </header>
-                <div class="p-6">
-                    <div class="mb-6 border-b border-slate-200">
-                        <nav class="flex flex-wrap -mb-px" aria-label="Tabs">
-                            <button id="diag-tab-overall" data-tab="overall" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Overall</button>
-                            <button id="diag-tab-block-a" data-tab="block-a" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Fase 1</button>
-                            <button id="diag-tab-block-b" data-tab="block-b" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Fase 2</button>
-                            <button id="diag-tab-block-c" data-tab="block-c" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Fase 3</button>
-                        </nav>
-                    </div>
-                    <div id="diag-content-overall" class="diag-content hidden">
-                        <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="overallChart"></canvas> </div>
-                    </div>
-                    <div id="diag-content-block-a" class="diag-content hidden">
-                         <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="blockAChart"></canvas> </div>
-                    </div>
-                    <div id="diag-content-block-b" class="diag-content hidden">
-                         <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="blockBChart"></canvas> </div>
-                    </div>
-                    <div id="diag-content-block-c" class="diag-content hidden">
-                         <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="blockCChart"></canvas> </div>
-                    </div>
-                </div>
-            </div>
-        </section>
     </div>
 
     <script id="exercise-data" type="application/json">
         {
-            "testData": [
-                { "block": 1, "displayNum": "C1-1", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "The manager insisted that everyone <code>attends</code> the meeting.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Dopo 'insisted that', si usa la forma base. Corretta: <i>...<code>attend</code>...</i>" },
-                { "block": 1, "displayNum": "C1-2", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "It is essential that she <code>be</code> informed immediately.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'be informed' è il congiuntivo passivo." },
-                { "block": 1, "displayNum": "C1-3", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "I suggest that he <code>takes</code> a break.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Dopo 'suggest that', si usa la forma base. Corretta: <i>...he <code>take</code>...</i>" },
-                { "block": 1, "displayNum": "C1-4", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "The board requested that the report <code>is</code> submitted by Friday.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Dopo 'requested that', si usa il congiuntivo passivo. Corretta: <i>...report <code>be submitted</code>...</i>" },
-                { "block": 1, "displayNum": "C1-5", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "They ask that he <code>not be</code> late.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. La forma negativa del congiuntivo è 'not' + forma base." },
-                { "block": 1, "displayNum": "C1-6", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "The doctor recommended that I <code>should stop</code> smoking.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "In US English, 'should' è ridondante. Corretta: <i>...that I <code>stop</code>...</i>" },
-                { "block": 1, "displayNum": "C1-7", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "It's important that they <code>understand</code> the risks.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'understand' è la forma base." },
-                { "block": 1, "displayNum": "C1-8", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "He demanded that his lawyer <code>was</code> present.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Dopo 'demanded that', si usa la forma base. Corretta: <i>...lawyer <code>be</code> present.</i>" },
-                { "block": 1, "displayNum": "C1-9", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "I propose that the committee <code>reviews</code> the proposal again.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Dopo 'propose that', si usa la forma base. Corretta: <i>...committee <code>review</code>...</i>" },
-                { "block": 1, "displayNum": "C1-10", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "Her boss requires that she <code>complete</code> the project.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'complete' è la forma base." },
-                { "block": 1, "displayNum": "C1-11", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "It is vital that the equipment <code>be maintained</code> properly.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'be maintained' è il congiuntivo passivo." },
-                { "block": 1, "displayNum": "C1-12", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "The judge ordered that the prisoner <code>was released</code>.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Dopo 'ordered that', si usa il congiuntivo passivo. Corretta: <i>...prisoner <code>be released</code>.</i>" },
-                { "block": 1, "displayNum": "C1-13", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "I suggest that she <code>not worry</code> so much.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'not worry' è la forma negativa." },
-                { "block": 1, "displayNum": "C1-14", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "It is necessary that he <code>finds</code> a new job.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Dopo 'it is necessary that', si usa la forma base. Corretta: <i>...he <code>find</code>...</i>" },
-                { "block": 1, "displayNum": "C1-15", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "The rules require that every student <code>wears</code> a uniform.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Dopo 'require that', si usa la forma base. Corretta: <i>...student <code>wear</code>...</i>" },
-                { "block": 1, "displayNum": "C1-16", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "I move that the meeting <code>be adjourned</code>.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'move that' è un modo formale per fare una proposta, seguito dal congiuntivo." },
-                { "block": 1, "displayNum": "C1-17", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "Her parents insisted that she <code>studied</code> medicine.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Dopo 'insisted that', si usa la forma base. Corretta: <i>...she <code>study</code>...</i>" },
-                { "block": 1, "displayNum": "C1-18", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "We ask that you <code>not to touch</code> the exhibits.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "La forma negativa non usa 'to'. Corretta: <i>...you <code>not touch</code>...</i>" },
-                { "block": 1, "displayNum": "C1-19", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "It is crucial that we <code>are</code> on time.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Dopo 'it is crucial that', si usa la forma base. Corretta: <i>...we <code>be</code> on time.</i>" },
-                { "block": 1, "displayNum": "C1-20", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "The professor demanded that the paper <code>be handed</code> in.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'be handed in' è il congiuntivo passivo." },
-                { "block": 2, "displayNum": "C2-1", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "The committee recommends that the proposal ______ rejected.", "choices": ["is", "be", "to be", "was"], "answer": "B", "explanation": "Dopo 'recommends that', si usa il congiuntivo passivo 'be' + participio passato." },
-                { "block": 2, "displayNum": "C2-2", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "I insist that he ______ us an apology.", "choices": ["offer", "offers", "offered", "to offer"], "answer": "A", "explanation": "Dopo 'insist that', si usa la forma base del verbo." },
-                { "block": 2, "displayNum": "C2-3", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "It is vital that you ______ calm.", "choices": ["to remain", "remains", "remain", "remaining"], "answer": "C", "explanation": "Dopo 'it is vital that', si usa la forma base del verbo." },
-                { "block": 2, "displayNum": "C2-4", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "The manager demanded that the work ______ by 5 PM.", "choices": ["is finished", "were finished", "be finished", "finishing"], "answer": "C", "explanation": "Dopo 'demanded that', si usa il congiuntivo passivo 'be finished'." },
-                { "block": 2, "displayNum": "C2-5", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "She suggests that we ______ the meeting.", "choices": ["not postpone", "don't postpone", "not to postpone", "not postponing"], "answer": "A", "explanation": "La forma negativa del congiuntivo è 'not' + forma base." },
-                { "block": 2, "displayNum": "C2-6", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "The law requires that every citizen ______. (A) votes (B) to vote (C) vote (D) voted)", "choices": ["votes", "to vote", "vote", "voted"], "answer": "C", "explanation": "Dopo 'requires that', si usa la forma base." },
-                { "block": 2, "displayNum": "C2-7", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "It is crucial that the hostages ______. (A) not be harmed (B) are not harmed (C) not to be harmed (D) weren't harmed)", "choices": ["not be harmed", "are not harmed", "not to be harmed", "weren't harmed"], "answer": "A", "explanation": "La forma negativa del congiuntivo passivo è 'not be' + participio." },
-                { "block": 2, "displayNum": "C2-8", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "He asked that his name ______ from the list.", "choices": ["was removed", "being removed", "be removed", "is removed"], "answer": "C", "explanation": "Dopo 'asked that', si usa il congiuntivo passivo." },
-                { "block": 2, "displayNum": "C2-9", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "It's important that she ______ the truth.", "choices": ["knows", "know", "to know", "knew"], "answer": "B", "explanation": "Dopo 'it's important that', si usa la forma base." },
-                { "block": 2, "displayNum": "C2-10", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "I propose that a new chairman ______. (A) be elected (B) is elected (C) was elected (D) to be elected)", "choices": ["be elected", "is elected", "was elected", "to be elected"], "answer": "A", "explanation": "Dopo 'propose that', si usa il congiuntivo passivo." }
+            "fase1": [
+                { "question": "La frase 'I was given a book' è un esempio di passivo con due oggetti.", "answer": true, "explanation": "Corretto. 'A book' è l'oggetto diretto, 'I' (come soggetto) è l'oggetto indiretto." },
+                { "question": "Nella frase 'It is believed that he is innocent', 'it' si riferisce a una persona specifica.", "answer": false, "explanation": "Falso. 'It' è un soggetto impersonale, usato per introdurre un'opinione generale." },
+                { "question": "La frase 'He is said to be a genius' è la forma passiva di 'People say he is a genius'.", "answer": true, "explanation": "Corretto. È una costruzione passiva comune per esprimere opinioni generali." },
+                { "question": "La struttura 'have something done' è usata per indicare che si fa qualcosa personalmente.", "answer": false, "explanation": "Falso. Significa che si fa fare qualcosa da qualcun altro." },
+                { "question": "Nella frase 'The house is being built', l'azione è già completata.", "answer": false, "explanation": "Falso. 'Is being built' indica un'azione in corso (Present Continuous Passivo)." },
+                { "question": "La frase 'The criminal was caught red-handed' è un esempio di passivo con un complemento di modo.", "answer": true, "explanation": "Corretto. 'Red-handed' descrive il modo in cui è stato catturato." },
+                { "question": "La struttura 'It was decided that...' è più formale di 'They decided that...'.", "answer": true, "explanation": "Corretto. L'uso del passivo impersonale è spesso più formale e oggettivo." },
+                { "question": "Nella frase 'He was made to confess', 'to confess' è un infinito senza 'to'.", "answer": false, "explanation": "Falso. Nella forma passiva di 'make', si aggiunge 'to' prima dell'infinito." },
+                { "question": "La frase 'The problem needs solving' ha lo stesso significato di 'The problem needs to be solved'.", "answer": true, "explanation": "Corretto. Entrambe le forme esprimono la necessità di un'azione passiva." },
+                { "question": "La frase 'The children were given a reward by their parents' è un passivo con 'by' per indicare l'agente.", "answer": true, "explanation": "Corretto. 'By their parents' specifica chi ha dato la ricompensa." },
+                { "question": "Nella frase 'The book is thought to be lost', l'azione di 'thinking' è al passato.", "answer": false, "explanation": "Falso. 'Is thought' è al presente. L'azione di 'losing' potrebbe essere al passato." },
+                { "question": "La frase 'He was seen leaving the building' è un passivo con un participio presente.", "answer": true, "explanation": "Corretto. 'Leaving' è un participio presente che descrive l'azione in corso." },
+                { "question": "La struttura 'get + participio passato' è più formale di 'be + participio passato'.", "answer": false, "explanation": "Falso. 'Get' è spesso usato in contesti informali o per azioni che accadono inaspettatamente." },
+                { "question": "La frase 'The new policy has been announced' è al Present Perfect Passivo.", "answer": true, "explanation": "Corretto. 'Has been announced' indica un'azione completata con rilevanza nel presente." },
+                { "question": "Nella frase 'She was told to wait', l'agente che ha detto di aspettare è sconosciuto.", "answer": true, "explanation": "Corretto. Il passivo si usa spesso quando l'agente è sconosciuto o non importante." },
+                { "question": "La frase 'The car needs to be washed' è un esempio di passivo impersonale.", "answer": false, "explanation": "Falso. È un passivo che si riferisce a un oggetto specifico ('the car')." },
+                { "question": "La frase 'It is said that money doesn't buy happiness' usa una clausola 'that'.", "answer": true, "explanation": "Corretto. 'That money doesn't buy happiness' è la clausola nominale." },
+                { "question": "Nella frase 'He was believed to have escaped', l'azione di 'escaping' è avvenuta prima dell'azione di 'believing'.", "answer": true, "explanation": "Corretto. 'To have escaped' è l'infinito perfetto, che indica un'azione precedente." },
+                { "question": "La frase 'The bridge was built in 1900' è un passivo al Simple Past.", "answer": true, "explanation": "Corretto. 'Was built' è la forma passiva del Simple Past." },
+                { "question": "La struttura 'There is said to be...' è usata per introdurre un'informazione generica.", "answer": true, "explanation": "Corretto. Simile a 'It is said that...', ma con 'there' per l'esistenza." },
+                { "question": "La frase 'He gets paid weekly' è un esempio di passivo con 'get'.", "answer": true, "explanation": "Corretto. 'Gets paid' è una forma comune di passivo in contesti informali o per azioni abituali." },
+                { "question": "Nella frase 'The decision was made by the committee', 'by the committee' è un complemento d'agente.", "answer": true, "explanation": "Corretto. Indica chi ha compiuto l'azione." },
+                { "question": "La frase 'The window broke' è un passivo.", "answer": false, "explanation": "Falso. È un'azione intransitiva, non passiva. Non c'è un agente che compie l'azione sulla finestra." },
+                { "question": "La struttura 'be + to + infinito' (es. 'The new rules are to be followed') esprime un obbligo.", "answer": true, "explanation": "Corretto. Indica un dovere o un'istruzione." },
+                { "question": "Nella frase 'I was advised to study hard', l'agente è sempre specificato.", "answer": false, "explanation": "Falso. L'agente non è specificato in questo esempio." },
+                { "question": "La frase 'The book is being read by millions' è al Present Perfect Continuous Passivo.", "answer": false, "explanation": "Falso. È al Present Continuous Passivo." },
+                { "question": "La struttura 'It is thought that...' è usata per esprimere una certezza assoluta.", "answer": false, "explanation": "Falso. Esprime un'opinione o una credenza, non una certezza assoluta." },
+                { "question": "La frase 'He was given a second chance' è un passivo con un oggetto indiretto come soggetto.", "answer": true, "explanation": "Corretto. 'He' è l'oggetto indiretto del verbo 'give' nella forma attiva." },
+                { "question": "La frase 'The door was painted green' è un passivo con un complemento predicativo dell'oggetto.", "answer": true, "explanation": "Corretto. 'Green' descrive il risultato dell'azione sul soggetto ('the door')." },
+                { "question": "La struttura 'There is believed to be...' è sempre seguita da un plurale.", "answer": false, "explanation": "Falso. Dipende dal sostantivo che segue 'to be'. Es: 'There is believed to be a solution' (singolare)." },
+                { "question": "La frase 'The car got damaged in the accident' è un passivo con 'get'.", "answer": true, "explanation": "Corretto. 'Get damaged' è un passivo che indica un cambiamento di stato o un evento inaspettato." },
+                { "question": "La frase 'He was heard to sing' è più comune di 'He was heard singing'.", "answer": false, "explanation": "Falso. 'He was heard singing' è più comune e indica un'azione in corso." },
+                { "question": "La frase 'The report is to be submitted by Friday' esprime un obbligo o una disposizione.", "answer": true, "explanation": "Corretto. 'Is to be submitted' indica una scadenza o un requisito." },
+                { "question": "Nella frase 'The building was thought to have been destroyed', l'azione di 'destroying' è avvenuta prima di 'thinking'.", "answer": true, "explanation": "Corretto. 'To have been destroyed' è l'infinito perfetto passivo, che indica un'azione completata prima del verbo principale." },
+                { "question": "La frase 'The rules are being explained now' è al Present Simple Passivo.", "answer": false, "explanation": "Falso. È al Present Continuous Passivo, indica un'azione in corso." },
+                { "question": "La struttura 'It is known that...' è usata per informazioni ampiamente accettate.", "answer": true, "explanation": "Corretto. Indica una conoscenza o un fatto generale." },
+                { "question": "La frase 'I was made do it' è grammaticalmente corretta.", "answer": false, "explanation": "Falso. Dopo il passivo di 'make', si usa 'to' prima del verbo: 'I was made to do it'." },
+                { "question": "La frase 'The children were allowed to play outside' è un passivo di 'allow'.", "answer": true, "explanation": "Corretto. È la forma passiva di 'They allowed the children to play outside'." },
+                { "question": "Nella frase 'The house needs painting', 'painting' è un gerundio con significato passivo.", "answer": true, "explanation": "Corretto. Si usa il gerundio dopo 'need' per esprimere una necessità passiva." },
+                { "question": "La frase 'The problem is being discussed' significa che qualcuno sta discutendo il problema.", "answer": true, "explanation": "Corretto. Il Present Continuous Passivo indica un'azione in corso." },
+                { "question": "La frase 'He is understood to be a spy' è più comune di 'People understand he is a spy'.", "answer": true, "explanation": "Corretto. È una costruzione passiva più formale e concisa." },
+                { "question": "La frase 'The package was sent yesterday' è un passivo senza agente specificato.", "answer": true, "explanation": "Corretto. L'agente non è menzionato." },
+                { "question": "La struttura 'It is believed to have been...' si usa per eventi recenti.", "answer": false, "explanation": "Falso. Si usa per eventi che si ritiene siano accaduti nel passato, anche remoto." },
+                { "question": "La frase 'The car was driven by a robot' è un passivo con un agente non umano.", "answer": true, "explanation": "Corretto. Il complemento d'agente può essere anche non umano." },
+                { "question": "La frase 'The news was reported on TV' è un passivo senza 'by' perché il mezzo è ovvio.", "answer": true, "explanation": "Corretto. Quando l'agente è generico o ovvio, si omette 'by'." },
+                { "question": "Nella frase 'The patient was operated on immediately', 'on' è necessario.", "answer": true, "explanation": "Corretto. 'Operate on' è un verbo frasale e la preposizione è parte integrante." },
+                { "question": "La frase 'He was given good advice' è corretta.", "answer": true, "explanation": "Corretto. 'Advice' è un sostantivo non numerabile, quindi non ha 'a' o 'an'." },
+                { "question": "La struttura 'It is hoped that...' esprime una speranza generale.", "answer": true, "explanation": "Corretto. È un passivo impersonale per esprimere una speranza collettiva." },
+                { "question": "La frase 'The children were seen to play in the park' è più comune di 'The children were seen playing in the park'.", "answer": false, "explanation": "Falso. 'Seen playing' è più comune e indica l'azione in corso." },
+                { "question": "La frase 'The project is considered a success' è un passivo con un complemento del soggetto.", "answer": true, "explanation": "Corretto. 'A success' è un complemento del soggetto che descrive il progetto." }
             ],
-            "testData": [
-                { "block": 3, "displayNum": "C3-1", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "The team must finish the project.<br><em>(Riscrivi: The manager insisted...)</em>", "answer": "that the team finish the project", "explanation": "La struttura è 'insisted that' + soggetto + forma base." },
-                { "block": 3, "displayNum": "C3-2", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "You should not be late.<br><em>(Riscrivi: It is important...)</em>", "answer": "that you not be late", "explanation": "La struttura è 'it is important that' + soggetto + 'not' + forma base." },
-                { "block": 3, "displayNum": "C3-3", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "The report needs to be submitted by Monday.<br><em>(Riscrivi: The CEO requires...)</em>", "answer": "that the report be submitted by Monday", "explanation": "La struttura è 'requires that' + soggetto + congiuntivo passivo ('be submitted')." },
-                { "block": 3, "displayNum": "C3-4", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "I think we should cancel the meeting.<br><em>(Riscrivi: My suggestion is...)</em>", "answer": "that we cancel the meeting", "explanation": "Anche dopo 'my suggestion is', si usa 'that' + soggetto + forma base." },
-                { "block": 3, "displayNum": "C3-5", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "All employees must attend the training.<br><em>(Riscrivi: The company mandates...)</em>", "answer": "that all employees attend the training", "explanation": "La struttura è 'mandates that' + soggetto + forma base." }
+            "fase2": [
+                { "question": "The new bridge ______ next year.", "options": ["is building", "will be built", "is built", "builds"], "answer": "B", "explanation": "Futuro Passivo: 'will be' + participio passato." },
+                { "question": "It ______ that the economy will improve soon.", "options": ["is hoped", "hopes", "is hoping", "hoped"], "answer": "A", "explanation": "Passivo impersonale con 'it': 'it is hoped that...'" },
+                { "question": "The children ______ a story by their grandmother every night.", "options": ["are told", "tell", "are telling", "told"], "answer": "A", "explanation": "Present Simple Passivo con due oggetti: 'are told' (la storia è raccontata a loro)." },
+                { "question": "The documents ______ by the secretary right now.", "options": ["are being typed", "are typed", "are typing", "have typed"], "answer": "A", "explanation": "Present Continuous Passivo: 'are being' + participio passato." },
+                { "question": "He ______ to be a very talented artist.", "options": ["is said", "says", "is saying", "said"], "answer": "A", "explanation": "Passivo con infinito: 'is said to be'." },
+                { "question": "The broken window ______ immediately.", "options": ["needs fixing", "needs to fix", "needs be fixed", "needs fixed"], "answer": "A", "explanation": "Gerundio con significato passivo dopo 'need': 'needs fixing' o 'needs to be fixed'." },
+                { "question": "A new hospital ______ in the city center.", "options": ["is to build", "is to be built", "is building", "builds"], "answer": "B", "explanation": "Passivo con 'be to': 'is to be built' per obbligo/disposizione futura." },
+                { "question": "The decision ______ by the board yesterday.", "options": ["was made", "made", "has made", "is made"], "answer": "A", "explanation": "Past Simple Passivo: 'was made'." },
+                { "question": "There ______ to be a solution to every problem.", "options": ["is believed", "believes", "is believing", "believed"], "answer": "A", "explanation": "Passivo impersonale con 'there': 'there is believed to be'." },
+                { "question": "He ______ to have stolen the money.", "options": ["is suspected", "suspects", "is suspecting", "suspected"], "answer": "A", "explanation": "Passivo con infinito perfetto: 'is suspected to have stolen'." },
+                { "question": "The new rules ______ by all employees.", "options": ["must follow", "must be followed", "must being followed", "must have followed"], "answer": "B", "explanation": "Passivo con modale: 'must be' + participio passato." },
+                { "question": "He ______ seen entering the building.", "options": ["was", "is", "has been", "had been"], "answer": "A", "explanation": "Passivo con verbo di percezione: 'was seen' + gerundio o infinito senza 'to'." },
+                { "question": "The house ______ last year.", "options": ["got painted", "painted", "gets painted", "is painting"], "answer": "A", "explanation": "Passivo con 'get' per un'azione completata nel passato: 'got painted'." },
+                { "question": "It ______ that the world is round.", "options": ["is known", "knows", "is knowing", "knew"], "answer": "A", "explanation": "Passivo impersonale con 'it': 'it is known that...'" },
+                { "question": "The report ______ by Friday.", "options": ["is to submit", "is to be submitted", "submits", "will submit"], "answer": "B", "explanation": "Passivo con 'be to': 'is to be submitted' per obbligo/scadenza." },
+                { "question": "The children ______ to clean their rooms.", "options": ["were made", "made", "were making", "are made"], "answer": "A", "explanation": "Passivo di 'make': 'were made to' + infinito." },
+                { "question": "He ______ a new car for his birthday.", "options": ["was given", "gave", "was giving", "is giving"], "answer": "A", "explanation": "Passivo con due oggetti: 'was given' (la macchina gli è stata data)." },
+                { "question": "The problem ______ by the team for hours.", "options": ["has been discussed", "has discussed", "is discussed", "discusses"], "answer": "A", "explanation": "Present Perfect Passivo: 'has been' + participio passato." },
+                { "question": "The building ______ to have been built in the 18th century.", "options": ["is believed", "believes", "is believing", "believed"], "answer": "A", "explanation": "Passivo impersonale con infinito perfetto passivo: 'is believed to have been built'." },
+                { "question": "The new manager ______ to be very strict.", "options": ["is considered", "considers", "is considering", "considered"], "answer": "A", "explanation": "Passivo con verbo di opinione: 'is considered to be'." },
+                { "question": "The concert ______ by thousands of people.", "options": ["was attended", "attended", "was attending", "is attending"], "answer": "A", "explanation": "Past Simple Passivo: 'was attended'." },
+                { "question": "It ______ that the earth is warming.", "options": ["is generally accepted", "generally accepts", "is generally accepting", "generally accepted"], "answer": "A", "explanation": "Passivo impersonale con 'it': 'it is generally accepted that...'" },
+                { "question": "The car ______ in the accident.", "options": ["got damaged", "damaged", "gets damaged", "is damaging"], "answer": "A", "explanation": "Passivo con 'get' per un evento inaspettato: 'got damaged'." },
+                { "question": "The children ______ playing in the garden.", "options": ["were seen", "saw", "were seeing", "have seen"], "answer": "A", "explanation": "Passivo con verbo di percezione: 'were seen' + gerundio." },
+                { "question": "The report ______ by the end of the month.", "options": ["needs completing", "needs to complete", "needs completed", "needs to be complete"], "answer": "A", "explanation": "Gerundio con significato passivo dopo 'need': 'needs completing'." },
+                { "question": "The new system ______ to be installed next week.", "options": ["is expected", "expects", "is expecting", "expected"], "answer": "A", "explanation": "Passivo con infinito: 'is expected to be installed'." },
+                { "question": "He ______ to have been a famous actor.", "options": ["is rumored", "rumors", "is rumoring", "rumored"], "answer": "A", "explanation": "Passivo con infinito perfetto passivo: 'is rumored to have been'." },
+                { "question": "The patient ______ to take the medicine.", "options": ["was advised", "advised", "was advising", "is advising"], "answer": "A", "explanation": "Passivo con infinito: 'was advised to' + infinito." },
+                { "question": "The project ______ to be completed by December.", "options": ["is scheduled", "schedules", "is scheduling", "scheduled"], "answer": "A", "explanation": "Passivo con infinito: 'is scheduled to be completed'." },
+                { "question": "The ancient city ______ to exist deep in the jungle.", "options": ["is believed", "believes", "is believing", "believed"], "answer": "A", "explanation": "Passivo con infinito: 'is believed to exist'." }
+            ],
+            "fase3": [
+                { "prompt": "People say that he is very rich.", "question": "He is said...", "answer": "to be very rich", "explanation": "La struttura è 'soggetto + is/are said + to be + complemento'." },
+                { "prompt": "The company needs to clean the machines.", "question": "The machines need...", "answer": "cleaning", "explanation": "Dopo 'need', si può usare il gerundio con significato passivo." },
+                { "prompt": "They made him sign the contract.", "question": "He was made...", "answer": "to sign the contract", "explanation": "Nella forma passiva di 'make', si aggiunge 'to' prima del verbo." },
+                { "prompt": "Someone gave her a beautiful present.", "question": "She was given...", "answer": "a beautiful present", "explanation": "Passivo con due oggetti: l'oggetto indiretto diventa soggetto." },
+                { "prompt": "People believe that the ancient city exists.", "question": "The ancient city is believed...", "answer": "to exist", "explanation": "Struttura passiva con infinito." },
+                { "prompt": "They are building a new school.", "question": "A new school is being...", "answer": "built", "explanation": "Present Continuous Passivo: 'is being' + participio passato." },
+                { "prompt": "The police saw him run away.", "question": "He was seen...", "answer": "running away", "explanation": "Passivo con verbo di percezione + gerundio (o infinito senza 'to')." },
+                { "prompt": "It is necessary to follow these rules.", "question": "These rules are to...", "answer": "be followed", "explanation": "Passivo con 'be to' per esprimere obbligo." },
+                { "prompt": "Someone damaged my car in the parking lot.", "question": "My car got...", "answer": "damaged in the parking lot", "explanation": "Passivo con 'get' per un evento inaspettato." },
+                { "prompt": "People think that he has left the country.", "question": "He is thought...", "answer": "to have left the country", "explanation": "Passivo con infinito perfetto per un'azione precedente." },
+                { "prompt": "They advised us to take a break.", "question": "We were advised...", "answer": "to take a break", "explanation": "Passivo con infinito." },
+                { "prompt": "They say that there are many issues.", "question": "There are said...", "answer": "to be many issues", "explanation": "Passivo impersonale con 'there'." },
+                { "prompt": "The company announced the new policy yesterday.", "question": "The new policy was...", "answer": "announced yesterday", "explanation": "Past Simple Passivo." },
+                { "prompt": "The children need to feed the pets.", "question": "The pets need...", "answer": "feeding", "explanation": "Gerundio con significato passivo dopo 'need'." },
+                { "prompt": "Someone has stolen my wallet.", "question": "My wallet has been...", "answer": "stolen", "explanation": "Present Perfect Passivo." },
+                { "prompt": "People expect him to win the election.", "question": "He is expected...", "answer": "to win the election", "explanation": "Passivo con infinito." },
+                { "prompt": "They say that the treasure was hidden long ago.", "question": "The treasure is said...", "answer": "to have been hidden long ago", "explanation": "Passivo con infinito perfetto passivo per azione precedente." },
+                { "prompt": "They are discussing the new proposal.", "question": "The new proposal is being...", "answer": "discussed", "explanation": "Present Continuous Passivo." },
+                { "prompt": "Someone told me to wait outside.", "question": "I was told...", "answer": "to wait outside", "explanation": "Passivo con infinito." },
+                { "prompt": "People consider him a great leader.", "question": "He is considered...", "answer": "a great leader", "explanation": "Passivo con complemento del soggetto." }
             ]
         }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const exerciseDataScript = document.getElementById('exercise-data');
+            const exerciseData = JSON.parse(exerciseDataScript.textContent);
+
+            let currentActiveTab = 1; // Default to Fase 1
+
+            // Function to save progress (answers)
+            const saveProgress = () => {
+                const answers = {};
+                tabContents.forEach((tabContent, index) => {
+                    const phaseNum = index + 1;
+                    const inputs = tabContent.querySelectorAll('input[type="radio"], input[type="text"]');
+                    inputs.forEach(input => {
+                        if (input.type === 'radio' && input.checked) {
+                            answers[`fase${phaseNum}_q${input.name}`] = input.value;
+                        } else if (input.type === 'text') {
+                            answers[`fase${phaseNum}_q${input.id}`] = input.value;
+                        }
+                    });
+                });
+                // Changed key for L3 to avoid conflicts if multiple exercises are loaded
+                localStorage.setItem('passiviAvanzatiProgress', JSON.stringify(answers));
+            };
+
+            // Function to load progress (answers)
+            const loadProgress = () => {
+                // Changed key for L3 to avoid conflicts if multiple exercises are loaded
+                const savedAnswers = JSON.parse(localStorage.getItem('passiviAvanzatiProgress')) || {};
+                tabContents.forEach((tabContent, index) => {
+                    const phaseNum = index + 1;
+                    const inputs = tabContent.querySelectorAll('input[type="radio"], input[type="text"]');
+                    inputs.forEach(input => {
+                        if (input.type === 'radio' && savedAnswers[`fase${phaseNum}_q${input.name}`] === input.value) {
+                            input.checked = true;
+                        } else if (input.type === 'text' && savedAnswers[`fase${phaseNum}_q${input.id}`]) {
+                            input.value = savedAnswers[`fase${phaseNum}_q${input.id}`];
+                        }
+                    });
+                });
+            };
+
+            // Function to render questions for a given phase
+            const renderQuestions = (phaseNum) => {
+                const contentDiv = document.getElementById(`tab-content-${phaseNum}`);
+                contentDiv.innerHTML = ''; // Clear previous content
+
+                const phaseKey = `fase${phaseNum}`;
+                const questions = exerciseData[phaseKey];
+
+                if (!questions) {
+                    contentDiv.innerHTML = `<p class="text-slate-500">No exercises available for Fase ${phaseNum}.</p>`;
+                    return;
+                }
+
+                questions.forEach((q, index) => {
+                    const questionElement = document.createElement('div');
+                    questionElement.className = 'mb-6 p-4 border border-slate-200 rounded-lg bg-white shadow-sm';
+
+                    // Use displayNum if available, otherwise just index + 1
+                    const displayNum = q.displayNum ? q.displayNum : `${phaseNum}-${index + 1}`;
+                    let questionHtml = `<p class="font-semibold text-lg mb-3">${displayNum}. ${q.question}</p>`;
+
+                    if (q.type === 'mc') {
+                        q.choices.forEach((choice, i) => {
+                            const inputId = `fase${phaseNum}-q${index}-${i}`;
+                            questionHtml += `
+                                <div class="flex items-center mb-2">
+                                    <input type="radio" id="${inputId}" name="q${index}" value="${String.fromCharCode(65 + i)}" class="mr-2 text-indigo-600 focus:ring-indigo-500">
+                                    <label for="${inputId}" class="text-slate-700">${choice}</label>
+                                </div>
+                            `;
+                        });
+                    } else if (q.type === 'input_rewrite') {
+                        const inputId = `fase${phaseNum}-q${index}`;
+                        questionHtml += `
+                            <div class="mt-3">
+                                <input type="text" id="${inputId}" class="w-full p-2 border border-slate-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Your answer">
+                            </div>
+                        `;
+                    }
+
+                    questionElement.innerHTML = questionHtml;
+                    contentDiv.appendChild(questionElement);
+                });
+
+                // Add a submit button for each phase
+                const submitButton = document.createElement('button');
+                submitButton.textContent = 'Check Answers';
+                submitButton.className = 'mt-6 px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors duration-300 shadow-md';
+                submitButton.onclick = () => checkAnswers(phaseNum);
+                contentDiv.appendChild(submitButton);
+
+                // Add a clear answers button
+                const clearButton = document.createElement('button');
+                clearButton.textContent = 'Clear Answers';
+                clearButton.className = 'mt-6 ml-4 px-6 py-3 bg-slate-400 text-white font-bold rounded-lg hover:bg-slate-500 transition-colors duration-300 shadow-md';
+                clearButton.onclick = () => clearAnswers(phaseNum);
+                contentDiv.appendChild(clearButton);
+
+                loadProgress(); // Load saved answers after rendering questions
+            };
+
+            // Function to check answers and provide feedback
+            const checkAnswers = (phaseNum) => {
+                const contentDiv = document.getElementById(`tab-content-${phaseNum}`);
+                const questions = exerciseData[phaseNum];
+
+                questions.forEach((q, index) => {
+                    const questionElement = contentDiv.children[index]; // Get the specific question div
+                    let isCorrect = false;
+                    let userAnswer = '';
+
+                    if (q.type === 'mc') {
+                        const selectedInput = questionElement.querySelector(`input[name="q${index}"]:checked`);
+                        if (selectedInput) {
+                            userAnswer = selectedInput.value;
+                            isCorrect = (userAnswer === q.answer);
+                        }
+                    } else if (q.type === 'input_rewrite') {
+                        const inputField = questionElement.querySelector(`#fase${phaseNum}-q${index}`);
+                        if (inputField) {
+                            userAnswer = inputField.value.trim();
+                            // Case-insensitive and whitespace-insensitive comparison
+                            isCorrect = (userAnswer.toLowerCase() === q.answer.toLowerCase().trim());
+                        }
+                    }
+
+                    // Remove previous feedback classes
+                    questionElement.classList.remove('feedback-correct', 'feedback-incorrect');
+
+                    // Add new feedback class
+                    if (isCorrect) {
+                        questionElement.classList.add('feedback-correct');
+                    } else {
+                        questionElement.classList.add('feedback-incorrect');
+                    }
+
+                    // Display explanation
+                    let explanationElement = questionElement.querySelector('.explanation');
+                    if (!explanationElement) {
+                        explanationElement = document.createElement('p');
+                        explanationElement.className = 'explanation mt-3 text-sm italic text-slate-600';
+                        questionElement.appendChild(explanationElement);
+                    }
+                    explanationElement.innerHTML = `<strong>Spiegazione:</strong> ${q.explanation}`;
+                });
+                saveProgress(); // Save answers after checking
+            };
+
+            // Function to clear answers for a given phase
+            const clearAnswers = (phaseNum) => {
+                const contentDiv = document.getElementById(`tab-content-${phaseNum}`);
+                const inputs = contentDiv.querySelectorAll('input[type="radio"], input[type="text"]');
+                inputs.forEach(input => {
+                    if (input.type === 'radio') {
+                        input.checked = false;
+                    } else if (input.type === 'text') {
+                        input.value = '';
+                    }
+                });
+
+                // Remove feedback classes and explanations
+                const questionElements = contentDiv.querySelectorAll('.mb-6');
+                questionElements.forEach(qElement => {
+                    qElement.classList.remove('feedback-correct', 'feedback-incorrect');
+                    const explanationElement = qElement.querySelector('.explanation');
+                    if (explanationElement) {
+                        explanationElement.remove();
+                    }
+                });
+                saveProgress(); // Clear saved answers
+            };
+
+
+            // Tab switching logic
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabToActivate = parseInt(button.dataset.tab);
+
+                    // Deactivate current tab
+                    document.getElementById(`tab-btn-${currentActiveTab}`).classList.remove('tab-active');
+                    document.getElementById(`tab-btn-${currentActiveTab}`).classList.add('tab-inactive');
+                    document.getElementById(`tab-content-${currentActiveTab}`).classList.add('hidden');
+
+                    // Activate new tab
+                    button.classList.remove('tab-inactive');
+                    button.classList.add('tab-active');
+                    document.getElementById(`tab-content-${tabToActivate}`).classList.remove('hidden');
+
+                    currentActiveTab = tabToActivate;
+                    renderQuestions(currentActiveTab); // Render questions for the newly active tab
+                });
+            });
+
+            // Initial render of the first tab
+            renderQuestions(currentActiveTab);
+        });
     </script>
 </body>
 </html>

@@ -29,9 +29,16 @@
     <!-- Footer -->
     <footer class="flex-shrink-0 bg-slate-900 text-slate-400 text-xs p-2 flex justify-between items-center">
       <div>App Version: <span id="app-version">Loading...</span></div>
-      <div id="network-status" class="flex items-center">
-        <span class="w-3 h-3 rounded-full mr-2" id="network-indicator"></span>
-        <span id="network-label"></span>
+      <div class="flex items-center"> <!-- New div to group network and update status -->
+        <div id="network-status" class="flex items-center">
+          <span class="w-3 h-3 rounded-full mr-2" id="network-indicator"></span> <!-- Set to w-3 h-3 -->
+          <span id="network-label"></span>
+        </div>
+        <!-- Update Notification Badge - Removed background color -->
+        <div id="update-notification-badge" class="ml-2 px-2 py-1 rounded-full text-xs flex items-center" title="Update Available">
+          <span id="update-dot" class="mr-1 w-3 h-3 rounded-full bg-green-500"></span> <!-- Set to w-3 h-3 -->
+          <span id="update-text" class="text-slate-400">Up to date</span> <!-- Text color changed to match network label -->
+        </div>
       </div>
     </footer>
     

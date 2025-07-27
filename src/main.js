@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, session, Menu, shell, dialog } = require('e
 const path = require('path');
 const fs = require('fs').promises;
 const fsSync = require('fs');
+const { autoUpdater } = require('electron-updater'); // Import autoUpdater
 
 // --- Configuration Management ---
 const configPath = path.join(app.getPath('userData'), 'config.json');
@@ -51,7 +52,8 @@ const createWindow = () => {
     width: 1200,
     height: 800,
     webPreferences: {
-      preload: path.resolve(__dirname, 'preload.js'),
+      // Use MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY for the preload script path
+      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY, 
       nodeIntegration: true,
       contextIsolation: false,
     },
@@ -82,7 +84,7 @@ ipcMain.handle('save-config', async (event, newConfig) => {
 });
 
 ipcMain.handle('open-directory-dialog', async () => {
-    const { canceled, filePaths } = await dialog.showOpenDialog({
+    const { canceled, filePaths } = await dialog.showOpenOpenDialog({
         properties: ['openDirectory']
     });
     if (canceled) {
@@ -150,6 +152,18 @@ ipcMain.handle('open-external-link', async (event, url) => {
 app.on('ready', () => {
   loadConfig();
   createWindow();
+
+  // Check for updates and notify
+  autoUpdater.checkForUpdatesAndNotify();
+
+  // Listener for update available
+  autoUpdater.on('update-available', () => {
+    // Send IPC message to renderer process to show notification
+    const allWindows = BrowserWindow.getAllWindows();
+    if (allWindows.length > 0) {
+      allWindows[0].webContents.send('update-available');
+    }
+  });
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({

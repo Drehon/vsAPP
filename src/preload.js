@@ -28,6 +28,11 @@ window.api = {
   getConfig: () => ipcRenderer.invoke('get-config'),
   saveConfig: (config) => ipcRenderer.invoke('save-config', config),
   openDirectoryDialog: () => ipcRenderer.invoke('open-directory-dialog'),
+
+  // Update Notification System
+  // Exposes a listener for 'update-available' IPC messages from the main process.
+  // The callback function will be executed when an update is available.
+  onUpdateAvailable: (callback) => ipcRenderer.on('update-available', callback),
 };
 
 window.addEventListener('DOMContentLoaded', () => {

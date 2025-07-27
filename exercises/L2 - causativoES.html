@@ -4,64 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Esercizi Pratici: La Struttura Causativa</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f1f5f9; /* bg-slate-200 */
-        }
-        .key-rule {
-            background-color: #eef2ff; /* bg-indigo-50 */
-            color: #4338ca; /* text-indigo-800 */
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-        .tab-active {
-            border-bottom: 2px solid #4f46e5; /* border-indigo-600 */
-            color: #4f46e5; /* text-indigo-600 */
-            font-weight: 600;
-        }
-        .tab-inactive {
-            color: #64748b; /* text-slate-500 */
-            border-bottom: 2px solid transparent;
-        }
-        .tab-btn:hover {
-            color: #334155; /* text-slate-700 */
-        }
-        .feedback-correct {
-            background-color: #f0fdf4; /* bg-green-50 */
-            color: #166534; /* text-green-800 */
-        }
-        .feedback-incorrect {
-            background-color: #fef2f2; /* bg-red-50 */
-            color: #b91c1c; /* text-red-800 */
-        }
-        code, .font-mono {
-            font-family: 'Source Code Pro', monospace;
-        }
-        .notes-content {
-            transition: max-height 0.3s ease-in-out;
-            max-height: 500px;
-            overflow: hidden;
-        }
-        .notes-content.hidden {
-            max-height: 0;
-        }
-    </style>
 </head>
-<body class="text-slate-800">
+<body class="text-slate-700">
 
-    <div class="container mx-auto p-4 md:p-10 max-w-7xl">
+    <div class="container mx-auto p-6 md:p-10 max-w-7xl">
 
         <!-- Header -->
         <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
-            <header class="p-6 md:p-8">
+            <header class="p-6">
                 <h1 class="text-3xl font-bold text-slate-900">Esercizi Pratici: La Struttura Causativa</h1>
-                <p class="text-lg text-slate-600 mt-1">Metti in pratica la teoria con esercizi mirati.</p>
+                <p class="text-lg text-slate-600">Metti in pratica la teoria con esercizi mirati.</p>
             </header>
             <div class="p-6 border-t border-slate-200 bg-slate-50 text-sm text-slate-600 space-y-3">
                 <h3 class="font-semibold text-slate-800">Come usare questa pagina:</h3>
@@ -75,173 +27,331 @@
         <!-- Main Content -->
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             <!-- Tabs -->
-            <div class="border-b border-slate-200 flex justify-between items-center px-6">
-                <nav class="flex flex-wrap sm:flex-nowrap space-x-2 md:space-x-6" aria-label="Tabs">
-                    <button data-tab="1" id="tab-block-1" class="tab-btn py-4 px-2 md:px-4 text-sm font-medium tab-active">Fase 1: Comprensione</button>
-                    <button data-tab="2" id="tab-block-2" class="tab-btn py-4 px-2 md:px-4 text-sm font-medium tab-inactive">Fase 2: Riconoscimento</button>
-                    <button data-tab="3" id="tab-block-3" class="tab-btn py-4 px-2 md:px-4 text-sm font-medium tab-inactive">Fase 3: Produzione</button>
+            <div class="border-b border-slate-200">
+                <nav class="flex space-x-6 px-6" aria-label="Tabs">
+                    <button id="tab-btn-1" class="tab-btn py-4 px-1 text-sm font-medium tab-active">Fase 1: Comprensione</button>
+                    <button id="tab-btn-2" class="tab-btn py-4 px-1 text-sm font-medium tab-inactive">Fase 2: Riconoscimento</button>
+                    <button id="tab-btn-3" class="tab-btn py-4 px-1 text-sm font-medium tab-inactive">Fase 3: Produzione</button>
                 </nav>
-                <div id="go-to-container" class="flex items-center text-sm">
-                    <label for="jump-to" class="text-slate-600 mr-2">Vai a:</label>
-                    <input type="number" id="jump-to" class="w-20 border-slate-300 rounded-md shadow-sm text-sm" min="1">
-                    <button id="jump-btn" class="ml-2 px-3 py-1 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 text-sm">Vai</button>
-                </div>
             </div>
 
             <!-- Tab Content -->
             <div class="p-6 md:p-8">
-                <div id="test-view">
-                    <form id="diagnostic-form" class="p-0">
-                        <div id="questions-container"></div>
-                        <div id="submission-area" class="mt-8 text-center"></div>
-                    </form>
-                </div>
+                <div id="tab-content-1" class="tab-content"></div>
+                <div id="tab-content-2" class="tab-content hidden"></div>
+                <div id="tab-content-3" class="tab-content hidden"></div>
             </div>
         </div>
-
-        <section id="diagnostics-view" class="hidden">
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                <header class="p-6 flex justify-between items-center bg-slate-50 border-b border-slate-200">
-                    <h2 class="text-2xl font-bold text-slate-800">Performance Diagnostics</h2>
-                    <button id="back-to-review-btn" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 shadow-md">
-                        &larr; Back to Test Review
-                    </button>
-                </header>
-                <div class="p-6">
-                    <div class="mb-6 border-b border-slate-200">
-                        <nav class="flex flex-wrap -mb-px" aria-label="Tabs">
-                            <button id="diag-tab-overall" data-tab="overall" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Overall</button>
-                            <button id="diag-tab-block-a" data-tab="block-a" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Fase 1</button>
-                            <button id="diag-tab-block-b" data-tab="block-b" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Fase 2</button>
-                            <button id="diag-tab-block-c" data-tab="block-c" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Fase 3</button>
-                        </nav>
-                    </div>
-                    <div id="diag-content-overall" class="diag-content hidden">
-                        <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="overallChart"></canvas> </div>
-                    </div>
-                    <div id="diag-content-block-a" class="diag-content hidden">
-                         <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="blockAChart"></canvas> </div>
-                    </div>
-                    <div id="diag-content-block-b" class="diag-content hidden">
-                         <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="blockBChart"></canvas> </div>
-                    </div>
-                    <div id="diag-content-block-c" class="diag-content hidden">
-                         <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="blockCChart"></canvas> </div>
-                    </div>
-                </div>
-            </div>
-        </section>
     </div>
 
     <script id="exercise-data" type="application/json">
         {
-            "testData": [
-                { "block": 1, "displayNum": "C1-1", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'I cut my hair' significa la stessa cosa di 'I had my hair cut'.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. 'I cut my hair' significa che l'ho tagliato io stesso. 'I had my hair cut' significa che un parrucchiere l'ha fatto per me." },
-                { "block": 1, "displayNum": "C1-2", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'She is having her car serviced' significa che sta organizzando affinché un meccanico controlli la sua auto.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Lei non sta facendo il servizio, lo sta facendo fare." },
-                { "block": 1, "displayNum": "C1-3", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "In 'I got the report printed', il verbo 'get' è più formale di 'have'.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. 'Have' è generalmente considerato più formale di 'get' in questa struttura." },
-                { "block": 1, "displayNum": "C1-4", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'He had his assistant call the client' è un esempio di causativo attivo.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Specifica chi compie l'azione (his assistant) e usa la struttura 'have + persona + verbo base'." },
-                { "block": 1, "displayNum": "C1-5", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La struttura 'get someone to do something' si usa per dare un ordine perentorio.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Si usa più per 'convincere' o 'persuadere' qualcuno a fare qualcosa." },
-                { "block": 1, "displayNum": "C1-6", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "'I had my wallet stolen' è un uso corretto della struttura causativa per un evento negativo e non pianificato.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. La struttura si usa anche per descrivere cose che ci accadono, non solo servizi che richiediamo." },
-                { "block": 1, "displayNum": "C1-7", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'The boss made us work late' ha lo stesso significato di 'The boss had us work late'.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Entrambe le frasi indicano che il capo ci ha dato l'istruzione di lavorare fino a tardi." },
-                { "block": 1, "displayNum": "C1-8", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "Nella frase 'I had the technician fix the computer', 'fix' è un participio passato.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. È un verbo alla forma base. La struttura è 'have + persona + verbo base'." },
-                { "block": 1, "displayNum": "C1-9", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "Per esprimere persuasione, è più comune usare 'I got my friend to help me' piuttosto che 'I had my friend help me'.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'Get someone to do' implica persuasione, mentre 'have someone do' è più un'istruzione." },
-                { "block": 1, "displayNum": "C1-10", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'We are having a new kitchen installed' è al tempo presente semplice.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. È al Present Continuous, per descrivere un'azione in corso in questo periodo." },
-                { "block": 1, "displayNum": "C1-11", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "'I'll have my secretary to book a flight' è grammaticalmente corretto.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Dopo 'have + persona', si usa il verbo base senza 'to'. Corretto: '...have my secretary book...'." },
-                { "block": 1, "displayNum": "C1-12", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La struttura causativa si può usare solo per i servizi a pagamento.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Si può usare per qualsiasi azione che si fa fare a qualcun altro, anche gratuitamente (es. 'I had my brother check my essay')." },
-                { "block": 1, "displayNum": "C1-13", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "'Get your car washed' è un modo per dare un consiglio o un suggerimento forte.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Usato all'imperativo, ha una funzione simile a un suggerimento o un ordine." },
-                { "block": 1, "displayNum": "C1-14", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "Nella frase 'She got the package delivered', non sappiamo chi ha consegnato il pacco.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Il causativo passivo si concentra sull'azione ricevuta, non su chi l'ha eseguita." },
-                { "block": 1, "displayNum": "C1-15", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'He had his car being repaired' è una forma comune e corretta.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. La forma corretta è 'He was having his car repaired' o 'He had his car repaired'. 'being' non si usa in questo modo." },
-                { "block": 1, "displayNum": "C1-16", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "Il causativo con 'make' ('make someone do something') implica sempre una scelta libera da parte di chi agisce.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. 'Make' implica obbligo o costrizione, non una scelta libera." },
-                { "block": 1, "displayNum": "C1-17", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "Posso dire 'I will have my house to be painted'.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. La struttura è 'have + oggetto + participio passato'. Corretto: '...have my house painted'." },
-                { "block": 1, "displayNum": "C1-18", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La domanda 'Did you have your hair cut?' chiede se hai tagliato i capelli da solo.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Chiede se sei andato dal parrucchiere, cioè se hai 'fatto tagliare' i capelli." },
-                { "block": 1, "displayNum": "C1-19", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'I must get this suit cleaned' esprime una necessità.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. La combinazione del modale 'must' con il causativo 'get' esprime un obbligo o una forte necessità." },
-                { "block": 1, "displayNum": "C1-20", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "'I had him to leave' è una costruzione corretta.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Con 'have' si usa il verbo base: 'I had him leave'. Con 'get' si userebbe 'to': 'I got him to leave'." },
-                { "block": 1, "displayNum": "C1-21", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'I got my car to be washed' è una forma passiva corretta.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. La forma passiva è 'I got my car washed'. L'infinito non si usa in questa forma." },
-                { "block": 1, "displayNum": "C1-22", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'The film made me cry' è un esempio di causativo.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'Make' è un verbo causativo che indica che qualcosa ha causato una reazione." },
-                { "block": 1, "displayNum": "C1-23", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "'Let me go' significa 'permettimi di andare'.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'Let' è un verbo causativo che esprime permesso." },
-                { "block": 1, "displayNum": "C1-24", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "Nella frase 'I had my report checked', 'checked' è un aggettivo.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. È il participio passato del verbo 'check'." },
-                { "block": 1, "displayNum": "C1-25", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'She had her assistant to type the letter' è corretta.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. La struttura è 'have + persona + verbo base (type)'." },
-                { "block": 1, "displayNum": "C1-26", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "'We got the problem to solve' è una frase corretta.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. La frase corretta sarebbe 'We got the problem solved' (passivo) o 'We got someone to solve the problem' (attivo)." },
-                { "block": 1, "displayNum": "C1-27", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'I will have the package delivered tomorrow' è al futuro.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Usa 'will have' per formare il futuro causativo." },
-                { "block": 1, "displayNum": "C1-28", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "'I'm having a party organized' significa che sto organizzando la festa da solo.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Significa che qualcun altro (un organizzatore di eventi, amici) la sta organizzando per me." },
-                { "block": 1, "displayNum": "C1-29", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'He got his brother do his homework' è corretta.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Con 'get' si usa l'infinito con 'to': '...got his brother to do...'" },
-                { "block": 1, "displayNum": "C1-30", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "'I had my phone repaired' e 'My phone was repaired' hanno esattamente lo stesso significato.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. 'I had my phone repaired' enfatizza che ho organizzato io la riparazione. 'My phone was repaired' è una semplice constatazione passiva." },
-                { "block": 1, "displayNum": "C1-31", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "'Make' e 'let' sono seguiti dalla forma base del verbo, senza 'to'.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Esempi: 'make him go', 'let her see'." },
-                { "block": 1, "displayNum": "C1-32", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La forma 'have + oggetto + participio passato' può descrivere un incidente.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Esempio: 'She had her leg broken in the accident'." },
-                { "block": 1, "displayNum": "C1-33", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'I'll get it done' è una promessa di fare qualcosa personalmente.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. È una promessa di assicurarsi che l'azione venga completata, probabilmente da qualcun altro." },
-                { "block": 1, "displayNum": "C1-34", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "Nella struttura attiva, 'get' è più comune di 'have' per dare ordini a subordinati.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. 'Have' (es. 'I had my assistant do it') è più comune per dare istruzioni o ordini in un contesto professionale." },
-                { "block": 1, "displayNum": "C1-35", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'I was made to apologize' è la forma passiva di 'They made me apologize'.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Nota che nella forma passiva di 'make', si aggiunge 'to' prima del verbo." },
-                { "block": 1, "displayNum": "C1-36", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'I had my house burgled' è un modo corretto per dire che i ladri sono entrati in casa.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. È un uso comune del causativo passivo per eventi negativi." },
-                { "block": 1, "displayNum": "C1-37", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'I got my hair cutting' è una forma corretta.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Si usa il participio passato: 'I got my hair cut'." },
-                { "block": 1, "displayNum": "C1-38", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'I'll have the chef to prepare a special meal' è corretta.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. La struttura è 'have + persona + verbo base': '...have the chef prepare...'" },
-                { "block": 1, "displayNum": "C1-39", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "Il causativo si usa solo con i verbi 'have', 'get', e 'make'.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Anche 'let' e 'help' sono considerati verbi causativi ('let me know', 'help me (to) finish')." },
-                { "block": 1, "displayNum": "C1-40", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "Nella frase 'I helped my dad (to) wash the car', il 'to' è opzionale.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Con il verbo 'help', l'infinito che segue può essere usato con o senza 'to'." },
-                { "block": 1, "displayNum": "C1-41", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'I'm going to have my car wash' è corretta.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Manca il participio passato. Corretto: '...have my car washed'." },
-                { "block": 1, "displayNum": "C1-42", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "'He had his license suspended' significa che la polizia gli ha sospeso la patente.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. È un uso passivo per descrivere un'azione subita." },
-                { "block": 1, "displayNum": "C1-43", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'She got her friend buy the tickets' è corretta.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Con 'get' si usa 'to': '...got her friend to buy...'" },
-                { "block": 1, "displayNum": "C1-44", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "Un insegnante che dice 'I'll have you all speaking English' sta usando un causativo attivo.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Significa 'Farò in modo che tutti voi parlino inglese'." },
-                { "block": 1, "displayNum": "C1-45", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'I had a feeling that something was wrong' è un esempio di causativo.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Qui 'had' è il verbo principale con il significato di 'avere' o 'provare'." },
-                { "block": 1, "displayNum": "C1-46", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'I had my assistant work on the report' è un esempio di causativo passivo.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. È un esempio di causativo attivo perché specifica chi compie l'azione ('my assistant')." },
-                { "block": 1, "displayNum": "C1-47", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'I got the job' è un esempio di causativo.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Qui 'got' significa 'ottenere'. Non c'è un'azione fatta fare a qualcun altro." },
-                { "block": 1, "displayNum": "C1-48", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'We had the police investigate the issue' è corretta.", "choices": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. È un causativo attivo che usa la struttura 'have + persona/ente + verbo base'." },
-                { "block": 1, "displayNum": "C1-49", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'I let my car to be repaired' è una forma corretta.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. 'Let' non si usa in questo modo. Si direbbe 'I had my car repaired' o 'I let the mechanic repair my car'." },
-                { "block": 1, "displayNum": "C1-50", "section": "Fase 1: Comprensione", "category": "Comprensione", "type": "mc", "question": "La frase 'I got myself into trouble' è un esempio di causativo.", "choices": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. È una frase riflessiva idiomatica, non un causativo nel senso di 'far fare qualcosa'." }
+            "fase1": [
+                { "question": "La frase 'I cut my hair' significa la stessa cosa di 'I had my hair cut'.", "answer": false, "explanation": "Falso. 'I cut my hair' significa che l'ho tagliato io stesso. 'I had my hair cut' significa che un parrucchiere l'ha fatto per me." },
+                { "question": "La frase 'She is having her car serviced' significa che sta organizzando affinché un meccanico controlli la sua auto.", "answer": true, "explanation": "Corretto. Lei non sta facendo il servizio, lo sta facendo fare." },
+                { "question": "In 'I got the report printed', il verbo 'get' è più formale di 'have'.", "answer": false, "explanation": "Falso. 'Have' è generalmente considerato più formale di 'get' in questa struttura." },
+                { "question": "La frase 'He had his assistant call the client' è un esempio di causativo attivo.", "answer": true, "explanation": "Corretto. Specifica chi compie l'azione (his assistant) e usa la struttura 'have + persona + verbo base'." },
+                { "question": "La struttura 'get someone to do something' si usa per dare un ordine perentorio.", "answer": false, "explanation": "Falso. Si usa più per 'convincere' o 'persuadere' qualcuno a fare qualcosa." },
+                { "question": "'I had my wallet stolen' è un uso corretto della struttura causativa per un evento negativo e non pianificato.", "answer": true, "explanation": "Corretto. La struttura si usa anche per descrivere cose che ci accadono, non solo servizi che richiediamo." },
+                { "question": "La frase 'The boss made us work late' ha lo stesso significato di 'The boss had us work late'.", "answer": true, "explanation": "Corretto. Entrambe le frasi indicano che il capo ci ha dato l'istruzione di lavorare fino a tardi." },
+                { "question": "Nella frase 'I had the technician fix the computer', 'fix' è un participio passato.", "answer": false, "explanation": "Falso. È un verbo alla forma base. La struttura è 'have + persona + verbo base'." },
+                { "question": "Per esprimere persuasione, è più comune usare 'I got my friend to help me' piuttosto che 'I had my friend help me'.", "answer": true, "explanation": "Corretto. 'Get someone to do' implica persuasione, mentre 'have someone do' è più un'istruzione." },
+                { "question": "La frase 'We are having a new kitchen installed' è al tempo presente semplice.", "answer": false, "explanation": "Falso. È al Present Continuous, per descrivere un'azione in corso in questo periodo." },
+                { "question": "'I'll have my secretary to book a flight' è grammaticalmente corretto.", "answer": false, "explanation": "Falso. Dopo 'have + persona', si usa il verbo base senza 'to'. Corretto: '...have my secretary book...'." },
+                { "question": "La struttura causativa si può usare solo per i servizi a pagamento.", "answer": false, "explanation": "Falso. Si può usare per qualsiasi azione che si fa fare a qualcun altro, anche gratuitamente (es. 'I had my brother check my essay')." },
+                { "question": "'Get your car washed' è un modo per dare un consiglio o un suggerimento forte.", "answer": true, "explanation": "Corretto. Usato all'imperativo, ha una funzione simile a un suggerimento o un ordine." },
+                { "question": "Nella frase 'She got the package delivered', non sappiamo chi ha consegnato il pacco.", "answer": true, "explanation": "Corretto. Il causativo passivo si concentra sull'azione ricevuta, non su chi l'ha eseguita." },
+                { "question": "La frase 'He had his car being repaired' è una forma comune e corretta.", "answer": false, "explanation": "Falso. La forma corretta è 'He was having his car repaired' o 'He had his car repaired'. 'being' non si usa in questo modo." },
+                { "question": "Il causativo con 'make' ('make someone do something') implica sempre una scelta libera da parte di chi agisce.", "answer": false, "explanation": "Falso. 'Make' implica obbligo o costrizione, non una scelta libera." },
+                { "question": "Posso dire 'I will have my house to be painted'.", "answer": false, "explanation": "Falso. La struttura è 'have + oggetto + participio passato'. Corretto: '...have my house painted'." },
+                { "question": "La domanda 'Did you have your hair cut?' chiede se hai tagliato i capelli da solo.", "answer": false, "explanation": "Falso. Chiede se sei andato dal parrucchiere, cioè se hai 'fatto tagliare' i capelli." },
+                { "question": "La frase 'I must get this suit cleaned' esprime una necessità.", "answer": true, "explanation": "Corretto. La combinazione del modale 'must' con il causativo 'get' esprime un obbligo o una forte necessità." },
+                { "question": "'I had him to leave' è una costruzione corretta.", "answer": false, "explanation": "Falso. Con 'have' si usa il verbo base: 'I had him leave'. Con 'get' si userebbe 'to': 'I got him to leave'." },
+                { "question": "La frase 'I got my car to be washed' è una forma passiva corretta.", "answer": false, "explanation": "Falso. La forma passiva è 'I got my car washed'. L'infinito non si usa in questa forma." },
+                { "question": "La frase 'The film made me cry' è un esempio di causativo.", "answer": true, "explanation": "Corretto. 'Make' è un verbo causativo che indica che qualcosa ha causato una reazione." },
+                { "question": "'Let me go' significa 'permettimi di andare'.", "answer": true, "explanation": "Corretto. 'Let' è un verbo causativo che esprime permesso." },
+                { "question": "Nella frase 'I had my report checked', 'checked' è un aggettivo.", "answer": false, "explanation": "Falso. È il participio passato del verbo 'check'." },
+                { "question": "La frase 'She had her assistant to type the letter' è corretta.", "answer": false, "explanation": "Falso. La struttura è 'have + persona + verbo base (type)'." },
+                { "question": "'We got the problem to solve' è una frase corretta.", "answer": false, "explanation": "Falso. La frase corretta sarebbe 'We got the problem solved' (passivo) o 'We got someone to solve the problem' (attivo)." },
+                { "question": "La frase 'I will have the package delivered tomorrow' è al futuro.", "answer": true, "explanation": "Corretto. Usa 'will have' per formare il futuro causativo." },
+                { "question": "'I'm having a party organized' significa che sto organizzando la festa da solo.", "answer": false, "explanation": "Falso. Significa che qualcun altro (un organizzatore di eventi, amici) la sta organizzando per me." },
+                { "question": "La frase 'He got his brother do his homework' è corretta.", "answer": false, "explanation": "Falso. Con 'get' si usa l'infinito con 'to': '...got his brother to do...'" },
+                { "question": "'I had my phone repaired' e 'My phone was repaired' hanno esattamente lo stesso significato.", "answer": false, "explanation": "Falso. 'I had my phone repaired' enfatizza che ho organizzato io la riparazione. 'My phone was repaired' è una semplice constatazione passiva." },
+                { "question": "'Make' e 'let' sono seguiti dalla forma base del verbo, senza 'to'.", "answer": true, "explanation": "Corretto. Esempi: 'make him go', 'let her see'." },
+                { "question": "La forma 'have + oggetto + participio passato' può descrivere un incidente.", "answer": true, "explanation": "Corretto. Esempio: 'She had her leg broken in the accident'." },
+                { "question": "La frase 'I'll get it done' è una promessa di fare qualcosa personalmente.", "answer": false, "explanation": "Falso. È una promessa di assicurarsi che l'azione venga completata, probabilmente da qualcun altro." },
+                { "question": "Nella struttura attiva, 'get' è più comune di 'have' per dare ordini a subordinati.", "answer": false, "explanation": "Falso. 'Have' (es. 'I had my assistant do it') è più comune per dare istruzioni o ordini in un contesto professionale." },
+                { "question": "La frase 'I was made to apologize' è la forma passiva di 'They made me apologize'.", "answer": true, "explanation": "Corretto. Nota che nella forma passiva di 'make', si aggiunge 'to' prima del verbo." },
+                { "question": "La frase 'I had my house burgled' è un modo corretto per dire che i ladri sono entrati in casa.", "answer": true, "explanation": "Corretto. È un uso comune del causativo passivo per eventi negativi." },
+                { "question": "La frase 'I got my hair cutting' è una forma corretta.", "answer": false, "explanation": "Falso. Si usa il participio passato: 'I got my hair cut'." },
+                { "question": "La frase 'I'll have the chef to prepare a special meal' è corretta.", "answer": false, "explanation": "Falso. La struttura è 'have + persona + verbo base': '...have the chef prepare...'" },
+                { "question": "Il causativo si usa solo con i verbi 'have', 'get', e 'make'.", "answer": false, "explanation": "Falso. Anche 'let' e 'help' sono considerati verbi causativi ('let me know', 'help me (to) finish')." },
+                { "question": "Nella frase 'I helped my dad (to) wash the car', il 'to' è opzionale.", "answer": true, "explanation": "Corretto. Con il verbo 'help', l'infinito che segue può essere usato con o senza 'to'." },
+                { "question": "La frase 'I'm going to have my car wash' è corretta.", "answer": false, "explanation": "Falso. Manca il participio passato. Corretto: '...have my car washed'." },
+                { "question": "'He had his license suspended' significa che la polizia gli ha sospeso la patente.", "answer": true, "explanation": "Corretto. È un uso passivo per descrivere un'azione subita." },
+                { "question": "La frase 'She got her friend buy the tickets' è corretta.", "answer": false, "explanation": "Falso. Con 'get' si usa 'to': '...got her friend to buy...'" },
+                { "question": "Un insegnante che dice 'I'll have you all speaking English' sta usando un causativo attivo.", "answer": true, "explanation": "Corretto. Significa 'Farò in modo che tutti voi parlino inglese'." },
+                { "question": "La frase 'I had a feeling that something was wrong' è un esempio di causativo.", "answer": false, "explanation": "Falso. Qui 'had' è il verbo principale con il significato di 'avere' o 'provare'." },
+                { "question": "La frase 'I had my assistant work on the report' è un esempio di causativo passivo.", "answer": false, "explanation": "Falso. È un esempio di causativo attivo perché specifica chi compie l'azione ('my assistant')." },
+                { "question": "La frase 'I got the job' è un esempio di causativo.", "answer": false, "explanation": "Falso. Qui 'got' significa 'ottenere'. Non c'è un'azione fatta fare a qualcun altro." },
+                { "question": "La frase 'We had the police investigate the issue' è corretta.", "answer": true, "explanation": "Corretto. È un causativo attivo che usa la struttura 'have + persona/ente + verbo base'." },
+                { "question": "La frase 'I let my car to be repaired' è una forma corretta.", "answer": false, "explanation": "Falso. 'Let' non si usa in questo modo. Si direbbe 'I had my car repaired' o 'I let the mechanic repair my car'." },
+                { "question": "La frase 'I got myself into trouble' è un esempio di causativo.", "answer": false, "explanation": "Falso. È una frase riflessiva idiomatica, non un causativo nel senso di 'far fare qualcosa'." }
             ],
-            "testData": [
-                { "block": 2, "displayNum": "C2-1", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "I don't have time to do my own laundry, so I ______ it.", "choices": ["get done", "get it done", "do it", "make it do"], "answer": "B", "explanation": "La struttura corretta è 'get + oggetto (it) + participio passato (done)'." },
-                { "block": 2, "displayNum": "C2-2", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "Before the presentation, the CEO had her assistant ______ the final figures.", "choices": ["to check", "checking", "check", "checked"], "answer": "C", "explanation": "La struttura del causativo attivo con 'have' è 'have + persona + verbo base'." },
-                { "block": 2, "displayNum": "C2-3", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "This is a very important document. We must ______ it translated by a professional.", "choices": ["have", "do", "get to", "make"], "answer": "A", "explanation": "La struttura è 'have + oggetto + participio passato'." },
-                { "block": 2, "displayNum": "C2-4", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "It was difficult to convince him, but I finally ______ him to agree.", "choices": ["had", "made", "got", "persuaded"], "answer": "C", "explanation": "La struttura per 'convincere/persuadere' è 'get + persona + infinito con to'." },
-                { "block": 2, "displayNum": "C2-5", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "If you don't understand the contract, you should ______ a lawyer look at it.", "choices": ["get", "make", "have", "ask"], "answer": "C", "explanation": "Si usa 'have' per dare un'istruzione o un incarico a un professionista. 'Have a lawyer look'." },
-                { "block": 2, "displayNum": "C2-6", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "The roof is leaking. We need to ______ repaired before the winter.", "choices": ["have it", "it have", "get it to be", "have it get"], "answer": "A", "explanation": "La struttura è '(to) have + oggetto (it) + participio passato (repaired)'." },
-                { "block": 2, "displayNum": "C2-7", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "She didn't want to go, but her friends ______ her come to the party.", "choices": ["got", "made", "had", "let"], "answer": "B", "explanation": "'Made someone do something' significa 'costringere' o 'forzare'. 'Got' richiederebbe 'to come'." },
-                { "block": 2, "displayNum": "C2-8", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "I'm going to the dentist to ______ my teeth checked.", "choices": ["get", "make", "do", "let"], "answer": "A", "explanation": "La struttura è 'get/have + oggetto + participio passato'." },
-                { "block": 2, "displayNum": "C2-9", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "The director ______ the marketing team create a new campaign.", "choices": ["got", "made", "let", "had"], "answer": "D", "explanation": "'Had' implica un'istruzione o un incarico. 'Got' richiederebbe 'to create'." },
-                { "block": 2, "displayNum": "C2-10", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "My computer wasn't working, so I ______ a specialist to fix it.", "choices": ["had", "got", "made", "fixed"], "answer": "B", "explanation": "'Got' è usato per persuadere o incaricare qualcuno, e richiede la forma 'get + persona + to + verbo'." },
-                { "block": 2, "displayNum": "C2-11", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "We had our house ______ last year.", "choices": ["renovate", "renovating", "renovated", "to renovate"], "answer": "C", "explanation": "Questa è la forma passiva: 'have + oggetto + participio passato'." },
-                { "block": 2, "displayNum": "C2-12", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "He's very persuasive. He can ______ anyone to do anything.", "choices": ["have", "make", "get", "let"], "answer": "C", "explanation": "'Get someone to do something' è la struttura specifica per la persuasione." },
-                { "block": 2, "displayNum": "C2-13", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "The teacher ______ the students write an extra essay.", "choices": ["had", "got", "let", "allowed"], "answer": "A", "explanation": "'Had' implica un'istruzione o un compito assegnato. 'Got' richiederebbe 'to write'." },
-                { "block": 2, "displayNum": "C2-14", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "I would never ______ my children stay out so late.", "choices": ["get", "make", "have", "let"], "answer": "D", "explanation": "'Let' significa permettere. È simile a un causativo ma esprime permesso, non incarico." },
-                { "block": 2, "displayNum": "C2-15", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "You should ______ your blood pressure checked regularly.", "choices": ["make", "get", "do", "let"], "answer": "B", "explanation": "La struttura per ricevere un servizio è 'get/have + oggetto + participio passato'." },
-                { "block": 2, "displayNum": "C2-16", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "We can't fix the printer ourselves, we need to ______ a technician.", "choices": ["get to call", "have call", "get someone to call", "have to call"], "answer": "C", "explanation": "La frase completa sarebbe 'get a technician to call', ma l'opzione più generica e corretta è 'get someone to call'." },
-                { "block": 2, "displayNum": "C2-17", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "The comedian was so funny, he ______ the whole audience laughing.", "choices": ["got", "had", "made", "let"], "answer": "B", "explanation": "'Had' può essere usato per descrivere un effetto su un gruppo. 'He had them laughing' è idiomatico." },
-                { "block": 2, "displayNum": "C2-18", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "I can't believe the boss ______ you work on a national holiday!", "choices": ["got", "let", "made", "had"], "answer": "C", "explanation": "'Made' è la scelta migliore per esprimere costrizione o obbligo." },
-                { "block": 2, "displayNum": "C2-19", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "Could you ______ David to bring the documents to the meeting?", "choices": ["have", "get", "make", "let"], "answer": "B", "explanation": "'Get' + persona + 'to' + verbo è la struttura corretta per chiedere a qualcuno di persuadere un altro." },
-                { "block": 2, "displayNum": "C2-20", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "I'm ______ a new air conditioning unit installed next week.", "choices": ["making", "letting", "getting", "doing"], "answer": "C", "explanation": "La forma 'am getting' è usata per il causativo al Present Continuous." },
-                { "block": 2, "displayNum": "C2-21", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "The government will ______ new regulations implemented by the end of the year.", "choices": ["get", "have", "make", "let"], "answer": "B", "explanation": "'Have' è più formale e adatto a un contesto governativo. La struttura è 'have + oggetto + participio passato'." },
-                { "block": 2, "displayNum": "C2-22", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "She ______ her hair dyed blue, but her parents were not happy.", "choices": ["made", "let", "got", "did"], "answer": "C", "explanation": "'Got her hair dyed' è la forma passiva standard." },
-                { "block": 2, "displayNum": "C2-23", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "Don't ______ him talk you into buying something you don't need.", "choices": ["make", "have", "get", "let"], "answer": "D", "explanation": "'Don't let him...' significa 'non permettergli di...'." },
-                { "block": 2, "displayNum": "C2-24", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "The film was so sad it ______ me cry.", "choices": ["got", "had", "made", "let"], "answer": "C", "explanation": "'Make' è il verbo causativo usato per una reazione emotiva involontaria." },
-                { "block": 2, "displayNum": "C2-25", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "You need to ______ that strange noise in your car checked out.", "choices": ["get", "make", "let", "do"], "answer": "A", "explanation": "'Get + oggetto + participio passato' è la struttura corretta per un servizio." },
-                { "block": 2, "displayNum": "C2-26", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "The manager ______ his team stay late to finish the project.", "choices": ["got", "let", "had", "allowed"], "answer": "C", "explanation": "'Had' è usato per dare un'istruzione. 'Got' richiederebbe 'to stay'." },
-                { "block": 2, "displayNum": "C2-27", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "I finally ______ my computer to work after restarting it five times.", "choices": ["had", "made", "got", "let"], "answer": "C", "explanation": "Anche se non è una persona, 'get + oggetto + to + verbo' si può usare per descrivere lo sforzo di far funzionare qualcosa." },
-                { "block": 2, "displayNum": "C2-28", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "I'll ______ the report sent to you by the end of the day.", "choices": ["make", "let", "get", "do"], "answer": "C", "explanation": "'Get + oggetto + participio passato' è una forma comune per promettere un servizio." },
-                { "block": 2, "displayNum": "C2-29", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "We must ______ this issue resolved as soon as possible.", "choices": ["have", "make", "let", "do"], "answer": "A", "explanation": "'Have' è la scelta più formale e adatta per un contesto professionale." },
-                { "block": 2, "displayNum": "C2-30", "section": "Fase 2: Riconoscimento", "category": "Riconoscimento", "type": "mc", "question": "My parents never ______ me watch TV after 9 PM when I was a kid.", "choices": ["got", "made", "let", "had"], "answer": "C", "explanation": "'Let' è il verbo per esprimere permesso." }
+            "fase2": [
+                { "question": "I don't have time to do my own laundry, so I ______ it.", "options": ["get done", "get it done", "do it", "make it do"], "answer": "B", "explanation": "La struttura corretta è 'get + oggetto (it) + participio passato (done)'." },
+                { "question": "Before the presentation, the CEO had her assistant ______ the final figures.", "options": ["to check", "checking", "check", "checked"], "answer": "C", "explanation": "La struttura del causativo attivo con 'have' è 'have + persona + verbo base'." },
+                { "question": "This is a very important document. We must ______ it translated by a professional.", "options": ["have", "do", "get to", "make"], "answer": "A", "explanation": "La struttura è 'have + oggetto + participio passato'." },
+                { "question": "It was difficult to convince him, but I finally ______ him to agree.", "options": ["had", "made", "got", "persuaded"], "answer": "C", "explanation": "La struttura per 'convincere/persuadere' è 'get + persona + infinito con to'." },
+                { "question": "If you don't understand the contract, you should ______ a lawyer look at it.", "options": ["get", "make", "have", "ask"], "answer": "C", "explanation": "Si usa 'have' per dare un'istruzione o un incarico a un professionista. 'Have a lawyer look'." },
+                { "question": "The roof is leaking. We need to ______ repaired before the winter.", "options": ["have it", "it have", "get it to be", "have it get"], "answer": "A", "explanation": "La struttura è '(to) have + oggetto (it) + participio passato (repaired)'." },
+                { "question": "She didn't want to go, but her friends ______ her come to the party.", "options": ["got", "made", "had", "let"], "answer": "B", "explanation": "'Made someone do something' significa 'costringere' o 'forzare'. 'Got' richiederebbe 'to come'." },
+                { "question": "I'm going to the dentist to ______ my teeth checked.", "options": ["get", "make", "do", "let"], "answer": "A", "explanation": "La struttura è 'get/have + oggetto + participio passato'." },
+                { "question": "The director ______ the marketing team create a new campaign.", "options": ["got", "made", "let", "had"], "answer": "D", "explanation": "'Had' implica un'istruzione o un incarico. 'Got' richiederebbe 'to create'." },
+                { "question": "My computer wasn't working, so I ______ a specialist to fix it.", "options": ["had", "got", "made", "fixed"], "answer": "B", "explanation": "'Got' è usato per persuadere o incaricare qualcuno, e richiede la forma 'get + persona + to + verbo'." },
+                { "question": "We had our house ______ last year.", "options": ["renovate", "renovating", "renovated", "to renovate"], "answer": "C", "explanation": "Questa è la forma passiva: 'have + oggetto + participio passato'." },
+                { "question": "He's very persuasive. He can ______ anyone to do anything.", "options": ["have", "make", "get", "let"], "answer": "C", "explanation": "'Get someone to do something' è la struttura specifica per la persuasione." },
+                { "question": "The teacher ______ the students write an extra essay.", "options": ["had", "got", "let", "allowed"], "answer": "A", "explanation": "'Had' implica un'istruzione o un compito assegnato. 'Got' richiederebbe 'to write'." },
+                { "question": "I would never ______ my children stay out so late.", "options": ["get", "make", "have", "let"], "answer": "D", "explanation": "'Let's' significa permettere. È simile a un causativo ma esprime permesso, non incarico." },
+                { "question": "You should ______ your blood pressure checked regularly.", "options": ["make", "get", "do", "let"], "answer": "B", "explanation": "La struttura per ricevere un servizio è 'get/have + oggetto + participio passato'." },
+                { "question": "We can't fix the printer ourselves, we need to ______ a technician.", "options": ["get to call", "have call", "get someone to call", "have to call"], "answer": "C", "explanation": "La frase completa sarebbe 'get a technician to call', ma l'opzione più generica e corretta è 'get someone to call'." },
+                { "question": "The comedian was so funny, he ______ the whole audience laughing.", "options": ["got", "had", "made", "let"], "answer": "B", "explanation": "'Had' può essere usato per descrivere un effetto su un gruppo. 'He had them laughing' è idiomatico." },
+                { "question": "I can't believe the boss ______ you work on a national holiday!", "options": ["got", "let", "made", "had"], "answer": "C", "explanation": "'Made' è la scelta migliore per esprimere costrizione o obbligo." },
+                { "question": "Could you ______ David to bring the documents to the meeting?", "options": ["have", "get", "make", "let"], "answer": "B", "explanation": "'Get' + persona + 'to' + verbo è la struttura corretta per chiedere a qualcuno di persuadere un altro." },
+                { "question": "I'm ______ a new air conditioning unit installed next week.", "options": ["making", "letting", "getting", "doing"], "answer": "C", "explanation": "La forma 'am getting' è usata per il causativo al Present Continuous." },
+                { "question": "The government will ______ new regulations implemented by the end of the year.", "options": ["get", "have", "make", "let"], "answer": "B", "explanation": "'Have' è più formale e adatto a un contesto governativo. La struttura è 'have + oggetto + participio passato'." },
+                { "question": "She ______ her hair dyed blue, but her parents were not happy.", "options": ["made", "let", "got", "did"], "answer": "C", "explanation": "'Got her hair dyed' è la forma passiva standard." },
+                { "question": "Don't ______ him talk you into buying something you don't need.", "options": ["make", "have", "get", "let"], "answer": "D", "explanation": "'Don't let him...' significa 'non permettergli di...'." },
+                { "question": "The film was so sad it ______ me cry.", "options": ["got", "had", "made", "let"], "answer": "C", "explanation": "'Make' è il verbo causativo usato per una reazione emotiva involontaria." },
+                { "question": "You need to ______ that strange noise in your car checked out.", "options": ["get", "make", "let", "do"], "answer": "A", "explanation": "'Get + oggetto + participio passato' è la structure corretta per un servizio." },
+                { "question": "The manager ______ his team stay late to finish the project.", "options": ["got", "let", "had", "allowed"], "answer": "C", "explanation": "'Had' è usato per dare un'istruzione. 'Got' richiederebbe 'to stay'." },
+                { "question": "I finally ______ my computer to work after restarting it five times.", "options": ["had", "made", "got", "let"], "answer": "C", "explanation": "Anche se non è una persona, 'get + oggetto + to + verbo' si può usare per descrivere lo sforzo di far funzionare qualcosa." },
+                { "question": "I'll ______ the report sent to you by the end of the day.", "options": ["make", "let", "get", "do"], "answer": "C", "explanation": "'Get + oggetto + participio passato' è una forma comune per promettere un servizio." },
+                { "question": "We must ______ this issue resolved as soon as possible.", "options": ["have", "make", "let", "do"], "answer": "A", "explanation": "'Have' è la scelta più formale e adatta per un contesto professionale." },
+                { "question": "My parents never ______ me watch TV after 9 PM when I was a kid.", "options": ["got", "made", "let", "had"], "answer": "C", "explanation": "'Let' è il verbo per esprimere permesso." }
             ],
-            "testData": [
-                { "block": 3, "displayNum": "C3-1", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "A photographer will take our family portrait.<br><em>(Riscrivi: We are going to...)</em>", "answer": "have our family portrait taken", "explanation": "La struttura è 'have + oggetto (our family portrait) + participio passato (taken)'." },
-                { "block": 3, "displayNum": "C3-2", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "I'll ask the IT department to install the software for me.<br><em>(Riscrivi: I will have...)</em>", "answer": "the IT department install the software", "explanation": "La struttura è 'have + persona (the IT department) + verbo base (install)'." },
-                { "block": 3, "displayNum": "C3-3", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "Someone cleans her house every week.<br><em>(Riscrivi: She has...)</em>", "answer": "her house cleaned every week", "explanation": "La struttura è 'has + oggetto (her house) + participio passato (cleaned)'." },
-                { "block": 3, "displayNum": "C3-4", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "I persuaded my brother to lend me his car.<br><em>(Riscrivi: I got...)</em>", "answer": "my brother to lend me his car", "explanation": "La struttura è 'got + persona (my brother) + infinito con to (to lend)'." },
-                { "block": 3, "displayNum": "C3-5", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "A technician needs to service the air conditioner.<br><em>(Riscrivi: We need to have...)</em>", "answer": "the air conditioner serviced", "explanation": "La struttura è 'have + oggetto (the air conditioner) + participio passato (serviced)'." },
-                { "block": 3, "displayNum": "C3-6", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "The company will hire an external consultant to review the accounts.<br><em>(Riscrivi: The company will have...)</em>", "answer": "the accounts reviewed by an external consultant", "explanation": "La struttura passiva è 'have + oggetto + participio passato'." },
-                { "block": 3, "displayNum": "C3-7", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "My boss forced me to work on the weekend.<br><em>(Riscrivi: My boss made...)</em>", "answer": "me work on the weekend", "explanation": "La struttura con 'make' per la costrizione è 'make + persona + verbo base'." },
-                { "block": 3, "displayNum": "C3-8", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "I will tell the assistant to send the documents.<br><em>(Riscrivi: I will have...)</em>", "answer": "the assistant send the documents", "explanation": "La struttura attiva con 'have' per un'istruzione è 'have + persona + verbo base'." },
-                { "block": 3, "displayNum": "C3-9", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "Someone stole their car from the parking lot.<br><em>(Riscrivi: They had...)</em>", "answer": "their car stolen from the parking lot", "explanation": "Il causativo si usa anche per eventi negativi subiti." },
-                { "block": 3, "displayNum": "C3-10", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "I convinced my team to adopt the new strategy.<br><em>(Riscrivi: I got...)</em>", "answer": "my team to adopt the new strategy", "explanation": "La struttura con 'get' per la persuasione è 'get + persona + infinito con to'." },
-                { "block": 3, "displayNum": "C3-11", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "The editor will check your article for mistakes.<br><em>(Riscrivi: You will have...)</em>", "answer": "your article checked for mistakes", "explanation": "La struttura passiva è 'have + oggetto + participio passato'." },
-                { "block": 3, "displayNum": "C3-12", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "I'll permit you to leave early today.<br><em>(Riscrivi: I'll let...)</em>", "answer": "you leave early today", "explanation": "La struttura con 'let' per il permesso è 'let + persona + verbo base'." },
-                { "block": 3, "displayNum": "C3-13", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "The government requires that citizens pay taxes.<br><em>(Riscrivi: The government makes...)</em>", "answer": "citizens pay taxes", "explanation": "'Make' può essere usato per esprimere un obbligo o una legge." },
-                { "block": 3, "displayNum": "C3-14", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "I'll arrange for a courier to pick up the package.<br><em>(Riscrivi: I'll get...)</em>", "answer": "a courier to pick up the package", "explanation": "La struttura con 'get' per un servizio è 'get + persona + infinito con to'." },
-                { "block": 3, "displayNum": "C3-15", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "An expert is tuning the piano right now.<br><em>(Riscrivi: We are having...)</em>", "answer": "the piano tuned right now", "explanation": "La forma per un'azione in corso è 'are having + oggetto + participio passato'." },
-                { "block": 3, "displayNum": "C3-16", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "The loud music from next door kept me awake all night.<br><em>(Riscrivi: The loud music from next door made...)</em>", "answer": "me stay awake all night", "explanation": "'Made' è usato per indicare la causa di un'azione o stato." },
-                { "block": 3, "displayNum": "C3-17", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "You should ask someone to translate this for you.<br><em>(Riscrivi: You should get...)</em>", "answer": "this translated", "explanation": "La forma passiva 'get + oggetto + participio passato' è la più naturale qui." },
-                { "block": 3, "displayNum": "C3-18", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "The personal trainer instructed me to do 20 push-ups.<br><em>(Riscrivi: The personal trainer had...)</em>", "answer": "me do 20 push-ups", "explanation": "'Had' è usato per un'istruzione diretta." },
-                { "block": 3, "displayNum": "C3-19", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "The dentist is going to remove my wisdom tooth.<br><em>(Riscrivi: I'm going to have...)</em>", "answer": "my wisdom tooth removed", "explanation": "La struttura passiva è 'have + oggetto + participio passato'." },
-                { "block": 3, "displayNum": "C3-20", "section": "Fase 3: Produzione", "category": "Produzione", "type": "input_rewrite", "question": "My parents allowed me to choose my own university.<br><em>(Riscrivi: My parents let...)</em>", "answer": "me choose my own university", "explanation": "'Let' è usato per dare il permesso." }
+            "fase3": [
+                { "prompt": "A photographer will take our family portrait.", "question": "We are going to...", "answer": "have our family portrait taken", "explanation": "La struttura è 'have + oggetto (our family portrait) + participio passato (taken)'." },
+                { "prompt": "I'll ask the IT department to install the software for me.", "question": "I will have...", "answer": "the IT department install the software", "explanation": "La struttura è 'have + persona (the IT department) + verbo base (install)'." },
+                { "prompt": "Someone cleans her house every week.", "question": "She has...", "answer": "her house cleaned every week", "explanation": "La struttura è 'has + oggetto (her house) + participio passato (cleaned)'." },
+                { "prompt": "I persuaded my brother to lend me his car.", "question": "I got...", "answer": "my brother to lend me his car", "explanation": "La struttura è 'got + persona (my brother) + infinito con to (to lend)'." },
+                { "prompt": "A technician needs to service the air conditioner.", "question": "We need to have...", "answer": "the air conditioner serviced", "explanation": "La struttura è 'have + oggetto (the air conditioner) + participio passato (serviced)'." },
+                { "prompt": "The company will hire an external consultant to review the accounts.", "question": "The company will have...", "answer": "the accounts reviewed by an external consultant", "explanation": "La struttura passiva è 'have + oggetto + participio passato'." },
+                { "prompt": "My boss forced me to work on the weekend.", "question": "My boss made...", "answer": "me work on the weekend", "explanation": "La struttura con 'make' per la costrizione è 'make + persona + verbo base'." },
+                { "prompt": "I will tell the assistant to send the documents.", "question": "I will have...", "answer": "the assistant send the documents", "explanation": "La struttura attiva con 'have' per un'istruzione è 'have + persona + verbo base'." },
+                { "prompt": "Someone stole their car from the parking lot.", "question": "They had...", "answer": "their car stolen from the parking lot", "explanation": "Il causativo si usa anche per eventi negativi subiti." },
+                { "prompt": "I convinced my team to adopt the new strategy.", "question": "I got...", "answer": "my team to adopt the new strategy", "explanation": "La struttura con 'get' per la persuasione è 'get + persona + infinito con to'." },
+                { "prompt": "The editor will check your article for mistakes.", "question": "You will have...", "answer": "your article checked for mistakes", "explanation": "La struttura passiva è 'have + oggetto + participio passato'." },
+                { "prompt": "I'll permit you to leave early today.", "question": "I'll let...", "answer": "you leave early today", "explanation": "La struttura con 'let' per il permesso è 'let + persona + verbo base'." },
+                { "prompt": "The government requires that citizens pay taxes.", "question": "The government makes...", "answer": "citizens pay taxes", "explanation": "'Make' può essere usato per esprimere un obbligo o una legge." },
+                { "prompt": "I'll arrange for a courier to pick up the package.", "question": "I'll get...", "answer": "a courier to pick up the package", "explanation": "La struttura con 'get' per un servizio è 'get + persona + infinito con to'." },
+                { "prompt": "An expert is tuning the piano right now.", "question": "We are having...", "answer": "the piano tuned right now", "explanation": "La forma per un'azione in corso è 'are having + oggetto + participio passato'." },
+                { "prompt": "The loud music from next door kept me awake all night.", "question": "The loud music from next door made...", "answer": "me stay awake all night", "explanation": "'Made' è usato per indicare la causa di un'azione o stato." },
+                { "prompt": "You should ask someone to translate this for you.", "question": "You should get...", "answer": "this translated", "explanation": "La forma passiva 'get + oggetto + participio passato' è la più naturale qui." },
+                { "prompt": "The personal trainer instructed me to do 20 push-ups.", "question": "The personal trainer had...", "answer": "me do 20 push-ups", "explanation": "'Had' è usato per un'istruzione diretta." },
+                { "prompt": "The dentist is going to remove my wisdom tooth.", "question": "I'm going to have...", "answer": "my wisdom tooth removed", "explanation": "La struttura passiva è 'have + oggetto + participio passato'." },
+                { "prompt": "My parents allowed me to choose my own university.", "question": "My parents let...", "answer": "me choose my own university", "explanation": "'Let' è usato per dare il permesso." }
             ]
         }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const exerciseDataScript = document.getElementById('exercise-data');
+            const exerciseData = JSON.parse(exerciseDataScript.textContent);
+
+            let currentActiveTab = 1; // Default to Fase 1
+
+            // Function to save progress (answers)
+            const saveProgress = () => {
+                const answers = {};
+                tabContents.forEach((tabContent, index) => {
+                    const phaseNum = index + 1;
+                    const inputs = tabContent.querySelectorAll('input[type="radio"], input[type="text"]');
+                    inputs.forEach(input => {
+                        if (input.type === 'radio' && input.checked) {
+                            answers[`fase${phaseNum}_q${input.name}`] = input.value;
+                        } else if (input.type === 'text') {
+                            answers[`fase${phaseNum}_q${input.id}`] = input.value;
+                        }
+                    });
+                });
+                localStorage.setItem('causativoProgress', JSON.stringify(answers)); // Changed key for L2
+            };
+
+            // Function to load progress (answers)
+            const loadProgress = () => {
+                const savedAnswers = JSON.parse(localStorage.getItem('causativoProgress')) || {}; // Changed key for L2
+                tabContents.forEach((tabContent, index) => {
+                    const phaseNum = index + 1;
+                    const inputs = tabContent.querySelectorAll('input[type="radio"], input[type="text"]');
+                    inputs.forEach(input => {
+                        if (input.type === 'radio' && savedAnswers[`fase${phaseNum}_q${input.name}`] === input.value) {
+                            input.checked = true;
+                        } else if (input.type === 'text' && savedAnswers[`fase${phaseNum}_q${input.id}`]) {
+                            input.value = savedAnswers[`fase${phaseNum}_q${input.id}`];
+                        }
+                    });
+                });
+            };
+
+            // Function to render questions for a given phase
+            const renderQuestions = (phaseNum) => {
+                const contentDiv = document.getElementById(`tab-content-${phaseNum}`);
+                contentDiv.innerHTML = ''; // Clear previous content
+
+                const phaseKey = `fase${phaseNum}`;
+                const questions = exerciseData[phaseKey];
+
+                if (!questions) {
+                    contentDiv.innerHTML = `<p class="text-slate-500">No exercises available for Fase ${phaseNum}.</p>`;
+                    return;
+                }
+
+                questions.forEach((q, index) => {
+                    const questionElement = document.createElement('div');
+                    questionElement.className = 'mb-6 p-4 border border-slate-200 rounded-lg bg-white shadow-sm';
+
+                    // Use displayNum if available, otherwise just index + 1
+                    const displayNum = q.displayNum ? q.displayNum : `${phaseNum}-${index + 1}`;
+                    let questionHtml = `<p class="font-semibold text-lg mb-3">${displayNum}. ${q.question}</p>`;
+
+                    if (q.type === 'mc') {
+                        q.choices.forEach((choice, i) => {
+                            const inputId = `fase${phaseNum}-q${index}-${i}`;
+                            questionHtml += `
+                                <div class="flex items-center mb-2">
+                                    <input type="radio" id="${inputId}" name="q${index}" value="${String.fromCharCode(65 + i)}" class="mr-2 text-indigo-600 focus:ring-indigo-500">
+                                    <label for="${inputId}" class="text-slate-700">${choice}</label>
+                                </div>
+                            `;
+                        });
+                    } else if (q.type === 'input_rewrite') {
+                        const inputId = `fase${phaseNum}-q${index}`;
+                        questionHtml += `
+                            <div class="mt-3">
+                                <input type="text" id="${inputId}" class="w-full p-2 border border-slate-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Your answer">
+                            </div>
+                        `;
+                    }
+
+                    questionElement.innerHTML = questionHtml;
+                    contentDiv.appendChild(questionElement);
+                });
+
+                // Add a submit button for each phase
+                const submitButton = document.createElement('button');
+                submitButton.textContent = 'Check Answers';
+                submitButton.className = 'mt-6 px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors duration-300 shadow-md';
+                submitButton.onclick = () => checkAnswers(phaseNum);
+                contentDiv.appendChild(submitButton);
+
+                // Add a clear answers button
+                const clearButton = document.createElement('button');
+                clearButton.textContent = 'Clear Answers';
+                clearButton.className = 'mt-6 ml-4 px-6 py-3 bg-slate-400 text-white font-bold rounded-lg hover:bg-slate-500 transition-colors duration-300 shadow-md';
+                clearButton.onclick = () => clearAnswers(phaseNum);
+                contentDiv.appendChild(clearButton);
+
+                loadProgress(); // Load saved answers after rendering questions
+            };
+
+            // Function to check answers and provide feedback
+            const checkAnswers = (phaseNum) => {
+                const contentDiv = document.getElementById(`tab-content-${phaseNum}`);
+                const questions = exerciseData[`fase${phaseNum}`];
+
+                questions.forEach((q, index) => {
+                    const questionElement = contentDiv.children[index]; // Get the specific question div
+                    let isCorrect = false;
+                    let userAnswer = '';
+
+                    if (q.type === 'mc') {
+                        const selectedInput = questionElement.querySelector(`input[name="q${index}"]:checked`);
+                        if (selectedInput) {
+                            userAnswer = selectedInput.value;
+                            isCorrect = (userAnswer === q.answer);
+                        }
+                    } else if (q.type === 'input_rewrite') {
+                        const inputField = questionElement.querySelector(`#fase${phaseNum}-q${index}`);
+                        if (inputField) {
+                            userAnswer = inputField.value.trim();
+                            // Case-insensitive and whitespace-insensitive comparison
+                            isCorrect = (userAnswer.toLowerCase() === q.answer.toLowerCase().trim());
+                        }
+                    }
+
+                    // Remove previous feedback classes
+                    questionElement.classList.remove('feedback-correct', 'feedback-incorrect');
+
+                    // Add new feedback class
+                    if (isCorrect) {
+                        questionElement.classList.add('feedback-correct');
+                    } else {
+                        questionElement.classList.add('feedback-incorrect');
+                    }
+
+                    // Display explanation
+                    let explanationElement = questionElement.querySelector('.explanation');
+                    if (!explanationElement) {
+                        explanationElement = document.createElement('p');
+                        explanationElement.className = 'explanation mt-3 text-sm italic text-slate-600';
+                        questionElement.appendChild(explanationElement);
+                    }
+                    explanationElement.innerHTML = `<strong>Spiegazione:</strong> ${q.explanation}`;
+                });
+                saveProgress(); // Save answers after checking
+            };
+
+            // Function to clear answers for a given phase
+            const clearAnswers = (phaseNum) => {
+                const contentDiv = document.getElementById(`tab-content-${phaseNum}`);
+                const inputs = contentDiv.querySelectorAll('input[type="radio"], input[type="text"]');
+                inputs.forEach(input => {
+                    if (input.type === 'radio') {
+                        input.checked = false;
+                    } else if (input.type === 'text') {
+                        input.value = '';
+                    }
+                });
+
+                // Remove feedback classes and explanations
+                const questionElements = contentDiv.querySelectorAll('.mb-6');
+                questionElements.forEach(qElement => {
+                    qElement.classList.remove('feedback-correct', 'feedback-incorrect');
+                    const explanationElement = qElement.querySelector('.explanation');
+                    if (explanationElement) {
+                        explanationElement.remove();
+                    }
+                });
+                saveProgress(); // Clear saved answers
+            };
+
+
+            // Tab switching logic
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabToActivate = parseInt(button.dataset.tab);
+
+                    // Deactivate current tab
+                    document.getElementById(`tab-btn-${currentActiveTab}`).classList.remove('tab-active');
+                    document.getElementById(`tab-btn-${currentActiveTab}`).classList.add('tab-inactive');
+                    document.getElementById(`tab-content-${currentActiveTab}`).classList.add('hidden');
+
+                    // Activate new tab
+                    button.classList.remove('tab-inactive');
+                    button.classList.add('tab-active');
+                    document.getElementById(`tab-content-${tabToActivate}`).classList.remove('hidden');
+
+                    currentActiveTab = tabToActivate;
+                    renderQuestions(currentActiveTab); // Render questions for the newly active tab
+                });
+            });
+
+            // Initial render of the first tab
+            renderQuestions(currentActiveTab);
+        });
     </script>
 </body>
 </html>

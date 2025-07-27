@@ -19,6 +19,8 @@ window.addEventListener('api-ready', () => {
   const appVersionSpan = document.getElementById('app-version');
   const networkIndicator = document.getElementById('network-indicator');
   const networkLabel = document.getElementById('network-label');
+  // New: Update notification badge - now expected in the footer
+  const updateNotificationBadge = document.getElementById('update-notification-badge');
 
 
   // --- CORE FUNCTIONS ---
@@ -71,6 +73,16 @@ window.addEventListener('api-ready', () => {
     if (networkLabel) networkLabel.innerText = isOnline ? 'Online' : 'Offline';
   }
 
+  /**
+   * Shows the update notification badge and makes it visible.
+   */
+  function showUpdateNotification() {
+    if (updateNotificationBadge) {
+      updateNotificationBadge.classList.remove('hidden'); // Make it visible
+      updateNotificationBadge.classList.add('bg-blue-500'); // Light up the badge
+      updateNotificationBadge.classList.remove('bg-gray-400'); // Remove greyed out
+    }
+  }
 
   // --- INITIALIZATION ---
 
@@ -106,6 +118,11 @@ window.addEventListener('api-ready', () => {
     // Attach event listeners for network status changes
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
+
+    // Listen for update-available messages from the main process
+    window.api.onUpdateAvailable(() => {
+      showUpdateNotification();
+    });
 
     // Add initial tab on app startup and wait for it to complete
     await addTab(true);
