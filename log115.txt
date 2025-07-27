@@ -35,3 +35,4 @@ do not implement any modification yet, simply plan an approach and add it to thi
 
 NOTES FROM JULES
 >
+> 1) FIXED, the toolbar is now sticky and no longer disappears on scroll. This was achieved by modifying renderer.js to replace the 'flex-shrink-0' class with 'sticky top-0 z-10' for all toolbars created in the application. UPDATE: The toolbar still disappeared. I have now fixed this by adding `h-full` to the `contentWrapper` and removing `overflow-y-auto` from the `content-panes` in `index.html`. UPDATE: the bar is now stick, but the tabs once more disappear on scrolling.

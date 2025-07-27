@@ -178,11 +178,11 @@ window.addEventListener('api-ready', () => {
 
         // Create the main content wrapper
         const contentWrapper = document.createElement('div');
-        contentWrapper.className = "lesson-content bg-slate-200 text-slate-700 flex-grow overflow-hidden flex flex-col";
+        contentWrapper.className = "lesson-content bg-slate-200 text-slate-700 flex-grow flex flex-col";
 
         // Create the toolbar
         const toolbar = document.createElement('div');
-        toolbar.className = "flex-shrink-0 bg-slate-700 border-b border-slate-600 px-4 py-1 flex justify-between items-center";
+        toolbar.className = "sticky top-0 z-10 bg-slate-700 border-b border-slate-600 px-4 py-1 flex justify-between items-center";
 
         // Left group: Home and Reload
         const leftGroup = document.createElement('div');
@@ -208,7 +208,7 @@ window.addEventListener('api-ready', () => {
 
         // Content area that will scroll
         const scrollableContent = document.createElement('div');
-        scrollableContent.className = 'overflow-y-auto p-6 md:p-10';
+        scrollableContent.className = 'flex-grow overflow-y-auto p-6 md:p-10';
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = content;
 
@@ -271,7 +271,7 @@ window.addEventListener('api-ready', () => {
 
         // Create the toolbar for Home
         const toolbar = document.createElement('div');
-        toolbar.className = "flex-shrink-0 bg-slate-700 border-b border-slate-600 px-4 py-1 flex justify-between items-center";
+        toolbar.className = "sticky top-0 z-10 bg-slate-700 border-b border-slate-600 px-4 py-1 flex justify-between items-center";
 
         // Left group: Home and Reload
         const leftGroup = document.createElement('div');
@@ -338,7 +338,7 @@ window.addEventListener('api-ready', () => {
 
       // Create the toolbar for Settings
       const toolbar = document.createElement('div');
-      toolbar.className = "flex-shrink-0 bg-slate-700 border-b border-slate-600 px-4 py-1 flex justify-between items-center";
+      toolbar.className = "sticky top-0 z-10 bg-slate-700 border-b border-slate-600 px-4 py-1 flex justify-between items-center";
       
       // Left group
       const leftGroup = document.createElement('div');
