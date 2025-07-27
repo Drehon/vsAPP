@@ -66,10 +66,23 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
         pane.appendChild(contentWrapper);
 
         // Attach event listeners to the new toolbar buttons
-        document.getElementById(`home-btn-${tab.id}`).addEventListener('click', () => loadHomeIntoTab(tab.id, tabs, renderTabs, addTab));
+        document.getElementById(`home-btn-${tab.id}`).addEventListener('click', () => loadHomeIntoTab(tab.id, tabs, renderTabs, addTab, saveExerciseState));
         document.getElementById(`reload-btn-${tab.id}`).addEventListener('click', () => loadContentIntoTab(tab.id, filePath, tabs, renderTabs, addTab, saveExerciseState));
         document.getElementById(`github-btn-${tab.id}`).addEventListener('click', () => window.api.openExternalLink('https://github.com/Drehon/vsapp'));
         document.getElementById(`settings-btn-${tab.id}`).addEventListener('click', () => addTab(true, null, 'settings'));
+
+        const resetBtn = document.getElementById(`reset-btn-${tab.id}`);
+        if (resetBtn) {
+            resetBtn.addEventListener('click', async () => {
+                const confirmReset = true; // No confirm dialog
+                if (confirmReset) {
+                    await window.api.resetExerciseState(tab.filePath);
+                    // Reload the content to re-initialize the exercise
+                    loadContentIntoTab(tab.id, filePath, tabs, renderTabs, addTab, saveExerciseState);
+                    console.log(`Exercise state reset and reloaded for ${tab.filePath}`);
+                }
+            });
+        }
 
 
         // Check if the loaded content is an exercise and initialize it

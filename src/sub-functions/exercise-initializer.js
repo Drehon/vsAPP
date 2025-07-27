@@ -389,27 +389,18 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
     paneElement.querySelectorAll('.tab-btn').forEach(btn => {
       btn.onclick = () => { // Use onclick for single listener
         const tabNum = btn.id.split('-')[2];
-        paneElement.querySelectorAll('.tab-btn').forEach(b => b.classList.replace('tab-active', 'tab-inactive'));
-        btn.classList.replace('tab-inactive', 'tab-active');
-        paneElement.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-        paneElement.querySelector(`#tab-content-${tabNum}`).classList.remove('hidden');
+        paneElement.querySelectorAll('.tab-btn').forEach(b => {
+            if (b) b.classList.replace('tab-active', 'tab-inactive');
+        });
+        if (btn) btn.classList.replace('tab-inactive', 'tab-active');
+        paneElement.querySelectorAll('.tab-content').forEach(c => {
+            if (c) c.classList.add('hidden');
+        });
+        const content = paneElement.querySelector(`#tab-content-${tabNum}`);
+        if (content) content.classList.remove('hidden');
       };
     });
 
-    // Reset button functionality
-    const resetBtn = document.getElementById(`reset-btn-${tab.id}`);
-    if (resetBtn) {
-        resetBtn.onclick = async () => {
-            const confirmReset = true; // No confirm dialog
-            if (confirmReset) {
-                await window.api.resetExerciseState(tab.filePath);
-                tab.exerciseState = null;
-                initializeState();
-                rerenderAll();
-                console.log(`Exercise state reset for ${tab.filePath}`);
-            }
-        };
-    }
 
 
     // Save/Load functionality

@@ -103,26 +103,29 @@ NOTES FROM JULES
 
 New errors
 
-exercise-initializer.js:312 Uncaught TypeError: saveExerciseState is not a function
-    at nextBtn.onclick (exercise-initializer.js:312:1)
-nextBtn.onclick @ exercise-initializer.js:312
-3exercise-initializer.js:349 Uncaught TypeError: saveExerciseState is not a function
-    at btn.onclick (exercise-initializer.js:349:1)
-btn.onclick @ exercise-initializer.js:349
-exercise-initializer.js:300 Uncaught TypeError: saveExerciseState is not a function
-    at prevBtn.onclick (exercise-initializer.js:300:1)
-prevBtn.onclick @ exercise-initializer.js:300
-exercise-initializer.js:312 Uncaught TypeError: saveExerciseState is not a function
-    at nextBtn.onclick (exercise-initializer.js:312:1)
-nextBtn.onclick @ exercise-initializer.js:312
-exercise-initializer.js:148 Uncaught TypeError: saveExerciseState is not a function
-    at markBtn.onclick (exercise-initializer.js:148:1)
-markBtn.onclick @ exercise-initializer.js:148
-6exercise-initializer.js:86 Uncaught TypeError: saveExerciseState is not a function
-    at textarea.onkeyup (exercise-initializer.js:86:1)
-textarea.onkeyup @ exercise-initializer.js:86
-6exercise-initializer.js:112 Uncaught TypeError: saveExerciseState is not a function
-    at textarea.onkeyup (exercise-initializer.js:112:1)
-textarea.onkeyup @ exercise-initializer.js:112
-3exercise-initializer.js:395 Uncaught TypeError: Cannot read properties of null (reading 'classList')
-    at btn.onclick (exercise-initializer.js:395:58)
+VM255:65 Uncaught (in promise) SyntaxError: Bad escaped character in JSON at position 24472 (line 65 column 315)
+    at JSON.parse (<anonymous>)
+    at initializeGrammarExercise (grammar-exercise.js:6:24)
+    at loadContentIntoTab (content-loader.js:93:42)
+initializeGrammarExercise @ grammar-exercise.js:6
+loadContentIntoTab @ content-loader.js:93
+await in loadContentIntoTab
+eval @ content-loader.js:245
+verb-exercise.js:258 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'addEventListener')
+    at initializeVerbsExercise (verb-exercise.js:258:1)
+    at loadContentIntoTab (content-loader.js:95:40)
+initializeVerbsExercise @ verb-exercise.js:258
+loadContentIntoTab @ content-loader.js:95
+await in loadContentIntoTab
+eval @ content-loader.js:245
+VM274:65 Uncaught (in promise) SyntaxError: Bad escaped character in JSON at position 24472 (line 65 column 315)
+    at JSON.parse (<anonymous>)
+    at initializeGrammarExercise (grammar-exercise.js:6:24)
+    at loadContentIntoTab (content-loader.js:93:42)
+    at async switchTab (tab-manager.js:96:1)
+
+Fase 2 and Fase 3 don't work for 
+L2 - causativoES
+L3 - passivo avanzatoES
+
+If i click on either, nothing appears, and then Fase 1 also stops working
