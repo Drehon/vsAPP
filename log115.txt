@@ -5,11 +5,11 @@ user NOTES
 tabs are not influenced by scrolling, the toolbar however still is, it disappears as one scrolls instead of always being visible
 
 2) 
-student-grammar.html and student.verbs.html are both outdated html that must be adjusted to fit with the app, look at the L1 html for references
-a large amount of functionalities/differences must be bridged
+L1 - congiuntivoES has a bugged function, the 'vai a' to go to a specific question doesn't work
 
 3) 
-L1 - congiuntivoES has a bugged function, the 'vai a' to go to a specific question doesn't work
+student-grammar.html and student.verbs.html are both outdated html that must be adjusted to fit with the app, look at the L1 html for references
+a large amount of functionalities/differences must be bridged
 
 4) 
 the new htmls starting with L2 and L3 in the excercises and lessons folder must also be adjusted
