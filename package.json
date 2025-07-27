@@ -1,16 +1,16 @@
 {
   "name": "tutoring-app",
   "productName": "tutoring-app",
-  "version": "1.0.0",
+  "version": "1.1.6",
   "description": "My Electron application description",
   "main": ".webpack/main",
   "scripts": {
-    "start": "electron-forge start",
+    "start": "concurrently -k \"npm:build:css\" \"electron-forge start\"",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\"",
-    "build:css": "node_modules\\.bin\\tailwindcss -i ./src/index.css -o ./src/style.css --watch"
+    "build:css": "tailwindcss -i ./src/index.css -o ./src/style.css --watch"
   },
   "keywords": [],
   "author": {
@@ -32,7 +32,10 @@
     "@electron-forge/plugin-fuses": "^7.8.1",
     "@electron-forge/plugin-webpack": "^7.8.1",
     "@electron/fuses": "^1.8.0",
+    "@tailwindcss/typography": "^0.5.14",
     "@vercel/webpack-asset-relocator-loader": "^1.10.0",
+    "concurrently": "^8.2.2",
+    "copy-webpack-plugin": "^13.0.0",
     "css-loader": "^7.1.2",
     "electron": "37.2.4",
     "node-loader": "^2.1.0",

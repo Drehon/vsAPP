@@ -1,0 +1,36 @@
+### EXPLAIN
+
+This is a log where jules can write down explanations for its actions/plans/etc when requested by the user
+Any new explanation must be added at the bottom without modifying previous ones.
+
+------
+
+## ISSUE 1 - FIRST RUN APPLICATION ERROR
+
+I am currently fixing a race condition that occurs on the initial launch of the application. The renderer process, which is responsible for the user interface, is attempting to access Electron APIs before they are fully loaded, leading to errors.
+
+To resolve this, I am implementing a signaling mechanism between the preload script and the renderer process.
+
+1.  **`src/preload.js`:** I've added code to this file to dispatch a custom event called `api-ready` on the `window` object. This event is fired immediately after the `window.api` object is created, which exposes the necessary backend functionality to the frontend.
+
+2.  **`src/renderer.js` (Next Step):** I will modify this file to wait for the `api-ready` event before executing any code that depends on `window.api`. This will ensure that the application initializes correctly every time, eliminating the race condition.
+
+This approach ensures that the renderer process only attempts to use the APIs after they have been successfully exposed, making the application's startup process more robust and reliable.
+
+------
+
+## ISSUE 1 - FIX IMPLEMENTATION
+
+I have now implemented the fix for the race condition.
+
+1.  **`src/renderer.js`:** I've wrapped the entire application logic within the `api-ready` event listener. This ensures that all the code that depends on `window.api` is executed only after the API has been initialized in the preload script. This prevents any race conditions from occurring on startup.
+
+------
+
+## ISSUE 2 - APP STUCK ON LOADING
+
+The application was getting stuck on "App Version: Loading..." because of a race condition between the preload script and the renderer script.
+
+The preload script was dispatching an `api-ready` event immediately after setting up the `window.api` object. However, the renderer script might not have been ready to receive this event, especially if the DOM was still loading. This meant the event was often missed, and the part of the code responsible for updating the app version was never called.
+
+To fix this, I've modified `src/preload.js` to wait for the `DOMContentLoaded` event before it dispatches the `api-ready` event. This ensures that the renderer process is ready and listening for the event, resolving the race condition and allowing the app to initialize correctly.

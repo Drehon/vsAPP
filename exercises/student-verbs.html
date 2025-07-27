@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verb System Diagnostic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* bg-slate-100 */
+        }
+        .key-rule {
+            background-color: #eef2ff; /* bg-indigo-50 */
+            color: #4338ca; /* text-indigo-800 */
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .tab-active {
+            border-bottom: 2px solid #4f46e5; /* border-indigo-600 */
+            color: #4f46e5; /* text-indigo-600 */
+            font-weight: 600;
+        }
+        .tab-inactive {
+            color: #64748b; /* text-slate-500 */
+            border-bottom: 2px solid transparent;
+        }
+        .tab-btn:hover {
+            color: #334155; /* text-slate-700 */
+        }
+        .feedback-correct {
+            background-color: #f0fdf4; /* bg-green-50 */
+            color: #166534; /* text-green-800 */
+        }
+        .feedback-incorrect {
+            background-color: #fef2f2; /* bg-red-50 */
+            color: #b91c1c; /* text-red-800 */
+        }
+    </style>
+</head>
+<body class="bg-slate-100">
+    <div id="app" class="container mx-auto p-4 md:p-10 max-w-7xl">
+        
+        <header class="bg-white rounded-lg shadow-lg overflow-hidden mb-10 p-6">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Verb System Diagnostic</h1>
+            <p class="text-lg md:text-xl text-slate-500 mt-2">An interactive assessment for TOEIC Preparation (B2-C1 Level)</p>
+        </header>
+        
+        <main class="space-y-8">
+            <section id="intro-view" class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
+                <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4">Instructions and Test Overview</h2>
+                <div class="prose max-w-none mt-4">
+                    <p>This diagnostic test is designed to identify specific strengths and weaknesses in your understanding of the English verb system. It is not about getting a simple score, but about pinpointing the exact grammatical rules you need to focus on.</p>
+                    <p>The test is divided into three blocks. As a gross estimate, each block should take approximately 30 minutes if uninterrupted. The questions are challenging and often test several grammar points at once to simulate the cognitive demands of a real proficiency test.</p>
+                    <ul>
+                        <li>Complete and submit each block independently. Your progress is saved automatically.</li>
+                        <li>Use the provided "Notes" areas to jot down your thought process. These notes will not be graded automatically but can be downloaded and are invaluable for analysis.</li>
+                    </ul>
+                    <p class="mt-4">
+                        Your progress is saved automatically. Use the toolbar buttons to save/load your progress to/from a file, or to reset the test.
+                    </p>
+                    <p class="mt-4">After submitting a block, you will enter "Review Mode" to see your results directly on the test. You can then proceed to the "Diagnostics" page for a performance breakdown.</p>
+                    <p>Good luck. Begin with Block A when you are ready.</p>
+                </div>
+            </section>
+
+            <section id="test-container" class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div id="test-view">
+                    <div class="p-6 bg-slate-50 border-b border-slate-200">
+                        <nav class="flex space-x-6" aria-label="Tabs">
+                            <button id="tab-block-1" class="tab-btn py-3 px-1 text-sm font-medium tab-active">Block A</button>
+                            <button id="tab-block-2" class="tab-btn py-3 px-1 text-sm font-medium tab-inactive">Block B</button>
+                            <button id="tab-block-3" class="tab-btn py-3 px-1 text-sm font-medium tab-inactive">Block C</button>
+                        </nav>
+                    </div>
+                    <form id="diagnostic-form" class="p-6">
+                        <div id="questions-container"></div>
+                        <div id="submission-area" class="mt-8 text-center"></div>
+                    </form>
+                </div>
+            </section>
+
+            <section id="diagnostics-view" class="hidden">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <header class="p-6 flex justify-between items-center bg-slate-50 border-b border-slate-200">
+                        <h2 class="text-2xl font-bold text-slate-800">Performance Diagnostics</h2>
+                        <button id="back-to-review-btn" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 shadow-md">
+                            &larr; Back to Test Review
+                        </button>
+                    </header>
+                    <div class="p-6">
+                        <div class="mb-6 border-b border-slate-200">
+                            <nav class="flex flex-wrap -mb-px" aria-label="Tabs">
+                                <button id="diag-tab-overall" data-tab="overall" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Overall</button>
+                                <button id="diag-tab-block-a" data-tab="block-a" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Block A</button>
+                                <button id="diag-tab-block-b" data-tab="block-b" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Block B</button>
+                                <button id="diag-tab-block-c" data-tab="block-c" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Block C</button>
+                            </nav>
+                        </div>
+                        <div id="diag-content-overall" class="diag-content hidden">
+                            <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="overallChart"></canvas> </div>
+                        </div>
+                        <div id="diag-content-block-a" class="diag-content hidden">
+                             <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="blockAChart"></canvas> </div>
+                        </div>
+                        <div id="diag-content-block-b" class="diag-content hidden">
+                             <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="blockBChart"></canvas> </div>
+                        </div>
+                        <div id="diag-content-block-c" class="diag-content hidden">
+                             <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="blockCChart"></canvas> </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+<script type="application/json" id="exercise-data">
+{
+    "testData": [
+        // Block A
+        { "block": 1, "displayNum": "A1", "section": "A: Contextual Multiple-Choice", "sectionExplanation": "Read the following business email. For questions A1-A5, choose the best word or phrase to fill each gap from the dropdown menus.", "type": "mc", "category": "Tenses", "question": "I ______ the draft of the quarterly report you sent over this morning, and it looks solid.", "choices": ["reviewed", "have just reviewed", "had reviewed", "was reviewing"], "answer": "B", "explanation": "**Present Perfect vs. Simple Past:** The phrase \"this morning\" and the ongoing relevance to the current task make the present perfect ('have just reviewed') the most appropriate choice to indicate a recent past action with present results." },
+        { "block": 1, "displayNum": "A2", "section": "A: Contextual Multiple-Choice", "type": "mc", "category": "Passive Voice", "question": "According to the project timeline, the complete report ______ to the board by this Friday.", "choices": ["will submit", "is submitting", "will have submitted", "is to be submitted"], "answer": "D", "explanation": "**Passive Voice with 'be to':** The structure 'is to be submitted' is a formal way of expressing an official plan or obligation, common in business contexts. It combines the passive voice with the semi-modal 'be to'." },
+        { "block": 1, "displayNum": "A3", "section": "A: Contextual Multiple-Choice", "type": "mc", "category": "Modals", "question": "He said the delay ______ by an unexpected server update last night.", "choices": ["must be", "should have been", "might have been caused", "had to be causing"], "answer": "C", "explanation": "**Modal of Past Possibility/Speculation:** 'might have been caused' correctly expresses a possibility about a past event. It combines a modal ('might'), the perfect aspect ('have been'), and the passive voice ('been caused')." },
+        { "block": 1, "displayNum": "A4", "section": "A: Contextual Multiple-Choice", "type": "mc", "category": "Subject-Verb Agreement", "question": "Neither Jean-Paul nor his team members ______ a specific time for delivery, but they expect it will be today.", "choices": ["has provided", "have provided", "is providing", "are providing"], "answer": "B", "explanation": "**Subject-Verb Agreement (Complex Subject):** With \"Neither... nor...\", the verb agrees with the subject closest to it. \"members\" is plural, requiring the plural verb 'have provided'." },
+        { "block": 1, "displayNum": "A5", "section": "A: Contextual Multiple-Choice", "type": "mc", "category": "Causatives", "question": "Let's plan to have the final version of the report ______ by a professional proofreader before the Friday deadline.", "choices": ["check", "to be checked", "checked", "getting checked"], "answer": "C", "explanation": "**Causative Passive ('have something done'):** The structure 'have [object][past participle]' is used to arrange for someone else to perform a service. The correct form is 'have the report checked'." },
+        { 
+            "block": 1, "displayNum": "A6", "section": "B: Error Identification and Correction", "sectionExplanation": "The following paragraph contains six errors related to verb usage. <br>Identify each incorrect verb form and write the correction in the corresponding box.", "type": "paragraph_error_id", "category": "Mixed Verbs",
+            "question": "<div class=\"p-4 border-l-4 border-slate-200 bg-slate-50\">The critical issue with the new logistics software <b>rised</b> during yesterday's peak hours, which <b>has been causing</b> significant delays since. The operations manager, who was visibly frustrated, demanded that a full incident report <b>was prepared</b> immediately and insisted that the IT department <b>solves</b> the problem by the end of the day. If the vendor <b>would have disclosed</b> the system's limitations earlier, we <b>wouldn't face</b> this crisis now.</div>",
+            "parts": [
+                { "label": "rised", "answer": "arose", "explanation": "**Irregular Verb & Confused Pair (rise/raise/arise):** 'arose' (past of arise, meaning 'emerged') is the correct intransitive verb here. 'Rised' is not a word." },
+                { "label": "has been causing", "answer": "has caused", "explanation": "**Tense Nuance (Present Perfect vs. PPC):** The focus is on the result of the action (the delays that exist now), not the ongoing duration. The simple present perfect ('has caused') is more appropriate." },
+                { "label": "was prepared", "answer": "be prepared", "explanation": "**Subjunctive Mood (Passive):** After a verb of demand ('demanded that...'), the subjunctive mood (base form 'be') is required. In passive, this is 'be prepared'." },
+                { "label": "solves", "answer": "solve", "explanation": "**Subjunctive Mood (Active):** Following 'insisted that...', the subjunctive mood (base form 'solve') is used, not the third-person singular 'solves'." },
+                { "label": "would have disclosed", "answer": "had disclosed", "explanation": "**Third Conditional (if-clause):** The 'if'-clause of a third conditional requires the past perfect ('had' + past participle). Using 'would have' here is a common error." },
+                { "label": "wouldn't face", "answer": "wouldn't be facing", "explanation": "**Mixed Conditional (Type 3 -> 2):** This connects a past unreal condition to a present unreal result ('...now'). The result clause requires 'would' + base verb. The continuous form emphasizes the ongoing nature of the crisis." }
+            ]
+        },
+        { "block": 1, "displayNum": "A7", "section": "C: Sentence Transformation", "sectionExplanation": "Complete the second sentence so that it has a similar meaning to the first sentence. This section tests your ability to use a variety of advanced structures. For example:<ul><li class=\"my-1\"><b>Passive Voice:</b> Changing \"The company will launch the product\" to \"The product will be launched by the company.\"</li><li class=\"my-1\"><b>Causatives:</b> Changing \"I will ask a mechanic to check my car\" to \"I will have my car checked.\"</li><li class=\"my-1\"><b>Subjunctive:</b> Using base verbs after expressions like \"I insist that he...\" (e.g., \"I insist that he <b>be</b> on time.\")</li></ul>", "type": "input", "category": "Passive Voice", "question": "The auditors will have finished their inspection by the end of the week. <br> &rarr; By the end of the week, the inspection _______________ by the auditors.", "answer": "will have been finished", "explanation": "**Future Perfect Passive:** This transforms an active future perfect sentence ('will have finished') into its passive equivalent ('will have been finished')." },
+        { "block": 1, "displayNum": "A8", "section": "C: Sentence Transformation", "type": "input", "category": "Subjunctive", "question": "The CEO said, \"We must accelerate our digital transformation strategy.\" <br> &rarr; The CEO _______________ digital transformation strategy be accelerated.", "answer": "insisted that their", "explanation": "**Reported Speech (Subjunctive):** This reports a statement using 'insisted', which requires a 'that'-clause with a verb in the subjunctive mood ('...strategy be accelerated')." },
+        { "block": 1, "displayNum": "A9", "section": "C: Sentence Transformation", "type": "input", "category": "Modals", "question": "It's possible that the marketing team did not receive the final brief. <br> &rarr; The final brief _______________ by the marketing team.", "answer": "might not have been received", "explanation": "**Modal Perfect Passive:** This forms a passive construction with a modal of past possibility ('might not have' + 'been' + past participle)." },
+        { "block": 1, "displayNum": "A10", "section": "C: Sentence Transformation", "type": "input", "category": "Causatives", "question": "I will arrange for a technician to install the new equipment next Monday. <br> &rarr; I will _______________ installed by a technician next Monday.", "answer": "have the new equipment", "explanation": "**Causative ('have something done'):** This requires changing an active sentence into the causative structure 'have' + object + past participle." },
+        { "block": 1, "displayNum": "A11", "section": "C: Sentence Transformation", "type": "input", "category": "Gerunds & Infinitives", "question": "\"You should reconsider your decision to resign,\" the HR manager told him. <br> &rarr; The HR manager _______________ his decision to resign.", "answer": "urged him to reconsider", "explanation": "**Reporting Verb Pattern ('urge someone to do'):** This tests the knowledge of the specific verb pattern that follows 'urge', which is 'urge' + object + infinitive." },
+        { "block": 2, "displayNum": "B1", "section": "A: Gerunds, Infinitives, and Participles", "sectionExplanation": "Complete the sentences with the correct form of the verb in brackets. This requires knowing which form follows certain verbs or is used in certain structures. For example:<ul><li class=\"my-1\"><b>Gerund:</b> \"He enjoys <b>playing</b> tennis.\"</li><li class=\"my-1\"><b>Infinitive:</b> \"She decided <b>to leave</b>.\"</li><li class=\"my-1\"><b>Participle Clause:</b> \"<b>Having finished</b> his work, he went home.\"</li></ul>", "type": "input", "category": "Gerunds & Infinitives", "question": "On his way to the crucial meeting, he stopped _______________ (get) a coffee, which unfortunately made him late.", "answer": "to get", "explanation": "**'stop' + Infinitive:** 'stop to do something' means to interrupt one activity to do another." },
+        { "block": 2, "displayNum": "B2", "section": "A: Gerunds, Infinitives, and Participles", "type": "input", "category": "Gerunds & Infinitives", "question": "He vaguely remembers _______________ (mention) the potential risks during the initial planning phase, but he can't find it in the meeting minutes.", "answer": "mentioning", "explanation": "**'remember' + Gerund:** 'remember doing something' refers to having a memory of a past action." },
+        { "block": 2, "displayNum": "B3", "section": "A: Gerunds, Infinitives, and Participles", "type": "input", "category": "Gerunds & Infinitives", "question": "The board went on _______________ (discuss) the quarterly budget after they had finished the review of the sales performance.", "answer": "to discuss", "explanation": "**'go on' + Infinitive:** 'go on to do something' means to move to the next, different action in a sequence." },
+        { "block": 2, "displayNum": "B4", "section": "A: Gerunds, Infinitives, and Participles", "type": "input", "category": "Gerunds & Infinitives", "question": "We regret _______________ (inform) all applicants that the position for which they applied has now been filled.", "answer": "to inform", "explanation": "**'regret' + Infinitive:** 'regret to do something' is used to formally give bad news." },
+        { "block": 2, "displayNum": "B5", "section": "A: Gerunds, Infinitives, and Participles", "type": "input", "category": "Participles", "question": "_______________ (work) in international sales for over a decade, she found it easy to adapt to the new market.", "answer": "Having worked", "explanation": "**Perfect Participle Clause:** 'Having worked' is used to show that this action happened before the action in the main clause and to explain the reason for it." },
+        { "block": 2, "displayNum": "B6", "section": "B: Phrasal Verbs & Structures", "sectionExplanation": "Choose the best phrasal verb or structure from the dropdown menu to complete the sentences.", "type": "mc", "category": "Phrasal Verbs", "question": "After the initial plan was rejected, the team had to go back to the drawing board and ______ a completely new strategy.", "choices": ["come up with", "get on with", "fall back on", "do away with"], "answer": "A", "explanation": "**'come up with'**: Means to think of or create an idea or plan." },
+        { "block": 2, "displayNum": "B7", "section": "B: Phrasal Verbs & Structures", "type": "mc", "category": "Phrasal Verbs", "question": "We can't ______ this decision any longer; we need to inform the stakeholders by tomorrow.", "choices": ["put up", "put off", "put down", "put on"], "answer": "B", "explanation": "**'put off'**: Means to postpone or delay." },
+        { "block": 2, "displayNum": "B8", "section": "B: Phrasal Verbs & Structures", "type": "mc", "category": "Phrasal Verbs", "question": "The unexpected resignation of the project manager has ______ the entire timeline by at least two weeks.", "choices": ["brought about", "turned down", "set back", "taken over"], "answer": "C", "explanation": "**'set back'**: Means to delay the progress of something." },
+        { "block": 2, "displayNum": "B9", "section": "B: Phrasal Verbs & Structures", "type": "mc", "category": "Phrasal Verbs", "question": "Before we launch the product, we must ______ all the bugs discovered during the quality assurance phase.", "choices": ["call off", "look after", "get through", "sort out"], "answer": "D", "explanation": "**'sort out'**: Means to resolve a problem." },
+        { "block": 2, "displayNum": "B10", "section": "B: Phrasal Verbs & Structures", "type": "mc", "category": "Phrasal Verbs", "question": "I'm not sure I can ______ what he's suggesting; the data seems to contradict his main point.", "choices": ["make out", "give in", "stand for", "run into"], "answer": "A", "explanation": "**'make out'**: Means to understand something with difficulty." },
+        { "block": 2, "displayNum": "B11", "section": "B: Phrasal Verbs & Structures", "type": "mc", "category": "Causatives", "question": "Because the contract was so complex, the director got a legal expert ______ it carefully.", "choices": ["review", "to review", "reviewed", "reviewing"], "answer": "B", "explanation": "**Causative ('get someone to do'):** The verb 'get' in a causative sense requires the pattern 'get' + person + 'to'-infinitive." },
+        { "block": 2, "displayNum": "B12", "section": "B: Phrasal Verbs & Structures", "type": "mc", "category": "Passive Voice", "question": "I resent ______ what to do by people who don't understand the situation.", "choices": ["telling", "to be told", "being told", "having told"], "answer": "C", "explanation": "**Passive Gerund:** The verb 'resent' is followed by a gerund. To make this passive (the subject is the receiver of the action of being told), the passive gerund 'being told' is required." },
+        { "block": 2, "displayNum": "B13", "section": "C: Advanced Passive and Causative Structures", "sectionExplanation": "Complete the second sentence so that it has a similar meaning to the first sentence. This section focuses on advanced passive and causative forms. For example:<ul><li class=\"my-1\"><b>Passive with Reporting Verbs:</b> \"People say he is rich\" can become \"He is said <b>to be</b> rich.\"</li><li class=\"my-1\"><b>Passive of `make`:</b> \"The boss made them work\" becomes \"They were made <b>to work</b>.\"</li></ul>", "type": "input", "category": "Passive Voice", "question": "People believe that the former CEO was living in seclusion after the scandal.<br> &rarr; The former CEO is believed _______________ in seclusion after the scandal.", "answer": "to have been living", "explanation": "**Passive with Reporting Verbs:** When the reported action ('was living') is in the past relative to the reporting verb ('is believed'), the perfect infinitive ('to have been living') is required." },
+        { "block": 2, "displayNum": "B14", "section": "C: Advanced Passive and Causative Structures", "type": "input", "category": "Passive Voice", "question": "The manager forced the team to work overtime to meet the deadline.<br> &rarr; The team were _______________ overtime to meet the deadline.", "answer": "made to work", "explanation": "**Passive of 'make':** The active 'make someone do' becomes the passive 'be made to do', requiring the 'to'-infinitive." },
+        { "block": 2, "displayNum": "B15", "section": "C: Advanced Passive and Causative Structures", "type": "input", "category": "Causatives", "question": "The company is arranging for an external firm to audit its accounts.<br> &rarr; The company is having _______________ by an external firm.", "answer": "its accounts audited", "explanation": "**Causative ('have something done'):** This tests the passive causative in the present continuous tense ('is having' + object + past participle)." },
+        { "block": 3, "displayNum": "C1", "section": "A: Advanced Conditionals (Input)", "sectionExplanation": "Complete the sentences using the appropriate conditional forms or rewrite them as instructed. This includes inverted conditionals. For example:<ul><li class=\"my-1\"><b>Inverted Conditional:</b> \"If I had known...\" can be rewritten as \"<b>Had I known...</b>\"</li><li class=\"my-1\"><b>Mixed Conditional:</b> A sentence connecting a past condition to a present result, like \"If I had taken that job (past), I would be rich now (present).\"</li></ul>", "type": "input", "category": "Conditionals", "question": "He isn't a fluent Japanese speaker, so he didn't secure the deal during his trip to Tokyo last month.<br> &rarr; If he _______________ a fluent Japanese speaker, he _______________ the deal during his trip to Tokyo last month.", "answer": "were, would have secured", "explanation": "**Mixed Conditional (Type 2 -> 3):** This connects a present/general unreal condition ('If he were...') with a past unreal result ('...he would have secured...'). The comma separates the two parts of the answer." },
+        { "block": 3, "displayNum": "C2", "section": "A: Advanced Conditionals (Input)", "type": "input", "category": "Conditionals", "question": "Rewrite the following sentence beginning with the word provided.<br><em>\"If you should need any further assistance, please do not hesitate to contact us.\"</em><br> &rarr; <strong>Should</strong> _______________.", "answer": "you need any further assistance, please do not hesitate to contact us", "explanation": "**Inverted First Conditional:** A formal conditional can be inverted by starting with 'Should' + subject + base verb." },
+        { "block": 3, "displayNum": "C3", "section": "A: Advanced Conditionals (Input)", "type": "input", "category": "Conditionals", "question": "Identify and correct the error in the following sentence.<br><em>\"If I would have known you were coming, I would have tidied up the place.\"</em><br> &rarr; Error: _______________", "answer": "would have known", "explanation": "**Third Conditional (if-clause):** This identifies the common error of using 'would have' in the 'if'-clause. The correct structure is the past perfect, 'had known'." },
+        { "block": 3, "displayNum": "C4", "section": "B: Conditional Scenarios (Multiple Choice)", "sectionExplanation": "Choose the best option from the dropdown menu to complete the sentences.", "type": "mc", "category": "Conditionals", "question": "______ aware of the potential consequences, they would never have proceeded with such a risky investment.", "choices": ["Had they been", "If they would be", "Should they have been", "If they were"], "answer": "A", "explanation": "**Inverted Third Conditional:** 'Had they been' is the formal, inverted form of 'If they had been', used to create the condition without using 'if'." },
+        { "block": 3, "displayNum": "C5", "section": "B: Conditional Scenarios (Multiple Choice)", "type": "mc", "category": "Conditionals", "question": "If the company hadn't invested heavily in R&D years ago, it ______ its market-leading position now.", "choices": ["wouldn't have", "wouldn't have had", "wouldn't be holding", "didn't hold"], "answer": "C", "explanation": "**Mixed Conditional (Type 3 -> 2):** Connects a past unreal condition to a present unreal result. The continuous 'be holding' emphasizes the ongoing state." },
+        { "block": 3, "displayNum": "C6", "section": "C: Subjunctive Mood and Semi-Modals", "sectionExplanation": "Complete the sentences with the correct verb forms. Pay attention to:<ul><li class=\"my-1\"><b>Subjunctive Mood:</b> Used after verbs of demand, recommendation, etc. (e.g., \"They recommended that he <b>not sign</b> the contract.\")</li><li class=\"my-1\"><b>`would rather` for past:</b> Expressing preference about a past event (e.g., \"I would rather you <b>had told</b> me the truth yesterday.\")</li><li class=\"my-1\"><b>Semi-modals:</b> Phrases like `be supposed to` which have modal-like meanings.</li></ul>", "type": "input", "category": "Subjunctive", "question": "The board's regulations require that every new proposal _______________ (submit) for ethical review before it is approved.", "answer": "be submitted", "explanation": "**Passive Subjunctive:** After 'require that...', the subjunctive is used. In passive voice, this is 'be' + past participle." },
+        { "block": 3, "displayNum": "C7", "section": "C: Subjunctive Mood and Semi-Modals", "type": "input", "category": "Subjunctive", "question": "The CEO insisted that the lead negotiator _______________ (be) present at the meeting and that he _______________ (not / be) late.", "answer": "be, not be", "explanation": "**Active and Negative Subjunctive:** After 'insisted that...', the subjunctive requires the base form 'be' and the negative 'not be'. The comma separates the two parts of the answer." },
+        { "block": 3, "displayNum": "C8", "section": "C: Subjunctive Mood and Semi-Modals", "type": "input", "category": "Modals", "question": "He _______________ (suppose / be) monitoring the network traffic, but a system log shows he was inactive for over an hour before the breach occurred.", "answer": "was supposed to be", "explanation": "**Past Form of Semi-Modal:** This tests the past tense of the semi-modal 'be supposed to', which is 'was/were supposed to'." },
+        { "block": 3, "displayNum": "C9", "section": "C: Subjunctive Mood and Semi-Modals", "type": "input", "category": "Subjunctive", "question": "The legal team recommended that the contract _______________ (re-examine) by an external consultant before being signed.", "answer": "be re-examined", "explanation": "**Passive Subjunctive:** After 'recommended that...', the subjunctive is used. The passive form is 'be' + past participle." },
+        { "block": 3, "displayNum": "C10", "section": "C: Subjunctive Mood and Semi-Modals", "type": "input", "category": "Modals", "question": "I would rather you _______________ (not / mention) the merger during the all-staff meeting yesterday, as the details were not yet finalized.", "answer": "hadn't mentioned", "explanation": "**'would rather' + Past Perfect:** When 'would rather' is followed by a subject and refers to a past action ('yesterday'), the past perfect is used to express regret." }
+    ]
+}
+</script>

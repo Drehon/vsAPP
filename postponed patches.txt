@@ -1,0 +1,101 @@
+## Part 3: Save/Load System Overhaul (v1.1.2)
+
+**Goal:** Replace system file prompts with a custom in-app modal and organize save files into per-lesson subdirectories.
+
+### 3.1. Backend File Structure (`main.js`, `preload.js`)
+- **`main.js`:**
+  - **Modify `save-progress`:** Before saving, ensure a subdirectory exists within `userData/saves/` that matches the lesson name (e.g., `saves/L1-congiuntivoES/`).
+  - **Modify `load-progress`:** Update the handler to read files from the lesson-specific subdirectory.
+  - **Add `open-saves-folder`:** Create a new handler that uses `shell.openPath()` to open the relevant save subfolder in the system's file explorer.
+- **`preload.js`:**
+  - Expose the new `openSavesFolder` function.
+
+### 3.2. Frontend UI (`index.html`, `renderer.js`)
+- **`index.html`:**
+  - Add hidden HTML structures for the custom save and load modals.
+- **`renderer.js`:**
+  - **Modal Logic:** Create `openSaveModal`, `openLoadModal`, and `closeModals` functions to control modal visibility.
+  - **Update Button Hooks:**
+    - The "Save" button now calls `openSaveModal`. The modal will contain the logic to call the `save-progress` IPC handler.
+    - The "Load" button now calls `openLoadModal`, which will fetch the list of saves, display the 5 most recent, and include a "Show More..." button that calls the new `openSavesFolder` function.
+
+    ----
+
+
+### 1.3. Home Screen Progress Tracking (v1.1.5)
+- **Backend (`main.js`):**
+  - Modify the `getContents` function (or equivalent that lists files for the "Home" view).
+  - For each exercise file it finds, it must check if a corresponding file exists in the `userData/autosaves/` directory.
+  - It should return an array of objects, e.g., `[{ fileName: 'L1.html', hasProgress: true }, ...]`.
+- **Frontend (`renderer.js`):**
+  - Update the `populateFileList` function (or equivalent).
+  - When rendering the list of files, check for the `hasProgress` flag and add a visual indicator (e.g., a green dot) next to the names of exercises with saved progress.
+
+---
+
+
+### 1.4. Keyboard Shortcuts (v1.1.5)
+- **Frontend (`renderer.js`):**
+  - Add a global `keydown` event listener to the `window`.
+  - Implement the following shortcuts:
+    - `Ctrl + T`: Add a new tab.
+    - `Ctrl + W`: Close the active tab.
+    - `Ctrl + R` / `F5`: Reload the active tab's content.
+    - `Ctrl + S`: Trigger the "Save" action/modal for the active view.
+    - List all shortcuts under settings page
+
+---
+
+### 1.5. Search/Filter for Home View (v1.1.5)
+- **Frontend (`index.html` & `renderer.js`):**
+  - **`index.html`:** Add an `<input type="text" id="search-bar">` to the static HTML structure of the "Home" view.
+  - **`renderer.js`:** Attach an `input` event listener to the search bar. This listener will filter the list of lessons and exercises displayed on the "Home" view in real-time based on the user's input.
+
+---
+
+## Part 2: The Save Library UI (v1.1.8)
+
+**Goal:** Build a dedicated "Save Library" page to serve as the central hub for managing all save files.
+
+### 2.1. Save Library View (`renderer.js`)
+- **Tab Type:** Modify the tab management logic to support a special "Save Library" tab.
+- **Activation:** Add a new, persistent button to the main tab bar (e.g., using a floppy disk icon) that opens or switches to the Save Library tab.
+- **`renderSaveLibrary()` Function:** Create a new function to construct the library's UI.
+  - **Layout:** It will create a two-column view: a narrow sidebar on the left for navigation and a large content area on the right for displaying saves.
+  - **Sidebar:** The sidebar will be populated with a clickable list of all lessons and exercises.
+  - **Content Area:** When a lesson is clicked in the sidebar, this area will be populated with all of its associated save files, displayed as icons.
+- **Save Icon Design:** Each save file will be represented by a medium-sized icon or card, showing the save name and other relevant metadata.
+
+### 2.2. Multi-Select & Actions (`renderer.js`)
+- **Selection Logic:** Implement event listeners on the save icons to handle multi-selection:
+  - **Single Click:** Selects one file, deselecting others.
+  - **Ctrl/Cmd + Click:** Toggles the selection state of a file.
+  - **Shift + Click:** Selects a range of files between the last-clicked item and the current one.
+- **Action Integration:**
+  - Move the "Import" and "Export" buttons to the header of the Save Library page.
+  - The "Export" button will now operate on the currently selected files, calling `window.api.exportSaves` with the appropriate lesson names.
+
+---
+## Part 3: Virtual Folders (v1.1.9)
+
+**Goal:** Allow users to create custom folders within the Save Library to organize saves without altering the underlying file system.
+
+### 3.1. Backend for Virtual Folders (`main.js`)
+- **Layout File:**
+  - On app startup, the backend will check for a `save-library-layout.json` file in the `userData` directory. If it doesn't exist, it will be created with a default empty structure `{}`.
+- **IPC Handlers:**
+  - **`get-layout()`:** Reads and returns the parsed content of `save-library-layout.json`.
+  - **`save-layout(newLayout)`:** Takes a JSON object from the renderer and writes it to `save-library-layout.json`, overwriting the previous content.
+
+### 3.2. Frontend Virtual Folder Logic (`renderer.js`)
+- **State Management:** The Save Library will maintain a state object that holds the layout fetched from the backend.
+- **Fetch Layout:** When the Save Library is opened, it will call `window.api.getLayout()` to get the current folder structure.
+- **Update Rendering:** The `renderSaveLibrary` function will be modified to:
+  - First, render the virtual folders for the selected lesson.
+  - Then, render the save file icons, placing them inside the appropriate virtual folder based on the layout data, or at the root level if they haven't been categorized.
+- **Folder Creation:**
+  - Add a "New Folder" button to the UI.
+  - Clicking it will add a new folder object to the local layout state and trigger a call to `window.api.saveLayout()` to persist the change.
+- **Drag-and-Drop Functionality:**
+  - Implement drag-and-drop for the save file icons.
+  - Dropping a save icon onto a folder icon will update the local layout state (e.g., `layout['L1-congiuntivoES']['My Folder'].push('save-file-name.json')`) and then immediately call `window.api.saveLayout()` to save the new structure.

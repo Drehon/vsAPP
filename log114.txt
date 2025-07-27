@@ -1,0 +1,67 @@
+## Part 1: UI/UX Improvements (v1.1.4 - 1.1.5)
+
+**Goal:** Introduce a dedicated content toolbar, an update notification system, and several quality-of-life features to improve application usability.
+
+### 1.1. Content Toolbar & UI Refinement (v1.1.4) - COMPLETE
+- **Action:** In `renderer.js`, modify the `loadContentIntoTab` function.
+- **Toolbar Creation:**
+  - Dynamically create a toolbar `<div>` and prepend it to the content pane of any tab showing a lesson or exercise.
+  - The toolbar should have two sections for alignment:
+    - **Left Group:** "Home" and "Reload" icon-buttons.
+    - **Right Group:** "Save", "Load", and "Reset" buttons (which trigger the existing modals/dropdowns), a GitHub icon linking to the repo, and a hidden notification badge.
+- **Content Cleanup:**
+  - Modify the logic that injects HTML to find and remove the old, hard-coded "Salva", "Carica", and "Azzera" buttons from the exercise content itself.
+
+### 1.2. Update Notification System (v1.1.4)
+- **Backend (`main.js`):**
+  - Import `autoUpdater` from `electron-updater`.
+  - On `app.ready`, call `autoUpdater.checkForUpdatesAndNotify()`.
+  - Create a listener: `autoUpdater.on('update-available', ...)` that sends an `update-available` IPC message to the renderer process.
+- **Frontend (`preload.js` & `renderer.js`):**
+  - **`preload.js`:** Expose an `onUpdateAvailable` listener function.
+  - **`renderer.js`:** Use `window.api.onUpdateAvailable` to listen for the message. When received, make the notification badge on the toolbar visible.
+
+//
+
+    
+//
+
+  ---
+
+### EXECUTION - ADD NOTES FROM JULES BELOW
+
+> Part 1.1 has been implemented. The content toolbar has been added, and the old buttons have been removed from the exercise content.
+USER NOTES: 
+Both tabs and content toolbar should always be visible on screen instead of being at the top of the page. NOT FIXED
+For consistency the tool bar should have the same background color it has on the home page on the various lessons and excercises
+
+Finally, currently there are two errors in the app console
+Visually the app works right except for the stuff just mentioned, still, here the errors:
+
+1)
+index.html:13 Refused to load the stylesheet 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' because it violates the following Content Security Policy directive: "style-src 'self' 'unsafe-inline'". Note that 'style-src-elem' was not explicitly set, so 'style-src' is used as a fallback.
+
+2) 
+index.html:1 Refused to load the stylesheet 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' because it violates the following Content Security Policy directive: "style-src 'self' 'unsafe-inline'". Note that 'style-src-elem' was not explicitly set, so 'style-src' is used as a fallback.
+
+
+JULES' NOTES:
+- The tabs and content toolbar are now fixed and will not scroll with the content.
+- The content toolbar now has a consistent background color (`slate-700`) across all views, matching the home page.
+- The Content Security Policy has been updated to allow loading Google Fonts, which should resolve the console errors.
+- The home and settings pages' backgrounds have been lightened from `slate-800` to `slate-600` for better visual balance.
+- The layout has been adjusted so the tab and content bars are sticky and no longer disappear on scroll. HALF TRUE
+
+---
+
+Additional user NOTES
+tabs are now not influenced by scrolling, the toolbar however still is and disappears
+student-grammar.html and student.verbs.html are both outdated normal html that must be adjusted to fit with the app
+they are in the excercises folder, make sure they fully function
+
+ULES' NOTES (v1.1.5):
+- Fixed the toolbar scrolling issue. The toolbar is now sticky and remains visible when scrolling through content.
+- Adapted `student-grammar.html` and `student-verbs.html` to be compatible with the application's tab-based interface. This involved:
+  - Stripping the original HTML, CSS, and JavaScript.
+  - Integrating the exercise content and logic into the main application's rendering process.
+  - Ensuring the exercises are fully functional within the app.

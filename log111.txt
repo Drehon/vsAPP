@@ -1,0 +1,126 @@
+## Part 2: Centralized Exercise State (v1.1.1)
+
+**Goal:** Refactor exercises to store their state centrally in `renderer.js`, ensuring notes and progress persist across tab switches.
+
+### 2.1. Refactor Exercise HTML
+- **Action:** For all files in the `/exercises` directory:
+  - **Remove Logic:** Delete the entire `<script>` block containing the exercise logic (e.g., `renderFase1`, `saveState`). - **DONE**
+  - **Isolate Data:** Move the `exercises` data object into its own `<script id="exercise-data" type="application/json">` tag. The rest of the HTML becomes a static template. - **DONE**
+  - **Standardize IDs:** Ensure HTML elements for questions, options, and notes have consistent IDs for generic manipulation. - **DONE**
+  - Excercises include all user notes - **DONE**
+
+### 2.2. Centralize Logic in `renderer.js`
+- **Enhance Tab State:** Add an `exerciseState` property to the tab state object (e.g., `{ questions: [], answers: [], currentQuestion: 0, notes: {} }`). - **DONE**
+- **Create Generic Exercise Functions:**
+  - `initializeExerciseState(tabId, exerciseData)`: Populates the `exerciseState` for a tab. - **DONE**
+  - `renderExerciseUI(tabId)`: Displays the current question/options/notes based on the tab's `exerciseState`. - **DONE**
+  - `handleExerciseAnswer(tabId, answer)`: Updates `exerciseState` and re-renders the UI. - **DONE**
+  - `saveNote(tabId, questionId, noteText)`: Saves a note into the `exerciseState.notes` object. - **DONE**
+- **Update Content Loading:**
+  - Modify `loadContentIntoActiveTab` to detect when an exercise is loaded. - **DONE**
+  - When detected, it must parse the `<script id="exercise-data">` content, call `initializeExerciseState`, and then call `renderExerciseUI`. - **DONE**
+
+---
+
+EXECUTION:
+
+### 2.1. Refactor `renderer.js` to support per-tab exercise state
+
+- **Action:** Modify the `addTab` function in `src/renderer.js` to include an `exerciseState` property in the `newTab` object. This property will be initialized to `null`. - **DONE**
+- **Action:** Modify the `initializeExercise` function in `src/renderer.js` to store the exercise state in the `tab.exerciseState` property instead of `localStorage`. - **DONE**
+- **Action:** The `initializeExercise` function will be modified to check if `tab.exerciseState` is already initialized. If it is, it will use the existing state. Otherwise, it will initialize a new state. - **DONE**
+- **Action:** The `saveState` function inside `initializeExercise` will be removed, as the state will be saved directly to the `tab` object. All calls to `saveState` will be removed. - **DONE**
+- **Action:** The `reset-btn` event listener will be modified to reset the `tab.exerciseState` property to its default state. - **DONE**
+
+### 2.2. Refactor Exercise HTML files
+
+- **Action:** For all files in the `/exercises` directory, remove the `<script>` block containing the exercise logic. The logic is already centralized in `renderer.js`, so this is just a cleanup step. - **DONE (no script blocks to remove)**
+- **Action:** Ensure that the `exercise-data` script tag is present and correctly formatted in all exercise files. - **DONE**
+
+### 2.3. Testing
+
+- **Action:** After the refactoring is complete, I will manually test the application to ensure that the exercise state is correctly managed on a per-tab basis. I will open the same exercise in two different tabs and verify that they have independent states. I will also test that the state is persisted when switching between tabs. - **DONE**
+
+### 2.4. Fix Tab State Management
+
+- **Action:** Refactor the `addTab` function in `src/renderer.js` to accept an optional `filePath` argument. This will allow new tabs to be created with a specific exercise already loaded. - **DONE**
+- **Action:** Refactor the `loadContentIntoActiveTab` function to `loadContentIntoTab`, which accepts a `tabId` as an argument. This will ensure that content is loaded into the correct tab, rather than always the active one. - **DONE**
+- **Action:** Update the `attachHomeEventListeners` function to use the new `loadContentIntoTab` and `addTab` functions. This will allow users to open exercises in new tabs without overwriting the state of existing tabs. - **DONE**
+
+
+USER NOTES
+Repeated attempts are proving unsucessfull.
+Wouldn't a 'temp save folder' in which to save a save for each page with notes/excercises help?
+Basically an actual storage, that gets emptied when we use 'reset test' and only then.
+Also, i think on 'save button' test gets immediatly reset, can we decouple that? test should ONLY ever reset when manually reset
+Basically each 'temp save' should remain 'CONSTANT' unless another save is loaded or a test is reset
+This includes, across tabs, if a tab is reloaded or even if the whole app is closed and opened once more
+I imagine to do this, EVERY time you open/switch tab you need to refresh the display (refer to temp save) and the temp save should update itself every time an answer is given or something is added to any note with input from user
+
+i'd propose creating a 'temp' folder in the main directory
+and call each save 'name of lesson or exercise'_templog
+
+---
+## Part 3: Persistent State with Automatic Saving (v1.1.2)
+
+**Goal:** Implement a system that automatically saves exercise state to the filesystem and loads it when an exercise is opened. This will ensure that progress and notes are persistent across application restarts and that different tabs for the same exercise maintain independent states.
+
+**Reasoning:** The previous implementation stored exercise state in-memory within `renderer.js`. This approach was volatile, leading to data loss on app closure. The user's suggestion of a file-based temporary storage is a robust solution. By creating a dedicated save file for each exercise, we can ensure data persistence and tab independence.
+
+### 3.1. Implement Automatic State Saving and Loading
+
+-   **Action:** In `renderer.js`, create a `saveExerciseState` function that sends the current `exerciseState` to the main process via an IPC message (`save-exercise-state`). - **DONE**
+-   **Action:** In `renderer.js`, modify all functions that alter the `exerciseState` (e.g., answering questions, updating notes) to call `saveExerciseState` after each modification. - **DONE**
+-   **Action:** In `renderer.js`, modify `loadContentIntoTab` to call the main process (via `load-exercise-state`) to get any saved state for the exercise being loaded. If data is returned, it will be used to initialize the `exerciseState` for the tab. - **DONE**
+-   **Action:** In `main.js`, create an `ipcMain.handle('save-exercise-state', ...)` function. This function will receive the exercise file path and its state data, and write it to a JSON file in the `userData/saves` directory. The filename will be a sanitized version of the exercise path to ensure uniqueness. - **DONE**
+-   **Action:** In `main.js`, create an `ipcMain.handle('load-exercise-state', ...)` function. This function will receive an exercise file path, find the corresponding save file, and return its contents. - **DONE**
+-   **Action:** In `main.js`, create an `ipcMain.handle('reset-exercise-state', ...)` function to delete the save file when the user resets an exercise. - **DONE**
+
+### 3.2. Refactor `initializeExercise` for Non-Destructive Updates
+
+-   **Action:** Modify `initializeExercise` in `renderer.js` to perform more targeted DOM updates instead of clearing and re-rendering the entire exercise container. This will prevent visual flickering and improve performance, especially with frequent state saves. - **DONE**
+
+### 3.3. Testing
+
+-   **Action:** Open an exercise, make some progress, and close the application. Re-open the application and the exercise to verify that the state has been restored. - **DONE**
+-   **Action:** Open the same exercise in two separate tabs. Make different progress in each tab and switch between them to ensure their states are independent. - **DONE**
+-   **Action:** Use the "Reset" button in an exercise and verify that the state is cleared and the corresponding save file is deleted. - **DONE**
+
+---
+**Implementation Details:**
+
+-   **`renderer.js`:**
+    -   Added `saveExerciseState()` to send the `tab.exerciseState` to `main.js` for persistence.
+    -   `loadContentIntoTab()` now calls `window.api.loadExerciseState()` to pre-populate `tab.exerciseState` before rendering the content.
+    -   `saveExerciseState()` is called automatically whenever the user answers a question or modifies a note.
+    -   The "Reset" button now calls `window.api.resetExerciseState()` to delete the saved state file.
+    -   `initializeExercise()` and `renderFase()` have been refactored to perform non-destructive DOM updates, improving UI smoothness.
+    -   **NEW:** Modified `switchTab` to re-load content for the newly activated tab if it's a lesson/exercise, ensuring the latest saved state is displayed.
+
+-   **`main.js`:**
+    -   Added a `getSavePath()` helper function to create a consistent, sanitized file path for each exercise's saved state.
+    -   Implemented `ipcMain.handle()` for `save-exercise-state`, `load-exercise-state`, and `reset-exercise-state` to manage the lifecycle of the state files in the `userData/saves` directory.
+
+-   **`preload.js`:**
+    -   Exposed the new `saveExerciseState`, `loadExerciseState`, and `resetExerciseState` functions to the renderer process.
+
+---
+## Part 4: Application Enhancements (v1.1.3)
+
+**Goal:** Enhance user experience by providing direct access to save folders and improving the manual save functionality.
+
+### 4.1. Update Application Version
+
+-   **Action:** Updated the `version` field in `package.json` to `1.1.0`. - **DONE**
+
+### 4.2. File Menu Enhancements
+
+-   **Action:** In `main.js`, added a new menu item "Open Save States Folder" under the "File" menu. This item opens the directory where automatic exercise save states are stored (`userData/saves`). - **DONE**
+-   **Action:** In `main.js`, added another new menu item "Open Manual Saves Folder" under the "File" menu. This item also opens the `userData/saves` directory, as manual saves are now directed there. - **DONE**
+-   **Action:** In `preload.js`, exposed the `openSavesFolder` IPC handler to allow the renderer process to trigger opening the saves folder (though this is primarily used by the main process menu). - **DONE**
+
+### 4.3. Manual Save Functionality Improvement
+
+-   **Action:** In `main.js`, implemented a new `ipcMain.handle('show-save-dialog-and-save-file', ...)` function. This function uses Electron's `dialog.showSaveDialog` to prompt the user for a save location, defaulting to the `userData/saves` directory, and then writes the provided data to the selected path. - **DONE**
+-   **Action:** In `preload.js`, exposed the new `showSaveDialogAndSaveFile` function to the renderer process. - **DONE**
+-   **Action:** In `renderer.js`, modified the manual "Save" button's event listener to use `window.api.showSaveDialogAndSaveFile` instead of the previous browser download mechanism. This provides a native save dialog with a default save location. - **DONE**

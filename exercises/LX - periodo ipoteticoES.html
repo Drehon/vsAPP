@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esercizi Pratici: Il Periodo Ipotetico</title>
+</head>
+<body class="text-slate-700">
+
+    <div class="container mx-auto p-6 md:p-10 max-w-7xl">
+
+        <!-- Header -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
+            <header class="p-6">
+                <h1 class="text-3xl font-bold text-slate-900">Esercizi Pratici: Il Periodo Ipotetico</h1>
+                <p class="text-lg text-slate-600">Metti in pratica la teoria con esercizi mirati.</p>
+            </header>
+            <div class="p-6 border-t border-slate-200 bg-slate-50 text-sm text-slate-600 space-y-3">
+                <h3 class="font-semibold text-slate-800">Come usare questa pagina:</h3>
+                <ul class="list-disc list-inside space-y-1">
+                    <li><strong>Salvataggio Automatico:</strong> I tuoi progressi (risposte e note) vengono salvati costantemente.</li>
+                    <li><strong>Pulsanti di Navigazione:</strong> Utilizza i pulsanti sulla barra degli strumenti per navigare tra le schede, salvare e caricare i progressi o ripristinare l'esercizio.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <!-- Tabs -->
+            <div class="border-b border-slate-200">
+                <nav class="flex space-x-6 px-6" aria-label="Tabs">
+                    <button id="tab-btn-1" class="tab-btn py-4 px-1 text-sm font-medium tab-active">Fase 1: Comprensione</button>
+                    <button id="tab-btn-2" class="tab-btn py-4 px-1 text-sm font-medium tab-inactive">Fase 2: Riconoscimento</button>
+                    <button id="tab-btn-3" class="tab-btn py-4 px-1 text-sm font-medium tab-inactive">Fase 3: Produzione</button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="p-6 md:p-8">
+                <div id="tab-content-1" class="tab-content"></div>
+                <div id="tab-content-2" class="tab-content hidden"></div>
+                <div id="tab-content-3" class="tab-content hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <script id="exercise-data" type="application/json">
+        {
+            "fase1": [
+                { "question": "If I <code>will have</code> time, I will call you.", "answer": false, "explanation": "Nella if-clause di tipo 1, si usa il Simple Present. Corretta: <i>If I <code>have</code>...</i>" },
+                { "question": "If I were you, I <code>would accept</code> the offer.", "answer": true, "explanation": "Corretto. Periodo ipotetico di tipo 2." },
+                { "question": "If she had studied, she <code>would pass</code> the exam.", "answer": false, "explanation": "Periodo ipotetico di tipo 3. Corretta: <i>...she <code>would have passed</code>...</i>" }
+            ],
+            "fase2": [
+                { "question": "If I ______ you, I would apologize.", "options": ["am", "was", "were", "be"], "answer": "were", "explanation": "Nel periodo ipotetico di tipo 2, si usa 'were' per tutte le persone." },
+                { "question": "If you ______ me, I would have helped you.", "options": ["had told", "told", "tell", "would tell"], "answer": "had told", "explanation": "Nel periodo ipotetico di tipo 3, la if-clause è al Past Perfect." },
+                { "question": "We will go to the beach if the weather ______ nice.", "options": ["will be", "is", "was", "be"], "answer": "is", "explanation": "Nel periodo ipotetico di tipo 1, la if-clause è al Simple Present." }
+            ],
+            "fase3": [
+                { "prompt": "I didn't have your number, so I didn't call you.", "question": "If I had had your number...", "answer": "I would have called you", "explanation": "Periodo ipotetico di tipo 3." },
+                { "prompt": "I am not rich, so I don't buy a Ferrari.", "question": "If I were rich...", "answer": "I would buy a Ferrari", "explanation": "Periodo ipotetico di tipo 2." },
+                { "prompt": "I might see him tomorrow. I'll give him the message.", "question": "If I see him tomorrow...", "answer": "I will give him the message", "explanation": "Periodo ipotetico di tipo 1." }
+            ]
+        }
+    </script>
+
+</body>
+</html>

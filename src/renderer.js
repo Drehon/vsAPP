@@ -1,74 +1,137 @@
 import './style.css';
+import { initializeTabManager } from './sub-functions/tab-manager.js';
+import { loadContentIntoTab, loadHomeIntoTab, loadSettingsIntoTab } from './sub-functions/content-loader.js';
+// The following imports are for exercise initialization, but the actual initialization
+// is now handled within content-loader.js based on the file path.
+// import { initializeExercise } from './sub-functions/exercise-initializer.js';
+// import { initializeGrammarExercise } from './sub-functions/grammar-exercise.js';
+// import { initializeVerbsExercise } from './sub-functions/verb-exercise.js';
 
-/**
- * Questo script gestisce la logica per la schermata Home (index.html).
- * Il suo compito è recuperare la lista dei file di contenuto e visualizzarli come link.
- */
+window.addEventListener('api-ready', () => {
+  // --- STATE MANAGEMENT ---
+  let tabs = [];
+  let nextTabId = 1;
 
-/**
- * Popola una lista nell'HTML con i file trovati in una data cartella.
- * @param {string} directory - Il nome della cartella da cui caricare i file ('lessons' o 'exercises').
- * @param {string} elementId - L'ID dell'elemento HTML in cui inserire la lista.
- */
-async function populateFileList(type, elementId) {
-  const listElement = document.getElementById(elementId);
-  if (!listElement) {
-    console.error(`Elemento con ID '${elementId}' non trovato.`);
-    return;
+  // --- DOM ELEMENTS ---
+  const tabBar = document.getElementById('tab-bar');
+  const newTabBtn = document.getElementById('new-tab-btn');
+  const contentPanes = document.getElementById('content-panes');
+  const appVersionSpan = document.getElementById('app-version');
+  const networkIndicator = document.getElementById('network-indicator');
+  const networkLabel = document.getElementById('network-label');
+  // New: Update notification badge - now expected in the footer
+  const updateNotificationBadge = document.getElementById('update-notification-badge');
+
+
+  // --- CORE FUNCTIONS ---
+  const { addTab, switchTab, closeTab, renderTabs } = initializeTabManager(
+    tabs,
+    nextTabId,
+    tabBar,
+    newTabBtn,
+    contentPanes,
+    // Callbacks for loading content into tabs, passed to tab-manager
+    (tabId) => loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerciseState),
+    (tabId, filePath) => loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState),
+    (tabId) => loadSettingsIntoTab(tabId, tabs, renderTabs)
+  );
+
+  // --- UTILITY & SETUP FUNCTIONS ---
+  
+  /**
+   * Debounce function to limit the rate at which a function gets called.
+   * @param {Function} func - The function to debounce.
+   * @param {number} delay - The debounce delay in milliseconds.
+   * @returns {Function} The debounced function.
+   */
+  function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+      const context = this;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), delay);
+    };
   }
 
-  try {
-    // Usa l'API esposta dal preload script per ottenere i file
-    const files = type === 'lessons'
-      ? await window.api.getLessons()
-      : await window.api.getExercises();
-
-    if (files.length === 0) {
-      // Lascia il messaggio di default se non ci sono file
-      listElement.innerHTML = `<p class="text-slate-500">Nessun file trovato in /${type}.</p>`;
-      return;
-    }
-
-    // Pulisce il contenitore
-    listElement.innerHTML = '';
-
-    // Crea un link per ogni file trovato
-    files.forEach(file => {
-      const link = document.createElement('a');
-      link.href = '#'; // Usiamo # per prevenire il ricaricamento della pagina
-      
-      // Pulisce il nome del file per la visualizzazione (es. 'L1-congiuntivo.html' -> 'L1 congiuntivo')
-      link.textContent = file.replace('.html', '').replace(/-/g, ' ');
-
-      link.className = 'block p-3 bg-slate-100 rounded-md hover:bg-indigo-100 hover:text-indigo-800 transition-colors font-medium';
-      
-      // Aggiunge l'evento click per la navigazione
-      link.addEventListener('click', (e) => {
-        e.preventDefault(); // Previene il comportamento di default del link
-        const filePath = `${type}/${file}`;
-        window.api.navigateTo(filePath);
-      });
-
-      listElement.appendChild(link);
-    });
-  } catch (error) {
-    console.error(`Errore nel popolare la lista per '${type}':`, error);
-    listElement.innerHTML = `<p class="text-red-500">Impossibile caricare la lista dei file.</p>`;
-  }
-}
-
-// Mostra la versione dell'app
-async function displayAppVersion() {
+  /**
+   * Displays the application version in the footer.
+   */
+  async function displayAppVersion() {
     const version = await window.api.getAppVersion();
-    const versionElement = document.getElementById('app-version');
-    if (versionElement) {
-        versionElement.innerText = version;
-    }
-}
+    if (appVersionSpan) appVersionSpan.innerText = version;
+  }
 
-// Quando il documento è completamente caricato, popola entrambe le liste.
-document.addEventListener('DOMContentLoaded', () => {
-  populateFileList('lessons', 'lessons-list');
-  populateFileList('exercises', 'exercises-list');
-  displayAppVersion();
+  /**
+   * Updates the network status indicator.
+   */
+  function updateNetworkStatus() {
+    const isOnline = navigator.onLine;
+    if (networkIndicator) {
+      networkIndicator.classList.toggle('bg-green-500', isOnline);
+      networkIndicator.classList.toggle('bg-red-500', !isOnline);
+    }
+    if (networkLabel) networkLabel.innerText = isOnline ? 'Online' : 'Offline';
+  }
+
+  /**
+   * Shows the update notification badge and makes it visible.
+   */
+  function showUpdateNotification() {
+    if (updateNotificationBadge) {
+      updateNotificationBadge.classList.remove('hidden'); // Make it visible
+      updateNotificationBadge.classList.add('bg-blue-500'); // Light up the badge
+      updateNotificationBadge.classList.remove('bg-gray-400'); // Remove greyed out
+    }
+  }
+
+  // --- INITIALIZATION ---
+
+  /**
+   * Saves the current state of an exercise to the filesystem.
+   * Debounced to prevent too frequent writes.
+   * @param {object} tab - The tab object containing the exercise state.
+   */
+  const saveExerciseState = debounce(async (tab) => {
+    if (tab && tab.filePath && tab.exerciseState) {
+      try {
+        await window.api.saveExerciseState(tab.filePath, tab.exerciseState);
+        console.log(`Autosaved progress for ${tab.filePath}`);
+      } catch (error) {
+        console.error(`Failed to autosave progress for ${tab.filePath}:`, error);
+      }
+    }
+  }, 500); // 500ms debounce delay
+
+
+  /**
+   * Initializes the main application components and event listeners.
+   */
+  async function initializeApp() {
+    displayAppVersion();
+    updateNetworkStatus();
+
+    // Attach event listener for the new tab button
+    if (newTabBtn) { // Null check
+        newTabBtn.addEventListener('click', () => addTab(true));
+    }
+    
+    // Attach event listeners for network status changes
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+
+    // Listen for update-available messages from the main process
+    window.api.onUpdateAvailable(() => {
+      showUpdateNotification();
+    });
+
+    // Add initial tab on app startup and wait for it to complete
+    await addTab(true);
+  }
+
+  // Ensure the app initializes after the DOM is fully loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApp);
+  } else {
+    initializeApp();
+  }
 });

@@ -1,0 +1,97 @@
+# Patch Plan: Versions 1.1.0 - 1.1.3
+# Objective: Refactor the application into a modern, multi-tab Single Page Application (SPA),
+# centralize state management, overhaul the save/load system, and implement auto-saving.
+
+---
+## Part 1: Multi-Tab Interface (v1.1.0)
+
+**Goal:** Convert the single-view application into a multi-tab interface, allowing users to open multiple lessons and exercises simultaneously.
+
+### 1.1. Backend API Expansion (`main.js`, `preload.js`) - COMPLETED
+- **`main.js`:**
+  - Create an IPC handler `get-home-content` that reads and returns the HTML content of the main `index.html` file. This will serve as the "Home" view for each new tab.
+  - Create an IPC handler `get-file-content` that takes a relative path (e.g., `lessons/L1.html`), reads the corresponding file, and returns its content.
+- **`preload.js`:**
+  - Expose the new `getHomeContent` and `getFileContent` functions via the `window.api` bridge.
+
+### 1.2. Frontend Restructuring (`index.html`) - COMPLETED
+- **Action:** Replace the `<body>` of `index.html` with a new structure:
+  - A `<div id="tab-bar">` for dynamically adding/removing tab buttons.
+  - A `<button id="new-tab-btn">` to create new tabs.
+  - A `<div id="content-panes">` to display the active tab's content.
+  - A `<footer>` to display the app version.
+
+### 1.3. Frontend Logic Overhaul (`renderer.js`) - COMPLETED
+- **Action:** Completely rewrite `renderer.js` to manage the tabbed interface.
+- **State Management:**
+  - Implement a global `tabs` array. Each object in the array represents a tab and must store its `id`, `title`, `view` ('home' or 'content'), `filePath`, and `active` status.
+- **Core Functions:**
+  - `render()`: Redraws the entire tab bar and content pane based on the current state of the `tabs` array.
+  - `addTab()`: Adds a new tab object to the `tabs` array (defaulting to 'home' view) and calls `render()`.
+  - `switchTab(tabId)`: Sets the `active` flag on the selected tab and calls `render()`.
+  - `closeTab(tabId)`: Removes a tab from the `tabs` array and calls `render()`.
+  - `loadContentIntoActiveTab(filePath)`: Updates the active tab's state (`view`, `title`, `filePath`) and injects the fetched file content into its content pane.
+  - `loadHomeIntoTab(tabId)`: Resets a specific tab back to the 'home' view.
+- **Event Handling:**
+  - Wire up the "New Tab" button to `addTab()`.
+  - Clicks on tab elements should call `switchTab()` or, if the tab is already active, `loadHomeIntoTab()`.
+  - Clicks on lesson/exercise links within a 'home' view should call `loadContentIntoActiveTab()`.
+
+### 1.4. Code Cleanup - COMPLETED
+- **Action:** Delete the obsolete `src/navigation.js` file.
+- **Action:** Remove the `<script>` tag referencing `navigation.js` from all HTML files in `/lessons` and `/exercises`.
+
+### 1.5.-1.20 - COMPLETED
+- Multiple hotfixes
+- Refer to log110.txt for more information
+- Ready to proceed with Part 2 (v1.1.1)
+
+---
+## Part 2: Centralized Exercise State (v1.1.1)
+
+**Goal:** Refactor exercises to store their state centrally in `renderer.js`, ensuring notes and progress persist across tab switches.
+
+### 2.1. Refactor Exercise HTML
+- **Action:** For all files in the `/exercises` directory:
+  - **Remove Logic:** Delete the entire `<script>` block containing the exercise logic (e.g., `renderFase1`, `saveState`).
+  - **Isolate Data:** Move the `exercises` data object into its own `<script id="exercise-data" type="application/json">` tag. The rest of the HTML becomes a static template.
+  - **Standardize IDs:** Ensure HTML elements for questions, options, and notes have consistent IDs for generic manipulation.
+
+### 2.2. Centralize Logic in `renderer.js`
+- **Enhance Tab State:** Add an `exerciseState` property to the tab state object (e.g., `{ questions: [], answers: [], currentQuestion: 0, notes: {} }`).
+- **Create Generic Exercise Functions:**
+  - `initializeExerciseState(tabId, exerciseData)`: Populates the `exerciseState` for a tab.
+  - `renderExerciseUI(tabId)`: Displays the current question/options/notes based on the tab's `exerciseState`.
+  - `handleExerciseAnswer(tabId, answer)`: Updates `exerciseState` and re-renders the UI.
+  - `saveNote(tabId, questionId, noteText)`: Saves a note into the `exerciseState.notes` object.
+- **Update Content Loading:**
+  - Modify `loadContentIntoActiveTab` to detect when an exercise is loaded.
+  - When detected, it must parse the `<script id="exercise-data">` content, call `initializeExerciseState`, and then call `renderExerciseUI`.
+
+---
+## Part 4: Auto-Save & Live Tab Syncing (v1.1.3)
+
+**Goal:** Automatically save user progress in the background and synchronize state across multiple tabs showing the same content.
+
+### 4.1. Auto-Save Architecture
+- **Backend (`main.js`, `preload.js`):**
+  - **`main.js`:**
+    - Create a new `autosaves` directory in `userData`.
+    - Create an `update-autosave` handler that writes a lesson's state to a corresponding JSON file in the `autosaves` directory.
+    - Create a `get-autosave` handler that reads and returns the state from an autosave file.
+  - **`preload.js`:** Expose `updateAutosave` and `getAutosave`.
+- **Frontend (`renderer.js`):**
+  - On loading an exercise, call `getAutosave` to load the most recent state.
+  - On any user interaction (answering, typing a note), call `updateAutosave` with the tab's entire `exerciseState`.
+  - The manual "Save" button now becomes a function to create a named "snapshot" of the current auto-saved state.
+
+### 4.2. Live Sync Architecture
+- **Backend (`main.js`):**
+  - Create an `ipcMain.on('exercise-state-changed', ...)` listener.
+  - When this event is received from a renderer, it should broadcast a `state-updated-from-main` event to all other renderer processes, sending the updated file path and state.
+- **Frontend (`renderer.js`):**
+  - **Broadcast:** After calling `updateAutosave`, immediately `ipcRenderer.send('exercise-state-changed', ...)`.
+  - **Listen:** Create an `ipcRenderer.on('state-updated-from-main', ...)` listener.
+    - When a message is received, find any open tabs corresponding to the `filePath`.
+    - Update the `exerciseState` for each of those tabs.
+    - If the updated tab is the active one, re-render its UI.

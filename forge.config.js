@@ -1,5 +1,6 @@
 const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
+const path = require('path');
 
 module.exports = {
   packagerConfig: {
@@ -24,7 +25,7 @@ module.exports = {
               js: './src/renderer.js',
               name: 'main_window',
               preload: {
-                js: './src/preload.js',
+                js: path.join(__dirname, 'src/preload.js'),
                 // This name is required to correctly bundle the preload script.
                 name: 'main_window_preload',
               },

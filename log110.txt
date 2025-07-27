@@ -1,0 +1,151 @@
+// P# Patch Plan: Versions 1.1.0 - 1.1.3
+# Objective: Refactor the application into a modern, multi-tab Single Page Application (SPA),
+# centralize state management, overhaul the save/load system, and implement auto-saving.
+
+---
+## Part 1: Multi-Tab Interface (v1.1.0)
+
+**Goal:** Convert the single-view application into a multi-tab interface, allowing users to open multiple lessons and exercises simultaneously.
+
+### 1.1. Backend API Expansion (`main.js`, `preload.js`) - COMPLETED
+- **`main.js`:**
+  - Create an IPC handler `get-home-content` that reads and returns the HTML content of the main `index.html` file. This will serve as the "Home" view for each new tab.
+  - Create an IPC handler `get-file-content` that takes a relative path (e.g., `lessons/L1.html`), reads the corresponding file, and returns its content.
+- **`preload.js`:**
+  - Expose the new `getHomeContent` and `getFileContent` functions via the `window.api` bridge.
+
+### 1.2. Frontend Restructuring (`index.html`) - COMPLETED
+- **Action:** Replace the `<body>` of `index.html` with a new structure:
+  - A `<div id="tab-bar">` for dynamically adding/removing tab buttons.
+  - A `<button id="new-tab-btn">` to create new tabs.
+  - A `<div id="content-panes">` to display the active tab's content.
+  - A `<footer>` to display the app version.
+
+### 1.3. Frontend Logic Overhaul (`renderer.js`) - COMPLETED
+- **Action:** Completely rewrite `renderer.js` to manage the tabbed interface.
+- **State Management:**
+  - Implement a global `tabs` array. Each object in the array represents a tab and must store its `id`, `title`, `view` ('home' or 'content'), `filePath`, and `active` status.
+- **Core Functions:**
+  - `render()`: Redraws the entire tab bar and content pane based on the current state of the `tabs` array.
+  - `addTab()`: Adds a new tab object to the `tabs` array (defaulting to 'home' view) and calls `render()`.
+  - `switchTab(tabId)`: Sets the `active` flag on the selected tab and calls `render()`.
+  - `closeTab(tabId)`: Removes a tab from the `tabs` array and calls `render()`.
+  - `loadContentIntoActiveTab(filePath)`: Updates the active tab's state (`view`, `title`, `filePath`) and injects the fetched file content into its content pane.
+  - `loadHomeIntoTab(tabId)`: Resets a specific tab back to the 'home' view.
+- **Event Handling:**
+  - Wire up the "New Tab" button to `addTab()`.
+  - Clicks on tab elements should call `switchTab()` or, if the tab is already active, `loadHomeIntoTab()`.
+  - Clicks on lesson/exercise links within a 'home' view should call `loadContentIntoActiveTab()`.
+
+### 1.4. Code Cleanup - COMPLETED
+- **Action:** Delete the obsolete `src/navigation.js` file.
+- **Action:** Remove the `<script>` tag referencing `navigation.js` from all HTML files in `/lessons` and `/exercises`.
+
+### 1.5. Performance and Bug Fixes (v1.1.0 Hotfix) - COMPLETED
+- **ISSUE:** Application is extremely slow to load, home screen content does not appear, and tab-related errors occur.
+- **ROOT CAUSE:** A recursive-like loop in `renderer.js` where `render()` would call content loading functions, which in turn would call `render()` again, causing an infinite loop. Additionally, the home content was being inefficiently read from the main `index.html` on every render.
+- **FIXES IMPLEMENTED:**
+  - **Refactored `renderer.js`:**
+    - The `render()` function was renamed to `renderTabs()` and its responsibility was limited to only rendering the tab bar and setting pane visibility.
+    - Content loading functions (`loadHomeIntoTab`, `loadContentIntoActiveTab`) no longer trigger a full re-render.
+    - `addTab()` now creates the DOM element for the pane and loads the home content once.
+  - **Created `home-template.html`:**
+    - The content for the home screen was moved to a separate `src/home-template.html` file.
+  - **Updated `main.js`:**
+    - The `get-home-content` IPC handler was updated to read from `home-template.html`, improving efficiency.
+
+### 1.6. Post-Release Bug Fixes (v1.1.0 Hotfix 2) - COMPLETED
+- **ISSUE:** On application startup, the home screen is blank, tabs behave incorrectly (appearing to stack vertically), and a `Failed to read home template` error appears in the console.
+- **ROOT CAUSE:** The `home-template.html` file was not being included in the Webpack build output, so it could not be found at runtime in the packaged application. The path resolution in `main.js` for development was also incorrect.
+- **FIXES IMPLEMENTED:**
+  - **Installed `copy-webpack-plugin`:** Added the plugin to handle copying static assets.
+  - **Modified `webpack.main.config.js`:** Configured the plugin to copy `home-template.html` from `/src` to the `.webpack/main` output directory during the build process, ensuring it's available at the expected location.
+
+### 1.7. Post-Release Bug Fixes (v1.1.0 Hotfix 3) - COMPLETED
+- **ISSUE:** Styles are not applied correctly across the application. The developer console shows a MIME type mismatch error for `style.css` (`Refused to apply style from '...' because its MIME type ('text/html') is not a supported stylesheet MIME type`).
+- **ROOT CAUSE:** The refactor to a Single Page Application (SPA) in v1.1.0 centralized the CSS import into `renderer.js` via `import './style.css'`. However, the individual HTML files in `/lessons` and `/exercises` still contain redundant `<link href="../src/style.css" ...>` tags. When this HTML is injected into a tab, the browser attempts to fetch this CSS file relative to the main `index.html`, which fails. The Webpack Dev Server serves `index.html` as a fallback, causing the MIME type error.
+- **FIX:** The redundant `<link>` tags for `style.css` must be removed from all HTML files in the `/lessons` and `/exercises` directories. The single `import './style.css';` in `renderer.js` is sufficient to style the entire application.
+
+### 1.8. Post-Release Bug Fixes (v1.1.0 Hotfix 4) - COMPLETED
+- **ISSUE:** Content loaded into tabs (lessons, exercises) does not render with its own styling. Instead, it inherits the dark theme (dark background, light text) from the main application shell.
+- **ROOT CAUSE:** The `renderer.js` script injects the *entire* HTML content of a lesson file (including `<html>`, `<head>`, and `<body>` tags) into a `<div>` within the main `index.html`. This creates invalid nested document structures. Browsers handle this unpredictably, but in this case, the styles from the outer `<body>` tag are overriding the styles defined in the injected content's `<body>` tag and `<style>` block.
+- **FIX:** A two-part solution is required:
+  1.  **Backend (`main.js`):** The `get-file-content` IPC handler will be modified to use a regular expression to parse the HTML file content and return *only* the content found within the `<body>...</body>` tags. This ensures only a valid HTML fragment is sent to the renderer.
+  2.  **Frontend (`renderer.js`):** The functions responsible for loading content (`loadContentIntoActiveTab`) and returning to the home view (`loadHomeIntoTab`) will be updated to dynamically manage the CSS classes of the content pane. When a lesson is loaded, the pane will be given the appropriate light-theme classes (`bg-slate-200`, `text-slate-700`). When returning to the home view, these classes will be removed, allowing the pane to revert to the application's default dark theme. This correctly isolates the styling contexts.
+
+### 1.9. Post-Release Bug Fixes (v1.1.0 Hotfix 5) - COMPLETED
+- **ISSUE:** The styling fix from 1.8 was insufficient. The dark theme text color from the main `<body>` still cascades and overrides the light theme text color applied to the content pane.
+- **ROOT CAUSE:** CSS inheritance and specificity. The `text-white` class on the main `<body>` is inherited by all descendant elements, and simply adding a `text-slate-700` class to an intermediate container (`.content-pane`) is not enough to override it for all nested elements within the injected content.
+- **FIX:** The logic in `renderer.js` will be changed. Instead of adding/removing classes from the pane itself, the `loadContentIntoActiveTab` function will wrap the injected HTML fragment in a new `<div>` that carries the necessary theme classes (`bg-slate-200 text-slate-700`). This creates a properly encapsulated and themed container for the lesson content, preventing style leakage from the parent application shell. The `loadHomeIntoTab` function will be simplified to just inject the home content, as the pane will correctly inherit the default dark theme.
+
+### 1.10. Post-Release Bug Fixes (v1.1.0 Hotfix 6) - COMPLETED
+- **ISSUE:** Custom visual elements (e.g., colored code blocks, "key rule" boxes) defined in `<style>` tags within individual lesson/exercise files are not being applied. Adding the custom CSS to the generated `src/style.css` file breaks all application styling.
+- **ROOT CAUSE:** The previous instruction to add custom styles to `src/style.css` was incorrect. This file is an *output* file generated by the Tailwind CSS build process. Any manual edits to it are overwritten. The correct place for custom CSS is the *input* file, `src/index.css`, alongside the `@tailwind` directives.
+- **FIX:** All custom CSS rules from the `<style>` blocks in the lesson/exercise files must be moved into `src/index.css`. The `npm run build:css --watch` command will then correctly process these rules and bundle them into the final `src/style.css`, making them globally available with the correct specificity. The `<style>` blocks must be removed from the individual content files.
+
+### 1.11. Post-Release Bug Fixes (v1.1.0 Hotfix 7) - COMPLETED
+- **ISSUE:** After centralizing custom styles, some styles (specifically those targeting elements within a `.prose` container) are still not being applied.
+- **ROOT CAUSE:** The `.prose` class is part of the `@tailwindcss/typography` plugin. This plugin was being loaded via CDN in old test files but was never formally installed and configured in the project's `tailwind.config.js`. Without the plugin, the `.prose` class has no effect, and thus the custom styles targeting `.prose code` and `.prose strong` are not applied.
+- **FIX:** Install the `@tailwindcss/typography` plugin as a dev dependency and add it to the `plugins` array in `tailwind.config.js`. This will enable the base typography styles and allow our custom overrides in `src/index.css` to function correctly.
+
+### 1.12. Post-Release Bug Fixes (v1.1.0 Hotfix 8) - COMPLETED
+- **ISSUE:** Even with the typography plugin installed, the custom styles for `.prose code`, `.key-rule`, etc., are not being applied correctly.
+- **ROOT CAUSE:** The custom CSS rules in `src/index.css` need to be explicitly placed within a Tailwind CSS `@layer` directive. This ensures they are processed with the correct priority and are not accidentally purged by the build process. Without this, they are treated as base styles and can be overridden by Tailwind's utility classes.
+- **FIX:** Modify `src/index.css` to wrap all custom rules within `@layer components { ... }`. This correctly integrates them into Tailwind's CSS generation pipeline, allowing them to style the elements as intended.
+
+### 1.13. Post-Release Bug Fixes (v1.1.0 Hotfix 9) - COMPLETED
+- **ISSUE:** The `@layer` directive in `src/index.css` is not sufficient to override the default styles of the `@tailwindcss/typography` plugin due to CSS specificity.
+- **ROOT CAUSE:** The typography plugin applies a comprehensive set of base styles to any element within a `.prose` container. Simply adding custom component classes is not the intended way to modify these base styles.
+- **FIX:** The correct method is to use the plugin's built-in customization API. The styles for `.prose code` and `.prose strong` will be moved from `src/index.css` into the `theme.typography.extend` object within `tailwind.config.js`. This tells Tailwind to merge our custom styles directly into the plugin's default styles with the correct specificity. Other custom component classes (like `.key-rule`) that are not part of the `.prose` scope will remain in `src/index.css`.
+
+### 1.1 - 1.14 (Completed, see previous logs)
+
+### 1.15. Post-Release Bug Fixes (v1.1.0 Hotfix 11) - COMPLETED
+- **ISSUE:** The line spacing in lesson content is too large compared to the original design. Additionally, the terminal processes do not exit when the application is closed.
+- **ROOT CAUSE (Styling):** The `@tailwindcss/typography` plugin's `.prose` class applies its own default line-height and margins, which are larger than the original design.
+- **ROOT CAUSE (Process):** The `concurrently` command, by default, does not terminate background processes when the main process exits.
+- **FIX (Styling):** Remove the `.prose` and `prose-lg` classes from the `<main>` element in all lesson/exercise HTML files. This will prevent the typography plugin from applying its default spacing, reverting to a more compact layout.
+- **FIX (Process):** Add the `--kill-others` (`-k`) flag to the `concurrently` command in the `package.json` `start` script. This will ensure that when the Electron application is closed, the Tailwind CSS watch process is also terminated.
+
+### 1.16. Style Restoration and Redesign - COMPLETED
+- **ISSUE:** The "red highlight" styles for `<code>` and `<strong>` tags disappeared after removing the `.prose` class. The `.key-rule` component and styling for trigger words were also missing or incorrect.
+- **ROOT CAUSE:** The removal of `.prose` in fix 1.15 also removed the styling context provided by the typography plugin.
+- **FIX (Red Highlights):**
+  - Created a new scoped class, `.lesson-content`, in `src/index.css`.
+  - Defined styles for `.lesson-content code` to restore the red highlights with a grey background and bold text.
+  - Defined styles for `.lesson-content strong` to be bold without changing its color.
+  - Modified `renderer.js` to wrap all injected lesson/exercise content in a `<div class="lesson-content ...">`, applying the scope.
+- **FIX (Key Rule):**
+  - Redesigned the `.key-rule` component in `src/index.css` to use a yellow, inset style with bold text.
+- **FIX (Trigger Words):**
+  - Added individual `<span>` tags with appropriate Tailwind classes to the trigger words in `L1 - congiuntivo.html` to style them as individual blue, bolded pills.
+
+### 1.17. Content & Styling Overhaul - COMPLETED
+- **ISSUE:** Legacy lesson and exercise files were not updated to the new styling architecture, causing visual inconsistencies, incorrect colors, and spacing problems.
+- **ROOT CAUSE:** Files still contained the `.prose` class, used outdated inline styles, and had hardcoded HTML tags (`<b>`, `<u>`) in JSON data instead of the semantic `<code>` tag.
+- **FIX (Global):**
+  - Removed the `.prose` class from all remaining lesson (`L2 - periodo ipotetico.html`, `L1 - congiuntivoAN.html`) and exercise files to resolve vertical spacing issues.
+- **FIX (Styling Consistency):**
+  - Updated `L1 - congiuntivoAN.html` to use consistent "pill" styling for all trigger words (verbs and adjectives) and adjusted layout padding for better visual balance.
+- **FIX (Exercise Data):**
+  - Corrected the JSON data within `L1 - congiuntivoES.html` and `L2 - periodo ipoteticoES.html` by replacing all instances of `<b>` and `<u>` with the centrally-styled `<code>` tag, ensuring consistent highlighting.
+
+### 1.18. Re-implement Exercise Functionality - COMPLETED
+- **ISSUE:** The exercise pages do not load the interactive quiz, showing a blank content area instead.
+- **ROOT CAUSE:** The JavaScript logic responsible for parsing the exercise JSON data and rendering the interactive UI was not implemented in the current `renderer.js` architecture.
+- **FIX:**
+  - A new set of functions was added to `renderer.js` to handle the exercise lifecycle.
+  - The `loadContentIntoActiveTab` function was updated to detect if the loaded content is an exercise page and call the new `initializeExercise` function.
+
+### 1.19. Enhance Exercise Navigation and Interaction - COMPLETE
+- **ISSUE:** The exercise module lacks user-friendly navigation and interaction features.
+- **ROOT CAUSE:** The initial implementation focused only on basic functionality.
+- **FIX (Notes):**
+  - The logic will be changed to allow users to edit the "Note" textarea even after an answer has been submitted and checked.
+- **FIX (Navigation):**
+  - A "Precedente" (Previous) button will be added alongside the "Prossimo" (Next) button for linear navigation.
+- **FIX (Jump to Question):**
+  - A numeric input field and a "Vai" (Go) button will be added to the scoreboard area, allowing users to jump directly to a specific question number.
+
+### 1.20 - user final request - COMPLETED
+one more thing, the note area for question is good. but i'd like another note area for the whole phase below the first one. basically that acts as more of place for notes for the whole set of questions, like 'i struggled with questions 13,23 and 33' for example. also the grey of the notes area is SLIGHTLY too intense, can you make it less intense by just 10-15%?
