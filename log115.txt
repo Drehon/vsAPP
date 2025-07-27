@@ -21,12 +21,12 @@ tabs are not influenced by scrolling, the toolbar however still is, it disappear
 2) - FIXED
 L1 - congiuntivoES has a bugged function, the 'vai a' to go to a specific question doesn't work -- FIXED, the 'vai a' function in `congiuntivoES` has been repaired. The bug was caused by incorrect DOM selectors in `renderer.js`. The `addNavigationListeners` function was searching for the jump button and input field within the wrong container. I corrected the selectors to target the appropriate parent element, which resolved the issue.
 
-3) 
+3) COMPLETE
 student-grammar.html and student.verbs.html are both outdated html that must be adjusted to fit with the app, look at the L1 html for references
 a large amount of functionalities/differences must be bridged
 refer to rules.txt for aid 
 
-4) PARTIALLY COMPLETE
+4) COMPLETE
 the new htmls starting with L2 and L3 in the /excercises and /lessons folder must also be adjusted
 L2 - causativoES.html
 L3 - passivo avanzatoES.html
