@@ -92,3 +92,14 @@
     - Implement the text selection and highlighting mechanism.
     - On page load, check `page-state.json` and apply any existing highlights.
     - Update the UI to reflect highlight changes.
+
+---
+
+we have to improve fix/the home visually for the app. 
+it's a bit.. incoherent visually, with hard to read text in some areas. 
+
+i'd like to fix it and upgrade it to be a sleek modern interface (simple, modern, nothing fancy, just visually pleasing) for when you open the app
+without changing its content any further or breaking any links or functionality
+be careful to mantain code, do the smallest least intrusive modifications
+consider that the home should also be visually aligned to the dark look of the toolbar
+
