@@ -60,3 +60,46 @@ I imagine to do this, EVERY time you open/switch tab you need to refresh the dis
 
 i'd propose creating a 'temp' folder in the main directory
 and call each save 'name of lesson or exercise'_templog
+
+---
+## Part 3: Persistent State with Automatic Saving (v1.1.2)
+
+**Goal:** Implement a system that automatically saves exercise state to the filesystem and loads it when an exercise is opened. This will ensure that progress and notes are persistent across application restarts and that different tabs for the same exercise maintain independent states.
+
+**Reasoning:** The previous implementation stored exercise state in-memory within `renderer.js`. This approach was volatile, leading to data loss on app closure. The user's suggestion of a file-based temporary storage is a robust solution. By creating a dedicated save file for each exercise, we can ensure data persistence and tab independence.
+
+### 3.1. Implement Automatic State Saving and Loading
+
+-   **Action:** In `renderer.js`, create a `saveExerciseState` function that sends the current `exerciseState` to the main process via an IPC message (`save-exercise-state`).
+-   **Action:** In `renderer.js`, modify all functions that alter the `exerciseState` (e.g., answering questions, updating notes) to call `saveExerciseState` after each modification.
+-   **Action:** In `renderer.js`, modify `loadContentIntoTab` to call the main process (via `load-exercise-state`) to get any saved state for the exercise being loaded. If data is returned, it will be used to initialize the `exerciseState` for the tab.
+-   **Action:** In `main.js`, create an `ipcMain.handle('save-exercise-state', ...)` function. This function will receive the exercise file path and its state data, and write it to a JSON file in the `userData/saves` directory. The filename will be a sanitized version of the exercise path to ensure uniqueness.
+-   **Action:** In `main.js`, create an `ipcMain.handle('load-exercise-state', ...)` function. This function will receive an exercise file path, find the corresponding save file, and return its contents.
+-   **Action:** In `main.js`, create an `ipcMain.handle('reset-exercise-state', ...)` function to delete the save file when the user resets an exercise.
+
+### 3.2. Refactor `initializeExercise` for Non-Destructive Updates
+
+-   **Action:** Modify `initializeExercise` in `renderer.js` to perform more targeted DOM updates instead of clearing and re-rendering the entire exercise container. This will prevent visual flickering and improve performance, especially with frequent state saves.
+
+### 3.3. Testing
+
+-   **Action:** Open an exercise, make some progress, and close the application. Re-open the application and the exercise to verify that the state has been restored.
+-   **Action:** Open the same exercise in two separate tabs. Make different progress in each tab and switch between them to ensure their states are independent.
+-   **Action:** Use the "Reset" button in an exercise and verify that the state is cleared and the corresponding save file is deleted.
+
+---
+**Implementation Details:**
+
+-   **`renderer.js`:**
+    -   Added `saveExerciseState()` to send the `tab.exerciseState` to `main.js` for persistence.
+    -   `loadContentIntoTab()` now calls `window.api.loadExerciseState()` to pre-populate `tab.exerciseState` before rendering the content.
+    -   `saveExerciseState()` is called automatically whenever the user answers a question or modifies a note.
+    -   The "Reset" button now calls `window.api.resetExerciseState()` to delete the saved state file.
+    -   `initializeExercise()` and `renderFase()` have been refactored to perform non-destructive DOM updates, improving UI smoothness.
+
+-   **`main.js`:**
+    -   Added a `getSavePath()` helper function to create a consistent, sanitized file path for each exercise's saved state.
+    -   Implemented `ipcMain.handle()` for `save-exercise-state`, `load-exercise-state`, and `reset-exercise-state` to manage the lifecycle of the state files in the `userData/saves` directory.
+
+-   **`preload.js`:**
+    -   Exposed the new `saveExerciseState`, `loadExerciseState`, and `resetExerciseState` functions to the renderer process.
