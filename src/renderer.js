@@ -716,7 +716,7 @@ window.addEventListener('api-ready', () => {
         addPhaseListeners(fase, questionWrapper); // Re-attach listeners for unanswered questions
       }
 
-      addNavigationListeners(fase, questionWrapper); // Always attach navigation listeners
+      addNavigationListeners(fase, questionWrapper);
     }
 
     /**
@@ -724,9 +724,12 @@ window.addEventListener('api-ready', () => {
      * @param {string} fase - The current fase.
      * @param {HTMLElement} container - The DOM element containing the navigation buttons.
      */
-    function addNavigationListeners(fase, container) {
-      const prevBtn = container.querySelector(`#prev-${fase}`);
-      const nextBtn = container.querySelector(`#next-${fase}`);
+    function addNavigationListeners(fase, questionWrapper) {
+      const container = paneElement.querySelector(`#tab-content-${fase.slice(-1)}`);
+      if (!container) return;
+
+      const prevBtn = questionWrapper.querySelector(`#prev-${fase}`);
+      const nextBtn = questionWrapper.querySelector(`#next-${fase}`);
       const jumpBtn = container.querySelector(`#jump-btn-${fase}`);
       const jumpInput = container.querySelector(`#jump-to-${fase}`);
       const index = appState.currentQuestion[fase];
