@@ -145,7 +145,7 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab) {
         document.getElementById(`reload-btn-${tab.id}`).addEventListener('click', () => loadHomeIntoTab(tab.id, tabs, renderTabs, addTab));
         document.getElementById(`github-btn-${tab.id}`).addEventListener('click', () => window.api.openExternalLink('https://github.com/Drehon/vsapp'));
         document.getElementById(`settings-btn-${tab.id}`).addEventListener('click', () => addTab(true, null, 'settings'));
-        attachHomeEventListeners(scrollableContent, tabs, addTab);
+        attachHomeEventListeners(scrollableContent, tabs, addTab, renderTabs);
     }
 
     renderTabs();
@@ -207,7 +207,7 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs) {
     renderTabs();
 }
 
-function attachHomeEventListeners(paneElement, tabs, addTab) {
+function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs) {
     const populateList = async (listId, getFiles, folder) => {
       const list = paneElement.querySelector(`#${listId}`);
       if (!list) return;
