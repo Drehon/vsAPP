@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="TEFL_Icon.jpg" type="image/jpeg">
+    <title>Harmer - Chapter 1: The World of English</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Harmer: Stylistic Terracotta Palette (v4.2) */
+        :root {
+            --page-bg: #2c2626; /* Final Adjusted */
+            --card-bg: #3c3535;
+            --primary-text: #e8e2e2;
+            --secondary-text: #b0a8a8;
+            --header-accent: #b86565; /* Final Adjusted */
+            --border-accent: #504848; 
+            --nav-bg: #221e1e; /* Added for navigation */
+            --nav-hover-bg: #4a4242; /* Added for navigation */
+            --nav-active-bg: #4a4242; /* Added for navigation */
+        }
+
+        html {
+            scroll-behavior: smooth; /* Smooth scrolling for navigation */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--page-bg);
+            color: var(--primary-text);
+        }
+
+        .content-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-accent);
+            border-radius: 0.75rem;
+        }
+
+        h1, h3 {
+            color: var(--header-accent);
+        }
+        
+        h2 {
+            color: var(--primary-text);
+        }
+
+        a {
+            color: var(--primary-text);
+            transition: color 0.2s ease-in-out;
+            font-weight: 500;
+            text-decoration: underline;
+            text-decoration-color: var(--border-accent);
+        }
+
+        a:hover {
+            color: var(--secondary-text);
+        }
+        
+        .header-divider {
+            border-color: var(--border-accent);
+        }
+
+        .section-heading {
+            font-size: 1.75rem; /* text-3xl */
+            font-weight: 600; /* font-semibold */
+            color: var(--primary-text);
+            margin-top: 2.5rem; /* mt-10 */
+            margin-bottom: 1rem; /* mb-4 */
+            border-bottom: 1px solid var(--border-accent);
+            padding-bottom: 0.5rem;
+            scroll-margin-top: 2rem; /* Offset for scroll target */
+        }
+
+        .subsection-heading {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600; /* font-semibold */
+            color: var(--primary-text);
+            margin-top: 1.5rem; /* mt-6 */
+            margin-bottom: 0.75rem; /* mb-3 */
+            scroll-margin-top: 2rem; /* Offset for scroll target */
+        }
+
+        .content-paragraph {
+            font-size: 1.125rem; /* text-lg */
+            line-height: 1.75rem; /* leading-relaxed */
+            margin-bottom: 1rem; /* mb-4 */
+            color: var(--secondary-text);
+        }
+
+        .list-item {
+            margin-bottom: 0.5rem;
+            color: var(--secondary-text);
+        }
+
+        /* Styles for the two-column layout */
+        .chapter-container {
+            display: grid;
+            grid-template-columns: 250px 1fr; /* Fixed sidebar width, fluid content */
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .chapter-nav {
+            background-color: var(--nav-bg);
+            border-right: 2px solid var(--border-accent);
+            max-height: 85vh; /* Limit height for scrolling */
+            overflow-y: auto; /* Enable vertical scrolling */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            position: sticky; /* Keep sidebar in view */
+            top: 2rem; /* Offset from top */
+        }
+
+        .chapter-nav-item {
+            cursor: pointer;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            color: var(--primary-text);
+            transition: background-color 0.2s;
+            margin-bottom: 0.25rem;
+            display: block; /* Make the whole area clickable */
+        }
+
+        .chapter-nav-item:hover {
+            background-color: var(--nav-hover-bg);
+        }
+
+        .chapter-nav-item.active {
+            background-color: var(--nav-active-bg);
+            color: var(--header-accent); /* Highlight active item */
+        }
+
+        .chapter-nav-item.sub-item {
+            padding-left: 1.5rem; /* Indent sub-sections */
+            font-size: 0.9rem;
+        }
+
+        /* Prevent horizontal scrolling in pre tags */
+        pre {
+            white-space: pre-wrap; /* Wrap long lines */
+            word-break: break-all; /* Break words to prevent overflow */
+            overflow-x: hidden; /* Hide horizontal scrollbar */
+        }
+
+        /* Progress bar container */
+        .progress-container-fixed {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-accent);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            width: 280px; /* Fixed width for the progress box */
+            z-index: 1000;
+        }
+
+        .progress-bar-wrapper {
+            width: 100%;
+            background-color: #4a4242; /* Darker background for the bar track */
+            border-radius: 0.25rem;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--header-accent); /* Accent color for the progress fill */
+            width: 0%; /* Initial width */
+            transition: width 0.1s ease-out; /* Smooth transition for progress */
+            border-radius: 0.25rem;
+        }
+
+        .progress-text {
+            font-size: 0.875rem; /* text-sm */
+            color: var(--primary-text);
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-8 max-w-7xl">
+        
+        <!-- Navigation Link -->
+        <div class="mb-8">
+            <a href="./course.html" class="text-lg">&larr; Back to Syllabus</a>
+        </div>
+
+        <!-- Header -->
+        <header class="mb-10 border-b-2 header-divider pb-4">
+            <h1 class="text-4xl font-bold">The Practice of English Language Teaching</h1>
+            <h2 class="text-2xl font-medium mt-1">Chapter 1: The World of English</h2>
+        </header>
+
+        <main class="chapter-container">
+            <!-- Left Navigation Sidebar -->
+            <div class="chapter-nav">
+                <h3 class="text-xl font-bold text-amber-400 mb-4 border-b-2 border-gray-700 pb-2">Chapter Index</h3>
+                <nav id="chapter-navigation">
+                    <!-- Navigation items will be dynamically inserted here -->
+                </nav>
+            </div>
+
+            <!-- Main Content Area -->
+            <div id="main-content" class="space-y-8">
+                <div class="content-card p-8 shadow-2xl">
+                    <h3 id="A_The_place_of_English" class="text-2xl font-bold mb-4 section-heading">A The place of English</h3>
+                    <p class="content-paragraph">Although English is not the language with the largest number of native or ‘first’ language speakers, it has become a lingua franca. A lingua franca can be defined as a language widely adopted for communication between two speakers whose native languages are different from each other’s and where one or both speakers are using it as a ‘second’ language.</p>
+                    <p class="content-paragraph">Many people living in the European Union, for example, frequently operate in English as well as their own languages (where these are different), and the economic and cultural influence of the United States has led to increased English use in many areas of the globe. Like Latin in Europe in the Middle Ages, English seems to be one of the main languages of international communication, and even people who are not speakers of English often know words such as bank, chocolate, computer, hamburger, hospital, hot dog, hotel, piano, radio, restaurant, taxi, telephone, television, university and Walkman. Many of these words have themselves been borrowed by English from other languages of course (e.g. chocolate, hamburger, taxi, etc.), and speakers of Romance languages are likely to have a number of words in common with English. But there are many ‘false friends’ too, where similar sounding words actually mean something quite different, for example, Italian eventualmente (= in case) contrasts with English eventually (= in the end).</p>
+
+                    <h4 id="A1_The_numbers_game" class="subsection-heading">A1 The numbers game</h4>
+                    <p class="content-paragraph">Whatever the spread of English across the globe and whatever its overlap with other languages, there has been an intriguing debate over the years as to how many people speak English as either a ‘first’ or a ‘second’ language. Estimates of speaker numbers are somewhat variable.</p>
+                    <p class="content-paragraph">For example, Braj Kachru (1985) suggested between 320-380 million people spoke English as a first language, and anywhere between 250-350 million as a second language. On the other hand David Crystal (1995 and 1997) takes 75 territories where English ‘holds a special place’ (territories which include not only Britain, the USA, Australia, Canada, etc. but also places such as Hong Kong, India, Malaysia and Nigeria) and calculates around 377 million first language speakers of English and only 98 million speakers of English as a second language. However, he points out that it would be easy to get nearer a total of 350 million for second language speakers if we were able to calculate how many speakers of English as a second language there were in, say, Canada or Australia, or in countries like Pakistan or Nigeria. Not only is the calculation of such figures problematic, but a lot, he suggests, also depends on how well we expect people to be able to speak English before we can start including them as second language English speakers. As he points out, ‘the more limited command of English we allow to be acceptable, the more this figure can be inflated’ (Crystal 1995:108). It seems to be the case, therefore, that anywhere between 600-700 million people in the world speak English, and of that huge number, a significant minority speak it as a second language.</p>
+                    <p class="content-paragraph">In 1983, however, Kachru made a prediction which, if correct, means that there are now more second language than first language speakers. He wrote:</p>
+                    <blockquote class="content-paragraph italic border-l-4 border-gray-500 pl-4 my-4">One might hazard a linguistic guess here. If the spread of English continues at the current rate, by the year 2000 its non-native speakers will outnumber its native speakers. <br>From B Kachru (1983: 3)</blockquote>
+                    <p class="content-paragraph">David Graddol, writing some fourteen years later, thought it would take until at least 2007 before this position was reached (Graddol 1997).</p>
+                    <p class="content-paragraph">As we shall observe (in A4), it is not necessarily the case that English will remain dominant among world languages. However, there is no doubt that it is and will remain a vital linguistic tool for many business people, academics, tourists and citizens of the world who wish to communicate easily across nationalities for many years to come.</p>
+
+                    <h4 id="A2_How_English_got_there" class="subsection-heading">A2 How English got there</h4>
+                    <p class="content-paragraph">There are a number of interlocking reasons for the popularity of English as a lingua franca. Many of these are historical, but they also include economic and cultural factors which have influenced and sustained the spread of the language:</p>
+                    <ul class="list-disc list-inside mt-4 space-y-2">
+                        <li class="list-item"><strong>A colonial history:</strong> When the Pilgrim Fathers landed on the Massachusetts coast in 1620, they brought their language. Despite America's break from colonial masters, English remains the predominant language of the world’s greatest economic and political power. Similarly, in Australia, English arrived with British convicts and settlers in 1788. In other parts of the British Empire, English rapidly became a unifying/dominating means of control, such as in India, where it helped maintain colonizer power amidst numerous indigenous languages. This spread of English mirrors the imposition of Spanish in the New World by conquistadores or Portuguese in Brazil and parts of Africa. Today, English is still widely used as a main or institutional language in countries like Jamaica, Pakistan, Uganda, and New Zealand, long after the colonial reality that introduced it has faded.</li>
+                        <li class="list-item"><strong>Economics:</strong> A major factor in the spread of English has been the global expansion of commerce, particularly with the rise of the United States as a world economic power. International commerce, a phenomenon of 'globalisation,' has carried English with it. As journalist John Pilger (1998: 61) describes, 'globalisation' is often used positively to denote a 'global village' of 'free trade' and hi-tech marvels that transcend class and ideology. Whether viewed as benign or as a threat to local identities, English frequently accompanies this multinational economic activity, evident in the widespread presence of businesses like McDonalds in diverse countries.</li>
+                        <li class="list-item"><strong>Travel:</strong> Much global travel and tourism is conducted in English. While multilingualism among tourism workers is common, most airports worldwide display signs in both the local language and English, and airline announcements are often glossed in English. English is also the preferred language for air traffic control in many countries and is used widely in sea travel communication.</li>
+                        <li class="list-item"><strong>Information exchange:</strong> A significant amount of academic discourse globally occurs in English. It serves as a lingua franca for conferences, and many journal articles across fields like astrophysics and zoology default to English. The early years of the Internet also saw a marked predominance of English (though this may not continue, as discussed in B3). This probably has something to do with the Internet’s roots in the USA and the predominance of its use there in the early days of the World Wide Web (see Chapter iof for more on the Internet).</li>
+                        <li class="list-item"><strong>Popular culture:</strong> In the Western world, English dominates popular culture. Pop music in English saturates global airwaves, allowing many non-English speakers to sing along to their favorite songs. Regular cinemagoers and TV viewers frequently hear English in subtitled films from the USA. However, it's important to remember that 'Bollywood' (India) produces more films than Hollywood, and many countries, like France, actively resist the cultural domination of American movies.</li>
+                    </ul>
+
+                    <h4 id="A3_Where_English_fits" class="subsection-heading">A3 Where English fits</h4>
+                    <p class="content-paragraph">There are many views on English's global role. Is it an all-conquering language, a wonderful means of mass communication, or does it carry cultural baggage? Should people worldwide strive to learn it, or would other languages be more beneficial?</p>
+                    <p class="content-paragraph">English is one of many languages vying for position globally. Despite its current status, it's worth noting that more people worldwide do not speak English than do. English-language films are increasingly dubbed, and non-English information exchange is growing on the Internet. In 1999, only 54% of Internet users were English speakers, a percentage predicted to drop significantly (see A4 below).</p>
+                    <p class="content-paragraph">Language is deeply political, tied to identity and power. English's lingua franca status can conflict with local languages, such as Welsh or French in Canada. Conversely, in places like Miami, Spanish is overwhelmingly used due to its large Spanish-speaking community. Many children globally grow up multilingual, learning English as a third or fourth language.</p>
+                    <p class="content-paragraph">Concerns exist about English's impact on cultures, with some viewing its teaching as 'cultural imperialism' (see, for example, Phillipson 1992 and Pennycook 1994,1998). Alistair Pennycook highlights how English has been used to promote specific cultures (American, British, etc.) and its link to colonialism. The supranational power of global companies often relies on English for communication, inadvertently promoting its use.</p>
+                    <p class="content-paragraph">English can have a negative effect on the languages it comes into contact with, downgrading them so that their use becomes restricted, and in extreme circumstances, bringing about their decline. Nor is it necessarily welcome to those who have been obliged to study it, some of whom see learning English as an unpleasant but sadly necessary occupation (Pennycook 1998:206-212). However, even Pennycook suggests that a powerful modern paradigm for English as a foreign language may be one of‘appropriation’ - where cultures take English and change it in their own way - despite its relentless progress.</p>
+                    <p class="content-paragraph">The view that learners of English are victims of linguistic and cultural imperialism is not shared by everyone. Joseph Bisong points out that Nigerians, for example, may want to operate with two or more languages in a multilingual setting, choosing which one to use depending upon the situation they are in and the people they wish to communicate with. He suggests that great writers like Achebe, Soyinka, and Ngugi do not write in English as victims, but out of choice - whatever the reasons for this choice might be (Bisong 1995). But this is not a free choice, Phillipson argues (1996). It is determined by their audience not by them. Kanavilil Rajagopalan, on the other hand, suggests that the teaching of English should not be seen as a form of cultural imperialism, \.. in a world marked by cultural intermixing and growing multilingualism at a hitherto unprecedented level’ (Rajagopalan 1999: 200).</p>
+                    <p class="content-paragraph">Most English language teaching in the world is not carried out by native speakers, but despite this, as we shall see in Chapter 6, bi, English language teaching methodology - especially that imported directly from English-speaking traditions - may not fit comfortably with the local educational culture in certain parts of the world, just as the contents of language teaching materials need looking at carefully for the cultural messages they may convey (see Chapter 2ib).</p>
+
+                    <h4 id="A4_The_future_of_English" class="subsection-heading">A4 The future of English</h4>
+                    <p class="content-paragraph">If we accept that English is currently a lingua franca for many people in the world, does this necessarily mean that its pre-eminence is assured? What happens as more and more people appropriate it for their own uses? Will it split into varieties that become less mutually intelligible? Or will it continue to march over the globe, crushing all in its path? Is it conceivable, as David Crystal half-jokingly worries, that in 500 years it will be the only language left? Such an outcome would be, in his words, ‘... the greatest intellectual disaster that the planet has ever known’ (Crystal 1997:140).</p>
+                    <p class="content-paragraph">David Graddol (1997) does not foresee such a destructive global English. He explores several possibilities that challenge English's certainty as the top world language. For example, the fastest-growing language community in the USA is Hispanic. Taken together with the trade agreements which are springing up in both the North and South American continents, it is highly possible that in the foreseeable future the entire American continent will be an English-Spanish bilingual zone.</p>
+                    <p class="content-paragraph">Regarding the Internet, Graddol notes that while English accounted for 80% of computer-based communication in the 1990s, this proportion was expected to drop to around 40% by 2010. The company Computer Economics predicted the same kind of shift in their 1999 survey (see Figure 1), where the balance between English-speaking users and non-English users of the Internet is set to change dramatically:</p>
+                    <div class="flex justify-center my-8">
+                        <img src="./pictures/harmerP1.png" alt="Figure 1: Internet usage according to language (based on information at http://cyberatlas.internet.eom/big_picture/demographics/print/0,1323,5901_150171,00.html)" class="rounded-lg shadow-md">
+                    </div>
+                    <p class="content-paragraph">Within the next few decades the number of Internet computer web sites and servers in Asia may well outstrip all other computer hosts put together. Air travel too is set to show the same kind of change. Graddol predicted that Asian air travel would account for half the world’s flying by 2010. In such circumstances a form of Mandarin could be the lingua franca of choice in the region.</p>
+                    <p class="content-paragraph">Regardless of whether these predictions prove accurate, it is highly unlikely that English will ever become the sole dominant language worldwide. On the contrary, its 'top dog' status may shift in another fifty years, becoming just one of several widely used global languages.</p>
+
+                    <h3 id="B_Varieties_of_English" class="text-2xl font-bold mb-4 mt-10 section-heading">B Varieties of English</h3>
+                    <p class="content-paragraph">So far in this chapter, we have discussed English as a single language and referred to it in the singular in our discussion of its position as a lingua franca. However, English, much like other languages such as Spanish, Portuguese, or Arabic, can take many forms. Depending on who speaks or writes it and where, there can be significant differences in pronunciation, vocabulary, and grammar.</p>
+
+                    <h4 id="B1_Three_circles" class="subsection-heading">B1 Three circles</h4>
+                    <p class="content-paragraph">Most people are familiar with the fact that British and American English, while similar, have many differences. As Oscar Wilde wittily put it, they are ‘two countries divided by a common language’.</p>
+                    <p class="content-paragraph">For example, British English speakers often use phrases like "I’ve got a book about it" or "Have you got the time?", whereas American English speakers are more likely to say "I have a book..." or "Do you have the time?". In conversation, British speakers use the present perfect in questions such as "Have you read her latest article yet?", while an American English speaker might well say "Did you read her latest article yet?". The sentence "If I would have known I would have come" is generally more acceptable to American than to British ears. There are also many differences in vocabulary (lift/elevator, flat/apartment), pronunciation (/b:/ -law (British English) vs. /la:/ (American English), advertisement (British English) vs. advertisement (American English)), and even spelling (advertise/advertize, colour/color).</p>
+                    <p class="content-paragraph">These are not the only varieties of English. For instance, Australian English has its own home-grown dictionaries, like the Australian Learners Dictionary, which includes specific vocabulary such as 'barby' (for barbecue) or 'bottle shop' (for off-licence), though such words often cross over into other varieties like British English.</p>
+                    <p class="content-paragraph">There is nothing unique about Australian English in this regard. All varieties—whether South African, Canadian, Sri Lankan, or Nigerian—have their own specific words, phrases, grammatical mannerisms, and pronunciation idiosyncrasies. However, naming a variety by country doesn't account for regional variations. For example, within the British Isles, there are many varieties of English, each with its own vocabulary, pronunciation, and grammar. A Londoner might get a 'take-away' meal, while a Scottish person orders a 'carry-out'. An East-end Londoner might say 'barf' /bwSI/, whereas a Yorkshireman says 'bath' /bae0/. While a speaker of standard southern English says "I did it," speakers of other varieties say "I done it."</p>
+                    <p class="content-paragraph">Beyond geography, factors like social class, ethnic grouping, and sex influence language use and listener judgment. Until recently in Britain, 'BBC English' (derived from Daniel Jones's 'Received Pronunciation') was considered a sign of status. While some accents (like BBC English and certain Scottish varieties) are admired, others (like the 'Birmingham' accent) are often seen as less attractive. Although such attitudes diminished towards the end of the 20th century - and some accents, such as 'Cockney' and 'Geordie' became widely admired, particularly in broadcast media - it is still the case that many British people ascribe status, educational background, and social position to a person largely on the basis of accent.</p>
+                    <p class="content-paragraph">Other countries also have regional and social differences, evident in various parts of Boston and Dallas. American English itself has marked variations, making the concept of a single 'American English' difficult to sustain. Even within Boston, numerous English varieties exist, including Black English, Hispanic English, East Coast English, Chinese English, and many others. Future waves of immigrants will continue to appropriate the language in their own ways.</p>
+                    <p class="content-paragraph">Thus, English varies both between and within countries where it is widely spoken, resulting in a multiplicity of varieties that makes it challenging to describe English as a single entity.</p>
+                    <p class="content-paragraph">Braj Kachru (1985:12-15) proposes dividing the English-speaking world into three concentric circles. This classification is widely used and may help us to think about English around the globe.</p>
+                    <ul class="list-disc list-inside mt-4 space-y-2">
+                        <li class="list-item">The first ‘inner circle’ includes countries like Ireland, New Zealand, Australia, Canada, Britain, and the United States, where English is spoken as a first language.</li>
+                        <li class="list-item">The second ‘outer circle’ comprises countries where English is spoken as a second or significant language, such as Singapore, India, Pakistan, Malawi, and Nigeria.</li>
+                        <li class="list-item">The third ‘expanding circle’ contains countries where English has gained cultural or commercial importance, including China, Sweden, the Czech Republic, Greece, Japan, and Israel.</li>
+                    </ul>
+                    <div class="flex justify-center my-8">
+                        <img src="./pictures/harmerP2.png" alt="Figure 2: A diagrammatic representation of Kachru’s circles, based on Kachru (1985)" class="rounded-lg shadow-md">
+                    </div>
+                    <p class="content-paragraph">In a world with so many Englishes, therefore, we have to consider which variety to encourage our learners to aim for.</p>
+
+                    <h4 id="B2_Appropriate_models_of_English" class="subsection-heading">B2 Appropriate models of English</h4>
+                    <p class="content-paragraph">In Brazil, with over 180 million people, many learn English in schools, universities, and private language institutions. Two major teaching organizations, 'Cultura' institutes (British Council-derived, teaching British English) and 'Bi-National' centers (US Information Service-supported, teaching American English), served 140,000 and 120,000 students respectively in 1999. This raises the question of parity and which variety students should choose.</p>
+                    <p class="content-paragraph">Brazil is not unique; students worldwide can choose to learn British, American, Australian, or even outer-circle varieties like Malaysian or Indian English. Their choice of study abroad destination (e.g., Ireland, Australia, Britain, Canada, New Zealand) may depend on factors beyond language variety, such as cost or perceived methodological superiority.</p>
+                    <p class="content-paragraph">For English teachers, particularly non-native speakers, the choice of variety is less clear-cut, and program directors often decide based on textbook selection. Jan Svartvik (1998) argues compellingly for choosing an inner-circle variety when English is studied as a foreign language in an expanding-circle country (e.g., Prague, Buenos Aires, Havana, Istanbul). He suggests that the specific inner-circle variety is less crucial due to the numerous underlying similarities outweighing the notable differences; for example, Irish English is intelligible to most other English speakers globally.</p>
+                    <p class="content-paragraph">The safest conclusion is that teachers should work with the variety that best reflects their own language use, always provided that this will be understood by most other English speakers in the world - and/or the speakers that the students are most likely to come into contact with.</p>
+                    <p class="content-paragraph">The fact that teachers and students generally aim at one variety for language production does not mean that they should only ever see or hear that one language variety. Teachers should expose students to different language varieties in listening (and reading) texts so that they do not only hear their teacher’s voice. This will prepare students for the times when they come into contact with different language varieties at some later stage (see Chapter 16, A3). Of course, exposing beginner students to too many varieties and accents will be counter-productive since they will already be facing the difficulty of coming to terms with just one variety. But as their level improves (see Chapter 3, B4), they will need to have opportunities to encounter more and different varieties of English.</p>
+
+                    <h4 id="B3_General_and_specific" class="subsection-heading">B3 General and specific</h4>
+                    <p class="content-paragraph">One issue of language variety has little to do with geography and power in the ways we have described in this chapter. As teachers, we have to decide whether the English we teach our students will be general or specific.</p>
+                    <p class="content-paragraph">A large number of students in the world study 'general' English, an all-purpose language without a special focus on areas like business or academic study. General English courses typically blend different language skills and select topics based on student interest rather than a specific need. In schools globally, students learn to communicate socially and handle common texts encountered by educated language users outside professional life. The decision to teach general English is often made when future language needs are unknown, providing students with the broadest possible range of use.</p>
+                    <p class="content-paragraph">In contrast, students of English for Specific Purposes (ESP) may have a clearly identified learning goal. For example, those studying in an English-medium university might need English for Academic Purposes (EAP), focusing on academic essay writing, note-taking from lectures, and reference skills. Aspiring scientists or engineers might learn English for Science and Technology (EST), where teachers help them improve their ability to consult or design manuals.</p>
+                    <p class="content-paragraph">As discussed in Chapters 14, B2 and 18, B2, different writing and speaking genres elicit distinct language use. Scientific articles use more passives, and academic essays require specific discourse styles. Air traffic control language has specialized vocabulary essential for system function, and tourism workers need confidence in specific vocabulary and interactions (e.g., handling dissatisfied customers).</p>
+                    <p class="content-paragraph">Business English has seen enormous growth, as many students need language for English-medium commerce. This area involves specific vocabulary and language events (e.g., presenting to colleagues, contract language) not typically covered in general English courses but crucial for business students. Teachers train classes in procedures like negotiating, using phones and email correctly, and reading business reports.</p>
+
+                    <h4 id="Further_reading" class="subsection-heading">Further reading</h4>
+                    <ul class="list-disc list-inside mt-4 space-y-2">
+                        <li class="list-item"><strong>Native speakers:</strong> On trying to define a native speaker and his or her status as a language user, see M Rampton (1990).</li>
+                        <li class="list-item"><strong>Where English fits:</strong> On issues of power and the English language, see A Canagarajah (1999). R Phillipson (1999) delivers an uncompromising critique of D Crystal (1997) on global issues. Crystal (2000b) answers these points.</li>
+                        <li class="list-item"><strong>Appropriate models of English:</strong> D Crystal (2000a) predicted the coming of a tri-lingual English world with a base (home) level, a national level, and, tantalisingly, an international standard English.</li>
+                        <li class="list-item"><strong>ESP:</strong> For more on ESP (English for Specific Purposes), see T Dudley-Evans and M St John (1998).</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Progress Indicators -->
+    <div class="progress-container-fixed">
+        <div class="flex items-center mb-2">
+            <span class="text-sm font-semibold text-amber-400 mr-2">Sub:</span>
+            <div class="progress-bar-wrapper flex-grow">
+                <div id="subchapter-progress-bar" class="progress-bar"></div>
+            </div>
+            <span id="subchapter-pages" class="progress-text">0/0 pages</span>
+        </div>
+        <div class="flex items-center">
+            <span class="text-sm font-semibold text-amber-400 mr-2">Chapter:</span>
+            <div class="progress-bar-wrapper flex-grow">
+                <div id="chapter-progress-bar" class="progress-bar"></div>
+            </div>
+            <span id="chapter-pages" class="progress-text">0/0 pages</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainContent = document.getElementById('main-content');
+            const chapterNavigation = document.getElementById('chapter-navigation');
+            const headings = mainContent.querySelectorAll('h3[id], h4[id]'); 
+
+            // Elements for progress indicators
+            const subchapterProgressBar = document.getElementById('subchapter-progress-bar');
+            const subchapterPagesText = document.getElementById('subchapter-pages');
+            const chapterProgressBar = document.getElementById('chapter-progress-bar');
+            const chapterPagesText = document.getElementById('chapter-pages');
+
+            // Estimated page lengths for each section/subsection (H3 and H4)
+            // These are gross estimates and can be fine-tuned.
+            const pageEstimates = {
+                "A_The_place_of_English": { total: 6 }, // Main section A
+                "A1_The_numbers_game": { total: 1.5 }, 
+                "A2_How_English_got_there": { total: 1.5 }, 
+                "A3_Where_English_fits": { total: 1.5 }, 
+                "A4_The_future_of_English": { total: 1.5 }, 
+                "B_Varieties_of_English": { total: 4.5 }, // Main section B
+                "B1_Three_circles": { total: 2.5 }, 
+                "B2_Appropriate_models_of_English": { total: 1 }, 
+                "B3_General_and_specific": { total: 1 }, 
+                "Further_reading": { total: 0.5 } // This is a top-level H4, so it's a "subchapter" in the context of the overall chapter
+            };
+
+            // Calculate total chapter pages by summing all top-level sections (H3s and relevant H4s)
+            const totalChapterPages = Object.keys(pageEstimates).reduce((sum, key) => {
+                // Sum only main sections (H3s like A_The_place_of_English, B_Varieties_of_English)
+                // and any standalone H4s that represent a distinct segment (like Further_reading)
+                if (key === "A_The_place_of_English" || key === "B_Varieties_of_English" || key === "Further_reading") {
+                    return sum + pageEstimates[key].total;
+                }
+                return sum;
+            }, 0);
+
+            let navHtml = '';
+            headings.forEach(heading => {
+                const id = heading.id;
+                const text = heading.textContent;
+                const isMainSection = heading.tagName === 'H3';
+                const className = isMainSection ? 'chapter-nav-item' : 'chapter-nav-item sub-item';
+                
+                navHtml += `<a href="#${id}" class="${className}" data-target-id="${id}">${text}</a>`;
+            });
+            chapterNavigation.innerHTML = navHtml;
+
+            chapterNavigation.addEventListener('click', (e) => {
+                const targetLink = e.target.closest('.chapter-nav-item');
+                if (targetLink) {
+                    e.preventDefault();
+                    const targetId = targetLink.dataset.targetId;
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        document.querySelectorAll('.chapter-nav-item').forEach(item => {
+                            item.classList.remove('active');
+                        });
+                        targetLink.classList.add('active');
+                    }
+                }
+            });
+
+            let rAF; // For requestAnimationFrame
+            const updateProgressIndicators = () => {
+                const scrollY = document.documentElement.scrollTop || document.body.scrollTop;
+                const totalScrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+
+                // Overall Chapter Progress
+                let chapterProgress = 0;
+                let currentChapterPage = 0;
+                if (totalScrollHeight > 0) {
+                    chapterProgress = (scrollY / totalScrollHeight) * 100;
+                    currentChapterPage = Math.round((scrollY / totalScrollHeight) * totalChapterPages);
+                    if (currentChapterPage < 0) currentChapterPage = 0;
+                    if (currentChapterPage > totalChapterPages) currentChapterPage = totalChapterPages; 
+                }
+                chapterProgressBar.style.width = `${chapterProgress}%`;
+                chapterPagesText.textContent = `${currentChapterPage}/${Math.round(totalChapterPages)} pages`;
+
+                // Subchapter Progress (A, B, etc. sections)
+                let currentSubchapterId = '';
+                let currentSubchapterTotalPages = 0;
+                let currentSubchapterReadPages = 0;
+                let activeSubchapterElement = null;
+
+                // Find the currently active H3 or top-level H4 (like "Further reading")
+                // Iterate backwards to find the most recently scrolled into view section
+                for (let i = headings.length - 1; i >= 0; i--) {
+                    const heading = headings[i];
+                    // Consider a heading "active" if its top is within the upper third of the viewport
+                    if (scrollY >= heading.offsetTop - window.innerHeight / 3) {
+                        // Only consider H3s or the specific "Further_reading" H4 as "subchapters" for the progress bar
+                        if (heading.tagName === 'H3' || heading.id === "Further_reading") {
+                            activeSubchapterElement = heading;
+                            break;
+                        }
+                    }
+                }
+
+                if (activeSubchapterElement) {
+                    currentSubchapterId = activeSubchapterElement.id;
+                    currentSubchapterTotalPages = pageEstimates[currentSubchapterId] ? pageEstimates[currentSubchapterId].total : 0;
+
+                    let sectionStart = activeSubchapterElement.offsetTop;
+                    let sectionEnd = document.documentElement.scrollHeight; // Default to end of document
+
+                    // Find the end of the current active subchapter's content
+                    let foundCurrent = false;
+                    for (let i = 0; i < headings.length; i++) {
+                        if (headings[i].id === currentSubchapterId) {
+                            foundCurrent = true;
+                        } else if (foundCurrent && (headings[i].tagName === 'H3' || headings[i].id === "Further_reading")) {
+                            sectionEnd = headings[i].offsetTop;
+                            break;
+                        }
+                    }
+                    
+                    const scrollWithinSection = scrollY - sectionStart;
+                    const sectionActualHeight = sectionEnd - sectionStart;
+
+                    if (sectionActualHeight > 0 && currentSubchapterTotalPages > 0) {
+                        currentSubchapterReadPages = (scrollWithinSection / sectionActualHeight) * currentSubchapterTotalPages;
+                        currentSubchapterReadPages = Math.round(currentSubchapterReadPages);
+                        if (currentSubchapterReadPages < 0) currentSubchapterReadPages = 0;
+                        if (currentSubchapterReadPages > currentSubchapterTotalPages) currentSubchapterReadPages = currentSubchapterTotalPages;
+                    } else if (currentSubchapterTotalPages > 0) {
+                        // If section is very short or at the very beginning/end
+                        currentSubchapterReadPages = (scrollY >= sectionStart) ? currentSubchapterTotalPages : 0;
+                    }
+                } else {
+                    // If at the very top before any main section, show 0/total for subchapter
+                    currentSubchapterId = headings[0] ? headings[0].id : ''; // Default to first section
+                    currentSubchapterTotalPages = pageEstimates[currentSubchapterId] ? pageEstimates[currentSubchapterId].total : 0;
+                    currentSubchapterReadPages = 0;
+                }
+
+                let subchapterProgress = 0;
+                if (currentSubchapterTotalPages > 0) {
+                    subchapterProgress = (currentSubchapterReadPages / currentSubchapterTotalPages) * 100;
+                }
+                subchapterProgressBar.style.width = `${subchapterProgress}%`;
+                subchapterPagesText.textContent = `${currentSubchapterReadPages}/${Math.round(currentSubchapterTotalPages)} pages`;
+
+                // Update active nav item on scroll
+                const navObserverOptions = {
+                    root: null, 
+                    rootMargin: '0px 0px -50% 0px', 
+                    threshold: 0 
+                };
+
+                const navObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const activeId = entry.target.id;
+                            document.querySelectorAll('.chapter-nav-item').forEach(item => {
+                                if (item.dataset.targetId === activeId) {
+                                    item.classList.add('active');
+                                } else {
+                                    item.classList.remove('active');
+                                }
+                            });
+                        }
+                    });
+                }, navObserverOptions);
+
+                if (window.currentNavObserver) {
+                    window.currentNavObserver.disconnect();
+                }
+                headings.forEach(heading => {
+                    navObserver.observe(heading);
+                });
+                window.currentNavObserver = navObserver; 
+            };
+
+            window.addEventListener('scroll', () => {
+                if (rAF) {
+                    cancelAnimationFrame(rAF);
+                }
+                rAF = requestAnimationFrame(updateProgressIndicators);
+            });
+
+            updateProgressIndicators(); // Initial update
+        });
+    </script>
+
+</body>
+</html>

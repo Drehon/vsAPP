@@ -2,7 +2,7 @@
 
 **Goal:** Introduce a dedicated content toolbar, an update notification system, and several quality-of-life features to improve application usability.
 
-### 1.1. Content Toolbar & UI Refinement (v1.1.4)
+### 1.1. Content Toolbar & UI Refinement (v1.1.4) - COMPLETE
 - **Action:** In `renderer.js`, modify the `loadContentIntoTab` function.
 - **Toolbar Creation:**
   - Dynamically create a toolbar `<div>` and prepend it to the content pane of any tab showing a lesson or exercise.
@@ -21,29 +21,10 @@
   - **`preload.js`:** Expose an `onUpdateAvailable` listener function.
   - **`renderer.js`:** Use `window.api.onUpdateAvailable` to listen for the message. When received, make the notification badge on the toolbar visible.
 
-### 1.3. Home Screen Progress Tracking (v1.1.5)
-- **Backend (`main.js`):**
-  - Modify the `getContents` function (or equivalent that lists files for the "Home" view).
-  - For each exercise file it finds, it must check if a corresponding file exists in the `userData/autosaves/` directory.
-  - It should return an array of objects, e.g., `[{ fileName: 'L1.html', hasProgress: true }, ...]`.
-- **Frontend (`renderer.js`):**
-  - Update the `populateFileList` function (or equivalent).
-  - When rendering the list of files, check for the `hasProgress` flag and add a visual indicator (e.g., a green dot) next to the names of exercises with saved progress.
+//
 
-### 1.4. Keyboard Shortcuts (v1.1.5)
-- **Frontend (`renderer.js`):**
-  - Add a global `keydown` event listener to the `window`.
-  - Implement the following shortcuts:
-    - `Ctrl + T`: Add a new tab.
-    - `Ctrl + W`: Close the active tab.
-    - `Ctrl + R` / `F5`: Reload the active tab's content.
-    - `Ctrl + S`: Trigger the "Save" action/modal for the active view.
-    - List all shortcuts under settings page
     
-### 1.5. Search/Filter for Home View (v1.1.5)
-- **Frontend (`index.html` & `renderer.js`):**
-  - **`index.html`:** Add an `<input type="text" id="search-bar">` to the static HTML structure of the "Home" view.
-  - **`renderer.js`:** Attach an `input` event listener to the search bar. This listener will filter the list of lessons and exercises displayed on the "Home" view in real-time based on the user's input.
+//
 
   ---
 
@@ -51,7 +32,7 @@
 
 > Part 1.1 has been implemented. The content toolbar has been added, and the old buttons have been removed from the exercise content.
 USER NOTES: 
-Both tabs and content toolbar should always be visible on screen instead of being at the top of the page. 
+Both tabs and content toolbar should always be visible on screen instead of being at the top of the page. NOT FIXED
 For consistency the tool bar should have the same background color it has on the home page on the various lessons and excercises
 
 Finally, currently there are two errors in the app console
@@ -62,3 +43,17 @@ index.html:13 Refused to load the stylesheet 'https://fonts.googleapis.com/css2?
 
 2) 
 index.html:1 Refused to load the stylesheet 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' because it violates the following Content Security Policy directive: "style-src 'self' 'unsafe-inline'". Note that 'style-src-elem' was not explicitly set, so 'style-src' is used as a fallback.
+
+
+JULES' NOTES:
+- The tabs and content toolbar are now fixed and will not scroll with the content.
+- The content toolbar now has a consistent background color (`slate-700`) across all views, matching the home page.
+- The Content Security Policy has been updated to allow loading Google Fonts, which should resolve the console errors.
+
+---
+
+Additional user NOTES
+There's too much contrast between the dark of home page and settings page
+And the white of lessons and exercises
+Make the home and setting page slightly lighter
+Tabs and content bar still disappear on scroll

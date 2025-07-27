@@ -6,6 +6,14 @@
 ## Part 1: Foundational Save Management (v1.1.7)
 
 **Goal:** Implement the core backend logic for importing/exporting saves and add basic UI hooks for file management.
+Open export page from toolbar, on the left of github icon
+Select saves for export
+Export
+
+For import
+Icon on the left of Export
+Select file to be unpacked
+Simply add all files to the save folders BUT rename them with suffix _IMP
 
 ### 1.1. Dependencies & Setup
 - **Dependency:** Add a file-zipping library to the project.
@@ -37,57 +45,24 @@
   - On `blur` or `Enter`, the input should call `window.api.renameSave` with the old and new names.
 
 ---
-## Part 2: The Save Library UI (v1.1.8)
 
-**Goal:** Build a dedicated "Save Library" page to serve as the central hub for managing all save files.
-
-### 2.1. Save Library View (`renderer.js`)
-- **Tab Type:** Modify the tab management logic to support a special "Save Library" tab.
-- **Activation:** Add a new, persistent button to the main tab bar (e.g., using a floppy disk icon) that opens or switches to the Save Library tab.
-- **`renderSaveLibrary()` Function:** Create a new function to construct the library's UI.
-  - **Layout:** It will create a two-column view: a narrow sidebar on the left for navigation and a large content area on the right for displaying saves.
-  - **Sidebar:** The sidebar will be populated with a clickable list of all lessons and exercises.
-  - **Content Area:** When a lesson is clicked in the sidebar, this area will be populated with all of its associated save files, displayed as icons.
-- **Save Icon Design:** Each save file will be represented by a medium-sized icon or card, showing the save name and other relevant metadata.
-
-### 2.2. Multi-Select & Actions (`renderer.js`)
-- **Selection Logic:** Implement event listeners on the save icons to handle multi-selection:
-  - **Single Click:** Selects one file, deselecting others.
-  - **Ctrl/Cmd + Click:** Toggles the selection state of a file.
-  - **Shift + Click:** Selects a range of files between the last-clicked item and the current one.
-- **Action Integration:**
-  - Move the "Import" and "Export" buttons to the header of the Save Library page.
-  - The "Export" button will now operate on the currently selected files, calling `window.api.exportSaves` with the appropriate lesson names.
-
----
-## Part 3: Virtual Folders (v1.1.9)
-
-**Goal:** Allow users to create custom folders within the Save Library to organize saves without altering the underlying file system.
-
-### 3.1. Backend for Virtual Folders (`main.js`)
-- **Layout File:**
-  - On app startup, the backend will check for a `save-library-layout.json` file in the `userData` directory. If it doesn't exist, it will be created with a default empty structure `{}`.
-- **IPC Handlers:**
-  - **`get-layout()`:** Reads and returns the parsed content of `save-library-layout.json`.
-  - **`save-layout(newLayout)`:** Takes a JSON object from the renderer and writes it to `save-library-layout.json`, overwriting the previous content.
-
-### 3.2. Frontend Virtual Folder Logic (`renderer.js`)
-- **State Management:** The Save Library will maintain a state object that holds the layout fetched from the backend.
-- **Fetch Layout:** When the Save Library is opened, it will call `window.api.getLayout()` to get the current folder structure.
-- **Update Rendering:** The `renderSaveLibrary` function will be modified to:
-  - First, render the virtual folders for the selected lesson.
-  - Then, render the save file icons, placing them inside the appropriate virtual folder based on the layout data, or at the root level if they haven't been categorized.
-- **Folder Creation:**
-  - Add a "New Folder" button to the UI.
-  - Clicking it will add a new folder object to the local layout state and trigger a call to `window.api.saveLayout()` to persist the change.
-- **Drag-and-Drop Functionality:**
-  - Implement drag-and-drop for the save file icons.
-  - Dropping a save icon onto a folder icon will update the local layout state (e.g., `layout['L1-congiuntivoES']['My Folder'].push('save-file-name.json')`) and then immediately call `window.api.saveLayout()` to save the new structure.
-
-
+Function to be planned - lesson index
+Refer to harmer.html in /references/ to understand what i mean
 
 ----
 
-additional functions
-bookmark
-index
+Function to be planned - bookmark
+Add a bookmark that can be applied to any page via shortcut OR by right-click mouse menu
+Bookmark should work similarly to save states, meaning there should be a file that keeps track of ALL BOOKMARKS
+that automatically updates every time a bookmark is placed
+and refreshes the bookmark on a page every time a page is opened or the user clicks on a different tab
+
+Bookmarks should be recognizable but also visually pleasing.
+
+---
+
+Hihglihgt
+
+Same reasoning as bookmark
+User should be able to highlight portions of text
+Save information in same file as bookmarks, we can call said file page-state
