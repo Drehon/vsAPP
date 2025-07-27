@@ -2,7 +2,7 @@ import { initializeExercise } from './exercise-initializer.js';
 import { initializeGrammarExercise } from './grammar-exercise.js';
 import { initializeVerbsExercise } from './verb-exercise.js';
 
-export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab) {
+export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState) {
     const tab = tabs.find(t => t.id === tabId);
     if (!tab) return;
 
@@ -67,7 +67,7 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
 
         // Attach event listeners to the new toolbar buttons
         document.getElementById(`home-btn-${tab.id}`).addEventListener('click', () => loadHomeIntoTab(tab.id, tabs, renderTabs, addTab));
-        document.getElementById(`reload-btn-${tab.id}`).addEventListener('click', () => loadContentIntoTab(tab.id, filePath, tabs, renderTabs, addTab));
+        document.getElementById(`reload-btn-${tab.id}`).addEventListener('click', () => loadContentIntoTab(tab.id, filePath, tabs, renderTabs, addTab, saveExerciseState));
         document.getElementById(`github-btn-${tab.id}`).addEventListener('click', () => window.api.openExternalLink('https://github.com/Drehon/vsapp'));
         document.getElementById(`settings-btn-${tab.id}`).addEventListener('click', () => addTab(true, null, 'settings'));
 
@@ -77,18 +77,18 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
             const savedState = await window.api.loadExerciseState(filePath);
             tab.exerciseState = savedState ? savedState : null;
             if (filePath.includes('student-grammar')) {
-                initializeGrammarExercise(scrollableContent, tab);
+                initializeGrammarExercise(scrollableContent, tab, saveExerciseState);
             } else if (filePath.includes('student-verbs')) {
-                initializeVerbsExercise(scrollableContent, tab);
+                initializeVerbsExercise(scrollableContent, tab, saveExerciseState);
             } else {
-                initializeExercise(scrollableContent, tab); // Pass the scrollable area
+                initializeExercise(scrollableContent, tab, saveExerciseState); // Pass the scrollable area
             }
         }
     }
     renderTabs(); // Re-render tabs to update title etc.
 }
 
-export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab) {
+export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerciseState) {
     const tab = tabs.find(t => t.id === tabId);
     if (!tab) return;
 
@@ -142,10 +142,10 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab) {
         pane.appendChild(contentWrapper);
 
         // Attach event listeners
-        document.getElementById(`reload-btn-${tab.id}`).addEventListener('click', () => loadHomeIntoTab(tab.id, tabs, renderTabs, addTab));
+        document.getElementById(`reload-btn-${tab.id}`).addEventListener('click', () => loadHomeIntoTab(tab.id, tabs, renderTabs, addTab, saveExerciseState));
         document.getElementById(`github-btn-${tab.id}`).addEventListener('click', () => window.api.openExternalLink('https://github.com/Drehon/vsapp'));
         document.getElementById(`settings-btn-${tab.id}`).addEventListener('click', () => addTab(true, null, 'settings'));
-        attachHomeEventListeners(scrollableContent, tabs, addTab, renderTabs);
+        attachHomeEventListeners(scrollableContent, tabs, addTab, renderTabs, saveExerciseState);
     }
 
     renderTabs();
@@ -207,7 +207,7 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs) {
     renderTabs();
 }
 
-function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs) {
+function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExerciseState) {
     const populateList = async (listId, getFiles, folder) => {
       const list = paneElement.querySelector(`#${listId}`);
       if (!list) return;
@@ -229,7 +229,7 @@ function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs) {
             e.preventDefault();
             const activeTab = tabs.find(t => t.active);
             if (activeTab.view === 'home') {
-              loadContentIntoTab(activeTab.id, `${folder}/${file}`, tabs, renderTabs, addTab);
+              loadContentIntoTab(activeTab.id, `${folder}/${file}`, tabs, renderTabs, addTab, saveExerciseState);
             } else {
               addTab(true, `${folder}/${file}`, 'content');
             }

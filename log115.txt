@@ -42,8 +42,9 @@ I have now adjusted the L2 and L3 files in the exercises folder to match the str
 
 I have now adjusted the L2 and L3 files in the exercises and lessons folders to match the structure and functionality of the L1 file. I added the 'go to question' functionality to the exercise files and ensured that the element IDs are consistent. I also added the standard header and navigation to the lesson files. This was done in accordance with the rules outlined in `rules.txt`.
 
-I still see the outdate save-load approach in the page, with explanation.
-Said explanation we might shift to the home instead, as an intro to the app with a very brief explanation of how it functions.
+I still see the outdate save-load approach in the page, with explanation, for the lessons, where it's useless at the moment.
+Whereas the explanation for ES.html doesn't reflect the new setup, with the buttons in the toolbar, the constant saving by save-state etc.
+Also, the home page is missing a brief, very concise explanation, and is visually a bit unappealing at the moment.
 
 5) - FIXED
 /src/renderer.js is quite large of a file
@@ -62,7 +63,7 @@ This will improve modularity and maintainability. > COMPLETED
 
 ---
 
-6) ERRORS as results of 5)
+6) ERRORS as results of 5) >> FIXED
 three examples below
 
 exercise-initializer.js:349 Uncaught ReferenceError: saveExerciseState is not defined
@@ -79,6 +80,9 @@ VM185:4 Uncaught (in promise) SyntaxError: Unexpected token '/', ..."[
     at JSON.parse (<anonymous>)
     at initializeVerbsExercise (verb-exercise.js:5:24)
     at loadContentIntoTab (content-loader.js:82:40)
+
+- `Uncaught ReferenceError: saveExerciseState is not defined` was resolved by passing the `saveExerciseState` function from `renderer.js` to the exercise initialization modules.
+- `Uncaught (in promise) SyntaxError: Unexpected token '/'` was resolved by stripping comments from the JSON data in `student-grammar.html` and `student-verbs.html` before parsing.
 
 
 NOTES FROM JULES

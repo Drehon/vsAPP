@@ -1,8 +1,9 @@
-export function initializeVerbsExercise(paneElement, tab) {
+export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
     const exerciseDataEl = paneElement.querySelector('#exercise-data');
     if (!exerciseDataEl) return;
 
-    const { testData } = JSON.parse(exerciseDataEl.textContent);
+    const jsonText = exerciseDataEl.textContent.replace(/\s*\/\/.*$/gm, '');
+    const { testData } = JSON.parse(jsonText);
     let chartInstances = {};
     let currentBlock = 1;
     let testState = tab.exerciseState || {

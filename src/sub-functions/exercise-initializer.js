@@ -1,4 +1,4 @@
-export function initializeExercise(paneElement, tab) {
+export function initializeExercise(paneElement, tab, saveExerciseState) {
     const exerciseDataEl = paneElement.querySelector('#exercise-data');
     if (!exerciseDataEl) return;
 
