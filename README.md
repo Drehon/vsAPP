@@ -19,25 +19,34 @@ The goal is to create an autonomous, offline learning environment free from the 
 * **Advanced Save/Load System:** A non-destructive save system that creates versioned "snapshots" of user progress.
 * **Full Interactivity:** Supports a wide range of interactive exercises, including multiple-choice, true/false, and written answers.
 * **Offline-First and Self-Contained:** Designed to be fully functional offline.
-* **Automatic Updates:** The application automatically checks for new versions and updates itself.
+* **Automatic Updates:** The application automatically checks for new versions and updates itself silently in the background.
 
 ## Getting Started
 
-To get a local copy up and running, follow these simple steps.
+To get VSAPP up and running, choose the installation method that suits your needs.
 
-### Prerequisites
+### Installation for End-Users (Recommended)
 
-You need to have Node.js and npm installed on your machine.
+The VSAPP installer provides a seamless experience, requiring no prior software installations (like Node.js or npm).
+
+1. Download the latest installer from the [releases page](https://www.google.com/search?q=https://github.com/your_username/your_project_name/releases).
+2. Run the installer. The application will perform a **silent installation**, meaning it will install without requiring user interaction.
+3. Upon successful installation, the application will be **immediately available on your desktop** via a shortcut.
+
+### Installation for Developers
+
+If you wish to contribute to VSAPP or run it from source, you will need Node.js and npm installed.
+
+#### Prerequisites for Developers
 * npm
   ```sh
   npm install npm@latest -g
   ```
 
-### Installation
-
+#### Steps for Developers
 1. Clone the repo
    ```sh
-   git clone https://github.com/your_username/your_project_name.git
+   git clone [https://github.com/your_username/your_project_name.git](https://github.com/your_username/your_project_name.git)
    ```
 2. Install NPM packages
    ```sh
@@ -47,6 +56,13 @@ You need to have Node.js and npm installed on your machine.
    ```sh
    npm start
    ```
+
+## Automatic Updates
+
+VSAPP includes an integrated auto-update feature to ensure you always have the latest version with new features and bug fixes.
+* **Silent Background Updates:** The application periodically checks for updates in the background. When a new version is available, it downloads and installs it silently without interrupting your work.
+* **Seamless Experience:** You do not need to manually download new installers or run updates. The process is fully automated, providing a seamless and up-to-date experience.
+* **Restart for Activation:** Updates are applied upon the next launch of the application, or you may be prompted to restart to apply critical updates immediately.
 
 ## Usage
 
