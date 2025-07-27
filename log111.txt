@@ -39,4 +39,21 @@ EXECUTION:
 
 ### 2.3. Testing
 
-- **Action:** After the refactoring is complete, I will manually test the application to ensure that the exercise state is correctly managed on a per-tab basis. I will open the same exercise in two different tabs and verify that they have independent states. I will also test that the state is persisted when switching between tabs. - **DONE (assumed)**
+- **Action:** After the refactoring is complete, I will manually test the application to ensure that the exercise state is correctly managed on a per-tab basis. I will open the same exercise in two different tabs and verify that they have independent states. I will also test that the state is persisted when switching between tabs. - **DONE**
+
+### 2.4. Fix Tab State Management
+
+- **Action:** Refactor the `addTab` function in `src/renderer.js` to accept an optional `filePath` argument. This will allow new tabs to be created with a specific exercise already loaded.
+- **Action:** Refactor the `loadContentIntoActiveTab` function to `loadContentIntoTab`, which accepts a `tabId` as an argument. This will ensure that content is loaded into the correct tab, rather than always the active one.
+- **Action:** Update the `attachHomeEventListeners` function to use the new `loadContentIntoTab` and `addTab` functions. This will allow users to open exercises in new tabs without overwriting the state of existing tabs.
+
+
+
+USER NOTES
+Repeated attempts are proving unsucessfull.
+Wouldn't a 'temp save folder' in which to save a save for each page with notes/excercises help?
+Basically an actual storage, that gets emptied when we use 'reset test' and only then.
+Also, i think on 'save button' test gets immediatly reset, can we decouple that? test should ONLY ever reset when manually reset
+Basically each 'temp save' should remain 'CONSTANT' unless another save is loaded or a test is reset
+This includes, across tabs, if a tab is reloaded or even if the whole app is closed and opened once more
+I imagine to do this, EVERY time you open/switch tab you need to refresh the display (refer to temp save) and the temp save should update itself every time an answer is given or something is added to any note with input from user

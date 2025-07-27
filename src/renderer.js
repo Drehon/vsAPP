@@ -57,30 +57,42 @@ window.addEventListener('api-ready', () => {
     }
   }
 
-  function addTab(setActive = true) {
+  function addTab(setActive = true, filePath = null) {
     if (setActive) {
-      tabs.forEach(t => t.active = false);
+        tabs.forEach(t => t.active = false);
     }
 
     const newTab = {
-      id: nextTabId++,
-      title: 'Home',
-      view: 'home',
-      filePath: null,
-      active: true,
-      exerciseState: null,
+        id: nextTabId++,
+        title: 'Home',
+        view: 'home',
+        filePath: null,
+        active: true,
+        exerciseState: null, // Initial state
     };
-
     tabs.push(newTab);
 
+    // Create pane for the new tab
     const paneEl = document.createElement('div');
     paneEl.id = `pane-${newTab.id}`;
     paneEl.className = 'content-pane h-full w-full overflow-auto';
     contentPanes.appendChild(paneEl);
 
-    loadHomeIntoTab(newTab.id);
-    renderTabs();
-  }
+    if (filePath) {
+        // A specific file is requested, load it directly
+        loadContentIntoTab(newTab.id, filePath);
+    } else {
+        // Default to home page
+        loadHomeIntoTab(newTab.id);
+    }
+
+    // Ensure the new tab is marked as active before rendering
+    if (setActive) {
+        switchTab(newTab.id);
+    } else {
+        renderTabs();
+    }
+}
 
   function switchTab(tabId) {
     tabs.forEach(t => t.active = (t.id === tabId));
@@ -108,32 +120,30 @@ window.addEventListener('api-ready', () => {
     renderTabs();
   }
 
-  async function loadContentIntoActiveTab(filePath) {
-      const activeTab = tabs.find(t => t.active);
-      if (!activeTab) return;
+  async function loadContentIntoTab(tabId, filePath) {
+    const tab = tabs.find(t => t.id === tabId);
+    if (!tab) return;
 
-      activeTab.view = 'content';
-      activeTab.filePath = filePath;
-      activeTab.title = filePath.split('/').pop().replace('.html', '');
-      
-      const content = await window.api.getFileContent(filePath);
-      const activePane = document.getElementById(`pane-${activeTab.id}`);
-      
-      if (activePane && content) {
-          const wrapper = document.createElement('div');
-          wrapper.className = "lesson-content bg-slate-200 text-slate-700 h-full overflow-y-auto";
-          wrapper.innerHTML = content;
-          activePane.innerHTML = '';
-          activePane.appendChild(wrapper);
+    tab.view = 'content';
+    tab.filePath = filePath;
+    tab.title = filePath.split('/').pop().replace('.html', '');
+    
+    const content = await window.api.getFileContent(filePath);
+    const pane = document.getElementById(`pane-${tab.id}`);
+    
+    if (pane && content) {
+        const wrapper = document.createElement('div');
+        wrapper.className = "lesson-content bg-slate-200 text-slate-700 h-full overflow-y-auto";
+        wrapper.innerHTML = content;
+        pane.innerHTML = '';
+        pane.appendChild(wrapper);
 
-          // Check if the loaded content is an exercise file
-          if (wrapper.querySelector('#exercise-data')) {
-              initializeExercise(wrapper, activeTab);
-          }
-      }
-
-      renderTabs();
-  }
+        if (wrapper.querySelector('#exercise-data')) {
+            initializeExercise(wrapper, tab);
+        }
+    }
+    renderTabs();
+}
 
   async function loadHomeIntoTab(tabId) {
       const tab = tabs.find(t => t.id === tabId);
@@ -173,9 +183,14 @@ window.addEventListener('api-ready', () => {
                   link.textContent = file.replace('.html', '').replace(/-/g, ' ');
                   link.className = 'block p-3 bg-slate-700 rounded-md hover:bg-indigo-600 transition-colors font-medium';
                   link.addEventListener('click', (e) => {
-                      e.preventDefault();
-                      loadContentIntoActiveTab(`${folder}/${file}`);
-                  });
+                    e.preventDefault();
+                    const activeTab = tabs.find(t => t.active);
+                    if (activeTab.view === 'home') {
+                        loadContentIntoTab(activeTab.id, `${folder}/${file}`);
+                    } else {
+                        addTab(true, `${folder}/${file}`);
+                    }
+                });
                   list.appendChild(link);
               });
           } catch (error) {
