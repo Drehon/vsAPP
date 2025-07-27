@@ -1,3 +1,5 @@
+require('dotenv').config(); // Load environment variables from .env file
+
 const { app, BrowserWindow, ipcMain, session, Menu, shell, dialog, net } = require('electron');
 const path = require('path');
 const fs = require('fs').promises;

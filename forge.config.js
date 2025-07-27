@@ -34,6 +34,19 @@ module.exports = {
         },
       },
     },
+    // Add the FusesPlugin here if it's not already present and you want to use it
+    // {
+    //   name: '@electron-forge/plugin-fuses',
+    //   version: FuseVersion.V1,
+    //   config: {
+    //     [FuseV1Options.RunAsNode]: false,
+    //     [FuseV1Options.EnableCookieEncryption]: true,
+    //     [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
+    //     [FuseV1Options.EnableNodeCliInspectArguments]: false,
+    //     [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
+    //     [FuseV1Options.OnlyLoadAppFromAsar]: true,
+    //   },
+    // },
   ],
   makers: [
     {
@@ -53,4 +66,20 @@ module.exports = {
       config: {},
     },
   ],
+  // Add the publishers configuration here
+  publishers: [
+    {
+      name: '@electron-forge/publisher-github',
+      config: {
+        repository: {
+          owner: 'Drehon', // Your GitHub username
+          name: 'vsAPP'   // Your GitHub repository name
+        },
+        prerelease: false, // Set to true if this is a pre-release
+        draft: false,      // Set to true if you want to create a draft release
+        // It's highly recommended to use an environment variable for your token:
+        // token: process.env.GITHUB_TOKEN
+      }
+    }
+  ]
 };
