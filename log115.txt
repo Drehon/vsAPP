@@ -30,7 +30,7 @@ refer to rules.txt for aid
 the new htmls starting with L2 and L3 in the excercises and lessons folder must also be adjusted
 refer to rules.txt for aid 
 
-5)
+5) - FIXED
 /src/renderer.js is quite large of a file
 assess if it can be lightened by creating more files to split the load WITHOUT destabilizing the code or introducing large bugs
 do not implement any modification yet, simply plan an approach and add it to this txt
