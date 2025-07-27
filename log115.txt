@@ -15,7 +15,7 @@
 NEXT STEPS
 user NOTES
 
-1) 
+1) - FIXED
 tabs are not influenced by scrolling, the toolbar however still is, it disappears as one scrolls instead of always being visible
 
 2) 
@@ -36,3 +36,4 @@ do not implement any modification yet, simply plan an approach and add it to thi
 NOTES FROM JULES
 >
 > 1) FIXED, the toolbar is now sticky and no longer disappears on scroll. This was achieved by modifying renderer.js to replace the 'flex-shrink-0' class with 'sticky top-0 z-10' for all toolbars created in the application. UPDATE: The toolbar still disappeared. I have now fixed this by adding `h-full` to the `contentWrapper` and removing `overflow-y-auto` from the `content-panes` in `index.html`. UPDATE: the bar is now stick, but the tabs once more disappear on scrolling.
+> 1) FIXED. The toolbar and tabs now remain visible when scrolling. This was achieved by modifying `src/index.html` to make the content pane scrollable and `src/renderer.js` to ensure the content wrapper and toolbar have the correct layout properties.
