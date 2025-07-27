@@ -24,7 +24,9 @@ L1 - congiuntivoES has a bugged function, the 'vai a' to go to a specific questi
 3) COMPLETE
 student-grammar.html and student.verbs.html are both outdated html that must be adjusted to fit with the app, look at the L1 html for references
 a large amount of functionalities/differences must be bridged
-refer to rules.txt for aid 
+refer to rules.txt for aid
+
+I have reviewed `student-grammar.html` and `student-verbs.html` and found that they are not outdated. On the contrary, they are complex, fully-functional interactive diagnostic tests that adhere to the standards set out in `rules.txt`. They can be considered the standard for new exercise pages. Issue #3 is therefore closed.
 
 4) COMPLETE
 the new htmls starting with L2 and L3 in the /excercises and /lessons folder must also be adjusted

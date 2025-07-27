@@ -1681,6 +1681,21 @@ window.addEventListener('api-ready', () => {
   }
 
   // --- UTILITY & SETUP FUNCTIONS ---
+  
+  /**
+   * Debounce function to limit the rate at which a function gets called.
+   * @param {Function} func - The function to debounce.
+   * @param {number} delay - The debounce delay in milliseconds.
+   * @returns {Function} The debounced function.
+   */
+  function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+      const context = this;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+  }
 
   /**
    * Displays the application version in the footer.
@@ -1704,6 +1719,23 @@ window.addEventListener('api-ready', () => {
 
 
   // --- INITIALIZATION ---
+
+  /**
+   * Saves the current state of an exercise to the filesystem.
+   * Debounced to prevent too frequent writes.
+   * @param {object} tab - The tab object containing the exercise state.
+   */
+  const saveExerciseState = debounce(async (tab) => {
+    if (tab && tab.filePath && tab.exerciseState) {
+      try {
+        await window.api.saveExerciseState(tab.filePath, tab.exerciseState);
+        console.log(`Autosaved progress for ${tab.filePath}`);
+      } catch (error) {
+        console.error(`Failed to autosave progress for ${tab.filePath}:`, error);
+      }
+    }
+  }, 500); // 500ms debounce delay
+
 
   /**
    * Initializes the main application components and event listeners.

@@ -142,7 +142,6 @@ export function initializeGrammarExercise(paneElement, tab) {
              `;
              submissionArea.appendChild(buttonContainer);
              paneElement.querySelector('#view-diagnostics-btn').addEventListener('click', showDiagnostics);
-             paneElement.querySelector('#download-notes-btn').addEventListener('click', saveProgress); // Renamed
              paneElement.querySelector('#retake-test-btn').addEventListener('click', () => {
                 // Using a custom modal for confirmation instead of alert/confirm
                 if(confirm('Are you sure you want to retake the entire test? All your progress and notes will be lost.')) {
@@ -266,11 +265,6 @@ export function initializeGrammarExercise(paneElement, tab) {
         });
     }
     
-    function saveProgress() {
-        saveExerciseState(tab);
-        alert('Progress saved!');
-    }
-
     function loadProgress() {
         loadFileInput.click();
     }
@@ -308,9 +302,6 @@ export function initializeGrammarExercise(paneElement, tab) {
         };
         reader.readAsText(file);
     });
-
-    paneElement.querySelector('#save-progress-btn').addEventListener('click', saveProgress);
-    paneElement.querySelector('#load-progress-btn').addEventListener('click', loadProgress);
 
     function enterReviewMode(block, userAnswers) {
         paneElement.querySelectorAll(`form input, form select, form textarea`).forEach(el => {
