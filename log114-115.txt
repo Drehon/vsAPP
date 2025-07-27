@@ -49,11 +49,12 @@ JULES' NOTES:
 - The tabs and content toolbar are now fixed and will not scroll with the content.
 - The content toolbar now has a consistent background color (`slate-700`) across all views, matching the home page.
 - The Content Security Policy has been updated to allow loading Google Fonts, which should resolve the console errors.
+- The home and settings pages' backgrounds have been lightened from `slate-800` to `slate-600` for better visual balance.
+- The layout has been adjusted so the tab and content bars are sticky and no longer disappear on scroll. HALF TRUE
 
 ---
 
 Additional user NOTES
-There's too much contrast between the dark of home page and settings page
-And the white of lessons and exercises
-Make the home and setting page slightly lighter
-Tabs and content bar still disappear on scroll
+tabs are now not influenced by scrolling, the toolbar however still is and disappears
+student-grammar.html and student.verbs.html are both outdated normal html that must be adjusted to fit with the app
+they are in the excercises folder, make sure they fully function

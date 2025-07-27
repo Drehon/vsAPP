@@ -208,7 +208,7 @@ window.addEventListener('api-ready', () => {
 
         // Content area that will scroll
         const scrollableContent = document.createElement('div');
-        scrollableContent.className = 'overflow-y-auto p-6 md:p-10 h-full';
+        scrollableContent.className = 'overflow-y-auto p-6 md:p-10';
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = content;
 
@@ -261,7 +261,7 @@ window.addEventListener('api-ready', () => {
         pane.innerHTML = ''; // Clear existing content
 
         const contentWrapper = document.createElement('div');
-        contentWrapper.className = "h-full flex flex-col bg-slate-800 text-white flex-grow"; // Home theme
+        contentWrapper.className = "h-full flex flex-col bg-slate-600 text-white flex-grow"; // Home theme
 
         // Create the toolbar for Home
         const toolbar = document.createElement('div');
@@ -291,7 +291,7 @@ window.addEventListener('api-ready', () => {
 
         // Content area that will scroll
         const scrollableContent = document.createElement('div');
-        scrollableContent.className = 'flex-grow overflow-y-auto';
+        scrollableContent.className = 'flex-grow overflow-y-auto p-8';
         scrollableContent.innerHTML = homeContent;
 
         // Assemble the pane
@@ -328,7 +328,7 @@ window.addEventListener('api-ready', () => {
       pane.innerHTML = ''; // Clear existing content
 
       const contentWrapper = document.createElement('div');
-      contentWrapper.className = "h-full flex flex-col bg-slate-800 text-white"; // Settings theme
+      contentWrapper.className = "h-full flex flex-col bg-slate-600 text-white"; // Settings theme
 
       // Create the toolbar for Settings
       const toolbar = document.createElement('div');
@@ -353,7 +353,7 @@ window.addEventListener('api-ready', () => {
       toolbar.appendChild(rightGroup);
 
       const scrollableContent = document.createElement('div');
-      scrollableContent.className = 'flex-grow overflow-y-auto';
+      scrollableContent.className = 'flex-grow overflow-y-auto p-8';
       scrollableContent.innerHTML = settingsContent;
 
       contentWrapper.appendChild(toolbar);
