@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esercizi Pratici: La Struttura Causativa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* bg-slate-200 */
+        }
+        .tab-btn {
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .tab-active {
+            border-bottom-color: #4f46e5; /* border-indigo-600 */
+            color: #3730a3; /* text-indigo-800 */
+            font-weight: 600;
+        }
+        .tab-inactive {
+            color: #475569; /* text-slate-600 */
+        }
+        .feedback-correct {
+            color: #166534; /* text-green-800 */
+            background-color: #dcfce7; /* bg-green-100 */
+            border-left-color: #22c55e; /* border-green-500 */
+        }
+        .feedback-incorrect {
+            color: #991b1b; /* text-red-800 */
+            background-color: #fee2e2; /* bg-red-100 */
+            border-left-color: #ef4444; /* border-red-500 */
+        }
+        code, .font-mono {
+            font-family: 'Source Code Pro', monospace;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-10 max-w-7xl">
+
+        <!-- Header -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
+            <header class="p-6 md:p-8">
+                <h1 class="text-3xl font-bold text-slate-900">Esercizi Pratici: La Struttura Causativa</h1>
+                <p class="text-lg text-slate-600 mt-1">Metti in pratica la teoria con esercizi mirati.</p>
+            </header>
+            <div class="p-6 border-t border-slate-200 bg-slate-50 text-sm text-slate-600 space-y-3">
+                <h3 class="font-semibold text-slate-800">Come usare questa pagina:</h3>
+                <ul class="list-disc list-inside space-y-1">
+                    <li><strong>Salvataggio Automatico:</strong> I tuoi progressi vengono salvati automaticamente nel browser.</li>
+                    <li><strong>Carica JSON:</strong> Usa questo pulsante per caricare un file di progressi salvato in precedenza.</li>
+                    <li><strong>Salva e Scarica JSON:</strong> Clicca qui per scaricare un file <code>.json</code> con tutte le tue risposte. Questa è la funzione da usare per "consegnare" il lavoro.</li>
+                    <li><strong>Azzera Test:</strong> Rimuove tutti i progressi salvati nel browser e ripristina gli esercizi.</li>
+                </ul>
+            </div>
+            <div class="px-6 py-4 border-t border-slate-200 bg-slate-100 flex flex-wrap gap-4 justify-center items-center">
+                <button id="save-btn" class="text-sm bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-md">Salva e Scarica JSON</button>
+                <label class="text-sm bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-md cursor-pointer">
+                    <span>Carica JSON</span>
+                    <input type="file" id="load-input" class="hidden" accept=".json">
+                </label>
+                <button id="reset-btn" class="text-sm bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-md">Azzera Test</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <!-- Tabs -->
+            <div class="border-b border-slate-200">
+                <nav class="flex space-x-2 md:space-x-6 px-6" aria-label="Tabs">
+                    <button data-tab="1" class="tab-btn py-4 px-2 md:px-4 text-sm font-medium tab-active">Fase 1: Comprensione</button>
+                    <button data-tab="2" class="tab-btn py-4 px-2 md:px-4 text-sm font-medium tab-inactive">Fase 2: Riconoscimento</button>
+                    <button data-tab="3" class="tab-btn py-4 px-2 md:px-4 text-sm font-medium tab-inactive">Fase 3: Produzione</button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="p-6 md:p-8">
+                <div id="tab-content-1" class="tab-content space-y-6"></div>
+                <div id="tab-content-2" class="tab-content hidden space-y-6"></div>
+                <div id="tab-content-3" class="tab-content hidden space-y-6"></div>
+            </div>
+        </div>
+    </div>
+
+    <script id="exercise-data" type="application/json">
+        {
+            "fase1": [
+                { "question": "La frase 'I cut my hair' significa la stessa cosa di 'I had my hair cut'.", "answer": false, "explanation": "Falso. 'I cut my hair' significa che l'ho tagliato io stesso. 'I had my hair cut' significa che un parrucchiere l'ha fatto per me." },
+                { "question": "La frase 'She is having her car serviced' significa che sta organizzando affinché un meccanico controlli la sua auto.", "answer": true, "explanation": "Corretto. Lei non sta facendo il servizio, lo sta facendo fare." },
+                { "question": "In 'I got the report printed', il verbo 'get' è più formale di 'have'.", "answer": false, "explanation": "Falso. 'Have' è generalmente considerato più formale di 'get' in questa struttura." },
+                { "question": "La frase 'He had his assistant call the client' è un esempio di causativo attivo.", "answer": true, "explanation": "Corretto. Specifica chi compie l'azione (his assistant) e usa la struttura 'have + persona + verbo base'." },
+                { "question": "La struttura 'get someone to do something' si usa per dare un ordine perentorio.", "answer": false, "explanation": "Falso. Si usa più per 'convincere' o 'persuadere' qualcuno a fare qualcosa." },
+                { "question": "'I had my wallet stolen' è un uso corretto della struttura causativa per un evento negativo e non pianificato.", "answer": true, "explanation": "Corretto. La struttura si usa anche per descrivere cose che ci accadono, non solo servizi che richiediamo." },
+                { "question": "La frase 'The boss made us work late' ha lo stesso significato di 'The boss had us work late'.", "answer": true, "explanation": "Corretto. Entrambe le frasi indicano che il capo ci ha dato l'istruzione di lavorare fino a tardi." }
+            ],
+            "fase2": [
+                { "question": "I don't have time to do my own laundry, so I ______ it.", "options": ["get done", "get it done", "do it", "make it do"], "answer": "get it done", "explanation": "La struttura corretta è 'get + oggetto (it) + participio passato (done)'." },
+                { "question": "Before the presentation, the CEO had her assistant ______ the final figures.", "options": ["to check", "checking", "check", "checked"], "answer": "check", "explanation": "La struttura del causativo attivo con 'have' è 'have + persona + verbo base'." },
+                { "question": "This is a very important document. We must ______ it translated by a professional.", "options": ["have", "do", "get to", "make"], "answer": "have", "explanation": "La struttura è 'have + oggetto + participio passato'." },
+                { "question": "It was difficult to convince him, but I finally ______ him to agree.", "options": ["had", "made", "got", "persuaded"], "answer": "got", "explanation": "La struttura per 'convincere/persuadere' è 'get + persona + infinito con to'." },
+                { "question": "If you don't understand the contract, you should ______ a lawyer look at it.", "options": ["get", "make", "have", "ask"], "answer": "have", "explanation": "Si usa 'have' per dare un'istruzione o un incarico a un professionista. 'Have a lawyer look'." },
+                { "question": "The roof is leaking. We need to ______ repaired before the winter.", "options": ["have it", "it have", "get it to be", "have it get"], "answer": "have it", "explanation": "La struttura è '(to) have + oggetto (it) + participio passato (repaired)'." },
+                { "question": "She didn't want to go, but her friends ______ her come to the party.", "options": ["got", "made", "had", "let"], "answer": "made", "explanation": "'Made someone do something' significa 'costringere' o 'forzare'. 'Got' richiederebbe 'to come'." }
+            ],
+            "fase3": [
+                { "prompt": "A photographer will take our family portrait.", "question": "We are going to...", "answer": "have our family portrait taken", "explanation": "La struttura è 'have + oggetto (our family portrait) + participio passato (taken)'." },
+                { "prompt": "I'll ask the IT department to install the software for me.", "question": "I will have...", "answer": "the IT department install the software", "explanation": "La struttura è 'have + persona (the IT department) + verbo base (install)'." },
+                { "prompt": "Someone cleans her house every week.", "question": "She has...", "answer": "her house cleaned every week", "explanation": "La struttura è 'has + oggetto (her house) + participio passato (cleaned)'." },
+                { "prompt": "I persuaded my brother to lend me his car.", "question": "I got...", "answer": "my brother to lend me his car", "explanation": "La struttura è 'got + persona (my brother) + infinito con to (to lend)'." },
+                { "prompt": "A technician needs to service the air conditioner.", "question": "We need to have...", "answer": "the air conditioner serviced", "explanation": "La struttura è 'have + oggetto (the air conditioner) + participio passato (serviced)'." }
+            ]
+        }
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const exerciseData = JSON.parse(document.getElementById('exercise-data').textContent);
+        const storageKey = 'causativo-es-state';
+        let state = JSON.parse(localStorage.getItem(storageKey)) || {};
+
+        function saveState() {
+            localStorage.setItem(storageKey, JSON.stringify(state));
+        }
+
+        function renderFase1() {
+            const container = document.getElementById('tab-content-1');
+            container.innerHTML = '';
+            exerciseData.fase1.forEach((q, index) => {
+                const userAnswer = state[`f1_${index}`];
+                const isAnswered = userAnswer !== undefined;
+                const isCorrect = isAnswered && userAnswer === q.answer;
+
+                const questionEl = document.createElement('div');
+                questionEl.innerHTML = `
+                    <p class="text-slate-800">${index + 1}. ${q.question}</p>
+                    <div class="flex items-center space-x-4 mt-2">
+                        <button data-answer="true" class="f1-btn px-4 py-2 text-sm font-semibold rounded-md transition-colors ${userAnswer === true ? (isCorrect ? 'bg-green-600 text-white' : 'bg-red-600 text-white') : 'bg-slate-200 hover:bg-slate-300'}">Vero</button>
+                        <button data-answer="false" class="f1-btn px-4 py-2 text-sm font-semibold rounded-md transition-colors ${userAnswer === false ? (isCorrect ? 'bg-green-600 text-white' : 'bg-red-600 text-white') : 'bg-slate-200 hover:bg-slate-300'}">Falso</button>
+                    </div>
+                    ${isAnswered ? `<div class="mt-2 p-3 text-sm border-l-4 rounded-r-md ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}">${q.explanation}</div>` : ''}
+                `;
+                container.appendChild(questionEl);
+
+                questionEl.querySelectorAll('.f1-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        state[`f1_${index}`] = btn.dataset.answer === 'true';
+                        saveState();
+                        renderFase1();
+                    });
+                });
+            });
+        }
+
+        function renderFase2() {
+            const container = document.getElementById('tab-content-2');
+            container.innerHTML = '';
+            exerciseData.fase2.forEach((q, index) => {
+                const userAnswer = state[`f2_${index}`];
+                const isAnswered = userAnswer !== undefined;
+                const isCorrect = isAnswered && userAnswer === q.answer;
+
+                const optionsHtml = q.options.map(opt => {
+                    let btnClass = 'bg-slate-200 hover:bg-slate-300';
+                    if (isAnswered) {
+                        if (opt === q.answer) {
+                            btnClass = 'bg-green-600 text-white'; // Correct answer
+                        } else if (opt === userAnswer) {
+                            btnClass = 'bg-red-600 text-white'; // Incorrect user choice
+                        }
+                    }
+                    return `<button data-answer="${opt}" class="f2-btn px-3 py-1.5 text-sm font-semibold rounded-md transition-colors ${btnClass}">${opt}</button>`;
+                }).join('');
+
+                const questionEl = document.createElement('div');
+                questionEl.innerHTML = `
+                    <p class="text-slate-800">${index + 1}. ${q.question.replace('______', '<span class="font-mono text-indigo-600">______</span>')}</p>
+                    <div class="flex flex-wrap items-center gap-3 mt-2">
+                        ${optionsHtml}
+                    </div>
+                    ${isAnswered ? `<div class="mt-3 p-3 text-sm border-l-4 rounded-r-md ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}">${q.explanation}</div>` : ''}
+                `;
+                container.appendChild(questionEl);
+
+                if (!isAnswered) {
+                    questionEl.querySelectorAll('.f2-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            state[`f2_${index}`] = btn.dataset.answer;
+                            saveState();
+                            renderFase2();
+                        });
+                    });
+                }
+            });
+        }
+        
+        function renderFase3() {
+            const container = document.getElementById('tab-content-3');
+            container.innerHTML = '';
+            exerciseData.fase3.forEach((q, index) => {
+                const userAnswer = state[`f3_${index}`] || '';
+                const isAnswered = userAnswer !== '';
+                const isCorrect = isAnswered && userAnswer.trim().toLowerCase() === q.answer.toLowerCase();
+
+                const questionEl = document.createElement('div');
+                questionEl.innerHTML = `
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-md">
+                        <p class="text-sm text-slate-600">Frase originale:</p>
+                        <p class="italic text-slate-800">"${q.prompt}"</p>
+                    </div>
+                    <p class="mt-3 text-slate-800">${index + 1}. ${q.question}</p>
+                    <div class="flex items-center space-x-2 mt-2">
+                        <input type="text" value="${userAnswer}" class="f3-input flex-grow p-2 border border-slate-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" ${isAnswered ? 'disabled' : ''}>
+                        ${!isAnswered ? `<button class="f3-submit-btn px-4 py-2 text-sm font-semibold rounded-md bg-indigo-600 text-white hover:bg-indigo-700">Controlla</button>` : ''}
+                    </div>
+                    ${isAnswered ? `<div class="mt-3 p-3 text-sm border-l-4 rounded-r-md ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}">
+                        ${isCorrect ? '' : `<p class="font-semibold">La tua risposta: <span class="font-mono">${userAnswer}</span></p><p class="mt-1 font-semibold">Risposta corretta: <span class="font-mono">${q.answer}</span></p><hr class="my-2">`}
+                        ${q.explanation}
+                    </div>` : ''}
+                `;
+                container.appendChild(questionEl);
+                
+                const input = questionEl.querySelector('.f3-input');
+                const submitBtn = questionEl.querySelector('.f3-submit-btn');
+
+                const handleSubmit = () => {
+                    if (input.value.trim() === '') return;
+                    state[`f3_${index}`] = input.value.trim();
+                    saveState();
+                    renderFase3();
+                };
+
+                submitBtn?.addEventListener('click', handleSubmit);
+                input?.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') handleSubmit();
+                });
+            });
+        }
+
+        function switchTab(tabNumber) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(`tab-content-${tabNumber}`).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.toggle('tab-active', b.dataset.tab === tabNumber);
+                b.classList.toggle('tab-inactive', b.dataset.tab !== tabNumber);
+            });
+            
+            if (tabNumber === '1') renderFase1();
+            if (tabNumber === '2') renderFase2();
+            if (tabNumber === '3') renderFase3();
+        }
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+        });
+
+        document.getElementById('save-btn').addEventListener('click', () => {
+            const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'esercizi-causativo.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        document.getElementById('load-input').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const loadedState = JSON.parse(e.target.result);
+                    state = loadedState;
+                    saveState();
+                    switchTab('1'); // Go back to the first tab to re-render all
+                } catch (error) {
+                    alert('Errore: File JSON non valido.');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Reset file input
+        });
+
+        document.getElementById('reset-btn').addEventListener('click', () => {
+            if (confirm('Sei sicuro di voler cancellare tutti i progressi?')) {
+                state = {};
+                saveState();
+                switchTab('1');
+            }
+        });
+
+        // Initial render
+        switchTab('1');
+    });
+    </script>
+</body>
+</html>

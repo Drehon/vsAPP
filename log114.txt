@@ -58,3 +58,10 @@ Additional user NOTES
 tabs are now not influenced by scrolling, the toolbar however still is and disappears
 student-grammar.html and student.verbs.html are both outdated normal html that must be adjusted to fit with the app
 they are in the excercises folder, make sure they fully function
+
+ULES' NOTES (v1.1.5):
+- Fixed the toolbar scrolling issue. The toolbar is now sticky and remains visible when scrolling through content.
+- Adapted `student-grammar.html` and `student-verbs.html` to be compatible with the application's tab-based interface. This involved:
+  - Stripping the original HTML, CSS, and JavaScript.
+  - Integrating the exercise content and logic into the main application's rendering process.
+  - Ensuring the exercises are fully functional within the app.
