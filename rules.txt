@@ -1,0 +1,72 @@
+# Rules for Creating and Structuring Lessons, Notes, and Exercises
+
+This document outlines the rules and conventions for creating new content based on the analysis of the existing files.
+
+## 1. Templating and Styling (Based on Tailwind CSS)
+
+### 1.1. General Page Structure
+- **Container:** All content should be wrapped in a `div` with the classes `container mx-auto p-6 md:p-10 max-w-7xl`.
+- **Body:** The `<body>` tag should have the class `text-slate-700`.
+
+### 1.2. Headers
+- **Main Header:** Used for lesson and exercise pages.
+  - Wrapper: `<div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">`
+  - Title: `<h1 class="text-3xl font-bold text-slate-900">`
+  - Subtitle: `<p class="text-lg text-slate-600">`
+- **Section Header:**
+  - Wrapper: `<div class="p-6 bg-slate-50 border-b border-slate-200">`
+  - Title: `<h2 class="text-2xl font-bold text-slate-800">`
+
+### 1.3. Content Blocks
+- **Standard Section:** `<section class="bg-white rounded-lg shadow-lg overflow-hidden">`
+- **Highlighted Info Block:** `<div class="mt-6 space-y-4 bg-slate-50 rounded-lg p-6">`
+- **Case Study Block:** `<div class="p-5 border-l-4 rounded-r-lg bg-slate-50 shadow-inner case-study-card">`
+
+### 1.4. Typography and Emphasis
+- **Bold Text:** Use `<strong>` for key terms and concepts.
+- **Code/Verb Forms:** Use `<code>` for all verb forms, code snippets, and technical terms.
+- **Lists:** Use `<ul>` and `<ol>` with `<li>` for bulleted and numbered lists.
+
+### 1.5. Color Palette
+- **Slate:** Default for text, backgrounds, and borders. (`text-slate-700`, `bg-slate-50`, `border-slate-200`)
+- **Indigo:** Used for important titles and notes. (`text-indigo-700`, `bg-indigo-50`, `border-indigo-500`)
+- **Blue:** For "trigger" verb tags. (`bg-blue-100 text-blue-800`)
+- **Amber:** For case study titles. (`text-amber-800`)
+- **Green, Blue, Red:** For buttons in exercise pages (Save, Load, Reset).
+
+## 2. Content Structure
+
+### 2.1. Lesson Files (`L... -.html`)
+- **Purpose:** To provide a detailed explanation of a grammar topic.
+- **Structure:**
+  1. Main Header with lesson title.
+  2. A series of numbered `<section>` elements.
+  3. Each section has a clear title.
+  4. Content includes paragraphs, lists, highlighted blocks, and code examples.
+  5. May include "Case Studies" to connect theory with practical examples.
+
+### 2.2. Anki Notes Files (`L... -AN.html`)
+- **Purpose:** To create concise, flashcard-style notes for spaced repetition.
+- **Structure:**
+  1. Titled "Mazzo Appunti" (Notes Deck).
+  2. Content is a series of `<section>` elements, each representing a flashcard.
+  3. Each card has a "Fronte" (Front) as a title (`<h2 class="text-lg font-semibold text-indigo-700">`).
+  4. The content of the section is the "Retro" (Back) of the card.
+
+### 2.3. Exercise Files (`L... -ES.html`)
+- **Purpose:** To provide interactive exercises to test the student's understanding.
+- **Structure:**
+  1. Header with instructions and action buttons.
+  2. Tabbed interface with three tabs: "Fase 1: Comprensione", "Fase 2: Riconoscimento", and "Fase 3: Produzione".
+  3. Exercise data is stored in a JSON object inside a `<script id="exercise-data" type="application/json">` tag.
+  4. The JSON object has three keys: `fase1`, `fase2`, and `fase3`.
+  5. Each key holds an array of exercise objects with a consistent structure (e.g., `question`, `answer`, `explanation`, `options`).
+
+## 3. Functionality (for Exercise Pages)
+
+- **Tabs:** The page uses JavaScript to switch between the three exercise phases.
+- **Local Storage:** Progress (answers and notes) is automatically saved to the browser's local storage.
+- **JSON Import/Export:**
+  - **Load:** A "Carica Progressi" button allows loading progress from a local JSON file.
+  - **Save:** A "Salva Progressi" button downloads the current progress as a JSON file.
+- **Reset:** An "Azzera Test" button clears all progress from local storage.
