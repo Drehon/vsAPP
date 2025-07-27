@@ -26,14 +26,33 @@ student-grammar.html and student.verbs.html are both outdated html that must be 
 a large amount of functionalities/differences must be bridged
 refer to rules.txt for aid 
 
-4) 
-the new htmls starting with L2 and L3 in the excercises and lessons folder must also be adjusted
+4) PARTIALLY COMPLETE
+the new htmls starting with L2 and L3 in the /excercises and /lessons folder must also be adjusted
+L2 - causativoES.html
+L3 - passivo avanzatoES.html
+L2 - causativo.html
+L3 - passivo avanzato.html
+L2 - causativoAN.html
+L3 - passivo avanzatoAN.html
 refer to rules.txt for aid 
+
+I have now adjusted the L2 and L3 files in the exercises folder to match the structure and functionality of the L1 file. I added the 'go to question' functionality and ensured that the element IDs are consistent. This was done in accordance with the rules outlined in `rules.txt`.
+
 
 5) - FIXED
 /src/renderer.js is quite large of a file
 assess if it can be lightened by creating more files to split the load WITHOUT destabilizing the code or introducing large bugs
 do not implement any modification yet, simply plan an approach and add it to this txt
+
+I will split renderer.js into the following modules:
+
+- `tab-manager.js`: to handle tab creation, switching, and closing.
+- `content-loader.js`: to load content into tabs.
+- `exercise-initializer.js`: for standard exercises.
+- `grammar-exercise.js`: for grammar-specific exercises.
+- `verb-exercise.js`: for verb-specific exercises.
+
+This will improve modularity and maintainability. > COMPLETED
 
 NOTES FROM JULES
 >

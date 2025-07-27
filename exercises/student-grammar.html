@@ -1,79 +1,129 @@
-<div id="app" class="container mx-auto p-4 md:p-8 max-w-7xl">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applied Grammar Diagnostic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* bg-slate-100 */
+        }
+        .key-rule {
+            background-color: #eef2ff; /* bg-indigo-50 */
+            color: #4338ca; /* text-indigo-800 */
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .tab-active {
+            border-bottom: 2px solid #4f46e5; /* border-indigo-600 */
+            color: #4f46e5; /* text-indigo-600 */
+            font-weight: 600;
+        }
+        .tab-inactive {
+            color: #64748b; /* text-slate-500 */
+            border-bottom: 2px solid transparent;
+        }
+        .tab-btn:hover {
+            color: #334155; /* text-slate-700 */
+        }
+        .feedback-correct {
+            background-color: #f0fdf4; /* bg-green-50 */
+            color: #166534; /* text-green-800 */
+        }
+        .feedback-incorrect {
+            background-color: #fef2f2; /* bg-red-50 */
+            color: #b91c1c; /* text-red-800 */
+        }
+    </style>
+</head>
+<body class="bg-slate-100">
+    <div id="app" class="container mx-auto p-4 md:p-10 max-w-7xl">
         
-        <header class="text-center mb-8">
+        <header class="bg-white rounded-lg shadow-lg overflow-hidden mb-10 p-6">
             <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Applied Grammar Diagnostic</h1>
-            <p class="text-slate-600 mt-2">An interactive assessment for TOEIC Preparation (B2-C1 Level)</p>
+            <p class="text-lg md:text-xl text-slate-500 mt-2">An interactive assessment for TOEIC Preparation (B2-C1 Level)</p>
         </header>
         
-        <div id="intro-view" class="bg-white p-6 rounded-lg shadow-md mb-8 prose max-w-none">
-            <h2 class="text-slate-900">Instructions and Test Overview</h2>
-            <p>This diagnostic test is designed to identify specific strengths and weaknesses in your understanding of applied English grammar. It is not about getting a simple score, but about pinpointing the exact grammatical rules you need to focus on.</p>
-            <p>The test is divided into three blocks. Each block should take approximately 30 minutes. The questions are challenging and often test several grammar points at once.</p>
-            <ul>
-                <li>Complete and submit each block independently. Your progress is saved automatically.</li>
-                <li>Use the provided "Notes" areas for complex questions to jot down your thought process.</li>
-            </ul>
-            <p class="mt-4">
-                You can **Save** your current test progress and notes at any time by clicking "Save Progress (JSON)". This will download a JSON file to your device.
-                To **Load** a previously saved test or continue from where you left off, click "Load Progress (JSON)" and select your saved JSON file. This will overwrite any current unsaved progress.
-            </p>
-            <div class="mt-6 flex flex-col md:flex-row justify-center items-center gap-4">
-                <button type="button" id="save-progress-btn" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300 shadow-md">Save Progress (JSON)</button>
-                <button type="button" id="load-progress-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300 shadow-md">Load Progress (JSON)</button>
-                <input type="file" id="load-file-input" accept=".json" class="hidden">
-            </div>
-            <p class="mt-4">After submitting a block, you will enter "Review Mode" to see your results directly on the test. You can then proceed to the "Diagnostics" page for a performance breakdown.</p>
-            <p>Good luck. Begin with Block A when you are ready.</p>
-        </div>
+        <main class="space-y-8">
+            <section id="intro-view" class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
+                <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4">Instructions and Test Overview</h2>
+                <div class="prose max-w-none mt-4">
+                    <p>This diagnostic test is designed to identify specific strengths and weaknesses in your understanding of applied English grammar. It is not about getting a simple score, but about pinpointing the exact grammatical rules you need to focus on.</p>
+                    <p>The test is divided into three blocks. Each block should take approximately 30 minutes. The questions are challenging and often test several grammar points at once.</p>
+                    <ul>
+                        <li>Complete and submit each block independently. Your progress is saved automatically.</li>
+                        <li>Use the provided "Notes" areas for complex questions to jot down your thought process.</li>
+                    </ul>
+                    <p class="mt-4">
+                        You can <strong>Save</strong> your current test progress and notes at any time by clicking "Save Progress (JSON)". This will download a JSON file to your device.
+                        To **Load** a previously saved test or continue from where you left off, click "Load Progress (JSON)" and select your saved JSON file. This will overwrite any current unsaved progress.
+                    </p>
+                    <div class="mt-6 flex flex-col md:flex-row justify-center items-center gap-4">
+                        <button type="button" id="save-progress-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300 shadow-md">Save Progress (JSON)</button>
+                        <button type="button" id="load-progress-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300 shadow-md">Load Progress (JSON)</button>
+                        <input type="file" id="load-file-input" accept=".json" class="hidden">
+                         <button type="button" id="reset-progress-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300 shadow-md">Reset Progress</button>
+                    </div>
+                    <p class="mt-4">After submitting a block, you will enter "Review Mode" to see your results directly on the test. You can then proceed to the "Diagnostics" page for a performance breakdown.</p>
+                    <p>Good luck. Begin with Block A when you are ready.</p>
+                </div>
+            </section>
 
-        <div>
-            <div id="test-container" class="bg-white p-6 rounded-lg shadow-md">
+            <section id="test-container" class="bg-white rounded-lg shadow-lg overflow-hidden">
                 <div id="test-view">
-                    <div class="mb-6 border-b border-slate-200">
+                    <div class="p-6 bg-slate-50 border-b border-slate-200">
                         <nav class="flex space-x-6" aria-label="Tabs">
                             <button id="tab-block-1" class="tab-btn py-3 px-1 text-sm font-medium tab-active">Block A</button>
                             <button id="tab-block-2" class="tab-btn py-3 px-1 text-sm font-medium tab-inactive">Block B</button>
                             <button id="tab-block-3" class="tab-btn py-3 px-1 text-sm font-medium tab-inactive">Block C</button>
                         </nav>
                     </div>
-                    <form id="diagnostic-form">
+                    <form id="diagnostic-form" class="p-6">
                         <div id="questions-container"></div>
                         <div id="submission-area" class="mt-8 text-center"></div>
                     </form>
                 </div>
-            </div>
+            </section>
 
-            <div id="diagnostics-view" class="hidden">
-                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-bold text-slate-900">Performance Diagnostics</h2>
-                    <button id="back-to-review-btn" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 shadow-md">
-                        &larr; Back to Test Review
-                    </button>
+            <section id="diagnostics-view" class="hidden">
+                 <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <header class="p-6 flex justify-between items-center bg-slate-50 border-b border-slate-200">
+                        <h2 class="text-2xl font-bold text-slate-800">Performance Diagnostics</h2>
+                        <button id="back-to-review-btn" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 shadow-md">
+                            &larr; Back to Test Review
+                        </button>
+                    </header>
+                    <div class="p-6">
+                        <div class="mb-6 border-b border-slate-200">
+                            <nav class="flex flex-wrap -mb-px" aria-label="Tabs">
+                                <button id="diag-tab-overall" data-tab="overall" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Overall</button>
+                                <button id="diag-tab-block-a" data-tab="block-a" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Block A</button>
+                                <button id="diag-tab-block-b" data-tab="block-b" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Block B</button>
+                                <button id="diag-tab-block-c" data-tab="block-c" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Block C</button>
+                            </nav>
+                        </div>
+                        <div id="diag-content-overall" class="diag-content hidden">
+                            <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="overallChart"></canvas> </div>
+                        </div>
+                        <div id="diag-content-block-a" class="diag-content hidden">
+                             <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="blockAChart"></canvas> </div>
+                        </div>
+                        <div id="diag-content-block-b" class="diag-content hidden">
+                             <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="blockBChart"></canvas> </div>
+                        </div>
+                        <div id="diag-content-block-c" class="diag-content hidden">
+                             <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="blockCChart"></canvas> </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <div class="mb-6 border-b border-slate-200">
-                        <nav class="flex flex-wrap -mb-px" aria-label="Tabs">
-                            <button id="diag-tab-overall" data-tab="overall" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Overall</button>
-                            <button id="diag-tab-block-a" data-tab="block-a" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Block A</button>
-                            <button id="diag-tab-block-b" data-tab="block-b" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Block B</button>
-                            <button id="diag-tab-block-c" data-tab="block-c" class="diag-tab-btn mr-6 py-3 px-1 text-sm font-medium tab-inactive" disabled>Block C</button>
-                        </nav>
-                    </div>
-                    <div id="diag-content-overall" class="diag-content hidden">
-                        <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="overallChart"></canvas> </div>
-                    </div>
-                    <div id="diag-content-block-a" class="diag-content hidden">
-                         <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="blockAChart"></canvas> </div>
-                    </div>
-                    <div id="diag-content-block-b" class="diag-content hidden">
-                         <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="blockBChart"></canvas> </div>
-                    </div>
-                    <div id="diag-content-block-c" class="diag-content hidden">
-                         <div class="chart-container relative w-full mx-auto h-[28rem]"> <canvas id="blockCChart"></canvas> </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            </section>
+        </main>
     </div>
 <script type="application/json" id="exercise-data">
 {

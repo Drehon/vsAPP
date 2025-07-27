@@ -22,7 +22,7 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
         if (e.target.closest('.close-tab-btn')) return; // Ignore clicks on the close button
         if (tab.active && tab.view !== 'home') {
           // If active tab is clicked and it's not home, go to home view for that tab
-          loadHomeIntoTab(tab.id);
+          loadHomeIntoTab(tab.id, tabs, renderTabs, addTab);
         } else if (!tab.active) {
           // If inactive tab is clicked, switch to it
           switchTab(tab.id);
@@ -69,11 +69,11 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
     contentPanes.appendChild(paneEl);
 
     if (type === 'content' && filePath) {
-      await loadContentIntoTab(newTab.id, filePath);
+      await loadContentIntoTab(newTab.id, filePath, tabs, renderTabs, addTab);
     } else if (type === 'settings') {
-      await loadSettingsIntoTab(newTab.id);
+      await loadSettingsIntoTab(newTab.id, tabs, renderTabs);
     } else {
-      await loadHomeIntoTab(newTab.id);
+      await loadHomeIntoTab(newTab.id, tabs, renderTabs, addTab);
     }
 
     // Ensure the new tab is marked as active before rendering, or just render if not setting active

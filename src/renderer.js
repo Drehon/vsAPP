@@ -26,9 +26,9 @@ window.addEventListener('api-ready', () => {
     tabBar,
     newTabBtn,
     contentPanes,
-    loadHomeIntoTab,
-    loadContentIntoTab,
-    loadSettingsIntoTab
+    (tabId) => loadHomeIntoTab(tabId, tabs, renderTabs, addTab),
+    (tabId, filePath) => loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab),
+    (tabId) => loadSettingsIntoTab(tabId, tabs, renderTabs)
   );
 
 

@@ -81,12 +81,17 @@
         <!-- Main Content -->
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             <!-- Tabs -->
-            <div class="border-b border-slate-200">
-                <nav class="flex flex-wrap sm:flex-nowrap space-x-2 md:space-x-6 px-6" aria-label="Tabs">
+            <div class="border-b border-slate-200 flex justify-between items-center px-6">
+                <nav class="flex flex-wrap sm:flex-nowrap space-x-2 md:space-x-6" aria-label="Tabs">
                     <button data-tab="1" class="tab-btn py-4 px-2 md:px-4 text-sm font-medium tab-active">Fase 1: Comprensione (50)</button>
                     <button data-tab="2" class="tab-btn py-4 px-2 md:px-4 text-sm font-medium tab-inactive">Fase 2: Riconoscimento (30)</button>
                     <button data-tab="3" class="tab-btn py-4 px-2 md:px-4 text-sm font-medium tab-inactive">Fase 3: Produzione (20)</button>
                 </nav>
+                <div class="flex items-center text-sm">
+                    <label for="jump-to" class="text-slate-600 mr-2">Vai a:</label>
+                    <input type="number" id="jump-to" class="w-20 border-slate-300 rounded-md shadow-sm text-sm" min="1">
+                    <button id="jump-btn" class="ml-2 px-3 py-1 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 text-sm">Vai</button>
+                </div>
             </div>
 
             <!-- Tab Content -->
@@ -261,6 +266,7 @@
                 const isCorrect = isAnswered && userAnswer === q.answer;
 
                 const questionEl = document.createElement('div');
+                questionEl.id = `q-f1-${index}`;
                 questionEl.className = 'p-4 border border-slate-200 rounded-lg shadow-sm';
                 questionEl.innerHTML = `
                     <p class="text-slate-800">${index + 1}. ${q.question}</p>
@@ -308,6 +314,7 @@
                 }).join('');
 
                 const questionEl = document.createElement('div');
+                questionEl.id = `q-f2-${index}`;
                 questionEl.className = 'p-4 border border-slate-200 rounded-lg shadow-sm';
                 questionEl.innerHTML = `
                     <p class="text-slate-800">${index + 1}. ${q.question.replace('______', '<span class="font-mono text-indigo-600">______</span>')}</p>
@@ -342,6 +349,7 @@
                 const isCorrect = isAnswered && userAnswer.trim().toLowerCase() === q.answer.toLowerCase();
 
                 const questionEl = document.createElement('div');
+                questionEl.id = `q-f3-${index}`;
                 questionEl.className = 'p-4 border border-slate-200 rounded-lg shadow-sm';
                 questionEl.innerHTML = `
                     <div class="p-4 bg-slate-50 border border-slate-200 rounded-md">
@@ -439,8 +447,44 @@
             }
         });
 
+        function addNavigationListeners() {
+            const jumpInput = document.getElementById('jump-to');
+            const jumpBtn = document.getElementById('jump-btn');
+
+            const jumpToAction = () => {
+                const qNum = parseInt(jumpInput.value);
+                if (isNaN(qNum)) return;
+
+                const activeTab = document.querySelector('.tab-btn.tab-active').dataset.tab;
+                const questions = exerciseData[`fase${activeTab}`];
+                if (qNum < 1 || qNum > questions.length) {
+                    alert(`Numero non valido. Inserisci un numero tra 1 e ${questions.length}.`);
+                    return;
+                }
+
+                const questionId = `q-f${activeTab}-${qNum - 1}`;
+                const questionEl = document.getElementById(questionId);
+                if (questionEl) {
+                    questionEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    questionEl.classList.add('ring-2', 'ring-indigo-400', 'ring-offset-2');
+                    setTimeout(() => {
+                        questionEl.classList.remove('ring-2', 'ring-indigo-400', 'ring-offset-2');
+                    }, 2500);
+                }
+            };
+
+            jumpBtn.addEventListener('click', jumpToAction);
+            jumpInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    jumpToAction();
+                }
+            });
+        }
+
         // Initial render
         switchTab('1');
+        addNavigationListeners();
     });
     </script>
 </body>
