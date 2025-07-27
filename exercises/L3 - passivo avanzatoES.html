@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esercizi Pratici: I Passivi Avanzati</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* bg-slate-200 */
+        }
+        .tab-btn {
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .tab-active {
+            border-bottom-color: #4f46e5; /* border-indigo-600 */
+            color: #3730a3; /* text-indigo-800 */
+            font-weight: 600;
+        }
+        .tab-inactive {
+            color: #475569; /* text-slate-600 */
+        }
+        .feedback-correct {
+            color: #166534; /* text-green-800 */
+            background-color: #dcfce7; /* bg-green-100 */
+            border-left-color: #22c55e; /* border-green-500 */
+        }
+        .feedback-incorrect {
+            color: #991b1b; /* text-red-800 */
+            background-color: #fee2e2; /* bg-red-100 */
+            border-left-color: #ef4444; /* border-red-500 */
+        }
+        code, .font-mono {
+            font-family: 'Source Code Pro', monospace;
+        }
+        .notes-content {
+            transition: max-height 0.3s ease-in-out;
+            max-height: 500px;
+            overflow: hidden;
+        }
+        .notes-content.hidden {
+            max-height: 0;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-10 max-w-7xl">
+
+        <!-- Header -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
+            <header class="p-6 md:p-8">
+                <h1 class="text-3xl font-bold text-slate-900">Esercizi Pratici: I Passivi Avanzati</h1>
+                <p class="text-lg text-slate-600 mt-1">Metti in pratica la teoria con esercizi mirati.</p>
+            </header>
+            <div class="p-6 border-t border-slate-200 bg-slate-50 text-sm text-slate-600 space-y-3">
+                <h3 class="font-semibold text-slate-800">Come usare questa pagina:</h3>
+                <ul class="list-disc list-inside space-y-1">
+                    <li><strong>Salvataggio Automatico:</strong> I tuoi progressi e le tue note vengono salvati automaticamente nel browser.</li>
+                    <li><strong>Area Note:</strong> Usa l'area note sotto ogni domanda per scrivere i tuoi pensieri o dubbi.</li>
+                    <li><strong>Carica JSON:</strong> Usa questo pulsante per caricare un file di progressi salvato in precedenza.</li>
+                    <li><strong>Salva e Scarica JSON:</strong> Clicca qui per scaricare un file <code>.json</code> con tutte le tue risposte e note.</li>
+                    <li><strong>Azzera Test:</strong> Rimuove tutti i progressi salvati nel browser e ripristina gli esercizi.</li>
+                </ul>
+            </div>
+            <div class="px-6 py-4 border-t border-slate-200 bg-slate-100 flex flex-wrap gap-4 justify-center items-center">
+                <button id="save-btn" class="text-sm bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-md">Salva e Scarica JSON</button>
+                <label class="text-sm bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-md cursor-pointer">
+                    <span>Carica JSON</span>
+                    <input type="file" id="load-input" class="hidden" accept=".json">
+                </label>
+                <button id="reset-btn" class="text-sm bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-md">Azzera Test</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <!-- Tabs -->
+            <div class="border-b border-slate-200">
+                <nav class="flex flex-wrap sm:flex-nowrap space-x-2 md:space-x-6 px-6" aria-label="Tabs">
+                    <button data-tab="1" class="tab-btn py-4 px-2 md:px-4 text-sm font-medium tab-active">Fase 1: Comprensione (50)</button>
+                    <button data-tab="2" class="tab-btn py-4 px-2 md:px-4 text-sm font-medium tab-inactive">Fase 2: Riconoscimento (30)</button>
+                    <button data-tab="3" class="tab-btn py-4 px-2 md:px-4 text-sm font-medium tab-inactive">Fase 3: Produzione (20)</button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="p-6 md:p-8">
+                <div id="tab-content-1" class="tab-content space-y-8"></div>
+                <div id="tab-content-2" class="tab-content hidden space-y-8"></div>
+                <div id="tab-content-3" class="tab-content hidden space-y-8"></div>
+            </div>
+        </div>
+    </div>
+
+    <script id="exercise-data" type="application/json">
+        {
+            "fase1": [
+                { "question": "La frase 'The documents might have been lost' si riferisce a una possibilità futura.", "answer": false, "explanation": "Falso. Si riferisce a una speculazione su un evento passato." },
+                { "question": "'By this time tomorrow, the agreement will be signed' è grammaticalmente corretto.", "answer": false, "explanation": "Falso. La presenza di 'By this time tomorrow' richiede il futuro perfetto: 'will have been signed'." },
+                { "question": "'He is thought to be a genius' significa la stessa cosa di 'People think he is a genius'.", "answer": true, "explanation": "Corretto. È una forma passiva e impersonale per riportare un'opinione diffusa." },
+                { "question": "La frase 'The thief is said to have escaped' significa che la gente crede che la sua fuga sia avvenuta nel passato.", "answer": true, "explanation": "Corretto. L'infinito perfetto 'to have escaped' si usa per un'azione passata rispetto al verbo 'is said'." },
+                { "question": "In 'The car should be repaired', si sta esprimendo un rimpianto per qualcosa che non è stato fatto.", "answer": false, "explanation": "Falso. 'Should be repaired' esprime una raccomandazione per il presente/futuro. Il rimpianto si esprime con 'should have been repaired'." },
+                { "question": "La frase 'It is known that the Earth is round' è un esempio di 'reporting passive'.", "answer": true, "explanation": "Corretto. Usa la struttura 'It + verbo passivo + that-clause' per riportare un fatto noto." },
+                { "question": "'The project had been finished' significa che il progetto è stato finito prima di un altro evento passato.", "answer": true, "explanation": "Corretto. Questa è la funzione del Past Perfect Passive." },
+                { "question": "La frase 'The cake was being eaten' è al Past Simple Passive.", "answer": false, "explanation": "Falso. È al Past Continuous Passive, per descrivere un'azione passiva in corso nel passato." },
+                { "question": "'The suspect is believed to hide in the mountains' è una frase corretta.", "answer": false, "explanation": "Falso. La forma corretta è 'is believed to be hiding', usando l'infinito continuo per un'azione in corso." },
+                { "question": "La frase 'This work must to be done' è corretta.", "answer": false, "explanation": "Falso. Dopo un modale, il passivo si forma con 'be', non 'to be'. Corretto: 'must be done'." },
+                { "question": "Il Future Perfect Passive si forma con 'will be + been + participio'.", "answer": false, "explanation": "Falso. Si forma con 'will have been + participio'." },
+                { "question": "'He was seen to leave the building' è una forma passiva corretta.", "answer": true, "explanation": "Corretto. È la forma passiva di 'Someone saw him leave the building'." },
+                { "question": "La frase 'The problem can't have been solved' esprime l'impossibilità che un'azione passata sia avvenuta.", "answer": true, "explanation": "Corretto. È la forma negativa del modale perfetto passivo per esprimere una deduzione negativa." },
+                { "question": "'It is said that he is rich' e 'He is said to be rich' sono intercambiabili.", "answer": true, "explanation": "Corretto. Hanno lo stesso significato, ma la seconda forma è spesso considerata stilisticamente migliore." },
+                { "question": "La frase 'The letters have been being sent all week' è un esempio di Present Perfect Continuous Passive.", "answer": true, "explanation": "Corretto. Sebbene rara, questa forma esiste per enfatizzare la durata di un'azione passiva che continua fino al presente." },
+                { "question": "Per trasformare 'They made him confess' al passivo, la frase diventa 'He was made confess'.", "answer": false, "explanation": "Falso. La forma passiva di 'make' richiede l'infinito con 'to': 'He was made to confess'." },
+                { "question": "'The task will being completed' è una forma futura corretta.", "answer": false, "explanation": "Falso. Non esiste. Le forme corrette sono 'will be completed' o 'will be being completed' (Future Continuous Passive)." },
+                { "question": "La frase 'The city is known to have been founded by the Romans' è corretta.", "answer": true, "explanation": "Corretto. Usa un 'reporting passive' con un infinito perfetto passivo ('to have been founded')." },
+                { "question": "'The meal might be being cooked right now' è una frase impossibile.", "answer": false, "explanation": "Falso. È una frase corretta (Modal Continuous Passive) per speculare su un'azione passiva in corso." },
+                { "question": "La frase 'The house has been built last year' è corretta.", "answer": false, "explanation": "Falso. La presenza di 'last year' richiede il Past Simple Passive ('was built'), non il Present Perfect." },
+                { "question": "Il passivo si usa quando l'agente (chi compie l'azione) è sconosciuto o non importante.", "answer": true, "explanation": "Corretto. Questa è una delle funzioni principali della voce passiva." },
+                { "question": "La frase 'English is spoken here' è un esempio di passivo al presente semplice.", "answer": true, "explanation": "Corretto. Descrive uno stato o un'abitudine presente." },
+                { "question": "'The documents must have been being shredded when you called' è una frase grammaticalmente corretta.", "answer": true, "explanation": "Corretto. È un Modal Perfect Continuous Passive, usato per dedurre un'azione passiva in corso nel passato." },
+                { "question": "La frase 'He is supposed to be working' è una forma di passivo.", "answer": true, "explanation": "Corretto. 'Be supposed to' è una costruzione passiva che esprime un'aspettativa o un dovere." },
+                { "question": "Il passivo si può formare con tutti i tempi verbali inglesi.", "answer": true, "explanation": "Corretto, anche se alcune forme (come il Future Perfect Continuous Passive) sono estremamente rare." },
+                { "question": "La frase 'The decision had to be made' esprime una necessità passata.", "answer": true, "explanation": "Corretto. È la forma passiva del semi-modale 'had to'." },
+                { "question": "La frase 'It is rumoured that the CEO will resign' è un esempio di 'reporting passive'.", "answer": true, "explanation": "Corretto. Riporta una voce o un pettegolezzo in modo impersonale." },
+                { "question": "La frase 'The car could have been repaired' significa che c'era la possibilità di riparare l'auto, ma non è stato fatto.", "answer": true, "explanation": "Corretto. 'Could have been' + participio spesso implica una possibilità passata non realizzata." },
+                { "question": "La frase 'My bike was stolen' è più formale di 'I had my bike stolen'.", "answer": true, "explanation": "Generalmente sì. Il passivo semplice è una costruzione più neutra e formale rispetto al causativo." },
+                { "question": "La frase 'The stadium is being built' descrive un'azione completata.", "answer": false, "explanation": "Falso. Descrive un'azione in corso di svolgimento." },
+                { "question": "La frase 'The law ought to be changed' è un esempio di passivo con un verbo modale.", "answer": true, "explanation": "Corretto. 'Ought to' è un semi-modale e la struttura è 'ought to be' + participio." },
+                { "question": "La frase 'He was heard to shout for help' è grammaticalmente corretta.", "answer": true, "explanation": "Corretto. È la forma passiva di 'Someone heard him shout for help'." },
+                { "question": "Il Present Perfect Passive si usa per un'azione passata con un risultato nel presente.", "answer": true, "explanation": "Corretto. Esempio: 'The window has been broken' (e ora è rotta)." },
+                { "question": "La frase 'The fugitive was reported to have crossed the border' è corretta.", "answer": true, "explanation": "Corretto. Usa un 'reporting verb' al passivo con un infinito perfetto." },
+                { "question": "La frase 'The work will have been being done for three hours by 5 PM' è una frase comune.", "answer": false, "explanation": "Falso. Sebbene grammaticalmente possibile (Future Perfect Continuous Passive), è estremamente rara e complessa." },
+                { "question": "Il passivo si forma sempre con il verbo 'to be'.", "answer": false, "explanation": "Falso. Si può formare anche con 'get' (es. 'He got hurt'), che è generalmente più informale." },
+                { "question": "La frase 'The package was to have been delivered yesterday' esprime un piano passato che non si è verificato.", "answer": true, "explanation": "Corretto. La struttura 'be to have' + participio è usata per piani o accordi passati non rispettati." },
+                { "question": "La frase 'He is said that he is a spy' è corretta.", "answer": false, "explanation": "Falso. Le due strutture corrette sono 'It is said that he is a spy' oppure 'He is said to be a spy'." },
+                { "question": "La frase 'The bridge is going to be built next year' è un esempio di futuro passivo.", "answer": true, "explanation": "Corretto. Usa la forma 'be going to' al passivo." },
+                { "question": "La frase 'The emails were sent' non specifica chi ha inviato le email.", "answer": true, "explanation": "Corretto. L'agente è omesso, che è una caratteristica comune del passivo." },
+                { "question": "La frase 'The suspect was seen running away' è corretta.", "answer": true, "explanation": "Corretto. Dopo verbi di percezione al passivo, si può usare la forma in -ing." },
+                { "question": "La frase 'The patient must not be moved' esprime un divieto.", "answer": true, "explanation": "Corretto. È un modale passivo negativo che esprime un forte divieto." },
+                { "question": "La frase 'It was decided to cancel the meeting' è una forma passiva impersonale.", "answer": true, "explanation": "Corretto. Usa 'it' come soggetto fittizio." },
+                { "question": "La frase 'The results have to be announced tomorrow' esprime un obbligo futuro.", "answer": true, "explanation": "Corretto. Usa il semi-modale 'have to' al passivo." },
+                { "question": "La frase 'The book is worth being read' è una costruzione comune.", "answer": false, "explanation": "Falso. La costruzione corretta è 'The book is worth reading'. 'Worth' è seguito dalla forma in -ing." },
+                { "question": "La frase 'The problem needs solving' ha un significato passivo.", "answer": true, "explanation": "Corretto. È un'alternativa a 'The problem needs to be solved'." },
+                { "question": "La frase 'The room was filled with smoke' usa una preposizione diversa da 'by' per l'agente.", "answer": true, "explanation": "Corretto. Alcuni verbi al passivo usano preposizioni specifiche come 'with', 'in', 'at'." },
+                { "question": "La frase 'The new policy is to be implemented next month' esprime un piano o accordo formale.", "answer": true, "explanation": "Corretto. La struttura 'be to' al passivo è usata per annunci ufficiali." },
+                { "question": "La frase 'He might have been being followed' è grammaticalmente possibile.", "answer": true, "explanation": "Corretto (Modal Perfect Continuous Passive). Significa: 'È possibile che lo stessero seguendo'." }
+            ],
+            "fase2": [
+                { "question": "The final decision ______ by the end of the day yesterday, but there was a delay.", "options": ["should be made", "should have been made", "must be made", "was being made"], "answer": "should have been made", "explanation": "Si parla di un'aspettativa passata non realizzata, quindi si usa un modale perfetto passivo." },
+                { "question": "Look at the damage! The package ______ during transit.", "options": ["must have been damaged", "must be damaged", "should be damaged", "can be damaged"], "answer": "must have been damaged", "explanation": "Si esprime una deduzione quasi certa su un evento passato, quindi si usa 'must have been' + participio." },
+                { "question": "By the time the new CEO takes over, a new strategy ______.", "options": ["will be developed", "will have developed", "is being developed", "will have been developed"], "answer": "will have been developed", "explanation": "L'espressione 'By the time...' richiede il futuro perfetto passivo per un'azione completata prima di un'altra nel futuro." },
+                { "question": "The former director is rumored ______ a large sum of money with him when he left.", "options": ["to take", "to be taking", "to have taken", "having taken"], "answer": "to have taken", "explanation": "L'azione (prendere i soldi) è avvenuta prima del 'rumor', quindi si usa l'infinito perfetto 'to have taken'." },
+                { "question": "It is widely ______ that the new regulations will be difficult to enforce.", "options": ["believed", "believing", "to believe", "believe"], "answer": "believed", "explanation": "Questa è la struttura passiva impersonale 'It is + participio passato + that...'." },
+                { "question": "The missing files were nowhere to be found. They ______ permanently.", "options": ["could be deleted", "might have been deleted", "can be deleted", "should be deleted"], "answer": "might have been deleted", "explanation": "Si esprime una possibilità riguardo a un evento passato. 'Might have been deleted' è la scelta corretta." },
+                { "question": "All employees are required ______ a safety course.", "options": ["attending", "to attend", "be attended", "to be attended"], "answer": "to attend", "explanation": "La struttura passiva 'be required' è seguita dall'infinito con 'to'." },
+                { "question": "This historic building ______ in the 18th century.", "options": ["has been built", "was built", "had been built", "is built"], "answer": "was built", "explanation": "La data specifica ('in the 18th century') richiede il Past Simple Passive." },
+                { "question": "The meeting ______ right now in the main conference room.", "options": ["is held", "is being held", "has been held", "is holding"], "answer": "is being held", "explanation": "L'espressione 'right now' indica un'azione in corso, quindi si usa il Present Continuous Passive." },
+                { "question": "He ______ to be one of the wealthiest people in the country.", "options": ["is known", "is knowing", "has been known", "knows"], "answer": "is known", "explanation": "Questa è la struttura 'reporting passive' 'Soggetto + be + participio'." },
+                { "question": "If you had told me earlier, something ______.", "options": ["can be done", "could be done", "could have been done", "can have been done"], "answer": "could have been done", "explanation": "In un condizionale di terzo tipo, la 'result clause' al passivo usa 'could/would/might have been' + participio." },
+                { "question": "The new software ______ on all computers by the end of the week.", "options": ["will install", "will be installing", "will have been installed", "has been installed"], "answer": "will have been installed", "explanation": "L'espressione 'by the end of the week' richiede il Future Perfect Passive." },
+                { "question": "The suspect ______ leaving the scene of the crime by two witnesses.", "options": ["was seen", "has been seen", "was seeing", "is seen"], "answer": "was seen", "explanation": "È un'azione passata puntuale, quindi si usa il Past Simple Passive." },
+                { "question": "This type of problem ______ easily avoided with better planning.", "options": ["can have been", "could have been", "should be", "must be"], "answer": "could have been", "explanation": "Si parla di una possibilità passata non realizzata, un'alternativa a ciò che è successo." },
+                { "question": "It ______ that the company lost millions last year.", "options": ["is reporting", "has reported", "was reported", "had been reported"], "answer": "was reported", "explanation": "Si usa il Past Simple Passive ('was reported') per un report o una notizia su un evento passato ('last year')." },
+                { "question": "The children ______ to stay inside because of the storm.", "options": ["were made", "were had", "were got", "were let"], "answer": "were made", "explanation": "La forma passiva di 'make someone do something' è 'be made to do something'." },
+                { "question": "The system ______ for vulnerabilities at this very moment.", "options": ["is checked", "has been checked", "is being checked", "checks"], "answer": "is being checked", "explanation": "'At this very moment' indica un'azione in corso, richiedendo il Present Continuous Passive." },
+                { "question": "The CEO is expected ______ a statement later today.", "options": ["making", "to be made", "to make", "make"], "answer": "to make", "explanation": "La struttura 'be expected' è seguita dall'infinito con 'to'." },
+                { "question": "Before the guests arrived, the table ______.", "options": ["was set", "has been set", "had been set", "was being set"], "answer": "had been set", "explanation": "L'azione di apparecchiare è avvenuta prima di un'altra azione passata (l'arrivo degli ospiti), quindi si usa il Past Perfect Passive." },
+                { "question": "Your application ______ until the fee is paid.", "options": ["will not process", "will not be processed", "is not processed", "has not been processed"], "answer": "will not be processed", "explanation": "Si parla di un'azione futura condizionata, quindi si usa il Future Simple Passive." },
+                { "question": "The fugitive is thought ______ the country using a fake passport.", "options": ["to leave", "to be leaving", "to have left", "having left"], "answer": "to have left", "explanation": "L'azione di lasciare il paese è avvenuta prima del 'thinking', quindi si usa l'infinito perfetto." },
+                { "question": "These instructions ______ carefully.", "options": ["must follow", "must be followed", "must have followed", "must be following"], "answer": "must be followed", "explanation": "È un obbligo presente/futuro, quindi si usa il modale + be + participio." },
+                { "question": "He was lucky. He ______ in the accident.", "options": ["could be killed", "can be killed", "could have been killed", "can have been killed"], "answer": "could have been killed", "explanation": "Si esprime una possibilità passata che fortunatamente non si è verificata." },
+                { "question": "A lot of progress ______ in the last few years.", "options": ["is made", "was made", "has been made", "had been made"], "answer": "has been made", "explanation": "'In the last few years' collega il passato al presente, richiedendo il Present Perfect Passive." },
+                { "question": "The president ______ to have won the election, but the final results are not in yet.", "options": ["is appeared", "appears", "is appearing", "appearing"], "answer": "appears", "explanation": "Il verbo 'appear' in questa costruzione ('appears to have won') non si usa al passivo." },
+                { "question": "The accused ______ to be innocent until proven guilty.", "options": ["is presumed", "is presuming", "has presumed", "presumes"], "answer": "is presumed", "explanation": "È una costruzione passiva comune nel linguaggio legale." },
+                { "question": "The fire is believed ______ by an electrical fault.", "options": ["to start", "to be started", "to have been started", "to have started"], "answer": "to have been started", "explanation": "L'azione (l'inizio dell'incendio) è passata, quindi si usa l'infinito perfetto passivo." },
+                { "question": "I don't appreciate ______ like a child.", "options": ["treating", "to be treated", "being treated", "having treated"], "answer": "being treated", "explanation": "Dopo 'appreciate' si usa la forma in -ing. La forma passiva è 'being' + participio." },
+                { "question": "The data ______ as we speak.", "options": ["is analyzed", "is being analyzed", "has been analyzed", "analyzes"], "answer": "is being analyzed", "explanation": "'As we speak' indica un'azione in corso, richiedendo il Present Continuous Passive." },
+                { "question": "It ______ that a deal will be reached soon.", "options": ["is hoped", "is hoping", "has hoped", "hopes"], "answer": "is hoped", "explanation": "Questa è la struttura impersonale passiva 'It is hoped that...'." }
+            ],
+            "fase3": [
+                { "prompt": "People say that he was a very talented musician in his youth.", "question": "He is said...", "answer": "to have been a very talented musician in his youth", "explanation": "L'azione ('was a musician') è nel passato rispetto a 'is said', quindi si usa 'to have been'." },
+                { "prompt": "I think they have probably cancelled the meeting.", "question": "The meeting is likely...", "answer": "to have been cancelled", "explanation": "La struttura 'is likely' è simile a un reporting verb e richiede l'infinito perfetto passivo per un'azione passata." },
+                { "prompt": "They will finish the construction work by the end of next year.", "question": "By the end of next year, the construction work...", "answer": "will have been finished", "explanation": "'By the end of next year' richiede il futuro perfetto passivo." },
+                { "prompt": "Maybe they didn't receive our invoice.", "question": "Our invoice might...", "answer": "not have been received", "explanation": "Si esprime una possibilità passiva ('might') su un'azione passata ('not have been received')." },
+                { "prompt": "The management must approve all expenses.", "question": "All expenses...", "answer": "must be approved by the management", "explanation": "Questo è un modale passivo semplice (presente/futuro)." },
+                { "prompt": "The police were investigating the case for two months.", "question": "The case...", "answer": "was being investigated for two months", "explanation": "Per un'azione passiva in corso nel passato, si usa il Past Continuous Passive." },
+                { "prompt": "Someone should have told her about the risks.", "question": "She...", "answer": "should have been told about the risks", "explanation": "Si esprime un rimpianto o una critica su un'azione passiva non avvenuta." },
+                { "prompt": "They expect the government to announce new measures.", "question": "The government is expected...", "answer": "to announce new measures", "explanation": "La struttura 'be expected' è seguita dall'infinito con 'to'." },
+                { "prompt": "It's certain that the company made a huge profit.", "question": "The company is certain...", "answer": "to have made a huge profit", "explanation": "L'azione ('made a profit') è passata, quindi si usa l'infinito perfetto." },
+                { "prompt": "The teacher made the students rewrite their essays.", "question": "The students...", "answer": "were made to rewrite their essays", "explanation": "La forma passiva di 'make' richiede l'infinito con 'to'." },
+                { "prompt": "They are building a new bridge over the river.", "question": "A new bridge...", "answer": "is being built over the river", "explanation": "Per un'azione in corso, si usa il Present Continuous Passive." },
+                { "prompt": "No one had invited me to the party.", "question": "I...", "answer": "had not been invited to the party", "explanation": "Questa è la forma negativa del Past Perfect Passive." },
+                { "prompt": "They will have to postpone the event.", "question": "The event...", "answer": "will have to be postponed", "explanation": "La forma passiva con il semi-modale 'will have to'." },
+                { "prompt": "We believe the suspect left the country last night.", "question": "The suspect is believed...", "answer": "to have left the country last night", "explanation": "L'azione ('left') è passata, quindi si usa l'infinito perfetto." },
+                { "prompt": "You must not touch this button.", "question": "This button...", "answer": "must not be touched", "explanation": "Modale passivo negativo che esprime un divieto." },
+                { "prompt": "They have just released the new album.", "question": "The new album...", "answer": "has just been released", "explanation": "Per un'azione appena accaduta, si usa il Present Perfect Passive." },
+                { "prompt": "It is your duty to report the incident.", "question": "You are supposed...", "answer": "to report the incident", "explanation": "'Be supposed to' è una costruzione passiva che esprime dovere o aspettativa." },
+                { "prompt": "It was impossible for them to have finished the work.", "question": "The work can't...", "answer": "have been finished", "explanation": "'Can't have been' + participio esprime l'impossibilità di un'azione passata." },
+                { "prompt": "Someone is servicing my car this afternoon.", "question": "My car...", "answer": "is being serviced this afternoon", "explanation": "Per un'azione passiva in corso, si usa il Present Continuous Passive." },
+                { "prompt": "They allege that the company has been avoiding taxes for years.", "question": "The company is alleged...", "answer": "to have been avoiding taxes for years", "explanation": "L'azione ('has been avoiding') è iniziata nel passato e continua, quindi si usa l'infinito perfetto continuo." }
+            ]
+        }
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const exerciseData = JSON.parse(document.getElementById('exercise-data').textContent);
+        const storageKey = 'passivo-avanzato-es-state-v1';
+        let state = JSON.parse(localStorage.getItem(storageKey)) || { answers: {}, notes: {} };
+
+        function saveState() {
+            localStorage.setItem(storageKey, JSON.stringify(state));
+        }
+        
+        function createNotesArea(phase, index) {
+            const noteKey = `n_${phase}_${index}`;
+            const savedNote = state.notes[noteKey] || '';
+            
+            return `
+                <div class="mt-3">
+                    <button class="notes-toggle-btn text-xs text-slate-500 hover:text-indigo-600">Note</button>
+                    <div class="notes-content hidden mt-2">
+                        <textarea data-note-key="${noteKey}" class="notes-textarea w-full h-20 p-2 text-sm bg-slate-100 border border-slate-200 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Scrivi qui le tue note...">${savedNote}</textarea>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addNotesListeners(container) {
+            container.querySelectorAll('.notes-toggle-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const content = e.target.nextElementSibling;
+                    content.classList.toggle('hidden');
+                    e.target.textContent = content.classList.contains('hidden') ? 'Note' : 'Nascondi Note';
+                });
+            });
+
+            container.querySelectorAll('.notes-textarea').forEach(area => {
+                area.addEventListener('input', (e) => {
+                    state.notes[e.target.dataset.noteKey] = e.target.value;
+                    saveState();
+                });
+            });
+        }
+
+
+        function renderFase1() {
+            const container = document.getElementById('tab-content-1');
+            container.innerHTML = '';
+            exerciseData.fase1.forEach((q, index) => {
+                const answerKey = `f1_${index}`;
+                const userAnswer = state.answers[answerKey];
+                const isAnswered = userAnswer !== undefined;
+                const isCorrect = isAnswered && userAnswer === q.answer;
+
+                const questionEl = document.createElement('div');
+                questionEl.className = 'p-4 border border-slate-200 rounded-lg shadow-sm';
+                questionEl.innerHTML = `
+                    <p class="text-slate-800">${index + 1}. ${q.question}</p>
+                    <div class="flex items-center space-x-4 mt-3">
+                        <button data-answer="true" class="f1-btn px-4 py-2 text-sm font-semibold rounded-md transition-colors ${userAnswer === true ? (isCorrect ? 'bg-green-600 text-white' : 'bg-red-600 text-white') : 'bg-slate-200 hover:bg-slate-300'}">Vero</button>
+                        <button data-answer="false" class="f1-btn px-4 py-2 text-sm font-semibold rounded-md transition-colors ${userAnswer === false ? (isCorrect ? 'bg-green-600 text-white' : 'bg-red-600 text-white') : 'bg-slate-200 hover:bg-slate-300'}">Falso</button>
+                    </div>
+                    ${isAnswered ? `<div class="mt-3 p-3 text-sm border-l-4 rounded-r-md ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}">${q.explanation}</div>` : ''}
+                    ${createNotesArea(1, index)}
+                `;
+                container.appendChild(questionEl);
+
+                if (!isAnswered) {
+                    questionEl.querySelectorAll('.f1-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            state.answers[answerKey] = btn.dataset.answer === 'true';
+                            saveState();
+                            renderFase1();
+                        });
+                    });
+                }
+            });
+            addNotesListeners(container);
+        }
+
+        function renderFase2() {
+            const container = document.getElementById('tab-content-2');
+            container.innerHTML = '';
+            exerciseData.fase2.forEach((q, index) => {
+                const answerKey = `f2_${index}`;
+                const userAnswer = state.answers[answerKey];
+                const isAnswered = userAnswer !== undefined;
+                const isCorrect = isAnswered && userAnswer === q.answer;
+
+                const optionsHtml = q.options.map(opt => {
+                    let btnClass = 'bg-slate-200 hover:bg-slate-300';
+                    if (isAnswered) {
+                        if (opt === q.answer) {
+                            btnClass = 'bg-green-600 text-white';
+                        } else if (opt === userAnswer) {
+                            btnClass = 'bg-red-600 text-white';
+                        }
+                    }
+                    return `<button data-answer="${opt}" class="f2-btn px-3 py-1.5 text-sm font-semibold rounded-md transition-colors ${btnClass}">${opt}</button>`;
+                }).join('');
+
+                const questionEl = document.createElement('div');
+                questionEl.className = 'p-4 border border-slate-200 rounded-lg shadow-sm';
+                questionEl.innerHTML = `
+                    <p class="text-slate-800">${index + 1}. ${q.question.replace('______', '<span class="font-mono text-indigo-600">______</span>')}</p>
+                    <div class="flex flex-wrap items-center gap-3 mt-3">
+                        ${optionsHtml}
+                    </div>
+                    ${isAnswered ? `<div class="mt-3 p-3 text-sm border-l-4 rounded-r-md ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}">${q.explanation}</div>` : ''}
+                    ${createNotesArea(2, index)}
+                `;
+                container.appendChild(questionEl);
+
+                if (!isAnswered) {
+                    questionEl.querySelectorAll('.f2-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            state.answers[answerKey] = btn.dataset.answer;
+                            saveState();
+                            renderFase2();
+                        });
+                    });
+                }
+            });
+            addNotesListeners(container);
+        }
+        
+        function renderFase3() {
+            const container = document.getElementById('tab-content-3');
+            container.innerHTML = '';
+            exerciseData.fase3.forEach((q, index) => {
+                const answerKey = `f3_${index}`;
+                const userAnswer = state.answers[answerKey] || '';
+                const isAnswered = userAnswer !== '';
+                const isCorrect = isAnswered && userAnswer.trim().toLowerCase() === q.answer.toLowerCase();
+
+                const questionEl = document.createElement('div');
+                questionEl.className = 'p-4 border border-slate-200 rounded-lg shadow-sm';
+                questionEl.innerHTML = `
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-md">
+                        <p class="text-sm text-slate-600">Frase originale:</p>
+                        <p class="italic text-slate-800">"${q.prompt}"</p>
+                    </div>
+                    <p class="mt-3 text-slate-800">${index + 1}. ${q.question}</p>
+                    <div class="flex items-center space-x-2 mt-2">
+                        <input type="text" value="${userAnswer}" class="f3-input flex-grow p-2 border border-slate-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" ${isAnswered ? 'disabled' : ''}>
+                        ${!isAnswered ? `<button class="f3-submit-btn px-4 py-2 text-sm font-semibold rounded-md bg-indigo-600 text-white hover:bg-indigo-700">Controlla</button>` : ''}
+                    </div>
+                    ${isAnswered ? `<div class="mt-3 p-3 text-sm border-l-4 rounded-r-md ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}">
+                        ${isCorrect ? '' : `<p class="font-semibold">La tua risposta: <span class="font-mono">${userAnswer}</span></p><p class="mt-1 font-semibold">Risposta corretta: <span class="font-mono">${q.answer}</span></p><hr class="my-2">`}
+                        ${q.explanation}
+                    </div>` : ''}
+                    ${createNotesArea(3, index)}
+                `;
+                container.appendChild(questionEl);
+                
+                const input = questionEl.querySelector('.f3-input');
+                const submitBtn = questionEl.querySelector('.f3-submit-btn');
+
+                const handleSubmit = () => {
+                    if (input.value.trim() === '') return;
+                    state.answers[answerKey] = input.value.trim();
+                    saveState();
+                    renderFase3();
+                };
+
+                submitBtn?.addEventListener('click', handleSubmit);
+                input?.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') handleSubmit();
+                });
+            });
+            addNotesListeners(container);
+        }
+
+        function switchTab(tabNumber) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(`tab-content-${tabNumber}`).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.toggle('tab-active', b.dataset.tab == tabNumber);
+                b.classList.toggle('tab-inactive', b.dataset.tab != tabNumber);
+            });
+            
+            if (tabNumber == 1) renderFase1();
+            if (tabNumber == 2) renderFase2();
+            if (tabNumber == 3) renderFase3();
+        }
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+        });
+
+        document.getElementById('save-btn').addEventListener('click', () => {
+            const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.download = 'esercizi-passivo-avanzato-progress.json';
+            a.href = url;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        document.getElementById('load-input').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const loadedState = JSON.parse(e.target.result);
+                    if (loadedState.answers && loadedState.notes) {
+                        state = loadedState;
+                        saveState();
+                        switchTab('1');
+                    } else {
+                         alert('Errore: Formato del file non corretto.');
+                    }
+                } catch (error) {
+                    alert('Errore: File JSON non valido.');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        });
+
+        document.getElementById('reset-btn').addEventListener('click', () => {
+            if (confirm('Sei sicuro di voler cancellare tutti i progressi e le note?')) {
+                state = { answers: {}, notes: {} };
+                saveState();
+                switchTab('1');
+            }
+        });
+
+        // Initial render
+        switchTab('1');
+    });
+    </script>
+</body>
+</html>
