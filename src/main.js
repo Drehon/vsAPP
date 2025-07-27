@@ -1,8 +1,8 @@
-const { app, BrowserWindow, ipcMain, session, Menu, shell, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, session, Menu, shell, dialog, net } = require('electron');
 const path = require('path');
 const fs = require('fs').promises;
 const fsSync = require('fs');
-const { autoUpdater } = require('electron-updater'); // Import autoUpdater
+const { autoUpdater } = require('electron-updater');
 
 // --- Configuration Management ---
 const configPath = path.join(app.getPath('userData'), 'config.json');
@@ -52,8 +52,7 @@ const createWindow = () => {
     width: 1200,
     height: 800,
     webPreferences: {
-      // Use MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY for the preload script path
-      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY, 
+      preload: path.resolve(__dirname, 'preload.js'),
       nodeIntegration: true,
       contextIsolation: false,
     },
@@ -84,7 +83,7 @@ ipcMain.handle('save-config', async (event, newConfig) => {
 });
 
 ipcMain.handle('open-directory-dialog', async () => {
-    const { canceled, filePaths } = await dialog.showOpenOpenDialog({
+    const { canceled, filePaths } = await dialog.showOpenDialog({
         properties: ['openDirectory']
     });
     if (canceled) {
@@ -153,27 +152,34 @@ app.on('ready', () => {
   loadConfig();
   createWindow();
 
-  // Check for updates and notify
-  autoUpdater.checkForUpdatesAndNotify();
-
-  // Listener for update available
-  autoUpdater.on('update-available', () => {
-    // Send IPC message to renderer process to show notification
-    const allWindows = BrowserWindow.getAllWindows();
-    if (allWindows.length > 0) {
-      allWindows[0].webContents.send('update-available');
-    }
-  });
-
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {
         ...details.responseHeaders,
         'Content-Security-Policy': [
-          `default-src 'self'; script-src 'self' 'unsafe-inline' ${process.env.NODE_ENV === 'development' ? "'unsafe-eval'" : ''}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;`
+          `default-src 'self'; script-src 'self' 'unsafe-inline' ${process.env.NODE_ENV === 'development' ? "'unsafe-eval'" : ''}; style-src 'self' 'unsafe-inline'; font-src 'self';`
         ]
       }
     });
+  });
+
+  // Update check logic
+  const request = net.request('https://www.github.com');
+  request.on('response', () => {
+    console.log('Connection successful, checking for updates.');
+    autoUpdater.checkForUpdatesAndNotify();
+  });
+  request.on('error', (error) => {
+    console.log('No internet connection, skipping update check.', error.message);
+  });
+  request.end();
+
+  // Listener for update available event
+  autoUpdater.on('update-available', () => {
+    const win = BrowserWindow.getAllWindows()[0];
+    if (win) {
+      win.webContents.send('update-available');
+    }
   });
 
   const menuTemplate = [
@@ -300,12 +306,19 @@ ipcMain.handle('show-save-dialog-and-save-file', async (event, { defaultFilename
 });
 
 const getContents = async (dir) => {
-  const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : app.getAppPath();
-  const directoryPath = path.join(basePath, dir);
+  let directoryPath;
+  if (process.env.NODE_ENV === 'development') {
+    // In development, files are relative to the project root
+    directoryPath = path.join(process.cwd(), dir);
+  } else {
+    // In production, with asar: true and extraResource, files are in app.asar.unpacked
+    directoryPath = path.join(process.resourcesPath, 'app.asar.unpacked', dir);
+  }
   try {
     const files = await fs.readdir(directoryPath);
     return files.filter(file => file.endsWith('.html'));
   } catch (err) {
+    console.error(`Error reading directory ${directoryPath}:`, err);
     return [];
   }
 };
