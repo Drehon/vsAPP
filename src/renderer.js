@@ -19,8 +19,9 @@ window.addEventListener('api-ready', () => {
   const appVersionSpan = document.getElementById('app-version');
   const networkIndicator = document.getElementById('network-indicator');
   const networkLabel = document.getElementById('network-label');
-  // New: Update notification badge - now expected in the footer
-  const updateNotificationBadge = document.getElementById('update-notification-badge');
+  // New: Update status elements
+  const updateIndicator = document.getElementById('update-indicator');
+  const updateLabel = document.getElementById('update-label');
 
 
   // --- CORE FUNCTIONS ---
@@ -74,13 +75,28 @@ window.addEventListener('api-ready', () => {
   }
 
   /**
-   * Shows the update notification badge and makes it visible.
+   * Updates the update status to indicate a new release is available.
    */
-  function showUpdateNotification() {
-    if (updateNotificationBadge) {
-      updateNotificationBadge.classList.remove('hidden'); // Make it visible
-      updateNotificationBadge.classList.add('bg-blue-500'); // Light up the badge
-      updateNotificationBadge.classList.remove('bg-gray-400'); // Remove greyed out
+  function showNewReleaseStatus() {
+    if (updateIndicator) {
+      updateIndicator.classList.remove('bg-green-500', 'bg-gray-400');
+      updateIndicator.classList.add('bg-blue-500'); // Blue for new release
+    }
+    if (updateLabel) {
+      updateLabel.innerText = 'New Release';
+    }
+  }
+
+  /**
+   * Sets the update status to "Up to date".
+   */
+  function setUpToDateStatus() {
+    if (updateIndicator) {
+      updateIndicator.classList.remove('bg-blue-500', 'bg-gray-400');
+      updateIndicator.classList.add('bg-green-500'); // Green for up to date
+    }
+    if (updateLabel) {
+      updateLabel.innerText = 'Up to date';
     }
   }
 
@@ -109,6 +125,7 @@ window.addEventListener('api-ready', () => {
   async function initializeApp() {
     displayAppVersion();
     updateNetworkStatus();
+    setUpToDateStatus(); // Set initial update status to "Up to date"
 
     // Attach event listener for the new tab button
     if (newTabBtn) { // Null check
@@ -121,7 +138,7 @@ window.addEventListener('api-ready', () => {
 
     // Listen for update-available messages from the main process
     window.api.onUpdateAvailable(() => {
-      showUpdateNotification();
+      showNewReleaseStatus(); // Change status when an update is available
     });
 
     // Add initial tab on app startup and wait for it to complete
