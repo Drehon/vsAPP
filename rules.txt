@@ -4,35 +4,49 @@ This document outlines the rules and conventions for creating new content based 
 
 ## 1. Templating and Styling (Based on Tailwind CSS)
 
-### 1.1. General Page Structure
-- **Container:** All content should be wrapped in a `div` with the classes `container mx-auto p-6 md:p-10 max-w-7xl`.
-- **Body:** The `<body>` tag should have the class `text-slate-700`.
+### 1.1. Setup and Dependencies
+- **CSS Framework:** Use Tailwind CSS for all styling. For newer pages, link to the Tailwind CDN and Google Fonts in the `<head>`.
+  ```html
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  ```
+- **Custom CSS:** For page-specific styles, use a `<style>` block in the `<head>`. This is useful for creating reusable custom classes or complex styles not easily achievable with Tailwind alone.
 
-### 1.2. Headers
+### 1.2. General Page Structure
+- **Container:** All content should be wrapped in a `div` with classes like `container mx-auto p-4 md:p-10 max-w-7xl`.
+- **Body:** The `<body>` tag should have base font and background color classes, e.g., `font-family: 'Inter', sans-serif; background-color: #f1f5f9; /* bg-slate-200 */`.
+
+### 1.3. Headers
 - **Main Header:** Used for lesson and exercise pages.
-  - Wrapper: `<div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">`
-  - Title: `<h1 class="text-3xl font-bold text-slate-900">`
-  - Subtitle: `<p class="text-lg text-slate-600">`
+  - Wrapper: `<div class="bg-white rounded-lg shadow-lg overflow-hidden mb-10">`
+  - Title: `<h1 class="text-3xl md:text-4xl font-bold text-slate-900">`
+  - Subtitle: `<p class="text-lg md:text-xl text-slate-500 mt-2">`
 - **Section Header:**
   - Wrapper: `<div class="p-6 bg-slate-50 border-b border-slate-200">`
   - Title: `<h2 class="text-2xl font-bold text-slate-800">`
 
-### 1.3. Content Blocks
+### 1.4. Content Blocks
 - **Standard Section:** `<section class="bg-white rounded-lg shadow-lg overflow-hidden">`
-- **Highlighted Info Block:** `<div class="mt-6 space-y-4 bg-slate-50 rounded-lg p-6">`
-- **Case Study Block:** `<div class="p-5 border-l-4 rounded-r-lg bg-slate-50 shadow-inner case-study-card">`
+- **Highlighted Info Block:** `<div class="p-5 border border-slate-200 rounded-lg bg-slate-50">`
+- **Case Study / Student Response Block:**
+  - Wrapper: `<div class="p-5 border-l-4 border-amber-500 bg-amber-50 rounded-r-lg">`
+  - Student's quote: `<blockquote>` with italic and border styles.
 
-### 1.4. Typography and Emphasis
-- **Bold Text:** Use `<strong>` for key terms and concepts.
-- **Code/Verb Forms:** Use `<code>` for all verb forms, code snippets, and technical terms.
-- **Lists:** Use `<ul>` and `<ol>` with `<li>` for bulleted and numbered lists.
+### 1.5. Typography and Emphasis
+- **Fonts:** Use 'Inter' for body text and 'Source Code Pro' for code/monospace text.
+- **Bold Text:** Use `<strong>` or font-weight classes (`font-bold`, `font-semibold`) for key terms.
+- **Code/Verb Forms:** Use `<code>` for all verb forms and code snippets.
+- **Key Rule Highlight:** Use a specific class like `.key-rule` for critical grammatical terms.
+  - CSS: `background-color: #eef2ff; color: #3730a3; padding: 2px 6px; border-radius: 4px; font-weight: 600;`
 
-### 1.5. Color Palette
-- **Slate:** Default for text, backgrounds, and borders. (`text-slate-700`, `bg-slate-50`, `border-slate-200`)
-- **Indigo:** Used for important titles and notes. (`text-indigo-700`, `bg-indigo-50`, `border-indigo-500`)
-- **Blue:** For "trigger" verb tags. (`bg-blue-100 text-blue-800`)
-- **Amber:** For case study titles. (`text-amber-800`)
-- **Green, Blue, Red:** For buttons in exercise pages (Save, Load, Reset).
+### 1.6. Interactive Elements
+- **Buttons:** Style buttons with consistent colors for actions (e.g., green for save, blue for load, red for reset). Use hover states for better UX.
+- **Tabs:** Style active and inactive tabs differently to show the current view (e.g., using `border-bottom-color` and `color`).
+- **Feedback Panels:** Use distinct styles for correct and incorrect feedback.
+  - Correct: `feedback-correct` class with green text and background.
+  - Incorrect: `feedback-incorrect` class with red text and background.
 
 ## 2. Content Structure
 
@@ -43,7 +57,7 @@ This document outlines the rules and conventions for creating new content based 
   2. A series of numbered `<section>` elements.
   3. Each section has a clear title.
   4. Content includes paragraphs, lists, highlighted blocks, and code examples.
-  5. May include "Case Studies" to connect theory with practical examples.
+  5. **Case Studies:** Include a "Case Study" section to analyze specific student errors, linking theory to practice.
 
 ### 2.2. Anki Notes Files (`L... -AN.html`)
 - **Purpose:** To create concise, flashcard-style notes for spaced repetition.
@@ -53,20 +67,46 @@ This document outlines the rules and conventions for creating new content based 
   3. Each card has a "Fronte" (Front) as a title (`<h2 class="text-lg font-semibold text-indigo-700">`).
   4. The content of the section is the "Retro" (Back) of the card.
 
-### 2.3. Exercise Files (`L... -ES.html`)
-- **Purpose:** To provide interactive exercises to test the student's understanding.
-- **Structure:**
-  1. Header with instructions and action buttons.
-  2. Tabbed interface with three tabs: "Fase 1: Comprensione", "Fase 2: Riconoscimento", and "Fase 3: Produzione".
-  3. Exercise data is stored in a JSON object inside a `<script id="exercise-data" type="application/json">` tag.
-  4. The JSON object has three keys: `fase1`, `fase2`, and `fase3`.
-  5. Each key holds an array of exercise objects with a consistent structure (e.g., `question`, `answer`, `explanation`, `options`).
+### 2.3. Exercise Files and Diagnostic Tests
+- **Purpose:** To provide interactive exercises or comprehensive diagnostic tests.
+- **General Structure:**
+  1. **Header:** With instructions and action buttons (Save/Load/Reset).
+  2. **Introductory View (for tests):** An `#intro-view` div with a detailed explanation of the test.
+  3. **Tabbed Interface:** To switch between different phases or blocks.
+  4. **Exercise/Test Container:** A main container for the questions.
+  5. **JSON Data:** All questions, answers, and explanations are stored in a `<script id="exercise-data" type="application/json">` tag.
 
-## 3. Functionality (for Exercise Pages)
+- **JSON Data Structure:**
+  - For simple exercises, the JSON can have keys like `fase1`, `fase2`, etc., each holding an array of question objects.
+  - For complex tests, the JSON should have a main key like `testData` holding an array of all questions.
+  - **Question Object Properties:**
+    - `block`: The test block number (e.g., 1, 2, 3).
+    - `displayNum`: The question number to display (e.g., "A1", "B5").
+    - `section`: The name of the section the question belongs to.
+    - `sectionExplanation`: An explanation for the section.
+    - `type`: The question type (`mc`, `input`, `paragraph_error_id`).
+    - `category`: The grammatical category being tested.
+    - `question`: The question text (can contain HTML).
+    - `choices` (for `mc`): An array of strings for the options.
+    - `answer`: The correct answer.
+    - `explanation`: A detailed explanation of the correct answer.
+    - `parts` (for `paragraph_error_id`): An array of objects, each representing an error to be identified and corrected.
 
-- **Tabs:** The page uses JavaScript to switch between the three exercise phases.
-- **Local Storage:** Progress (answers and notes) is automatically saved to the browser's local storage.
-- **JSON Import/Export:**
-  - **Load:** A "Carica Progressi" button allows loading progress from a local JSON file.
-  - **Save:** A "Salva Progressi" button downloads the current progress as a JSON file.
-- **Reset:** An "Azzera Test" button clears all progress from local storage.
+## 3. Functionality (for Exercise Pages and Tests)
+
+- **State Management:**
+  - **Local Storage:** All user progress (answers, notes) must be saved to the browser's local storage automatically as the user interacts with the page. The state should be a single JSON object.
+  - **JSON Import/Export:**
+    - **Save/Export:** A button should allow the user to download their current progress as a JSON file.
+    - **Load/Import:** A button should allow the user to upload a previously saved JSON file to restore their state.
+  - **Reset:** A button should allow the user to clear all their progress from local storage and start over.
+
+- **Interactive Elements:**
+  - **Tabs:** The page must use JavaScript to manage tabbed content, showing the correct content for the active tab.
+  - **Notes Area:** Each question should have a dedicated, toggleable `<textarea>` for user notes. The content of these notes must be saved as part of the page's state.
+  - **Feedback:** Upon answering a question, immediate feedback should be provided, including the correct answer and a detailed explanation.
+
+- **Diagnostic Test Specific Functionality:**
+  - **Review Mode:** After submitting a block of questions, the UI should enter a "Review Mode" where the user can see their answers and the correct answers for each question, but cannot change them.
+  - **Diagnostics View:** A separate view (`#diagnostics-view`) should be available after completing a block.
+  - **Charts:** This view should use a charting library (e.g., Chart.js) to visualize the user's performance, breaking it down by grammatical category.
