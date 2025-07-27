@@ -1,0 +1,94 @@
+# Patch Plan: Versions 1.1.7 - 1.1.9
+# Objective: Implement a comprehensive save management system, including a dedicated UI,
+# import/export functionality, and virtual folder organization.
+
+---
+## Part 1: Foundational Save Management (v1.1.7)
+
+**Goal:** Implement the core backend logic for importing/exporting saves and add basic UI hooks for file management.
+
+### 1.1. Dependencies & Setup
+- **Dependency:** Add a file-zipping library to the project.
+  - `npm install jszip --save-dev`
+
+### 1.2. Backend Import/Export Logic (`main.js`)
+- **Module Imports:** Import `dialog` from Electron and the `jszip` library.
+- **`export-saves` Handler:**
+  - **Functionality:**
+    - Open export page from toolbar, on the left of github icon.
+    - Select saves for export.
+    - Export the selected saves as a single zip file.
+  - **Input:** An array of lesson names (e.g., `['L1-congiuntivoES', 'L2-ipoteticoES']`).
+  - **Process:**
+    1. Create a new JSZip instance.
+    2. For each lesson name, read its save subfolder (`userData/saves/LESSON_NAME/`) and add all `.json` files to the zip archive, preserving the folder structure.
+    3. Use `dialog.showSaveDialog` to prompt the user for a destination to save the `.zip` file.
+    4. Write the generated zip file to the chosen path.
+- **`import-saves` Handler:**
+  - **Functionality:**
+    - Icon on the left of Export.
+    - Select file to be unpacked.
+    - Simply add all files to the save folders BUT rename them with suffix `_IMP`.
+  - **Process:**
+    1. Use `dialog.showOpenDialog` to allow the user to select a single `.zip` file.
+    2. Read and decompress the selected zip file in memory using JSZip.
+    3. Iterate through the zipped files, determine the correct lesson subfolder from the file's path within the zip, and write each save file to its proper location in the `userData/saves/` directory with the `_IMP` suffix.
+- **`rename-save` Handler:**
+  - **Input:** The current file path and a new desired file name.
+  - **Process:** Perform a `fs.rename` operation. Ensure the new name is sanitized to prevent invalid characters.
+
+### 1.3. Frontend Integration (`preload.js` & `renderer.js`)
+- **`preload.js`:** Expose the new `exportSaves`, `importSaves`, and `renameSave` functions through the `window.api` bridge.
+- **`renderer.js`:**
+  - In the "Load" dropdown menu, add a "Rename" icon next to each save file entry.
+  - Clicking this icon should transform the file name into an editable `<input>`.
+  - On `blur` or `Enter`, the input should call `window.api.renameSave` with the old and new names.
+
+---
+## Part 2: Lesson Index (v1.1.8)
+
+**Goal:** Create a centralized lesson index for easy navigation. Refer to `harmer.html` in `/references/` for the intended design.
+
+### 2.1. Backend Logic
+- **`lesson-index` Data Structure:**
+  - Create a JSON file or a module that defines the structure of the lesson index. This should include lesson titles, categories, and paths to the corresponding lesson files.
+
+### 2.2. Frontend Implementation
+- **Lesson Index Page:**
+  - Create a new HTML file for the lesson index page.
+  - Style the page according to the `harmer.html` reference.
+- **Dynamic Content:**
+  - Use JavaScript to fetch the lesson index data and dynamically populate the page.
+  - Add event listeners to the lesson links to navigate to the corresponding lessons.
+
+---
+## Part 3: Page State Management (v1.1.9)
+
+**Goal:** Implement bookmarking and highlighting features to enhance user interaction with the content.
+
+### 3.1. Data Storage
+- **`page-state.json`:**
+  - Create a single JSON file to store all bookmarks and highlights.
+  - This file will be updated automatically whenever a bookmark is placed or a highlight is made.
+
+### 3.2. Bookmarking
+- **Functionality:**
+  - Add a bookmark to any page via a shortcut or a right-click context menu.
+  - Bookmarks should be persistent and visually distinct.
+- **Implementation:**
+  - **Backend:** Create a handler to add/remove bookmark entries in `page-state.json`.
+  - **Frontend:**
+    - Implement the shortcut and context menu.
+    - On page load, check `page-state.json` and display any existing bookmarks.
+    - Update the UI to reflect bookmark changes.
+
+### 3.3. Highlighting
+- **Functionality:**
+  - Allow users to highlight portions of text on any page.
+  - Highlights should be saved and restored across sessions.
+- **Implementation:**
+  - **Backend:** Create a handler to add/remove highlight entries in `page-state.json`.
+  - **Frontend:**
+    - Implement the text selection and highlighting mechanism.
+    - On page load, check `page-state.json` and apply any existing highlights.
+    - Update the UI to reflect highlight changes.
