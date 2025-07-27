@@ -42,9 +42,17 @@ I have now adjusted the L2 and L3 files in the exercises folder to match the str
 
 I have now adjusted the L2 and L3 files in the exercises and lessons folders to match the structure and functionality of the L1 file. I added the 'go to question' functionality to the exercise files and ensured that the element IDs are consistent. I also added the standard header and navigation to the lesson files. This was done in accordance with the rules outlined in `rules.txt`.
 
+- The outdated save-load approach and its explanation have been removed from the lesson pages, as it is no longer in use.
+- The explanation for `ES.html` has been updated to reflect the new setup, which includes buttons in the toolbar and constant saving via save-state.
+- The home page has been updated with a brief, concise explanation and a more visually appealing design.
+
 I still see the outdate save-load approach in the page, with explanation, for the lessons, where it's useless at the moment.
 Whereas the explanation for ES.html doesn't reflect the new setup, with the buttons in the toolbar, the constant saving by save-state etc.
 Also, the home page is missing a brief, very concise explanation, and is visually a bit unappealing at the moment.
+
+7) - FIXED
+[1] [18064:0727/193646.285:ERROR:electron\shell\browser\web_contents_preferences.cc:238] preload script must have absolute path.
+This error was caused by an incorrect path to the preload script in `main.js`. I have now fixed this by using `path.resolve` to ensure that the path is always absolute.
 
 5) - FIXED
 /src/renderer.js is quite large of a file
@@ -89,3 +97,32 @@ NOTES FROM JULES
 >
 > 1) FIXED, the toolbar is now sticky and no longer disappears on scroll. This was achieved by modifying renderer.js to replace the 'flex-shrink-0' class with 'sticky top-0 z-10' for all toolbars created in the application. UPDATE: The toolbar still disappeared. I have now fixed this by adding `h-full` to the `contentWrapper` and removing `overflow-y-auto` from the `content-panes` in `index.html`. UPDATE: the bar is now stick, but the tabs once more disappear on scrolling.
 > 1) FIXED. The toolbar and tabs now remain visible when scrolling. This was achieved by modifying `src/index.html` to make the content pane scrollable and `src/renderer.js` to ensure the content wrapper and toolbar have the correct layout properties.
+
+
+---------------
+
+New errors
+
+exercise-initializer.js:312 Uncaught TypeError: saveExerciseState is not a function
+    at nextBtn.onclick (exercise-initializer.js:312:1)
+nextBtn.onclick @ exercise-initializer.js:312
+3exercise-initializer.js:349 Uncaught TypeError: saveExerciseState is not a function
+    at btn.onclick (exercise-initializer.js:349:1)
+btn.onclick @ exercise-initializer.js:349
+exercise-initializer.js:300 Uncaught TypeError: saveExerciseState is not a function
+    at prevBtn.onclick (exercise-initializer.js:300:1)
+prevBtn.onclick @ exercise-initializer.js:300
+exercise-initializer.js:312 Uncaught TypeError: saveExerciseState is not a function
+    at nextBtn.onclick (exercise-initializer.js:312:1)
+nextBtn.onclick @ exercise-initializer.js:312
+exercise-initializer.js:148 Uncaught TypeError: saveExerciseState is not a function
+    at markBtn.onclick (exercise-initializer.js:148:1)
+markBtn.onclick @ exercise-initializer.js:148
+6exercise-initializer.js:86 Uncaught TypeError: saveExerciseState is not a function
+    at textarea.onkeyup (exercise-initializer.js:86:1)
+textarea.onkeyup @ exercise-initializer.js:86
+6exercise-initializer.js:112 Uncaught TypeError: saveExerciseState is not a function
+    at textarea.onkeyup (exercise-initializer.js:112:1)
+textarea.onkeyup @ exercise-initializer.js:112
+3exercise-initializer.js:395 Uncaught TypeError: Cannot read properties of null (reading 'classList')
+    at btn.onclick (exercise-initializer.js:395:58)
