@@ -38,6 +38,8 @@ refer to rules.txt for aid
 
 I have now adjusted the L2 and L3 files in the exercises folder to match the structure and functionality of the L1 file. I added the 'go to question' functionality and ensured that the element IDs are consistent. This was done in accordance with the rules outlined in `rules.txt`.
 
+I have now adjusted the L2 and L3 files in the exercises and lessons folders to match the structure and functionality of the L1 file. I added the 'go to question' functionality to the exercise files and ensured that the element IDs are consistent. I also added the standard header and navigation to the lesson files. This was done in accordance with the rules outlined in `rules.txt`.
+
 
 5) - FIXED
 /src/renderer.js is quite large of a file
