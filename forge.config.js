@@ -1,6 +1,9 @@
-const { FusesPlugin } = require('@electron-forge/plugin-fuses');
-const { FuseV1Options, FuseVersion } = require('@electron/fuses');
+// This line loads the .env file and makes the GITHUB_TOKEN available to the process.
+require('dotenv').config();
+
 const path = require('path');
+const { execSync } = require('child_process');
+const fs = require('fs');
 
 module.exports = {
   packagerConfig: {
@@ -26,7 +29,6 @@ module.exports = {
               name: 'main_window',
               preload: {
                 js: path.join(__dirname, 'src/preload.js'),
-                // This name is required to correctly bundle the preload script.
                 name: 'main_window_preload',
               },
             },
@@ -34,27 +36,11 @@ module.exports = {
         },
       },
     },
-    // Add the FusesPlugin here if it's not already present and you want to use it
-    // {
-    //   name: '@electron-forge/plugin-fuses',
-    //   version: FuseVersion.V1,
-    //   config: {
-    //     [FuseV1Options.RunAsNode]: false,
-    //     [FuseV1Options.EnableCookieEncryption]: true,
-    //     [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
-    //     [FuseV1Options.EnableNodeCliInspectArguments]: false,
-    //     [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
-    //     [FuseV1Options.OnlyLoadAppFromAsar]: true,
-    //   },
-    // },
   ],
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        // Crucial for electron-updater to find latest.yml on GitHub
-        // This tells maker-squirrel where to look for updates
-        // It should match your publisher-github repository
         remoteReleases: 'https://github.com/Drehon/vsAPP',
       },
     },
@@ -71,34 +57,57 @@ module.exports = {
       config: {},
     },
   ],
-  // Add the publishers configuration here
   publishers: [
     {
       name: '@electron-forge/publisher-github',
       config: {
         repository: {
-          owner: 'Drehon', // Your GitHub username
-          name: 'vsAPP'   // Your GitHub repository name
+          owner: 'Drehon',
+          name: 'vsAPP'
         },
-        prerelease: false, // Set to true if this is a pre-release
-        draft: true,      // Set to true if you want to create a draft release
-        // It's highly recommended to use an environment variable for your token:
-        // token: process.env.GITHUB_TOKEN
+        prerelease: false,
+        draft: true,
       }
     }
   ],
   hooks: {
     postMake: async (forgeConfig, makeResults) => {
-      const { execSync } = require('child_process');
-      const scriptPath = path.join(__dirname, 'scripts', 'publisher-helper.js');
+      console.log('Post-make hook: Triggered.');
       
-      console.log(`Executing publisher-helper script at: ${scriptPath}`);
+      // Run the script to generate the latest.yml file.
       try {
-        execSync(`node "${scriptPath}"`, { stdio: 'inherit' });
-      } catch (error) {
-        console.error('Error executing publisher-helper.js:', error);
-        process.exit(1);
+        console.log('Post-make hook: Generating latest.yml...');
+        execSync('node scripts/generate-update-yaml.js', { stdio: 'inherit' });
+      } catch (err) {
+        console.error('Post-make hook: Failed to generate latest.yml.');
+        throw err;
       }
+
+      // Find the path to the generated latest.yml file.
+      // It will be in the same directory as the .exe installer.
+      const squirrelWindowsResult = makeResults.find(
+        (result) => result.artifacts.some((artifact) => artifact.endsWith('.exe'))
+      );
+
+      if (squirrelWindowsResult) {
+        const exePath = squirrelWindowsResult.artifacts.find((artifact) => artifact.endsWith('.exe'));
+        const outputDir = path.dirname(exePath);
+        const yamlPath = path.join(outputDir, 'latest.yml');
+
+        if (fs.existsSync(yamlPath)) {
+          console.log(`Post-make hook: Found ${yamlPath}.`);
+          // Add the latest.yml to the list of artifacts to be published.
+          squirrelWindowsResult.artifacts.push(yamlPath);
+          console.log('Post-make hook: Added latest.yml to artifacts for publishing.');
+        } else {
+          console.error(`Post-make hook: ERROR - Could not find latest.yml at ${yamlPath} after generation.`);
+        }
+      } else {
+          console.warn('Post-make hook: Could not find squirrel.windows build artifacts. Skipping YAML addition.');
+      }
+      
+      // Return the modified results to the publish command.
+      return makeResults;
     }
   }
 };
