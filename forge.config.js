@@ -51,7 +51,12 @@ module.exports = {
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        // Crucial for electron-updater to find latest.yml on GitHub
+        // This tells maker-squirrel where to look for updates
+        // It should match your publisher-github repository
+        remoteReleases: 'https://github.com/Drehon/vsAPP',
+      },
     },
     {
       name: '@electron-forge/maker-zip',

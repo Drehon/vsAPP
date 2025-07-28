@@ -8,7 +8,8 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "node scripts/publish-helper.js",
-    "lint": "echo \"No linting configured\""
+    "lint": "echo \"No linting configured\"",
+    "clean": "electron-forge clean"
   },
   "keywords": [],
   "author": {

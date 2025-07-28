@@ -168,6 +168,22 @@ app.on('ready', () => {
   // Force electron-updater to check for updates even in development mode
   autoUpdater.forceDevUpdateConfig = true; 
 
+  // Set the update configuration path for development
+  if (process.env.NODE_ENV === 'development') {
+    autoUpdater.updateConfigPath = path.join(__dirname, '..', 'dev-app-update.yml');
+  }
+
+  // Set request headers for private GitHub repositories
+  // Ensure GITHUB_TOKEN is loaded from .env
+  if (process.env.GITHUB_TOKEN) {
+    autoUpdater.requestHeaders = {
+      Authorization: `token ${process.env.GITHUB_TOKEN}`
+    };
+    console.log('DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.');
+  } else {
+    console.warn('WARNING: GITHUB_TOKEN not found in environment variables. Auto-updater may fail for private repositories.');
+  }
+
   // Update check logic
   const request = net.request('https://www.github.com');
   request.on('response', () => {
