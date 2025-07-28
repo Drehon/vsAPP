@@ -95,7 +95,6 @@ ipcMain.handle('open-directory-dialog', async () => {
 ipcMain.on('navigate', (event, relativePath) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (win) {
-    // CORRECTED: Use process.resourcesPath for production to correctly locate files outside the asar archive.
     const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : process.resourcesPath;
     const filePath = path.join(basePath, relativePath);
     win.loadFile(filePath);
@@ -125,7 +124,6 @@ ipcMain.handle('get-settings-content', async () => {
 });
 
 ipcMain.handle('get-file-content', async (event, relativePath) => {
-  // CORRECTED: Use process.resourcesPath for production to correctly locate files outside the asar archive.
   const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : process.resourcesPath;
   const filePath = path.join(basePath, relativePath);
   try {
@@ -323,12 +321,16 @@ ipcMain.handle('reset-exercise-state', async (event, filePath) => {
   }
 });
 
-ipcMain.handle('show-save-dialog-and-save-file', async (event, { defaultFilename, data }) => {
+ipcMain.handle('show-save-dialog-and-save-file', async (event, { defaultFilename, data } = {}) => {
   const window = BrowserWindow.fromWebContents(event.sender);
   const savesDir = getSavesDir();
+  
+  // THE FIX IS HERE: The destructured argument now has a default value of an empty object.
+  // This prevents a crash if the renderer calls the function with no arguments.
+  const finalFilename = defaultFilename || 'exercise-save-state.json';
 
   const { canceled, filePath } = await dialog.showSaveDialog(window, {
-    defaultPath: path.join(savesDir, defaultFilename),
+    defaultPath: path.join(savesDir, finalFilename),
     filters: [{ name: 'JSON Files', extensions: ['json'] }, { name: 'All Files', extensions: ['*'] }]
   });
 
@@ -336,7 +338,7 @@ ipcMain.handle('show-save-dialog-and-save-file', async (event, { defaultFilename
     return { success: false, canceled: true };
   } else {
     try {
-      await fs.writeFile(filePath, data);
+      await fs.writeFile(filePath, data || '');
       return { success: true, path: filePath };
     } catch (err) {
       return { success: false, error: err.message };
@@ -347,10 +349,8 @@ ipcMain.handle('show-save-dialog-and-save-file', async (event, { defaultFilename
 const getContents = async (dir) => {
   let directoryPath;
   if (process.env.NODE_ENV === 'development') {
-    // In development, files are relative to the project root
     directoryPath = path.join(process.cwd(), dir);
   } else {
-    // In production, extraResources are placed at the root of the `resources` directory.
     directoryPath = path.join(process.resourcesPath, dir);
   }
   try {
