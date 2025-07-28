@@ -1,56 +1,34 @@
-// scripts/publish-helper.js
-
-// Load environment variables from the .env file
-// This must be at the very top of the script to ensure variables are available
-require('dotenv').config();
-
 const { spawn } = require('child_process');
 const path = require('path');
+require('dotenv').config(); // Ensure this is at the very top
 
-// Determine the correct path to the electron-forge CLI executable
-// This handles both Windows (.cmd) and Unix-like environments (no extension)
-const forgeExecutable = process.platform === 'win32'
-  ? path.join(__dirname, '..', 'node_modules', '.bin', 'electron-forge.cmd')
-  : path.join(__dirname, '..', 'node_modules', '.bin', 'electron-forge');
+// Add this line for debugging:
+console.log('DEBUG: GITHUB_TOKEN from .env:', process.env.GITHUB_TOKEN ? 'Loaded' : 'NOT Loaded');
+// If you want to see the actual token value (be careful with logs):
+// console.log('DEBUG: GITHUB_TOKEN value:', process.env.GITHUB_TOKEN);
 
+const forgeExecutable = path.join(process.cwd(), 'node_modules', '.bin', 'electron-forge.cmd');
 console.log('DEBUG: Resolved electron-forge executable path:', forgeExecutable);
 
-// Arguments to pass to electron-forge (in this case, 'publish')
-const args = ['publish'];
+// Ensure the GITHUB_TOKEN is available in the environment for the spawned process
+const env = { ...process.env, GITHUB_TOKEN: process.env.GITHUB_TOKEN };
 
-let command;
-let commandArgs;
-
-if (process.platform === 'win32') {
-  // On Windows, explicitly use cmd.exe to run the .cmd file
-  command = 'cmd.exe';
-  commandArgs = ['/c', forgeExecutable, ...args]; // /c tells cmd.exe to run the command and then terminate
-} else {
-  // On Unix-like systems, execute directly
-  command = forgeExecutable;
-  commandArgs = args;
-}
-
-// Spawn the electron-forge process
-// 'stdio: inherit' ensures that the output from electron-forge is shown in the parent terminal
-// 'env: process.env' passes all current environment variables (including GITHUB_TOKEN loaded by dotenv)
-const child = spawn(command, commandArgs, {
-  stdio: 'inherit',
-  env: process.env,
+const child = spawn(forgeExecutable, ['publish'], {
+  stdio: 'inherit', // This makes the child process's output appear in the parent process
+  env: env,
+  shell: true // Use shell to ensure .cmd files are executed correctly on Windows
 });
 
-// Handle potential errors during process spawning
-child.on('error', (err) => {
-  console.error(`Failed to start electron-forge process: ${err.message}`);
-});
-
-// Listen for the child process to close
 child.on('close', (code) => {
   if (code !== 0) {
     console.error(`electron-forge publish process exited with code ${code}`);
-    // Exit the helper script with the same error code
     process.exit(code);
   } else {
     console.log('electron-forge publish process completed successfully.');
   }
+});
+
+child.on('error', (err) => {
+  console.error('Failed to start electron-forge publish process:', err);
+  process.exit(1);
 });
