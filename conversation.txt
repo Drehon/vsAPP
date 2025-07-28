@@ -318,11 +318,32 @@ Initial Steps:
 -----------
 
 MULTI WINDOW SEEMS FIXED
+DOWNLOAD NOW SHOWS AS AVAILABLE after app-update.yml was implemented correctly in forge.config.js
 
-Error Log persists
-[LOG][2025-07-28T16:14:26.843Z] Main Process: createWindow called. Initializing main window.
-[WARN][2025-07-28T16:14:26.925Z] WARNING: GITHUB_TOKEN not found.
-[LOG][2025-07-28T16:14:28.276Z] Main Process: Checking for updates...
-[ERROR][2025-07-28T16:14:28.278Z] Error: Error: ENOENT: no such file or directory, open 'C:\Users\User\AppData\Local\tutoring_app\app-1.1.9\resources\app-update.yml'
-[ERROR][2025-07-28T16:14:28.278Z] Main Process: AutoUpdater emitted an error event: ENOENT: no such file or directory, open 'C:\Users\User\AppData\Local\tutoring_app\app-1.1.9\resources\app-update.yml'
-[ERROR][2025-07-28T16:14:28.279Z] Main Process: Error during update check: ENOENT: no such file or directory, open 'C:\Users\User\AppData\Local\tutoring_app\app-1.1.9\resources\app-update.yml'
+now - update fails
+[LOG][2025-07-28T16:30:16.536Z] Main Process: createWindow called. Initializing main window.
+[WARN][2025-07-28T16:30:16.617Z] WARNING: GITHUB_TOKEN not found.
+[LOG][2025-07-28T16:30:17.953Z] Main Process: Checking for updates...
+[LOG][2025-07-28T16:30:18.958Z] Main Process: Update available! [object Object]
+[LOG][2025-07-28T16:30:23.031Z] Main Process: Download started by user.
+[ERROR][2025-07-28T16:30:23.032Z] updaterCacheDirName is not specified in app-update.yml Was app build using at least electron-builder 20.34.0?
+[WARN][2025-07-28T16:30:23.035Z] disableWebInstaller is set to false, you should set it to true if you do not plan on using a web installer. This will default to true in a future version.
+[ERROR][2025-07-28T16:30:23.069Z] Cannot download differentially, fallback to full download: Error: Cannot download "https://github.com/Drehon/vsAPP/releases/download/v1.1.9/tutoring-app-1.1.9-Setup.exe.blockmap", status 404: 
+    at ClientRequest.<anonymous> (C:\Users\User\AppData\Local\tutoring_app\app-1.1.9\resources\app.asar\.webpack\main\index.js:2:239160)
+    at ClientRequest.emit (node:events:517:28)
+    at SimpleURLLoaderWrapper.<anonymous> (node:electron/js2c/browser_init:2:48772)
+    at SimpleURLLoaderWrapper.emit (node:events:517:28)
+[ERROR][2025-07-28T16:30:23.102Z] Error: Error: Cannot download "https://github.com/Drehon/vsAPP/releases/download/v1.2.1/tutoring-app-1.2.1-Setup.exe", status 404: 
+    at ClientRequest.<anonymous> (C:\Users\User\AppData\Local\tutoring_app\app-1.1.9\resources\app.asar\.webpack\main\index.js:2:239160)
+    at ClientRequest.emit (node:events:517:28)
+    at SimpleURLLoaderWrapper.<anonymous> (node:electron/js2c/browser_init:2:48772)
+    at SimpleURLLoaderWrapper.emit (node:events:517:28)
+[ERROR][2025-07-28T16:30:23.102Z] Main Process: AutoUpdater emitted an error event: Cannot download "https://github.com/Drehon/vsAPP/releases/download/v1.2.1/tutoring-app-1.2.1-Setup.exe", status 404: 
+[ERROR][2025-07-28T16:30:23.103Z] (node:15040) UnhandledPromiseRejectionWarning: Error: Cannot download "https://github.com/Drehon/vsAPP/releases/download/v1.2.1/tutoring-app-1.2.1-Setup.exe", status 404: 
+    at ClientRequest.<anonymous> (C:\Users\User\AppData\Local\tutoring_app\app-1.1.9\resources\app.asar\.webpack\main\index.js:2:239160)
+    at ClientRequest.emit (node:events:517:28)
+    at SimpleURLLoaderWrapper.<anonymous> (node:electron/js2c/browser_init:2:48772)
+    at SimpleURLLoaderWrapper.emit (node:events:517:28)
+(Use `vsAPP --trace-warnings ...` to show where the warning was created)
+[ERROR][2025-07-28T16:30:23.103Z] (node:15040) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 2)
+

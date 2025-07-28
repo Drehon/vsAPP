@@ -10,7 +10,8 @@ module.exports = {
     asar: true,
     extraResource: [
       './lessons',
-      './exercises'
+      './exercises',
+      './app-update.yml'
     ]
   },
   rebuildConfig: {},
