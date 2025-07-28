@@ -314,3 +314,15 @@ Initial Steps:
     Analyzed the new logs, noting the persistence of repeated createWindow calls, GITHUB_TOKEN warnings, ENOENT for app-update.yml, and the reappearance of No handler registered for 'get-app-version'.
 
     The immediate next step is to re-examine src/main.js to ensure the previous fixes are correctly applied and not being bypassed.
+
+-----------
+
+MULTI WINDOW SEEMS FIXED
+
+Error Log persists
+[LOG][2025-07-28T16:14:26.843Z] Main Process: createWindow called. Initializing main window.
+[WARN][2025-07-28T16:14:26.925Z] WARNING: GITHUB_TOKEN not found.
+[LOG][2025-07-28T16:14:28.276Z] Main Process: Checking for updates...
+[ERROR][2025-07-28T16:14:28.278Z] Error: Error: ENOENT: no such file or directory, open 'C:\Users\User\AppData\Local\tutoring_app\app-1.1.9\resources\app-update.yml'
+[ERROR][2025-07-28T16:14:28.278Z] Main Process: AutoUpdater emitted an error event: ENOENT: no such file or directory, open 'C:\Users\User\AppData\Local\tutoring_app\app-1.1.9\resources\app-update.yml'
+[ERROR][2025-07-28T16:14:28.279Z] Main Process: Error during update check: ENOENT: no such file or directory, open 'C:\Users\User\AppData\Local\tutoring_app\app-1.1.9\resources\app-update.yml'
