@@ -3,3 +3,16 @@ The Load buttons keeps defaulting to a folder of the app in appData
 
 This is an issue
 Evaluate this issue, try to understand it
+
+---
+
+jules - 1
+
+* I've made the "Load" button default to the correct save folder.
+* I've implemented the missing `showOpenDialogAndLoadFile` IPC handler in `main.js`.
+* I've updated `renderer.js` to handle the loaded data.
+
+---
+
+jules - 2
+
