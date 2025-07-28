@@ -42,21 +42,24 @@ function getSavesDir() {
     return savesDir;
 }
 
-
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
+let mainWindow; // Define mainWindow in a broader scope
+
 const createWindow = () => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     webPreferences: {
-      preload: path.resolve(__dirname, 'preload.js'),
-      nodeIntegration: true,
+      // Reverted to original settings as requested.
+      // This is less secure but required for your app's architecture.
+      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       contextIsolation: false,
+      nodeIntegration: true,
     },
   });
 
@@ -69,10 +72,7 @@ const createWindow = () => {
 
 // --- IPC Handlers ---
 
-ipcMain.handle('get-config', () => {
-  return appConfig;
-});
-
+ipcMain.handle('get-config', () => appConfig);
 ipcMain.handle('save-config', async (event, newConfig) => {
   try {
     await fs.writeFile(configPath, JSON.stringify(newConfig, null, 2));
@@ -85,9 +85,7 @@ ipcMain.handle('save-config', async (event, newConfig) => {
 });
 
 ipcMain.handle('open-directory-dialog', async () => {
-    const { canceled, filePaths } = await dialog.showOpenDialog({
-        properties: ['openDirectory']
-    });
+    const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openDirectory'] });
     if (canceled) {
         return { canceled: true };
     } else {
@@ -165,76 +163,78 @@ app.on('ready', () => {
     });
   });
 
-  // Force electron-updater to check for updates even in development mode
-  autoUpdater.forceDevUpdateConfig = true; 
+  // --- Auto-Updater Logic (User-Prompted Flow) ---
+  
+  autoUpdater.autoDownload = false;
 
-  // Set the update configuration path for development
-  if (process.env.NODE_ENV === 'development') {
-    autoUpdater.updateConfigPath = path.join(__dirname, '..', 'dev-app-update.yml');
-  }
-
-  // Set request headers for private GitHub repositories
-  // Ensure GITHUB_TOKEN is loaded from .env
   if (process.env.GITHUB_TOKEN) {
-    autoUpdater.requestHeaders = {
-      Authorization: `token ${process.env.GITHUB_TOKEN}`
-    };
+    autoUpdater.requestHeaders = { Authorization: `token ${process.env.GITHUB_TOKEN}` };
     console.log('DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.');
   } else {
-    console.warn('WARNING: GITHUB_TOKEN not found in environment variables. Auto-updater may fail for private repositories.');
+    console.warn('WARNING: GITHUB_TOKEN not found.');
   }
 
-  // Update check logic
-  const request = net.request('https://www.github.com');
-  request.on('response', () => {
-    console.log('Main Process: Connection successful, checking for updates.');
-    autoUpdater.checkForUpdatesAndNotify();
-  });
-  request.on('error', (error) => {
-    console.log('Main Process: No internet connection, skipping update check.', error.message);
-    const win = BrowserWindow.getAllWindows()[0];
-    if (win) {
-      win.webContents.send('update-check-error'); // Notify renderer about no internet
-    }
-  });
-  request.end();
+  if (process.env.NODE_ENV === 'development') {
+    autoUpdater.updateConfigPath = path.join(process.cwd(), 'dev-app-update.yml');
+    autoUpdater.forceDevUpdateConfig = true;
+  }
 
-  // Listener for update available event
+  mainWindow.once('ready-to-show', () => {
+    console.log('Main Process: Checking for updates...');
+    autoUpdater.checkForUpdates().catch(err => {
+      console.error('Main Process: Error during update check:', err.message);
+      if (mainWindow) {
+        mainWindow.webContents.send('update-status', 'error', { error: err.message });
+      }
+    });
+  });
+
+  // --- Auto-Updater Event Listeners ---
   autoUpdater.on('update-available', (info) => {
-    console.log('Main Process: Update available! Version:', info.version);
-    const win = BrowserWindow.getAllWindows()[0];
-    if (win) {
-      win.webContents.send('update-available');
-    }
+    console.log('Main Process: Update available!', info);
+    mainWindow.webContents.send('update-status', 'available', info);
   });
 
-  // Listener for update not available event
   autoUpdater.on('update-not-available', (info) => {
-    console.log('Main Process: Update not available. Current version:', app.getVersion(), 'Latest available:', info.version);
-    const win = BrowserWindow.getAllWindows()[0];
-    if (win) {
-      win.webContents.send('update-not-available');
-    }
+    console.log('Main Process: Update not available.', info);
+    mainWindow.webContents.send('update-status', 'not-available', info);
   });
 
-  autoUpdater.on('error', (error) => {
-    console.error('Main Process: AutoUpdater error:', error.message);
-    const win = BrowserWindow.getAllWindows()[0];
-    if (win) {
-      win.webContents.send('update-check-error');
-    }
+  autoUpdater.on('update-downloaded', (info) => {
+    console.log('Main Process: Update downloaded.', info);
+    mainWindow.webContents.send('update-status', 'downloaded', info);
+  });
+  
+  autoUpdater.on('download-progress', (progressObj) => {
+    let log_message = "Download speed: " + progressObj.bytesPerSecond;
+    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+    log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+    console.log(log_message);
+    mainWindow.webContents.send('download-progress', progressObj);
   });
 
+  autoUpdater.on('error', (err) => {
+    console.error('Main Process: AutoUpdater emitted an error event:', err.message);
+    mainWindow.webContents.send('update-status', 'error', { error: err.message });
+  });
+
+  // --- IPC Listeners for UI Actions ---
+  
+  ipcMain.on('start-download', () => {
+    console.log('Main Process: Download started by user.');
+    autoUpdater.downloadUpdate();
+  });
+
+  ipcMain.on('restart-app', () => {
+    autoUpdater.quitAndInstall();
+  });
+
+  // --- Application Menu ---
   const menuTemplate = [
     {
       label: 'File',
       submenu: [
-        {
-          label: 'Open Save States Folder',
-          click: () => {
-            shell.openPath(getSavesDir());
-          }
-        },
+        { label: 'Open Save States Folder', click: () => { shell.openPath(getSavesDir()); } },
         { type: 'separator' },
         { role: 'quit' }
       ]
@@ -256,12 +256,7 @@ app.on('ready', () => {
     {
       label: 'Help',
       submenu: [
-        {
-          label: 'Learn More',
-          click: async () => {
-            await shell.openExternal('https://electronjs.org');
-          }
-        }
+        { label: 'Learn More', click: async () => { await shell.openExternal('https://electronjs.org'); } }
       ]
     }
   ];
@@ -351,10 +346,8 @@ ipcMain.handle('show-save-dialog-and-save-file', async (event, { defaultFilename
 const getContents = async (dir) => {
   let directoryPath;
   if (process.env.NODE_ENV === 'development') {
-    // In development, files are relative to the project root
     directoryPath = path.join(process.cwd(), dir);
   } else {
-    // In production, with asar: true and extraResource, files are in app.asar.unpacked
     directoryPath = path.join(process.resourcesPath, 'app.asar.unpacked', dir);
   }
   try {

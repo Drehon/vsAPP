@@ -1,11 +1,6 @@
 import './style.css';
 import { initializeTabManager } from './sub-functions/tab-manager.js';
 import { loadContentIntoTab, loadHomeIntoTab, loadSettingsIntoTab } from './sub-functions/content-loader.js';
-// The following imports are for exercise initialization, but the actual initialization
-// is now handled within content-loader.js based on the file path.
-// import { initializeExercise } from './sub-functions/exercise-initializer.js';
-// import { initializeGrammarExercise } from './sub-functions/grammar-exercise.js';
-// import { initializeVerbsExercise } from './sub-functions/verb-exercise.js';
 
 window.addEventListener('api-ready', () => {
   // --- STATE MANAGEMENT ---
@@ -19,10 +14,8 @@ window.addEventListener('api-ready', () => {
   const appVersionSpan = document.getElementById('app-version');
   const networkIndicator = document.getElementById('network-indicator');
   const networkLabel = document.getElementById('network-label');
-  // New: Update status elements
   const updateIndicator = document.getElementById('update-indicator');
-  const updateLabel = document.getElementById('update-label');
-
+  const updateContainer = document.getElementById('update-label'); 
 
   // --- CORE FUNCTIONS ---
   const { addTab, switchTab, closeTab, renderTabs } = initializeTabManager(
@@ -31,7 +24,6 @@ window.addEventListener('api-ready', () => {
     tabBar,
     newTabBtn,
     contentPanes,
-    // Callbacks for loading content into tabs, passed to tab-manager
     (tabId) => loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerciseState),
     (tabId, filePath) => loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState),
     (tabId) => loadSettingsIntoTab(tabId, tabs, renderTabs)
@@ -39,12 +31,6 @@ window.addEventListener('api-ready', () => {
 
   // --- UTILITY & SETUP FUNCTIONS ---
   
-  /**
-   * Debounce function to limit the rate at which a function gets called.
-   * @param {Function} func - The function to debounce.
-   * @param {number} delay - The debounce delay in milliseconds.
-   * @returns {Function} The debounced function.
-   */
   function debounce(func, delay) {
     let timeout;
     return function(...args) {
@@ -54,17 +40,11 @@ window.addEventListener('api-ready', () => {
     };
   }
 
-  /**
-   * Displays the application version in the footer.
-   */
   async function displayAppVersion() {
     const version = await window.api.getAppVersion();
     if (appVersionSpan) appVersionSpan.innerText = version;
   }
 
-  /**
-   * Updates the network status indicator.
-   */
   function updateNetworkStatus() {
     const isOnline = navigator.onLine;
     if (networkIndicator) {
@@ -74,39 +54,70 @@ window.addEventListener('api-ready', () => {
     if (networkLabel) networkLabel.innerText = isOnline ? 'Online' : 'Offline';
   }
 
-  /**
-   * Updates the update status to indicate a new release is available.
-   */
-  function showNewReleaseStatus() {
+  // --- UPDATE UI LOGIC ---
+
+  function setInitialUpdateStatus() {
     if (updateIndicator) {
-      updateIndicator.classList.remove('bg-green-500', 'bg-gray-400');
-      updateIndicator.classList.add('bg-blue-500'); // Blue for new release
+        updateIndicator.className = 'w-3 h-3 bg-gray-400 rounded-full mr-2 animate-pulse';
     }
-    if (updateLabel) {
-      updateLabel.innerText = 'New Release';
+    if (updateContainer) {
+        updateContainer.innerText = 'Checking for updates...';
     }
   }
 
-  /**
-   * Sets the update status to "Up to date".
-   */
-  function setUpToDateStatus() {
-    if (updateIndicator) {
-      updateIndicator.classList.remove('bg-blue-500', 'bg-gray-400');
-      updateIndicator.classList.add('bg-green-500'); // Green for up to date
+  function handleUpdateStatus(event, status, info) {
+    if (!updateIndicator || !updateContainer) return;
+
+    switch (status) {
+      case 'available':
+        updateIndicator.className = 'w-3 h-3 bg-blue-500 rounded-full mr-2';
+        updateContainer.innerHTML = `
+          <span class="mr-2">Update ${info.version} available.</span>
+          <button id="download-btn" class="ml-2 px-2 py-0.5 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs">Download</button>
+          <button id="later-btn" class="ml-1 px-2 py-0.5 bg-gray-600 text-white rounded hover:bg-gray-700 text-xs">Later</button>
+        `;
+        document.getElementById('download-btn').addEventListener('click', () => {
+          window.api.startDownload();
+          updateIndicator.className = 'w-3 h-3 bg-blue-500 rounded-full mr-2 animate-pulse';
+          updateContainer.innerText = 'Downloading... (0%)';
+        });
+        document.getElementById('later-btn').addEventListener('click', () => {
+          updateIndicator.className = 'w-3 h-3 bg-green-500 rounded-full mr-2';
+          updateContainer.innerText = 'Up to date';
+        });
+        break;
+
+      case 'not-available':
+        updateIndicator.className = 'w-3 h-3 bg-green-500 rounded-full mr-2';
+        updateContainer.innerText = 'Up to date';
+        break;
+
+      case 'downloaded':
+        updateIndicator.className = 'w-3 h-3 bg-green-500 rounded-full mr-2';
+        updateContainer.innerHTML = `
+          <span class="mr-2">Update ready to install.</span>
+          <button id="restart-btn" class="ml-2 px-2 py-0.5 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs">Restart Now</button>
+        `;
+        document.getElementById('restart-btn').addEventListener('click', () => {
+          window.api.restartApp();
+        });
+        break;
+
+      case 'error':
+        updateIndicator.className = 'w-3 h-3 bg-red-500 rounded-full mr-2';
+        updateContainer.innerText = 'Update failed';
+        break;
     }
-    if (updateLabel) {
-      updateLabel.innerText = 'Up to date';
-    }
+  }
+  
+  function handleDownloadProgress(event, progressObj) {
+      if (updateContainer) {
+          updateContainer.innerText = `Downloading... (${Math.round(progressObj.percent)}%)`;
+      }
   }
 
   // --- INITIALIZATION ---
 
-  /**
-   * Saves the current state of an exercise to the filesystem.
-   * Debounced to prevent too frequent writes.
-   * @param {object} tab - The tab object containing the exercise state.
-   */
   const saveExerciseState = debounce(async (tab) => {
     if (tab && tab.filePath && tab.exerciseState) {
       try {
@@ -116,36 +127,27 @@ window.addEventListener('api-ready', () => {
         console.error(`Failed to autosave progress for ${tab.filePath}:`, error);
       }
     }
-  }, 500); // 500ms debounce delay
+  }, 500);
 
-
-  /**
-   * Initializes the main application components and event listeners.
-   */
   async function initializeApp() {
     displayAppVersion();
     updateNetworkStatus();
-    setUpToDateStatus(); // Set initial update status to "Up to date"
+    setInitialUpdateStatus();
 
-    // Attach event listener for the new tab button
-    if (newTabBtn) { // Null check
+    if (newTabBtn) {
         newTabBtn.addEventListener('click', () => addTab(true));
     }
     
-    // Attach event listeners for network status changes
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
 
-    // Listen for update-available messages from the main process
-    window.api.onUpdateAvailable(() => {
-      showNewReleaseStatus(); // Change status when an update is available
-    });
+    // Listen for all update status messages from the main process
+    window.api.onUpdateStatus(handleUpdateStatus);
+    window.api.onDownloadProgress(handleDownloadProgress);
 
-    // Add initial tab on app startup and wait for it to complete
     await addTab(true);
   }
 
-  // Ensure the app initializes after the DOM is fully loaded
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeApp);
   } else {
