@@ -72,14 +72,18 @@ if (require('electron-squirrel-startup')) {
 }
 
 let mainWindow; // Define mainWindow in a broader scope
+let isMainWindowCreated = false;
 
 const createWindow = () => {
   // Prevent multiple windows if one already exists
-  if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.focus();
+  if (isMainWindowCreated) {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.focus();
+    }
     return;
   }
 
+  isMainWindowCreated = true;
   console.log('Main Process: createWindow called. Initializing main window.'); // Added log
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -306,10 +310,6 @@ app.on('ready', () => {
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
 });
-
-// The ipcMain.on('app_version') listener has been removed as it was redundant
-// and conflicted with ipcMain.handle('get-app-version').
-// The renderer process should use ipcMain.invoke('get-app-version') via window.api.getAppVersion().
 
 ipcMain.handle('get-app-version', () => {
   return app.getVersion();
