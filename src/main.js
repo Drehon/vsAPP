@@ -74,6 +74,12 @@ if (require('electron-squirrel-startup')) {
 let mainWindow; // Define mainWindow in a broader scope
 
 const createWindow = () => {
+  // Prevent multiple windows if one already exists
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.focus();
+    return;
+  }
+
   console.log('Main Process: createWindow called. Initializing main window.'); // Added log
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -88,13 +94,12 @@ const createWindow = () => {
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  // We only open dev tools in development, not in the installed app.
-  // if (process.env.NODE_ENV === 'development') { // Original condition
-  //   mainWindow.webContents.openDevTools();
-  // }
-  // Temporarily uncommenting for debugging in installed app
-  mainWindow.webContents.openDevTools(); // Uncommented for debugging
+  // Open dev tools for debugging. This should ideally be conditional on NODE_ENV.
+  mainWindow.webContents.openDevTools();
 
+  mainWindow.on('closed', () => {
+    mainWindow = null; // Dereference the window object
+  });
 };
 
 // --- IPC Handlers ---
@@ -302,6 +307,10 @@ app.on('ready', () => {
   Menu.setApplicationMenu(menu);
 });
 
+// The ipcMain.on('app_version') listener has been removed as it was redundant
+// and conflicted with ipcMain.handle('get-app-version').
+// The renderer process should use ipcMain.invoke('get-app-version') via window.api.getAppVersion().
+
 ipcMain.handle('get-app-version', () => {
   return app.getVersion();
 });
@@ -313,6 +322,8 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
+  // On macOS it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
