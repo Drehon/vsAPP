@@ -41,7 +41,8 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        remoteReleases: 'https://github.com/Drehon/vsAPP',
+        // THE FIX IS HERE: The remoteReleases line has been removed.
+        // This prevents the installer from checking GitHub for updates during installation.
       },
     },
     {
