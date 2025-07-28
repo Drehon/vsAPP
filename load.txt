@@ -1,0 +1,5 @@
+Unlike the 'Save/Salva' Button, which correctly opens to the save folder
+The Load buttons keeps defaulting to a folder of the app in appData 
+
+This is an issue
+Evaluate this issue, try to understand it
