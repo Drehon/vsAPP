@@ -55,8 +55,6 @@ const createWindow = () => {
     width: 1200,
     height: 800,
     webPreferences: {
-      // Reverted to original settings as requested.
-      // This is less secure but required for your app's architecture.
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       contextIsolation: false,
       nodeIntegration: true,
@@ -65,9 +63,10 @@ const createWindow = () => {
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.webContents.openDevTools();
-  }
+  // We only open dev tools in development, not in the installed app.
+  // if (process.env.NODE_ENV === 'development') {
+  //   mainWindow.webContents.openDevTools();
+  // }
 };
 
 // --- IPC Handlers ---
@@ -96,7 +95,8 @@ ipcMain.handle('open-directory-dialog', async () => {
 ipcMain.on('navigate', (event, relativePath) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (win) {
-    const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : app.getAppPath();
+    // CORRECTED: Use process.resourcesPath for production to correctly locate files outside the asar archive.
+    const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : process.resourcesPath;
     const filePath = path.join(basePath, relativePath);
     win.loadFile(filePath);
   }
@@ -125,7 +125,8 @@ ipcMain.handle('get-settings-content', async () => {
 });
 
 ipcMain.handle('get-file-content', async (event, relativePath) => {
-  const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : app.getAppPath();
+  // CORRECTED: Use process.resourcesPath for production to correctly locate files outside the asar archive.
+  const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : process.resourcesPath;
   const filePath = path.join(basePath, relativePath);
   try {
     const content = await fs.readFile(filePath, 'utf-8');
@@ -346,9 +347,11 @@ ipcMain.handle('show-save-dialog-and-save-file', async (event, { defaultFilename
 const getContents = async (dir) => {
   let directoryPath;
   if (process.env.NODE_ENV === 'development') {
+    // In development, files are relative to the project root
     directoryPath = path.join(process.cwd(), dir);
   } else {
-    directoryPath = path.join(process.resourcesPath, 'app.asar.unpacked', dir);
+    // In production, extraResources are placed at the root of the `resources` directory.
+    directoryPath = path.join(process.resourcesPath, dir);
   }
   try {
     const files = await fs.readdir(directoryPath);

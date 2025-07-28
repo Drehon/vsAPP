@@ -74,36 +74,40 @@ module.exports = {
     postMake: async (forgeConfig, makeResults) => {
       console.log('Post-make hook: Triggered.');
       
-      // Run the script to generate the latest.yml file.
+      // Find the path to the generated .exe installer from the make results.
+      const squirrelWindowsResult = makeResults.find(
+        (result) => result.artifacts.some((artifact) => artifact.endsWith('.exe'))
+      );
+
+      if (!squirrelWindowsResult) {
+          console.warn('Post-make hook: Could not find squirrel.windows build artifacts. Skipping YAML generation.');
+          return makeResults;
+      }
+      
+      const exePath = squirrelWindowsResult.artifacts.find((artifact) => artifact.endsWith('.exe'));
+
+      // Run the script to generate the latest.yml file, passing the installer path as an argument.
       try {
-        console.log('Post-make hook: Generating latest.yml...');
-        execSync('node scripts/generate-update-yaml.js', { stdio: 'inherit' });
+        console.log(`Post-make hook: Generating latest.yml for installer at ${exePath}`);
+        const scriptPath = path.join(__dirname, 'scripts', 'generate-update-yaml.js');
+        // Pass the installer path as a command line argument to the script.
+        execSync(`node "${scriptPath}" "${exePath}"`, { stdio: 'inherit' });
       } catch (err) {
         console.error('Post-make hook: Failed to generate latest.yml.');
         throw err;
       }
 
-      // Find the path to the generated latest.yml file.
-      // It will be in the same directory as the .exe installer.
-      const squirrelWindowsResult = makeResults.find(
-        (result) => result.artifacts.some((artifact) => artifact.endsWith('.exe'))
-      );
+      // Find the path to the newly generated latest.yml file.
+      const outputDir = path.dirname(exePath);
+      const yamlPath = path.join(outputDir, 'latest.yml');
 
-      if (squirrelWindowsResult) {
-        const exePath = squirrelWindowsResult.artifacts.find((artifact) => artifact.endsWith('.exe'));
-        const outputDir = path.dirname(exePath);
-        const yamlPath = path.join(outputDir, 'latest.yml');
-
-        if (fs.existsSync(yamlPath)) {
-          console.log(`Post-make hook: Found ${yamlPath}.`);
-          // Add the latest.yml to the list of artifacts to be published.
-          squirrelWindowsResult.artifacts.push(yamlPath);
-          console.log('Post-make hook: Added latest.yml to artifacts for publishing.');
-        } else {
-          console.error(`Post-make hook: ERROR - Could not find latest.yml at ${yamlPath} after generation.`);
-        }
+      if (fs.existsSync(yamlPath)) {
+        console.log(`Post-make hook: Found ${yamlPath}.`);
+        // Add the latest.yml to the list of artifacts to be published.
+        squirrelWindowsResult.artifacts.push(yamlPath);
+        console.log('Post-make hook: Added latest.yml to artifacts for publishing.');
       } else {
-          console.warn('Post-make hook: Could not find squirrel.windows build artifacts. Skipping YAML addition.');
+        console.error(`Post-make hook: ERROR - Could not find latest.yml at ${yamlPath} after generation.`);
       }
       
       // Return the modified results to the publish command.
