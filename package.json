@@ -1,6 +1,6 @@
 {
   "name": "tutoring-app",
-  "version": "1.1.9",
+  "version": "1.2.1",
   "description": "An Electron application for language tutoring.",
   "main": ".webpack/main",
   "scripts": {
