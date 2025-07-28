@@ -63,8 +63,8 @@ module.exports = {
       name: '@electron-forge/publisher-github',
       config: {
         repository: {
-          owner: 'Drehon',
-          name: 'vsAPP'
+          owner: 'Drehon', // Your GitHub username
+          name: 'vsAPP'   // Your GitHub repository name
         },
         prerelease: false,
         draft: true,

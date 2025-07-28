@@ -6,6 +6,30 @@ const fs = require('fs').promises;
 const fsSync = require('fs');
 const { autoUpdater } = require('electron-updater');
 
+// --- File-based Logging for Main Process ---
+const logFilePath = path.join(app.getPath('userData'), 'main-process-log.txt');
+const logStream = fsSync.createWriteStream(logFilePath, { flags: 'a' });
+
+// Override console.log, console.error, etc. to write to file
+const originalConsoleLog = console.log;
+const originalConsoleError = console.error;
+const originalConsoleWarn = console.warn;
+
+console.log = (...args) => {
+  originalConsoleLog(...args); // Also log to original console
+  logStream.write(`[LOG][${new Date().toISOString()}] ${args.join(' ')}\n`);
+};
+console.error = (...args) => {
+  originalConsoleError(...args); // Also log to original console
+  logStream.write(`[ERROR][${new Date().toISOString()}] ${args.join(' ')}\n`);
+};
+console.warn = (...args) => {
+  originalConsoleWarn(...args); // Also log to original console
+  logStream.write(`[WARN][${new Date().toISOString()}] ${args.join(' ')}\n`);
+};
+// --- End File-based Logging ---
+
+
 // --- Configuration Management ---
 const configPath = path.join(app.getPath('userData'), 'config.json');
 let appConfig = {};
@@ -50,6 +74,7 @@ if (require('electron-squirrel-startup')) {
 let mainWindow; // Define mainWindow in a broader scope
 
 const createWindow = () => {
+  console.log('Main Process: createWindow called. Initializing main window.'); // Added log
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1200,
@@ -64,9 +89,12 @@ const createWindow = () => {
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // We only open dev tools in development, not in the installed app.
-  // if (process.env.NODE_ENV === 'development') {
+  // if (process.env.NODE_ENV === 'development') { // Original condition
   //   mainWindow.webContents.openDevTools();
   // }
+  // Temporarily uncommenting for debugging in installed app
+  mainWindow.webContents.openDevTools(); // Uncommented for debugging
+
 };
 
 // --- IPC Handlers ---
@@ -191,17 +219,23 @@ app.on('ready', () => {
   // --- Auto-Updater Event Listeners ---
   autoUpdater.on('update-available', (info) => {
     console.log('Main Process: Update available!', info);
-    mainWindow.webContents.send('update-status', 'available', info);
+    if (mainWindow) { // Ensure mainWindow exists before sending
+      mainWindow.webContents.send('update-status', 'available', info);
+    }
   });
 
   autoUpdater.on('update-not-available', (info) => {
     console.log('Main Process: Update not available.', info);
-    mainWindow.webContents.send('update-status', 'not-available', info);
+    if (mainWindow) { // Ensure mainWindow exists before sending
+      mainWindow.webContents.send('update-status', 'not-available', info);
+    }
   });
 
   autoUpdater.on('update-downloaded', (info) => {
     console.log('Main Process: Update downloaded.', info);
-    mainWindow.webContents.send('update-status', 'downloaded', info);
+    if (mainWindow) { // Ensure mainWindow exists before sending
+      mainWindow.webContents.send('update-status', 'downloaded', info);
+    }
   });
   
   autoUpdater.on('download-progress', (progressObj) => {
@@ -209,12 +243,16 @@ app.on('ready', () => {
     log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
     log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
     console.log(log_message);
-    mainWindow.webContents.send('download-progress', progressObj);
+    if (mainWindow) { // Ensure mainWindow exists before sending
+      mainWindow.webContents.send('download-progress', progressObj);
+    }
   });
 
   autoUpdater.on('error', (err) => {
     console.error('Main Process: AutoUpdater emitted an error event:', err.message);
-    mainWindow.webContents.send('update-status', 'error', { error: err.message });
+    if (mainWindow) { // Ensure mainWindow exists before sending
+      mainWindow.webContents.send('update-status', 'error', { error: err.message });
+    }
   });
 
   // --- IPC Listeners for UI Actions ---
@@ -283,7 +321,7 @@ app.on('activate', () => {
 // --- Save/Load Handlers ---
 
 const getExerciseSavePath = (exerciseFilePath) => {
-  const savesDir = getSavesDir();
+  const savesDir = appConfig.savePath || path.join(app.getPath('userData'), 'saves'); // Use appConfig.savePath
   const sanitizedFileName = exerciseFilePath.replace(/[\\/:]/g, '-').replace(/\.html$/, '').toLowerCase();
   return path.join(savesDir, `${sanitizedFileName}_state.json`);
 };
