@@ -16,6 +16,9 @@ window.addEventListener('api-ready', () => {
   const networkLabel = document.getElementById('network-label');
   const updateIndicator = document.getElementById('update-indicator');
   const updateContainer = document.getElementById('update-label'); 
+  // const loadSaveBtn = document.getElementById('load-save-btn'); // Removed reference to the old Load button
+  // NEW: Reference to the 'Carica' button with id="load-btn-1"
+  let loadBtn1 = null; // Initialize as null, will be assigned when content loads
 
   // --- CORE FUNCTIONS ---
   const { addTab, switchTab, closeTab, renderTabs } = initializeTabManager(
@@ -25,7 +28,7 @@ window.addEventListener('api-ready', () => {
     newTabBtn,
     contentPanes,
     (tabId) => loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerciseState),
-    (tabId, filePath) => loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState),
+    (tabId, filePath) => loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState, setupLoadButton), // Pass setupLoadButton
     (tabId) => loadSettingsIntoTab(tabId, tabs, renderTabs)
   );
 
@@ -116,6 +119,37 @@ window.addEventListener('api-ready', () => {
       }
   }
 
+  // NEW: Function to set up the load button listener
+  function setupLoadButton(contentPaneElement) {
+    // Look for the load button within the specific content pane
+    loadBtn1 = contentPaneElement.querySelector('#load-btn-1'); 
+    if (loadBtn1) {
+      // Remove any existing listener to prevent duplicates if content is reloaded
+      loadBtn1.removeEventListener('click', handleLoadButtonClick); 
+      loadBtn1.addEventListener('click', handleLoadButtonClick);
+      console.log('Load button #load-btn-1 found and event listener attached.');
+    } else {
+      console.log('Load button #load-btn-1 not found in the current content pane.');
+    }
+  }
+
+  // NEW: Handler for the load button click
+  async function handleLoadButtonClick() {
+    console.log('Load button #load-btn-1 clicked.'); // Debug log
+    const result = await window.api.showOpenDialogAndLoadFile();
+    if (result.success && !result.canceled) {
+      console.log('File loaded successfully:', result.path);
+      console.log('Loaded data:', result.data);
+      // TODO: Implement logic to apply the loaded data to the current exercise state
+      // This will depend on how your exercise state is structured and managed across tabs.
+      // For now, it just logs the data.
+    } else if (result.canceled) {
+      console.log('File load canceled.');
+    } else {
+      console.error('Failed to load file:', result.error);
+    }
+  }
+
   // --- INITIALIZATION ---
 
   const saveExerciseState = debounce(async (tab) => {
@@ -145,7 +179,14 @@ window.addEventListener('api-ready', () => {
     window.api.onUpdateStatus(handleUpdateStatus);
     window.api.onDownloadProgress(handleDownloadProgress);
 
-    await addTab(true);
+    // No longer attach listener here directly to loadSaveBtn as it's removed/replaced
+    // The setupLoadButton will be called when new content is loaded into a tab.
+
+    await addTab(true); // Add initial home tab
+    // After adding the initial tab, if it contains a load button, set it up.
+    // This assumes the home tab might contain load-btn-1, or that setupLoadButton
+    // will be called when other content (like exercises) is loaded.
+    // The loadContentIntoTab function now takes setupLoadButton as an argument.
   }
 
   if (document.readyState === 'loading') {

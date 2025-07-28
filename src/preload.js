@@ -27,7 +27,10 @@ window.api = {
   showSaveDialogAndSaveFile: (options) => ipcRenderer.invoke('show-save-dialog-and-save-file', options),
   getConfig: () => ipcRenderer.invoke('get-config'),
   saveConfig: (config) => ipcRenderer.invoke('save-config', config),
-  openDirectoryDialog: () => ipcRenderer.invoke('open-directory-dialog')
+  openDirectoryDialog: () => ipcRenderer.invoke('open-directory-dialog'),
+  
+  // ADDED: Expose the showOpenDialogAndLoadFile handler
+  showOpenDialogAndLoadFile: () => ipcRenderer.invoke('show-open-dialog-and-load-file')
 };
 
 // Signal that the preload script has finished and the API is ready
