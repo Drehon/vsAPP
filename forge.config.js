@@ -87,6 +87,9 @@ module.exports = {
       
       const exePath = squirrelWindowsResult.artifacts.find((artifact) => artifact.endsWith('.exe'));
 
+      // *** ADDED LOG HERE ***
+      console.log('Post-make hook: Identified EXE path:', exePath);
+
       try {
         console.log(`Post-make hook: Generating latest.yml for installer at ${exePath}`);
         const scriptPath = path.join(__dirname, 'scripts', 'generate-update-yaml.js');

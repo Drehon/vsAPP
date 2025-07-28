@@ -68,54 +68,35 @@ I have already implemented the first steps of our plan: removing the `build` sec
 
 error log 
 
-[LOG][2025-07-28T16:57:09.589Z] Main Process: createWindow called. Initializing main window.
-[WARN][2025-07-28T16:57:09.673Z] WARNING: GITHUB_TOKEN not found.
-[LOG][2025-07-28T16:57:10.320Z] Main Process: Checking for updates...
-[LOG][2025-07-28T16:57:10.324Z] AutoUpdater configuration: [object Object]
-[LOG][2025-07-28T16:57:11.079Z] Main Process: Update available! [object Object]
-[LOG][2025-07-28T16:57:21.606Z] Main Process: Download started by user.
-[ERROR][2025-07-28T16:57:21.607Z] updaterCacheDirName is not specified in app-update.yml Was app build using at least electron-builder 20.34.0?
-[WARN][2025-07-28T16:57:21.609Z] disableWebInstaller is set to false, you should set it to true if you do not plan on using a web installer. This will default to true in a future version.
-[ERROR][2025-07-28T16:57:21.646Z] Cannot download differentially, fallback to full download: Error: Cannot download "https://github.com/Drehon/vsAPP/releases/download/v1.1.9/vsAPP-1.1.9-Setup.exe.blockmap", status 404: 
+[LOG][2025-07-28T17:10:19.006Z] Main Process: createWindow called. Initializing main window.
+[WARN][2025-07-28T17:10:19.094Z] WARNING: GITHUB_TOKEN not found.
+[LOG][2025-07-28T17:10:19.719Z] Main Process: createWindow called. Initializing main window.
+[WARN][2025-07-28T17:10:19.815Z] WARNING: GITHUB_TOKEN not found.
+[LOG][2025-07-28T17:10:20.458Z] Main Process: Checking for updates...
+[LOG][2025-07-28T17:10:20.462Z] AutoUpdater configuration: [object Object]
+[LOG][2025-07-28T17:10:21.445Z] Main Process: Update available! [object Object]
+[LOG][2025-07-28T17:11:00.791Z] Main Process: Download started by user.
+[ERROR][2025-07-28T17:11:00.792Z] updaterCacheDirName is not specified in app-update.yml Was app build using at least electron-builder 20.34.0?
+[WARN][2025-07-28T17:11:00.795Z] disableWebInstaller is set to false, you should set it to true if you do not plan on using a web installer. This will default to true in a future version.
+[ERROR][2025-07-28T17:11:03.095Z] Cannot download differentially, fallback to full download: Error: Cannot download "https://github.com/Drehon/vsAPP/releases/download/v1.2.1/vsAPP-1.2.1-Setup.exe.blockmap", status 404: 
     at ClientRequest.<anonymous> (C:\Users\User\AppData\Local\tutoring_app\app-1.1.9\resources\app.asar\.webpack\main\index.js:2:239160)
     at ClientRequest.emit (node:events:517:28)
     at SimpleURLLoaderWrapper.<anonymous> (node:electron/js2c/browser_init:2:48772)
     at SimpleURLLoaderWrapper.emit (node:events:517:28)
-[ERROR][2025-07-28T16:57:21.682Z] Error: Error: Cannot download "https://github.com/Drehon/vsAPP/releases/download/v1.2.1/vsAPP-1.2.1-Setup.exe", status 404: 
+[ERROR][2025-07-28T17:11:03.298Z] Error: Error: Cannot download "https://github.com/Drehon/vsAPP/releases/download/v1.2.1/vsAPP-1.2.1-Setup.exe", status 404: 
     at ClientRequest.<anonymous> (C:\Users\User\AppData\Local\tutoring_app\app-1.1.9\resources\app.asar\.webpack\main\index.js:2:239160)
     at ClientRequest.emit (node:events:517:28)
     at SimpleURLLoaderWrapper.<anonymous> (node:electron/js2c/browser_init:2:48772)
     at SimpleURLLoaderWrapper.emit (node:events:517:28)
-[ERROR][2025-07-28T16:57:21.682Z] Main Process: AutoUpdater emitted an error event: Cannot download "https://github.com/Drehon/vsAPP/releases/download/v1.2.1/vsAPP-1.2.1-Setup.exe", status 404: 
-[ERROR][2025-07-28T16:57:21.683Z] (node:2972) UnhandledPromiseRejectionWarning: Error: Cannot download "https://github.com/Drehon/vsAPP/releases/download/v1.2.1/vsAPP-1.2.1-Setup.exe", status 404: 
+[ERROR][2025-07-28T17:11:03.299Z] Main Process: AutoUpdater emitted an error event: Cannot download "https://github.com/Drehon/vsAPP/releases/download/v1.2.1/vsAPP-1.2.1-Setup.exe", status 404: 
+[ERROR][2025-07-28T17:11:03.299Z] (node:15564) UnhandledPromiseRejectionWarning: Error: Cannot download "https://github.com/Drehon/vsAPP/releases/download/v1.2.1/vsAPP-1.2.1-Setup.exe", status 404: 
     at ClientRequest.<anonymous> (C:\Users\User\AppData\Local\tutoring_app\app-1.1.9\resources\app.asar\.webpack\main\index.js:2:239160)
     at ClientRequest.emit (node:events:517:28)
     at SimpleURLLoaderWrapper.<anonymous> (node:electron/js2c/browser_init:2:48772)
     at SimpleURLLoaderWrapper.emit (node:events:517:28)
 (Use `vsAPP --trace-warnings ...` to show where the warning was created)
-[ERROR][2025-07-28T16:57:21.683Z] (node:2972) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 2)
+[ERROR][2025-07-28T17:11:03.299Z] (node:15564) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 2)
 
----
-
-publish error
-
-PS C:\Users\User\Documents\TEFL Personal> npm run publish
-
-> tutoring-app@1.2.2 publish
-> electron-forge publish
-
-✔ Checking your system                                                                                                                                                    
-✔ Loading configuration
-✖ Resolving publish targets
-  › Could not find a publish target with the name: @electron-forge/publisher-github. Make sure it's listed in the devDependencies of your package.json
-◼ Running make command
-◼ Publishing distributables
-
-An unhandled rejection has occurred inside Forge:
-Error: Could not find a publish target with the name: @electron-forge/publisher-github. Make sure it's listed in the devDependencies of your package.json
-at C:\Users\User\Documents\TEFL Personal\node_modules\@electron-forge\core\dist\api\publish.js:112:35
-    at async _Task.taskFn (C:\Users\User\Documents\TEFL Personal\node_modules\@electron-forge\tracer\dist\index.js:58:20)
-    at async _Task.run (C:\Users\User\Documents\TEFL Personal\node_modules\listr2\dist\index.cjs:2063:11)
 
 ---
 

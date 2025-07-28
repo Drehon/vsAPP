@@ -99,7 +99,10 @@ const createWindow = () => {
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // Open dev tools for debugging. This should ideally be conditional on NODE_ENV.
-  mainWindow.webContents.openDevTools();
+  // Changed to explicitly use app.isPackaged to control dev tools.
+  if (!app.isPackaged) {
+    mainWindow.webContents.openDevTools();
+  }
 
   mainWindow.on('closed', () => {
     mainWindow = null; // Dereference the window object
@@ -299,14 +302,18 @@ app.on('ready', () => {
         { type: 'separator' },
         { role: 'togglefullscreen' }
       ]
-    },
-    {
+    }
+  ];
+
+  // Add Help menu only if not in production
+  if (process.env.NODE_ENV !== 'production') {
+    menuTemplate.push({
       label: 'Help',
       submenu: [
         { label: 'Learn More', click: async () => { await shell.openExternal('https://electronjs.org'); } }
       ]
-    }
-  ];
+    });
+  }
 
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
