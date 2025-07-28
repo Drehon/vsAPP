@@ -2,7 +2,7 @@ import { initializeExercise } from './exercise-initializer.js';
 import { initializeGrammarExercise } from './grammar-exercise.js';
 import { initializeVerbsExercise } from './verb-exercise.js';
 
-export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState) {
+export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState, setupLoadButton) {
     const tab = tabs.find(t => t.id === tabId);
     if (!tab) return;
 
@@ -67,9 +67,15 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
 
         // Attach event listeners to the new toolbar buttons
         document.getElementById(`home-btn-${tab.id}`).addEventListener('click', () => loadHomeIntoTab(tab.id, tabs, renderTabs, addTab, saveExerciseState));
-        document.getElementById(`reload-btn-${tab.id}`).addEventListener('click', () => loadContentIntoTab(tab.id, filePath, tabs, renderTabs, addTab, saveExerciseState));
+        document.getElementById(`reload-btn-${tab.id}`).addEventListener('click', () => loadContentIntoTab(tab.id, filePath, tabs, renderTabs, addTab, saveExerciseState, setupLoadButton));
         document.getElementById(`github-btn-${tab.id}`).addEventListener('click', () => window.api.openExternalLink('https://github.com/Drehon/vsapp'));
         document.getElementById(`settings-btn-${tab.id}`).addEventListener('click', () => addTab(true, null, 'settings'));
+
+        // Pass the actual button element to the setup function
+        const loadBtn = document.getElementById(`load-btn-${tab.id}`);
+        if (loadBtn && typeof setupLoadButton === 'function') {
+            setupLoadButton(loadBtn);
+        }
 
         const resetBtn = document.getElementById(`reset-btn-${tab.id}`);
         if (resetBtn) {
@@ -78,7 +84,7 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
                 if (confirmReset) {
                     await window.api.resetExerciseState(tab.filePath);
                     // Reload the content to re-initialize the exercise
-                    loadContentIntoTab(tab.id, filePath, tabs, renderTabs, addTab, saveExerciseState);
+                    loadContentIntoTab(tab.id, filePath, tabs, renderTabs, addTab, saveExerciseState, setupLoadButton);
                     console.log(`Exercise state reset and reloaded for ${tab.filePath}`);
                 }
             });

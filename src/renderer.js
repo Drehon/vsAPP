@@ -120,20 +120,18 @@ window.addEventListener('api-ready', () => {
   }
 
   // NEW: Function to set up the load button listener
-  function setupLoadButton(contentPaneElement) {
-    // Look for the load button within the specific content pane
-    loadBtn1 = contentPaneElement.querySelector('#load-btn-1'); 
-    if (loadBtn1) {
-      // Remove any existing listener to prevent duplicates if content is reloaded
-      loadBtn1.removeEventListener('click', handleLoadButtonClick); 
-      loadBtn1.addEventListener('click', handleLoadButtonClick);
-      console.log('Load button #load-btn-1 found and event listener attached.');
+  function setupLoadButton(buttonElement) {
+    if (buttonElement) {
+      // Remove any existing listener to prevent duplicates
+      buttonElement.removeEventListener('click', handleLoadButtonClick); 
+      buttonElement.addEventListener('click', handleLoadButtonClick);
+      console.log(`Load button event listener attached to ${buttonElement.id}.`);
     } else {
-      console.log('Load button #load-btn-1 not found in the current content pane.');
+      console.log('setupLoadButton was called with an invalid element.');
     }
   }
 
-  // NEW: Handler for the load button click
+  // Handler for the load button click, now defined to be reused.
   async function handleLoadButtonClick() {
     console.log('Load button clicked.');
     const result = await window.api.showOpenDialogAndLoadFile();
@@ -154,7 +152,8 @@ window.addEventListener('api-ready', () => {
             tabs, 
             renderTabs, 
             addTab, 
-            saveExerciseState
+            saveExerciseState,
+            setupLoadButton // Pass the setup function again for the reloaded content
           );
   
           console.log('Successfully loaded and applied state from', result.path);
