@@ -27,3 +27,12 @@ Steps taken:
     - Updated the `handleLoadButtonClick` function to pass the `setupLoadButton` function when reloading the content, ensuring the event listener is re-attached after a load operation.
 
 This ensures that the event listener is always attached to the correct "Load" button, regardless of the tab it's in. The `defaultPath` in `main.js` was already correctly configured to use the `saves` directory, so no changes were needed there.
+
+---
+
+save works, but load still doesn't lead to the same folder
+
+jules - 3
+
+
+---
