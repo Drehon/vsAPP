@@ -1,34 +1,52 @@
-const { spawn } = require('child_process');
+const { spawnSync } = require('child_process'); // Changed to spawnSync
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config(); // Ensure this is at the very top
 
-// Add this line for debugging:
-console.log('DEBUG: GITHUB_TOKEN from .env:', process.env.GITHUB_TOKEN ? 'Loaded' : 'NOT Loaded');
-// If you want to see the actual token value (be careful with logs):
-// console.log('DEBUG: GITHUB_TOKEN value:', process.env.GITHUB_TOKEN);
+// --- RECURSION GUARD (Lock File Method) ---
+// To prevent an infinite loop (make -> postMake -> publish -> make),
+// we create a lock file. If this script is run while the lock file
+// exists, it means it's a recursive call, and we should exit.
+const lockFilePath = path.join(process.cwd(), '.publish.lock');
 
-const forgeExecutable = path.join(process.cwd(), 'node_modules', '.bin', 'electron-forge.cmd');
-console.log('DEBUG: Resolved electron-forge executable path:', forgeExecutable);
+if (fs.existsSync(lockFilePath)) {
+  console.log('DEBUG: Lock file found. Exiting to prevent recursive loop.');
+  process.exit(0); // Exit successfully to not fail the build.
+}
 
-// Ensure the GITHUB_TOKEN is available in the environment for the spawned process
-const env = { ...process.env, GITHUB_TOKEN: process.env.GITHUB_TOKEN };
+try {
+  // Create the lock file to signal the script is running.
+  fs.writeFileSync(lockFilePath, `locked at: ${new Date().toISOString()}`);
+  console.log('DEBUG: Lock file created.');
 
-const child = spawn(forgeExecutable, ['publish'], {
-  stdio: 'inherit', // This makes the child process's output appear in the parent process
-  env: env,
-  shell: true // Use shell to ensure .cmd files are executed correctly on Windows
-});
+  // The original script logic continues here.
+  console.log('DEBUG: GITHUB_TOKEN from .env:', process.env.GITHUB_TOKEN ? 'Loaded' : 'NOT Loaded');
 
-child.on('close', (code) => {
-  if (code !== 0) {
-    console.error(`electron-forge publish process exited with code ${code}`);
-    process.exit(code);
+  const forgeExecutable = path.join(process.cwd(), 'node_modules', '.bin', 'electron-forge.cmd');
+  console.log('DEBUG: Resolved electron-forge executable path:', forgeExecutable);
+
+  const env = { ...process.env };
+
+  // Call publish synchronously to prevent file locking errors.
+  // The --skip-package flag is still used to avoid re-running the 'make' step.
+  const result = spawnSync(`"${forgeExecutable}"`, ['publish', '--skip-package'], {
+    stdio: 'inherit',
+    env: env,
+    shell: true
+  });
+
+  // Check the exit code from the synchronous process.
+  if (result.status !== 0) {
+    console.error(`electron-forge publish process exited with code ${result.status}`);
+    process.exit(result.status);
   } else {
     console.log('electron-forge publish process completed successfully.');
   }
-});
 
-child.on('error', (err) => {
-  console.error('Failed to start electron-forge publish process:', err);
-  process.exit(1);
-});
+} finally {
+  // This 'finally' block ensures the lock file is removed even if errors occur.
+  if (fs.existsSync(lockFilePath)) {
+    fs.unlinkSync(lockFilePath);
+    console.log('DEBUG: Lock file cleaned up.');
+  }
+}

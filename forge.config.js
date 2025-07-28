@@ -81,10 +81,24 @@ module.exports = {
           name: 'vsAPP'   // Your GitHub repository name
         },
         prerelease: false, // Set to true if this is a pre-release
-        draft: false,      // Set to true if you want to create a draft release
+        draft: true,      // Set to true if you want to create a draft release
         // It's highly recommended to use an environment variable for your token:
         // token: process.env.GITHUB_TOKEN
       }
     }
-  ]
+  ],
+  hooks: {
+    postMake: async (forgeConfig, makeResults) => {
+      const { execSync } = require('child_process');
+      const scriptPath = path.join(__dirname, 'scripts', 'publisher-helper.js');
+      
+      console.log(`Executing publisher-helper script at: ${scriptPath}`);
+      try {
+        execSync(`node "${scriptPath}"`, { stdio: 'inherit' });
+      } catch (error) {
+        console.error('Error executing publisher-helper.js:', error);
+        process.exit(1);
+      }
+    }
+  }
 };
