@@ -37,16 +37,5 @@
     "electron": "28.1.0",
     "node-loader": "^2.0.0",
     "style-loader": "^3.3.3"
-  },
-  "build": {
-    "appId": "com.drehon.vsapp",
-    "productName": "vsAPP",
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "Drehon",
-        "repo": "vsAPP"
-      }
-    ]
   }
 }

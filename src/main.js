@@ -217,6 +217,7 @@ app.on('ready', () => {
 
   mainWindow.once('ready-to-show', () => {
     console.log('Main Process: Checking for updates...');
+    console.log('AutoUpdater configuration:', autoUpdater);
     autoUpdater.checkForUpdates().catch(err => {
       console.error('Main Process: Error during update check:', err.message);
       if (mainWindow) {
