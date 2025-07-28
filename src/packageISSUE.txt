@@ -1,0 +1,104 @@
+Issue: "No lessons found" in Installed App
+
+Symptom:
+When you run your Electron application after packaging it (e.g., from the .exe installer on Windows), the home screen displays "No lessons found" and "No exercises found," even though these files are present and load correctly when you run the app in development mode (npm start).
+
+Root Cause Analysis:
+
+The core problem lies in how file paths are resolved and how resources are bundled in an Electron application, specifically when using electron-forge with ASAR archives.
+
+    Development vs. Production Paths:
+
+        In development mode (npm start), your application runs directly from your project's source files. When you try to access lessons/ or exercises/, Node.js resolves these paths relative to your current working directory (process.cwd()). This works perfectly because the lessons and exercises folders are right there in your project root.
+
+        In production mode (after npm run make), your application is bundled into a distributable package. Electron applications are typically packaged into an ASAR (Atom Shell Archive) file (e.g., app.asar). This archive is like a tarball that concatenates all your application's files into a single file, which helps with performance and intellectual property protection.
+
+    extraResource and ASAR Behavior:
+
+        Your forge.config.js has asar: true and extraResource: ['./lessons', './exercises'].
+
+        When asar: true, Electron Forge's default behavior for extraResource is to bundle these directories inside the app.asar archive. They are not unpacked into a separate app.asar.unpacked folder unless you explicitly tell Electron Forge to unpack them (e.g., extraResource: [{ from: './lessons', to: 'lessons', unpack: true }]).
+
+        The previous fix in src/main.js attempted to read from path.join(process.resourcesPath, 'app.asar.unpacked', dir). This path is only correct if the resources were explicitly unpacked. Since they are likely inside app.asar with your current forge.config.js, this path is incorrect, and fs.readdir fails to find the directories.
+
+    Correct Path for ASAR:
+
+        Electron's built-in fs module (which you use in main.js) has special capabilities to read files directly from within an ASAR archive.
+
+        The correct base path for accessing files inside the app.asar archive is app.getAppPath(). This function returns the path to the app.asar file itself (or the unpacked app directory in development). When you use path.join(app.getAppPath(), 'lessons'), Electron's fs module understands that it needs to look inside app.asar for the lessons directory.
+
+Verification Steps (How to check your files):
+
+Before applying the fix, you can verify the current state of your packaged application:
+
+    Build your application: Run npm run make.
+
+    Locate the packaged app: Navigate to the out/make/<your-maker-output>/<your-app-name>-win32-x64/resources/ directory (or equivalent for macOS/Linux).
+
+    Inspect app.asar:
+
+        You should see an app.asar file.
+
+        To inspect its contents, you can use the asar command-line tool (you might need to install it globally: npm install -g asar).
+
+        Run: asar list <path_to_your_app.asar_file> (e.g., asar list C:\Users\User\Documents\TEFL Personal\out\make\squirrel.windows\x64\tutoring-app-win32-x64\resources\app.asar).
+
+        Look for entries like /lessons/ and /exercises/. They should appear directly under the root of the ASAR archive, not under app.asar.unpacked. This confirms they are bundled inside the ASAR.
+
+Solution (File Modification):
+
+The solution involves modifying the getContents function in src/main.js to correctly determine the base path for reading lessons and exercises based on whether the application is running in development or production (packaged) mode.
+
+Target File: src/main.js
+
+Changes to be made:
+
+Locate the getContents function and modify the else block (for process.env.NODE_ENV !== 'development') to use app.getAppPath() directly.
+
+// ... (rest of your main.js code)
+
+const getContents = async (dir) => {
+  let directoryPath;
+  if (process.env.NODE_ENV === 'development') {
+    // In development, files are relative to the project root
+    directoryPath = path.join(process.cwd(), dir);
+  } else {
+    // In production, with asar: true, files are inside the app.asar archive
+    // Electron's fs module can read directly from within app.asar
+    directoryPath = path.join(app.getAppPath(), dir);
+  }
+  try {
+    const files = await fs.readdir(directoryPath);
+    return files.filter(file => file.endsWith('.html'));
+  } catch (err) {
+    console.error(`Error reading directory ${directoryPath}:`, err);
+    return [];
+  }
+};
+
+ipcMain.handle('get-lessons', () => getContents('lessons'));
+ipcMain.handle('get-exercises', () => getContents('exercises'));
+
+// ... (rest of your main.js code)
+
+Explanation of the Fix:
+
+    process.env.NODE_ENV === 'development': This condition correctly handles your npm start scenario, where files are accessed directly from your project's root.
+
+    path.join(app.getAppPath(), dir): In a packaged app where asar: true, app.getAppPath() returns the path to the app.asar file. When path.join is used with this base path and a directory name (like 'lessons'), Electron's fs module is smart enough to look inside the app.asar archive for that directory. This is the correct and most robust way to access bundled resources when asar: true.
+
+Steps to Apply and Test the Fix:
+
+    Update src/main.js: Apply the code changes detailed above.
+
+    Re-package your application: Open your terminal in the project root and run:
+
+    npm run make
+
+    This will rebuild your distributable packages.
+
+    Install the new package: Go to the out/make directory, find the installer (e.g., tutoring-app-X.X.X Setup.exe for Windows), and run it to install the updated version of your application.
+
+    Launch the installed app: Open the application from your desktop shortcut or Start Menu.
+
+After these steps, your installed application should now correctly display the list of lessons and exercises.

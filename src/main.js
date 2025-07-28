@@ -1,3 +1,5 @@
+require('dotenv').config(); // Load environment variables from .env file
+
 const { app, BrowserWindow, ipcMain, session, Menu, shell, dialog, net } = require('electron');
 const path = require('path');
 const fs = require('fs').promises;
@@ -40,37 +42,36 @@ function getSavesDir() {
     return savesDir;
 }
 
-
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
+let mainWindow; // Define mainWindow in a broader scope
+
 const createWindow = () => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     webPreferences: {
-      preload: path.resolve(__dirname, 'preload.js'),
-      nodeIntegration: true,
+      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       contextIsolation: false,
+      nodeIntegration: true,
     },
   });
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.webContents.openDevTools();
-  }
+  // We only open dev tools in development, not in the installed app.
+  // if (process.env.NODE_ENV === 'development') {
+  //   mainWindow.webContents.openDevTools();
+  // }
 };
 
 // --- IPC Handlers ---
 
-ipcMain.handle('get-config', () => {
-  return appConfig;
-});
-
+ipcMain.handle('get-config', () => appConfig);
 ipcMain.handle('save-config', async (event, newConfig) => {
   try {
     await fs.writeFile(configPath, JSON.stringify(newConfig, null, 2));
@@ -83,9 +84,7 @@ ipcMain.handle('save-config', async (event, newConfig) => {
 });
 
 ipcMain.handle('open-directory-dialog', async () => {
-    const { canceled, filePaths } = await dialog.showOpenDialog({
-        properties: ['openDirectory']
-    });
+    const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openDirectory'] });
     if (canceled) {
         return { canceled: true };
     } else {
@@ -96,7 +95,8 @@ ipcMain.handle('open-directory-dialog', async () => {
 ipcMain.on('navigate', (event, relativePath) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (win) {
-    const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : app.getAppPath();
+    // CORRECTED: Use process.resourcesPath for production to correctly locate files outside the asar archive.
+    const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : process.resourcesPath;
     const filePath = path.join(basePath, relativePath);
     win.loadFile(filePath);
   }
@@ -125,7 +125,8 @@ ipcMain.handle('get-settings-content', async () => {
 });
 
 ipcMain.handle('get-file-content', async (event, relativePath) => {
-  const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : app.getAppPath();
+  // CORRECTED: Use process.resourcesPath for production to correctly locate files outside the asar archive.
+  const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : process.resourcesPath;
   const filePath = path.join(basePath, relativePath);
   try {
     const content = await fs.readFile(filePath, 'utf-8');
@@ -163,35 +164,78 @@ app.on('ready', () => {
     });
   });
 
-  // Update check logic
-  const request = net.request('https://www.github.com');
-  request.on('response', () => {
-    console.log('Connection successful, checking for updates.');
-    autoUpdater.checkForUpdatesAndNotify();
-  });
-  request.on('error', (error) => {
-    console.log('No internet connection, skipping update check.', error.message);
-  });
-  request.end();
+  // --- Auto-Updater Logic (User-Prompted Flow) ---
+  
+  autoUpdater.autoDownload = false;
 
-  // Listener for update available event
-  autoUpdater.on('update-available', () => {
-    const win = BrowserWindow.getAllWindows()[0];
-    if (win) {
-      win.webContents.send('update-available');
-    }
+  if (process.env.GITHUB_TOKEN) {
+    autoUpdater.requestHeaders = { Authorization: `token ${process.env.GITHUB_TOKEN}` };
+    console.log('DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.');
+  } else {
+    console.warn('WARNING: GITHUB_TOKEN not found.');
+  }
+
+  if (process.env.NODE_ENV === 'development') {
+    autoUpdater.updateConfigPath = path.join(process.cwd(), 'dev-app-update.yml');
+    autoUpdater.forceDevUpdateConfig = true;
+  }
+
+  mainWindow.once('ready-to-show', () => {
+    console.log('Main Process: Checking for updates...');
+    autoUpdater.checkForUpdates().catch(err => {
+      console.error('Main Process: Error during update check:', err.message);
+      if (mainWindow) {
+        mainWindow.webContents.send('update-status', 'error', { error: err.message });
+      }
+    });
   });
 
+  // --- Auto-Updater Event Listeners ---
+  autoUpdater.on('update-available', (info) => {
+    console.log('Main Process: Update available!', info);
+    mainWindow.webContents.send('update-status', 'available', info);
+  });
+
+  autoUpdater.on('update-not-available', (info) => {
+    console.log('Main Process: Update not available.', info);
+    mainWindow.webContents.send('update-status', 'not-available', info);
+  });
+
+  autoUpdater.on('update-downloaded', (info) => {
+    console.log('Main Process: Update downloaded.', info);
+    mainWindow.webContents.send('update-status', 'downloaded', info);
+  });
+  
+  autoUpdater.on('download-progress', (progressObj) => {
+    let log_message = "Download speed: " + progressObj.bytesPerSecond;
+    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+    log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+    console.log(log_message);
+    mainWindow.webContents.send('download-progress', progressObj);
+  });
+
+  autoUpdater.on('error', (err) => {
+    console.error('Main Process: AutoUpdater emitted an error event:', err.message);
+    mainWindow.webContents.send('update-status', 'error', { error: err.message });
+  });
+
+  // --- IPC Listeners for UI Actions ---
+  
+  ipcMain.on('start-download', () => {
+    console.log('Main Process: Download started by user.');
+    autoUpdater.downloadUpdate();
+  });
+
+  ipcMain.on('restart-app', () => {
+    autoUpdater.quitAndInstall();
+  });
+
+  // --- Application Menu ---
   const menuTemplate = [
     {
       label: 'File',
       submenu: [
-        {
-          label: 'Open Save States Folder',
-          click: () => {
-            shell.openPath(getSavesDir());
-          }
-        },
+        { label: 'Open Save States Folder', click: () => { shell.openPath(getSavesDir()); } },
         { type: 'separator' },
         { role: 'quit' }
       ]
@@ -213,12 +257,7 @@ app.on('ready', () => {
     {
       label: 'Help',
       submenu: [
-        {
-          label: 'Learn More',
-          click: async () => {
-            await shell.openExternal('https://electronjs.org');
-          }
-        }
+        { label: 'Learn More', click: async () => { await shell.openExternal('https://electronjs.org'); } }
       ]
     }
   ];
@@ -311,8 +350,8 @@ const getContents = async (dir) => {
     // In development, files are relative to the project root
     directoryPath = path.join(process.cwd(), dir);
   } else {
-    // In production, with asar: true and extraResource, files are in app.asar.unpacked
-    directoryPath = path.join(process.resourcesPath, 'app.asar.unpacked', dir);
+    // In production, extraResources are placed at the root of the `resources` directory.
+    directoryPath = path.join(process.resourcesPath, dir);
   }
   try {
     const files = await fs.readdir(directoryPath);
