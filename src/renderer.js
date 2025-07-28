@@ -135,17 +135,38 @@ window.addEventListener('api-ready', () => {
 
   // NEW: Handler for the load button click
   async function handleLoadButtonClick() {
-    console.log('Load button #load-btn-1 clicked.'); // Debug log
+    console.log('Load button clicked.');
     const result = await window.api.showOpenDialogAndLoadFile();
+  
     if (result.success && !result.canceled) {
-      console.log('File loaded successfully:', result.path);
-      console.log('Loaded data:', result.data);
-      // TODO: Implement logic to apply the loaded data to the current exercise state
-      // This will depend on how your exercise state is structured and managed across tabs.
-      // For now, it just logs the data.
+      try {
+        const loadedState = JSON.parse(result.data);
+        const activeTab = tabs.find(t => t.active);
+  
+        if (activeTab && activeTab.filePath) {
+          // Save the loaded state to the standard autosave location
+          await window.api.saveExerciseState(activeTab.filePath, loadedState);
+          
+          // Reload the content in the current tab to apply the new state
+          await loadContentIntoTab(
+            activeTab.id, 
+            activeTab.filePath, 
+            tabs, 
+            renderTabs, 
+            addTab, 
+            saveExerciseState
+          );
+  
+          console.log('Successfully loaded and applied state from', result.path);
+        } else {
+          console.error('No active exercise tab to load the state into.');
+        }
+      } catch (e) {
+        console.error('Failed to parse or apply loaded file:', e);
+      }
     } else if (result.canceled) {
       console.log('File load canceled.');
-    } else {
+    } else if (result.error) {
       console.error('Failed to load file:', result.error);
     }
   }

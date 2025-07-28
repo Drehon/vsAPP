@@ -123,6 +123,30 @@ ipcMain.handle('save-config', async (event, newConfig) => {
   }
 });
 
+ipcMain.handle('show-open-dialog-and-load-file', async (event) => {
+  const window = BrowserWindow.fromWebContents(event.sender);
+  const savesDir = getSavesDir();
+
+  const { canceled, filePaths } = await dialog.showOpenDialog(window, {
+    defaultPath: savesDir,
+    filters: [{ name: 'JSON Files', extensions: ['json'] }, { name: 'All Files', extensions: ['*'] }],
+    properties: ['openFile']
+  });
+
+  if (canceled) {
+    return { success: false, canceled: true };
+  }
+
+  const filePath = filePaths[0];
+
+  try {
+    const data = await fs.readFile(filePath, 'utf-8');
+    return { success: true, path: filePath, data: data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
 ipcMain.handle('open-directory-dialog', async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openDirectory'] });
     if (canceled) {
