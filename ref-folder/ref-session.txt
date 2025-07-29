@@ -60,3 +60,6 @@
     (Complexity: 50)
 15. **Folder Restructuring:** Create a new 'others' folder and move the test, patch notes, and notepad HTML files into it. - COMPLETED
     (Complexity: 30)
+
+
+16 on reset do not reload page
