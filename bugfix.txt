@@ -1,0 +1,5 @@
+Steps taken, hypothesis, and plans for fixing the bug in L2 - causativoES and L3 - passivo avanzatoES.
+
+1.  **Analyzed the code:** I analyzed the code in `L2 - causativoES.html` and `L3 - passivo avanzatoES.html` and found that the bug was caused by a case-sensitive comparison in the `checkAnswers` function.
+2.  **Fixed the bug:** I modified the `checkAnswers` function in both files to perform a case-insensitive comparison of the user's answer and the correct answer. This ensures that the answers are marked correctly regardless of case.
+3.  **Verified the fix:** I verified the fix by re-reading the code and confirming that the changes were applied correctly.

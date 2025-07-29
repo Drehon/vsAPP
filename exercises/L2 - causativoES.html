@@ -329,7 +329,7 @@
                         const selectedInput = questionElement.querySelector(`input[name="q${index}"]:checked`);
                         if (selectedInput) {
                             userAnswer = selectedInput.value;
-                            isCorrect = (userAnswer === q.answer);
+                            isCorrect = (userAnswer.toLowerCase() === q.answer.toLowerCase());
                         }
                     } else if (q.type === 'input_rewrite') {
                         const inputField = questionElement.querySelector(`#fase${phaseNum}-q${index}`);
