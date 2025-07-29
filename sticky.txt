@@ -37,3 +37,13 @@ USER NOTES.
 What was before light background (which was a grey kinda) and dark background
 is now light background and lighter background. if we can 'equalize' the second background to the first that would be ideal.
 HOWEVER, while the tabs work correctly, the toolbar, with home, save, load etc still disappears once we enter in the zone of the second background.
+
+Tenth attempt:
+The issue was the `content-panes` div had a different background color than the `body`.
+I removed the `bg-slate-100` class from the `content-panes` div in `src/index.html` to make the background uniform.
+I also made the header in `src/home-template.html` sticky by adding `sticky`, `top-0`, `bg-slate-800`, and `z-10` to its class list. This should keep the toolbar visible when scrolling.
+This should resolve the background issue and the disappearing toolbar.
+
+USER NOTES:
+Didn't work, changed background of home in a way it wasn't supposed too.
+Toolbar still disappeared and background didn't mesh.
