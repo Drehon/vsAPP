@@ -15,3 +15,11 @@ Steps Taken:
 - Corrected the logic to properly compare the user's selected answer with the correct answer.
 - Created this `bugfix.txt` file to document the process.
 - Added console.log statements to both files to debug the values being compared.
+
+---
+
+- Discovered that the `checkAnswers` function in the HTML files was not being used.
+- Found the actual bug in the `addPhaseListeners` function in `src/sub-functions/exercise-initializer.js`.
+- Issue is here, but first attempt at solving it heavily broke stuff elsewhere
+- Next steps must be carefully considered, a misstep breaks excercises for L1 or disables the green/red correct answer highlight
+
