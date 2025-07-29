@@ -1,0 +1,4 @@
+The tabs were unstickied after some modifications to index.html.
+My first attempt to fix this by adding `sticky`, `top-0`, and `z-10` to the `tab-bar` was unsuccessful.
+My second attempt involves adding `position: relative` and `z-index: 1` to the `content-panes` div. I also kept the changes from the first attempt.
+This should prevent the content from overlapping the tab bar and help the browser to correctly calculate the sticky positioning.
