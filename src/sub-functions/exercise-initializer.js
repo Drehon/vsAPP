@@ -253,38 +253,40 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
         feedbackContainer.innerHTML = ''; // Clear previous feedback
         feedbackContainer.appendChild(feedbackEl);
 
-        if (fase === 'fase1' || fase === 'fase2') {
+        if (fase === 'fase1' || (fase === 'fase2' && ex.options.length > 1)) {
             const buttons = questionWrapper.querySelectorAll('.fase-btn');
-            if (buttons.length > 0) {
-                buttons.forEach(b => {
-                    b.disabled = true;
-                    // Normalize correct answer for comparison
-                    let correctAnswerForButton = String(ex.answer);
-                    if (typeof ex.answer === 'boolean') {
-                        correctAnswerForButton = ex.answer ? "A" : "B";
+            buttons.forEach(b => {
+                b.disabled = true;
+                let correctAnswerForButton = String(ex.answer);
+                if (typeof ex.answer === 'boolean') {
+                    correctAnswerForButton = ex.answer ? "A" : "B";
+                } else if (fase === 'fase2' && !/^[A-D]$/.test(correctAnswerForButton)) {
+                    // This logic converts a word answer to its corresponding letter option (A, B, C, D)
+                    const correctIndex = ex.options.indexOf(correctAnswerForButton);
+                    if (correctIndex !== -1) {
+                        correctAnswerForButton = String.fromCharCode(65 + correctIndex);
                     }
-                    
-                    const isCorrectButton = correctAnswerForButton === b.dataset.answer;
-                    const isUserButton = String(answerState.userAnswer) === b.dataset.answer;
+                }
+                
+                const isCorrectButton = correctAnswerForButton === b.dataset.answer;
+                const isUserButton = String(answerState.userAnswer) === b.dataset.answer;
 
-                    if (isCorrectButton) {
-                        b.classList.add('btn-correct');
-                    }
-                    if (isUserButton && !answerState.isCorrect) {
-                        b.classList.add('btn-incorrect');
-                    }
-                    if (!isCorrectButton && !isUserButton) {
-                        b.classList.add('opacity-50');
-                    }
-                });
-            }
-        } else { // fase3, and potentially L1 fase2 which also uses a text input
+                if (isCorrectButton) {
+                    b.classList.add('btn-correct');
+                }
+                if (isUserButton && !answerState.isCorrect) {
+                    b.classList.add('btn-incorrect');
+                }
+                if (!isCorrectButton && !isUserButton) {
+                    b.classList.add('opacity-50');
+                }
+            });
+        } else { // fase3, and text-input based fase2
             const inputEl = questionWrapper.querySelector('input[type="text"]');
             if (inputEl) {
                 inputEl.value = answerState.userAnswer;
                 inputEl.disabled = true;
 
-                // Visual feedback for text inputs
                 if (answerState.isCorrect) {
                     inputEl.classList.add('input-correct');
                 } else {
