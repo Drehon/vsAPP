@@ -59,3 +59,13 @@ Same as tenth attempt.
 Didn't work, changed background of home in a way it wasn't supposed too. REVERTED
 Toolbar still disappeared and background didn't mesh.
 I'm not sure you are on the right path, think.
+
+Twelveth attempt
+The changes made include:
+- Making the `#content-panes` div the primary scrolling container.
+- Ensuring the home page header is sticky within its scrolling container.
+- Applying a consistent background color to all content panes.
+
+FAILED
+Broke updater, didn't fix issues, rebroke verticality of home page (too much)
+FULLY REVERTED
