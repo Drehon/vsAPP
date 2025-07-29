@@ -121,4 +121,25 @@ New Plan:
     *   I am documenting the changes I've made and my reasoning.
 3.  **Verify the changes**:
     *   I will ask the user to verify the changes. > CHANGES HAD NO EFFECT
+
+---
+**Final Layout Adjustments (Width Issue):**
+
+The user reports that the four cards appear slightly too narrow for the space they occupy. The fixed-width solution must be tweaked; the cards should be slightly wider, collectively filling more of the available horizontal space within their container while maintaining an even gap between them. Opt for exactly double the current width.
+
+New Hypothesis:
+
+The `w-[52rem]` class was not being applied because the parent container was not allowing the cards to grow.
+
+New Plan:
+
+1.  **Modify `src/home-template.html`**:
+    *   I have replaced the `w-[52rem]` class on each card with `flex-1` to allow them to grow and fill the available space.
+    *   I have also added a `max-w-[52rem]` class to each card to ensure they don't become too wide on larger screens.
+2.  **Update `jules-home.txt`**:
+    *   I am documenting the changes I've made and my reasoning.
+3.  **Verify the changes**:
+    *   I will ask the user to verify the changes.
+
+The max-w-[52rem] doesn't seem to work
 [end of jules-home.txt]
