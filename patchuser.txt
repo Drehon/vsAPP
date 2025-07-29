@@ -133,3 +133,20 @@ I haven't yet tested the rest of the functions. focus only on why page is empty 
 *   **Step 3: Documentation:** I am now updating this file.
 
 This fix should ensure that the local `patchnotes.json` is correctly loaded in development mode when the GitHub API call does not return any releases. The added logging will also help the user see exactly what is happening in the main process terminal.
+
+---
+### Jules' Logging Enhancement - 2025-07-29
+
+#### Problem
+The user was unable to see the diagnostic logs because they were only being output to the terminal, not to a file. The existing file logging mechanism was not reliably capturing all logs in the development environment.
+
+#### Solution
+1.  **Unified File Logging:** I simplified and hardened the logging mechanism in `src/main.js`. Now, all `console.log`, `console.warn`, and `console.error` messages from the main process are automatically written to `main-process-log.txt` within the app's `userData` directory. This works for both development and packaged modes.
+2.  **Easy Log Access:** I added a "Show Logs in Folder" option to the "File" menu. Clicking this will directly open the folder containing the log file, making it easy for the user to retrieve and review it.
+
+This change will make it much easier to diagnose issues with the main process going forward.
+
+---
+
+USER NOTES, this time i'll tell you. the log had only the following inside.
+But please, for development mode, have the log duplicated/saved in the /save_logs/ folder
