@@ -34,3 +34,5 @@ patchu## Patch Notes Feature Implementation
 
 Will this work with app packaged?
 Shouldn't we modify some files for that purpose? the json in particular
+Is there also maybe a way to ask for ALL patch notes for ALL releases from github?
+To have an always fully updated json?
