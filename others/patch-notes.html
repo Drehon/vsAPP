@@ -23,6 +23,7 @@
             <!-- Patch notes will be loaded here -->
         </main>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const patchNotesContainer = document.getElementById('patch-notes-container');
@@ -43,7 +44,7 @@
                         
                         const contentElement = document.createElement('div');
                         contentElement.className = 'prose max-w-none mt-4';
-                        contentElement.innerHTML = note.notes;
+                        contentElement.innerHTML = marked.parse(note.notes);
 
                         noteElement.appendChild(titleElement);
                         noteElement.appendChild(contentElement);

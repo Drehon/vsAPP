@@ -451,29 +451,20 @@ ipcMain.handle('get-tests', () => getContents('others'));
 ipcMain.handle('get-patch-notes', async () => {
   const owner = 'Drehon';
   const repo = 'vsAPP';
-  const url = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
-  const patchNotesPath = path.join(__dirname, 'patchnotes.json');
+  const url = `https://api.github.com/repos/${owner}/${repo}/releases`;
+  const patchNotesPath = path.join(app.getPath('userData'), 'patchnotes.json');
 
   try {
     const response = await net.fetch(url);
-    const release = await response.json();
+    const releases = await response.json();
 
-    let patchNotes = [];
-    if (fsSync.existsSync(patchNotesPath)) {
-      const data = await fs.readFile(patchNotesPath, 'utf-8');
-      patchNotes = JSON.parse(data);
-    }
+    let patchNotes = releases.map(release => ({
+      version: release.tag_name,
+      notes: release.body,
+      date: release.published_at
+    }));
 
-    const releaseExists = patchNotes.some(note => note.version === release.tag_name);
-
-    if (!releaseExists) {
-      patchNotes.unshift({
-        version: release.tag_name,
-        notes: release.body,
-        date: release.published_at
-      });
-      await fs.writeFile(patchNotesPath, JSON.stringify(patchNotes, null, 2));
-    }
+    await fs.writeFile(patchNotesPath, JSON.stringify(patchNotes, null, 2));
 
     return patchNotes;
   } catch (error) {

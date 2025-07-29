@@ -8,6 +8,8 @@ patchu## Patch Notes Feature Implementation
 *   The new page should be accessible from the "OTHER" section of the app.
 *   I'll need to fetch the latest release from the GitHub API, parse it, and store it.
 *   The existing `content-loader.js` seems to be the right place to add the link to the new page.
+*   The `patchnotes.json` file should be stored in a user-writable directory to work in a packaged application.
+*   Fetching all releases from GitHub will provide a complete history of patch notes.
 
 ### Plan
 
@@ -37,3 +39,5 @@ Will this work with app packaged?
 Shouldn't we modify some files for that purpose? the json in particular
 Is there also maybe a way to ask for ALL patch notes for ALL releases from github?
 To have an always fully updated json?
+
+---
