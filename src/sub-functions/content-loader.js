@@ -83,10 +83,8 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
             const savedState = await window.api.loadExerciseState(filePath);
             tab.exerciseState = savedState ? savedState : null;
             
-            if (filePath.includes('student-grammar')) {
-                initializeGrammarExercise(scrollableContent, tab, saveExerciseState);
-            } else if (filePath.includes('student-verbs')) {
-                initializeVerbsExercise(scrollableContent, tab, saveExerciseState);
+            if (filePath.includes('student-grammar') || filePath.includes('student-verbs')) {
+                initializeExercise(scrollableContent, tab, saveExerciseState);
             } 
             else {
                 initializeExercise(scrollableContent, tab, saveExerciseState);
@@ -260,22 +258,4 @@ function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExe
     populateList('lessons-an-list', window.api.getLessonsAN, 'lessonsAN');
     populateList('exercises-list', window.api.getExercises, 'exercises');
     populateList('tests-list', window.api.getTests, 'others');
-
-    const testsList = paneElement.querySelector('#tests-list');
-    if (testsList) {
-        const patchNotesLink = document.createElement('a');
-        patchNotesLink.href = '#';
-        patchNotesLink.textContent = 'Patch Notes';
-        patchNotesLink.className = 'block p-3 bg-slate-700 rounded-md hover:bg-indigo-600 transition-colors font-medium';
-        patchNotesLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            const activeTab = tabs.find(t => t.active);
-            if (activeTab.view === 'home') {
-                loadContentIntoTab(activeTab.id, 'others/patch-notes.html', tabs, renderTabs, addTab, saveExerciseState);
-            } else {
-                addTab(true, 'others/patch-notes.html', 'content');
-            }
-        });
-        testsList.appendChild(patchNotesLink);
-    }
 }
