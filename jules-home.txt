@@ -73,4 +73,32 @@ New Plan:
     *   I will ask the user to verify the changes.
 4.  **Submit the changes**:
     *   Once the user confirms that the issue is resolved, I will submit the changes.
+
+---
+**Final Layout Adjustments:**
+
+The user reports that the page content does not fill the full height of the application's viewport.
+
+New Plan:
+
+1.  **Modify `src/home-template.html`**:
+    *   Add `h-full`, `flex`, `flex-col`, and `justify-between` to the root `div` to make the content fill the vertical space and position the footer correctly.
+2.  **Update `jules-home.txt`**:
+    *   Document the final changes.
+3.  **Verify and Submit**:
+    *   Verify the layout and submit the final solution.
+
+---
+**Troubleshooting Layout Issues:**
+
+The visual layout remains unchanged after previous attempts. The issue seems to be with how the content is being loaded and displayed.
+
+New Plan:
+
+1.  **Modify `src/sub-functions/content-loader.js`**:
+    *   In the `loadHomeIntoTab` function, add `overflow-y-auto` to the `scrollableContent` div to ensure that the content scrolls vertically if it exceeds the available space.
+2.  **Update `jules-home.txt`**:
+    *   Document the latest changes and reasoning.
+3.  **Verify and Submit**:
+    *   Verify the layout and submit the changes.
 [end of jules-home.txt]
