@@ -21,3 +21,8 @@ USER NOTE: Reverted, didn't fix issue AND broke updater
 My seventh attempt is to add `bg-slate-800` to the `content-pane` class in `src/sub-functions/tab-manager.js`. This ensures that each tab has a solid background color, preventing the content of other tabs from showing through. This should fix the issue.
 
 USER NOTE: Didn't work, background is still split light-dark (page/home or page/index somehow is my guess) and toolbar disappears once bar is scrolled into dark background part of the page.
+
+Eight attempt:
+  <!-- Content Panes -->
+    <div id="content-panes" class="relative flex-grow overflow-y-auto"></div>
+was tried, didn't work. Reverted.
