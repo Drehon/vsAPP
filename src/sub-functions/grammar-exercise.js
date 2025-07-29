@@ -710,9 +710,24 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
-          const newState = JSON.parse(e.target.result);
-          // Basic validation to ensure it's a valid state file
-          if (newState['1'] && newState['2'] && newState['3']) {
+          const fileContent = e.target.result;
+          if (!fileContent || fileContent.trim() === '') {
+            console.error("Error loading JSON: File is empty.");
+            // Optionally, show an error to the user in the UI
+            return;
+          }
+
+          const newState = JSON.parse(fileContent);
+          
+          // More robust validation
+          const isValidState = newState && 
+                               typeof newState === 'object' &&
+                               newState['1'] && newState['2'] && newState['3'] &&
+                               'completed' in newState['1'] && 'answers' in newState['1'] &&
+                               'completed' in newState['2'] && 'answers' in newState['2'] &&
+                               'completed' in newState['3'] && 'answers' in newState['3'];
+
+          if (isValidState) {
             tab.exerciseState = newState;
             testState = newState; // Update the local reference
             saveExerciseState(tab); // Auto-save the newly loaded state to the default path

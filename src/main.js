@@ -6,28 +6,34 @@ const fs = require('fs').promises;
 const fsSync = require('fs');
 const { autoUpdater } = require('electron-updater');
 
-// --- File-based Logging for Main Process ---
+// --- Simplified File-based Logging ---
 const logFilePath = path.join(app.getPath('userData'), 'main-process-log.txt');
 const logStream = fsSync.createWriteStream(logFilePath, { flags: 'a' });
 
-// Override console.log, console.error, etc. to write to file
-const originalConsoleLog = console.log;
-const originalConsoleError = console.error;
-const originalConsoleWarn = console.warn;
+const originalLog = console.log;
+const originalError = console.error;
+const originalWarn = console.warn;
+
+const logToFile = (type, ...args) => {
+  const message = `[${type}][${new Date().toISOString()}] ${args.join(' ')}\n`;
+  logStream.write(message);
+};
 
 console.log = (...args) => {
-  originalConsoleLog(...args); // Also log to original console
-  logStream.write(`[LOG][${new Date().toISOString()}] ${args.join(' ')}\n`);
+  originalLog(...args);
+  logToFile('LOG', ...args);
 };
+
 console.error = (...args) => {
-  originalConsoleError(...args); // Also log to original console
-  logStream.write(`[ERROR][${new Date().toISOString()}] ${args.join(' ')}\n`);
+  originalError(...args);
+  logToFile('ERROR', ...args);
 };
+
 console.warn = (...args) => {
-  originalConsoleWarn(...args); // Also log to original console
-  logStream.write(`[WARN][${new Date().toISOString()}] ${args.join(' ')}\n`);
+  originalWarn(...args);
+  logToFile('WARN', ...args);
 };
-// --- End File-based Logging ---
+// --- End Logging ---
 
 
 // --- Configuration Management ---
@@ -309,6 +315,7 @@ app.on('ready', () => {
       label: 'File',
       submenu: [
         { label: 'Open Save States Folder', click: () => { shell.openPath(getSavesDir()); } },
+        { label: 'Show Logs in Folder', click: () => { shell.openPath(app.getPath('userData')); } },
         { type: 'separator' },
         { role: 'quit' }
       ]
@@ -453,6 +460,7 @@ ipcMain.handle('get-patch-notes', async () => {
   const repo = 'vsAPP';
   const url = `https://api.github.com/repos/${owner}/${repo}/releases`;
   const patchNotesPath = path.join(app.getPath('userData'), 'patchnotes.json');
+  console.log('[PatchNotes] User data path for patch notes:', patchNotesPath);
 
   const requestOptions = {};
   if (process.env.GITHUB_TOKEN) {
@@ -463,6 +471,7 @@ ipcMain.handle('get-patch-notes', async () => {
   }
 
   try {
+    console.log('[PatchNotes] Attempting to fetch from GitHub API...');
     const response = await net.fetch(url, requestOptions);
     
     if (!response.ok) {
@@ -475,6 +484,7 @@ ipcMain.handle('get-patch-notes', async () => {
       throw new Error('No releases found on GitHub, proceeding to fallback.');
     }
 
+    console.log(`[PatchNotes] Successfully fetched ${releases.length} releases from GitHub.`);
     let patchNotes = releases.map(release => ({
       version: release.tag_name,
       notes: release.body,
@@ -482,31 +492,40 @@ ipcMain.handle('get-patch-notes', async () => {
     }));
 
     await fs.writeFile(patchNotesPath, JSON.stringify(patchNotes, null, 2));
+    console.log('[PatchNotes] Wrote fetched releases to userData cache.');
 
     return patchNotes;
   } catch (error) {
-    console.error('Failed to fetch or process patch notes:', error);
-    // If fetching fails, try to return local data from userData
+    console.error('[PatchNotes] Failed to fetch or process patch notes from GitHub:', error);
+    
+    // Fallback 1: Try to return local data from userData (cache)
+    console.log('[PatchNotes] Attempting to load from userData cache...');
     if (fsSync.existsSync(patchNotesPath)) {
       try {
         const data = await fs.readFile(patchNotesPath, 'utf-8');
+        console.log('[PatchNotes] Successfully loaded patch notes from userData cache.');
         return JSON.parse(data);
       } catch (readError) {
-        console.error(`Failed to read patch notes from ${patchNotesPath}:`, readError);
-        // Continue to fallback
+        console.error(`[PatchNotes] Failed to read patch notes from ${patchNotesPath}:`, readError);
+        // Continue to next fallback
       }
+    } else {
+        console.log('[PatchNotes] No patch notes cache found in userData.');
     }
 
-    // If that fails, try to return local data from app source (for first run/offline)
+    // Fallback 2: Try to return local data from app source (for first run/offline)
+    console.log('[PatchNotes] Attempting to load from local app resources...');
     try {
-      const fallbackPath = app.isPackaged
-        ? path.join(process.resourcesPath, 'patchnotes.json')
-        : path.join(process.cwd(), 'patchnotes.json');
+      // FIX: Use app.getAppPath() for a more reliable path in development.
+      const basePath = app.isPackaged ? process.resourcesPath : app.getAppPath();
+      const fallbackPath = path.join(basePath, 'patchnotes.json');
+      console.log('[PatchNotes] Trying fallback path:', fallbackPath);
       
       const fallbackData = await fs.readFile(fallbackPath, 'utf-8');
+      console.log('[PatchNotes] Successfully loaded from fallback path.');
       return JSON.parse(fallbackData);
     } catch (fallbackError) {
-      console.error('Failed to load fallback patch notes:', fallbackError);
+      console.error('[PatchNotes] Failed to load fallback patch notes:', fallbackError);
       return []; // Ultimate fallback
     }
   }
