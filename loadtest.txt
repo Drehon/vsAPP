@@ -1,20 +1,32 @@
-Thoughts: The load and save buttons are not working on the test pages. This is likely because the test pages are using a different exercise initialization function than the other pages.
+[Jules's work log]
 
-Hypothesis: The `student-grammar.html` and `student-verbs.html` pages are using their own specific initialization functions (`initializeGrammarExercise` and `initializeVerbsExercise`) which have incomplete or incorrect save/load implementations.
+Thoughts: The user wants the load and save buttons in the toolbar to work for the test pages (`student-grammar.html` and `student-verbs.html`). The previous attempt to fix this by using a generic initializer failed because the test pages use a different, more complex data structure (`testData` object) than the regular exercises (`fase1`, `fase2`, etc.).
 
-Plan:
-1. Modify `src/sub-functions/content-loader.js` to call the generic `initializeExercise` function for `student-grammar.html` and `student-verbs.html`. This function has the correct save and load functionality.
-2. Create a `loadtest.txt` file to document the process.
+Hypothesis: The correct approach is to route the test pages to their specialized initialization scripts (`initializeGrammarExercise` and `initializeVerbsExercise`) and then add the necessary save/load functionality directly into those scripts, making them compatible with the toolbar buttons.
+
+Final Plan:
+1. *Restore the correct exercise initializers in `content-loader.js`.*
+   - Modify `src/sub-functions/content-loader.js` to call `initializeGrammarExercise` for `student-grammar.html` and `initializeVerbsExercise` for `student-verbs.html`.
+2. *Implement save/load functionality in the specialized initializers.*
+   - Add event listeners for the toolbar's save and load buttons to `src/sub-functions/grammar-exercise.js` and `src/sub-functions/verb-exercise.js`.
+   - The save button will trigger a file save dialog with the current exercise state.
+   - The load button will open a file picker, and upon selection, will parse the JSON file, update the state, and re-render the test.
+3. *Update this file (`loadtest.txt`).*
+   - Document the process for future reference.
 
 Steps Taken:
-1. Modified `src/sub-functions/content-loader.js` to call `initializeExercise` for `student-grammar.html` and `student-verbs.html`.
+- Investigated the codebase, including `content-loader.js`, `exercise-initializer.js`, `grammar-exercise.js`, `verb-exercise.js`, and the HTML of the test pages.
+- Confirmed the data structure mismatch and the lack of save/load event handlers in the specialized scripts.
+- Modified `src/sub-functions/content-loader.js` to call the correct initializer for each test page.
+- Added the save and load logic to both `src/sub-functions/grammar-exercise.js` and `src/sub-functions/verb-exercise.js`, connecting them to the toolbar buttons.
+- Updated this log file.
 
 Next Steps:
-- Verify that the save and load buttons now work correctly on the test pages.
-- Submit the changes.
+- Submit the changes for the user to test.
 
 ---
 
+[Original User Notes for reference]
 USER NOTES
 REVERTED
 VM270:65 Uncaught (in promise) SyntaxError: Bad escaped character in JSON at position 24381 (line 65 column 302)
@@ -28,3 +40,23 @@ Meaning i want to be able to save/load the jsons with the buttons in the toolbar
 
 ---
 
+USER NOTES 2
+
+the load/test buttons now work
+but on load i get this
+grammar-exercise.js:736 Error loading JSON: SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at reader.onload (grammar-exercise.js:713:1)
+
+Also, on submit for grammer we get
+grammar-exercise.js:420 Uncaught TypeError: Cannot read properties of undefined (reading 'A1_part0')
+    at eval (grammar-exercise.js:420:1)
+    at Array.forEach (<anonymous>)
+    at eval (grammar-exercise.js:382:1)
+    at Array.forEach (<anonymous>)
+    at enterReviewMode (grammar-exercise.js:377:1)
+    at HTMLButtonElement.handleBlockSubmit (grammar-exercise.js:231:1)
+
+
+Whereas on submit for verbs, the input is not displayed after submit for comparison
+and under every question the correct answer is displayed in green with Correct

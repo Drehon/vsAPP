@@ -676,6 +676,71 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
         tab.addEventListener('click', () => { if(!tab.disabled) switchDiagTab(tab.dataset.tab); });
     });
 
+    // Save/Load functionality
+    const saveBtn = document.getElementById(`save-btn-${tab.id}`);
+    const loadBtn = document.getElementById(`load-btn-${tab.id}`);
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.json';
+    fileInput.style.display = 'none';
+    paneElement.appendChild(fileInput); // Add it to the DOM to be clickable
+
+    if (saveBtn) {
+        saveBtn.onclick = async () => {
+            const dataStr = JSON.stringify(tab.exerciseState, null, 2);
+            const defaultFilename = `${tab.title}-progress.json`;
+            const result = await window.api.showSaveDialogAndSaveFile(defaultFilename, dataStr);
+            if (result.success) {
+                console.log(`Manually saved progress to: ${result.path}`);
+            } else if (!result.canceled) {
+                console.error('Failed to manually save progress:', result.error);
+            }
+        };
+    }
+
+    if (loadBtn) {
+        loadBtn.onclick = () => {
+            fileInput.click();
+        };
+    }
+
+    fileInput.onchange = (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const newState = JSON.parse(e.target.result);
+          // Basic validation to ensure it's a valid state file
+          if (newState['1'] && newState['2'] && newState['3']) {
+            tab.exerciseState = newState;
+            testState = newState; // Update the local reference
+            saveExerciseState(tab); // Auto-save the newly loaded state to the default path
+            
+            // Determine which block to show after loading
+            let blockToRender = 1;
+            for (let i = 1; i <= 3; i++) {
+                if (!testState[i].completed) {
+                    blockToRender = i;
+                    break;
+                }
+                if (i === 3) blockToRender = 3; // If all are complete, show the last one
+            }
+            switchTab(blockToRender); // Re-render the UI
+            
+            console.log(`Manually loaded progress for ${tab.title}`);
+          } else { 
+            throw new Error("Invalid test progress file structure."); 
+          }
+        } catch (error) {
+          console.error("Error loading JSON:", error);
+          // Optionally, show an error to the user in the UI
+        }
+      };
+      reader.readAsText(file);
+      fileInput.value = ''; // Reset for next load
+    };
+
     // Initial render
     switchTab(currentBlock);
 }

@@ -83,9 +83,11 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
             const savedState = await window.api.loadExerciseState(filePath);
             tab.exerciseState = savedState ? savedState : null;
             
-            if (filePath.includes('student-grammar') || filePath.includes('student-verbs')) {
-                initializeExercise(scrollableContent, tab, saveExerciseState);
-            } 
+            if (filePath.includes('student-grammar')) {
+                initializeGrammarExercise(scrollableContent, tab, saveExerciseState);
+            } else if (filePath.includes('student-verbs')) {
+                initializeVerbsExercise(scrollableContent, tab, saveExerciseState);
+            }
             else {
                 initializeExercise(scrollableContent, tab, saveExerciseState);
             }
