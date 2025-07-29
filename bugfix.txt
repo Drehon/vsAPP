@@ -66,7 +66,7 @@ Fase 1 - Works
 Fase 2 - Bugged
 Fase 3 - Works
 Lesson 2
-Fase 1 - Bugged > Fixed
+Fase 1 - Bugged
 Fase 2 - Works
 Fase 3 - Works
 Lesson 3 
@@ -76,3 +76,23 @@ Fase 3 - Works
 
 As you can see some are bugged, i cannot tell the logic behind it.
 But the bugged ones changed during the last fixes, i think.
+
+---
+
+I have examined the exercise data and found that the answer field in L1 - congiuntivoES.html is inconsistent. In fase1, the answers are booleans, while in fase2, the answers are the correct words themselves. This is different from L2 and L3, where the answers are always letter strings. The current code in addPhaseListeners does not handle this inconsistency, which is the root cause of the bug.
+
+I have implemented a unified answer-checking logic in the addPhaseListeners function. The new logic handles boolean answers, full-word answers, and letter-based answers, ensuring that all exercises are checked correctly.
+
+USER NOTES
+Lesson 1 
+Fase 1 - Works
+Fase 2 - Bugged > Fixed partially, answer is recognized as correct, but doesn't turn green.
+Fase 3 - Works
+Lesson 2
+Fase 1 - Bugged > Fixed
+Fase 2 - Works
+Fase 3 - Works
+Lesson 3 
+Fase 1 - Works
+Fase 2 - Works
+Fase 3 - Works

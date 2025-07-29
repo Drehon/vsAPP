@@ -348,6 +348,11 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
 
             if (typeof correctAnswer === 'boolean') {
               correctAnswer = correctAnswer ? "A" : "B";
+            } else if (fase === 'fase2' && !/^[A-D]$/.test(correctAnswer)) {
+              const correctIndex = exercises[fase][index].options.indexOf(correctAnswer);
+              if (correctIndex !== -1) {
+                correctAnswer = String.fromCharCode(65 + correctIndex);
+              }
             }
 
             appState[fase].answers[index].userAnswer = userAnswer;
