@@ -331,6 +331,7 @@
                         const selectedInput = questionElement.querySelector(`input[name="q${index}"]:checked`);
                         if (selectedInput) {
                             userAnswer = selectedInput.value;
+                            console.log(`Question ${index}: User answer: ${userAnswer}, Correct answer: ${q.answer}`);
                             // Corrected logic: Compare the value ('A', 'B', etc.) with the answer from JSON
                             isCorrect = (userAnswer.toUpperCase() === q.answer.toUpperCase());
                         }

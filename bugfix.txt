@@ -14,3 +14,4 @@ Steps Taken:
 - Investigated the code and found the incorrect logic in the `checkAnswers` function in both `exercises/L2 - causativoES.html` and `exercises/L3 - passivo avanzatoES.html`.
 - Corrected the logic to properly compare the user's selected answer with the correct answer.
 - Created this `bugfix.txt` file to document the process.
+- Added console.log statements to both files to debug the values being compared.

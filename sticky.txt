@@ -9,3 +9,7 @@ This should make the tabs sticky as they will be positioned relative to the scro
 THIRD ATTEMPT WAS REVERTED CAUSE IT BROKE A LOT OF STUFF
 
 My fourth attempt was to revert the third attempt and remove the background color from the content-panes div. This did not work either. The final state of index.html is with the body having h-screen and the content-panes having overflow-y-auto and no background color. The tabs are sticky, but the background issue persists.
+
+My fifth attempt was to remove the `bg-slate-800` class from the `content-panes` div and add `z-0` to the `body` element in `src/index.html`. This should fix the background issue.
+
+USER NOTE: Issue not fixed. while the tabs never disappear. the toolbar disappears as soon as the 'white background ends'
