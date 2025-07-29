@@ -170,7 +170,8 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerc
 
         // Content area that will scroll
         const scrollableContent = document.createElement('div');
-        scrollableContent.className = 'flex-grow overflow-y-auto p-8';
+        // THIS IS THE FIX: Apply container classes here
+        scrollableContent.className = 'flex-grow overflow-y-auto container mx-auto max-w-7xl p-4 md:p-10';
         scrollableContent.innerHTML = homeContent;
 
         // Assemble the pane

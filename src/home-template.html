@@ -1,10 +1,12 @@
-<div class="p-6 md:p-8">
+<!-- This div is no longer a container, allowing the header and footer to be full-width -->
+<div class="p-4 md:p-10">
   <header class="mb-8">
     <h1 class="text-4xl font-bold text-white">Bentornato</h1>
     <p class="text-lg text-slate-300 mt-2">Seleziona una lezione o un esercizio per iniziare.</p>
   </header>
-  
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+  <!-- THE FIX: Container classes are applied directly to the grid wrapper -->
+  <div class="container mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
     
     <!-- Sezione Lezioni -->
     <div class="bg-white p-6 rounded-lg shadow-md">
