@@ -14,7 +14,8 @@ module.exports = {
       // THE FIX IS HERE: Added the new content directories
       './lessonsAN',
       './others',
-      './app-update.yml'
+      './app-update.yml',
+      './patchnotes.json'
     ]
   },
   rebuildConfig: {},

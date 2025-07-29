@@ -454,8 +454,21 @@ ipcMain.handle('get-patch-notes', async () => {
   const url = `https://api.github.com/repos/${owner}/${repo}/releases`;
   const patchNotesPath = path.join(app.getPath('userData'), 'patchnotes.json');
 
+  const requestOptions = {};
+  if (process.env.GITHUB_TOKEN) {
+    requestOptions.headers = {
+      Authorization: `token ${process.env.GITHUB_TOKEN}`,
+      'User-Agent': 'vsAPP-patch-notes-fetcher'
+    };
+  }
+
   try {
-    const response = await net.fetch(url);
+    const response = await net.fetch(url, requestOptions);
+    
+    if (!response.ok) {
+      throw new Error(`GitHub API responded with status: ${response.status}`);
+    }
+
     const releases = await response.json();
 
     let patchNotes = releases.map(release => ({
@@ -469,11 +482,28 @@ ipcMain.handle('get-patch-notes', async () => {
     return patchNotes;
   } catch (error) {
     console.error('Failed to fetch or process patch notes:', error);
-    // If fetching fails, return local data
+    // If fetching fails, try to return local data from userData
     if (fsSync.existsSync(patchNotesPath)) {
-      const data = await fs.readFile(patchNotesPath, 'utf-8');
-      return JSON.parse(data);
+      try {
+        const data = await fs.readFile(patchNotesPath, 'utf-8');
+        return JSON.parse(data);
+      } catch (readError) {
+        console.error(`Failed to read patch notes from ${patchNotesPath}:`, readError);
+        // Continue to fallback
+      }
     }
-    return [];
+
+    // If that fails, try to return local data from app source (for first run/offline)
+    try {
+      const fallbackPath = app.isPackaged
+        ? path.join(process.resourcesPath, 'patchnotes.json')
+        : path.join(process.cwd(), 'patchnotes.json');
+      
+      const fallbackData = await fs.readFile(fallbackPath, 'utf-8');
+      return JSON.parse(fallbackData);
+    } catch (fallbackError) {
+      console.error('Failed to load fallback patch notes:', fallbackError);
+      return []; // Ultimate fallback
+    }
   }
 });
