@@ -329,7 +329,8 @@
                         const selectedInput = questionElement.querySelector(`input[name="q${index}"]:checked`);
                         if (selectedInput) {
                             userAnswer = selectedInput.value;
-                            isCorrect = (userAnswer.toLowerCase() === q.answer.toLowerCase());
+                            // Corrected logic: Compare the value ('A', 'B', etc.) with the answer from JSON
+                            isCorrect = (userAnswer.toUpperCase() === q.answer.toUpperCase());
                         }
                     } else if (q.type === 'input_rewrite') {
                         const inputField = questionElement.querySelector(`#fase${phaseNum}-q${index}`);

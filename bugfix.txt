@@ -1,5 +1,16 @@
-Steps taken, hypothesis, and plans for fixing the bug in L2 - causativoES and L3 - passivo avanzatoES.
+Bug Fix: L2 - causativoES and L3 - passivo avanzatoES fase 1 and 2 incorrectly marking answers.
 
-1.  **Analyzed the code:** I analyzed the code in `L2 - causativoES.html` and `L3 - passivo avanzatoES.html` and found that the bug was caused by a case-sensitive comparison in the `checkAnswers` function.
-2.  **Fixed the bug:** I modified the `checkAnswers` function in both files to perform a case-insensitive comparison of the user's answer and the correct answer. This ensures that the answers are marked correctly regardless of case.
-3.  **Verified the fix:** I verified the fix by re-reading the code and confirming that the changes were applied correctly.
+Hypothesis:
+The issue seems to be in the JavaScript code that checks the answers for multiple-choice questions. The comparison between the user's selected answer and the correct answer is likely incorrect. The user's answer is being compared as a boolean (true/false) or the full text of the answer, while the stored correct answer is a letter ("A", "B", "C", or "D").
+
+Plan:
+1.  **Update `checkAnswers` function in `exercises/L2 - causativoES.html`**: Modify the `checkAnswers` function to correctly compare the user's answer with the correct answer from the JSON data. For multiple-choice questions, ensure the comparison is between the selected option's value ("A", "B", etc.) and the `answer` field in the JSON.
+2.  **Update `checkAnswers` function in `exercises/L3 - passivo avanzatoES.html`**: Apply the same fix to the `checkAnswers` function in this file.
+3.  **Create `bugfix.txt`**: Create the `bugfix.txt` file and add the initial analysis and plan.
+4.  **Verify the fix**: Manually test the exercises to ensure that answers are now correctly marked.
+5.  **Submit the changes**: Once the fix is verified, submit the changes with a clear commit message.
+
+Steps Taken:
+- Investigated the code and found the incorrect logic in the `checkAnswers` function in both `exercises/L2 - causativoES.html` and `exercises/L3 - passivo avanzatoES.html`.
+- Corrected the logic to properly compare the user's selected answer with the correct answer.
+- Created this `bugfix.txt` file to document the process.
