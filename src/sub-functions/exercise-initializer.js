@@ -344,8 +344,15 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
           btn.onclick = (e) => { // Use onclick for single listener
             const userAnswer = e.target.dataset.answer;
             const index = appState.currentQuestion[fase];
+            let correctAnswer = exercises[fase][index].answer;
+            
+            // Specific handling for L1 Fase 1 where answer is boolean
+            if (fase === 'fase1') {
+              correctAnswer = correctAnswer ? "A" : "B";
+            }
+
             appState[fase].answers[index].userAnswer = userAnswer;
-            appState[fase].answers[index].isCorrect = userAnswer === exercises[fase][index].answer;
+            appState[fase].answers[index].isCorrect = userAnswer === correctAnswer;
             saveExerciseState(tab); // Auto-save on answer
             renderFase(fase);
           };

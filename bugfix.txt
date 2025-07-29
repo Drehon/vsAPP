@@ -43,3 +43,36 @@ This approach is more robust and less likely to cause side effects in other exer
 USER NOTES
 Lessons 2 and 3 excercises are now fixed.
 The issue however is now present in the same way as before for lesson 1 excercises.
+
+---
+
+**Solution 2:**
+
+The previous fix for L2 and L3 broke L1 because L1 `fase1` uses boolean `true`/`false` for answers, while L2 and L3 use letter strings ("A", "B", etc.). The `addPhaseListeners` function was comparing them directly, causing the issue.
+
+1.  **`addPhaseListeners` function in `src/sub-functions/exercise-initializer.js`:**
+    *   I added a condition to check if the current `fase` is `fase1`.
+    *   If it is, I convert the boolean answer from the JSON (`true`/`false`) to its corresponding letter ("A" for `true`, "B" for `false`).
+    *   This ensures the comparison with the button's `data-answer` is always correct (`"A" === "A"` or `"B" === "B"`).
+    *   For `fase2` and `fase3`, the logic remains unchanged, so their functionality is preserved.
+
+This solution correctly handles the different answer formats across all lessons.
+
+---
+
+USER NOTES
+Lesson 1 
+Fase 1 - Works
+Fase 2 - Bugged
+Fase 3 - Works
+Lesson 2
+Fase 1 - Bugged
+Fase 2 - Works
+Fase 3 - Works
+Lesson 3 
+Fase 1 - Works
+Fase 2 - Works
+Fase 3 - Works
+
+As you can see some are bugged, i cannot tell the logic behind it.
+But the bugged ones changed during the last fixes, i think.
