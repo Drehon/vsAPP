@@ -65,7 +65,7 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
     // Create a new content pane for the tab
     const paneEl = document.createElement('div');
     paneEl.id = `pane-${newTab.id}`;
-    paneEl.className = 'content-pane h-full w-full flex flex-col';
+    paneEl.className = 'content-pane h-full w-full flex flex-col bg-slate-800';
     contentPanes.appendChild(paneEl);
 
     if (type === 'content' && filePath) {
