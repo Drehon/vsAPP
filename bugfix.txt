@@ -86,13 +86,18 @@ I have implemented a unified answer-checking logic in the addPhaseListeners func
 USER NOTES
 Lesson 1 
 Fase 1 - Works
-Fase 2 - Bugged > Fixed partially, answer is recognized as correct, but doesn't turn green.
+Fase 2 - Fixed partially, answer is recognized as correct, but doesn't turn green.
 Fase 3 - Works
 Lesson 2
-Fase 1 - Bugged > Fixed
+Fase 1 - Works
 Fase 2 - Works
 Fase 3 - Works
 Lesson 3 
 Fase 1 - Works
 Fase 2 - Works
 Fase 3 - Works
+
+---
+I have fixed the issue with L1 Fase 2 not turning green. The problem was that the rendering logic was only set up for multiple-choice buttons, not text inputs. I updated the `renderFase` function to add the correct CSS classes to the text input field for both correct and incorrect answers. I also updated the `addPhaseListeners` function to handle the new check button for L1 Fase 2.
+
+Lesson 1, Fase 2 - Still only Fixed partially, answer is recognized as correct, but doesn't turn green.
