@@ -1,0 +1,36 @@
+patchu## Patch Notes Feature Implementation
+
+### Thoughts and Hypothesis
+
+*   The user wants a new page to display patch notes from GitHub releases.
+*   The page should also show a history of previous patch notes.
+*   This means I need to store the patch notes locally.
+*   The new page should be accessible from the "OTHER" section of the app.
+*   I'll need to fetch the latest release from the GitHub API, parse it, and store it.
+*   The existing `content-loader.js` seems to be the right place to add the link to the new page.
+
+### Plan
+
+1.  **Create `others/patch-notes.html`**: Create a new HTML file for the patch notes page.
+2.  **Create `patchnotes.json`**: Create a new JSON file to store the patch notes history.
+3.  **Modify `src/main.js`**: Add a function to fetch the latest release from GitHub, update the `patchnotes.json` file, and expose it to the renderer process.
+4.  **Modify `src/sub-functions/content-loader.js`**: Add a button to the home page to open the patch notes page.
+5.  **Modify `src/preload.js`**: Expose the new `getPatchNotes` function to the renderer process.
+6.  **Create `patchuser.txt`**: Create this file to document the process.
+
+### Steps Taken
+
+*   **Step 1: Create `others/patch-notes.html`**: I created the `patch-notes.html` file with a basic structure, including a script to fetch and display the patch notes.
+*   **Step 2: Create `patchnotes.json`**: I created an empty `patchnotes.json` file in the `src` directory.
+*   **Step 3: Modify `src/main.js`**: I added the `getPatchNotes` function to fetch the latest release from GitHub, read the local `patchnotes.json` file, prepend the new release if it's not already there, and save the updated file. I also added an `ipcMain.handle` to expose this function.
+*   **Step 4: Modify `src/sub-functions/content-loader.js`**: I added a "Patch Notes" button to the home page's "Other" section.
+*   **Step 5: Modify `src/preload.js`**: I exposed the `getPatchNotes` function to the renderer process through the `window.api`.
+
+### Next Steps
+
+*   The implementation is complete. I will now submit the changes.
+
+---
+
+Will this work with app packaged?
+Shouldn't we modify some files for that purpose? the json in particular

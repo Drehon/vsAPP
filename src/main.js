@@ -447,3 +447,42 @@ ipcMain.handle('get-lessons', () => getContents('lessons'));
 ipcMain.handle('get-exercises', () => getContents('exercises'));
 ipcMain.handle('get-lessons-an', () => getContents('lessonsAN'));
 ipcMain.handle('get-tests', () => getContents('others'));
+
+ipcMain.handle('get-patch-notes', async () => {
+  const owner = 'Drehon';
+  const repo = 'vsAPP';
+  const url = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
+  const patchNotesPath = path.join(__dirname, 'patchnotes.json');
+
+  try {
+    const response = await net.fetch(url);
+    const release = await response.json();
+
+    let patchNotes = [];
+    if (fsSync.existsSync(patchNotesPath)) {
+      const data = await fs.readFile(patchNotesPath, 'utf-8');
+      patchNotes = JSON.parse(data);
+    }
+
+    const releaseExists = patchNotes.some(note => note.version === release.tag_name);
+
+    if (!releaseExists) {
+      patchNotes.unshift({
+        version: release.tag_name,
+        notes: release.body,
+        date: release.published_at
+      });
+      await fs.writeFile(patchNotesPath, JSON.stringify(patchNotes, null, 2));
+    }
+
+    return patchNotes;
+  } catch (error) {
+    console.error('Failed to fetch or process patch notes:', error);
+    // If fetching fails, return local data
+    if (fsSync.existsSync(patchNotesPath)) {
+      const data = await fs.readFile(patchNotesPath, 'utf-8');
+      return JSON.parse(data);
+    }
+    return [];
+  }
+});

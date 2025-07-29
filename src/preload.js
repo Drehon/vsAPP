@@ -32,7 +32,8 @@ window.api = {
   openDirectoryDialog: () => ipcRenderer.invoke('open-directory-dialog'),
   
   // ADDED: Expose the showOpenDialogAndLoadFile handler
-  showOpenDialogAndLoadFile: () => ipcRenderer.invoke('show-open-dialog-and-load-file')
+  showOpenDialogAndLoadFile: () => ipcRenderer.invoke('show-open-dialog-and-load-file'),
+  getPatchNotes: () => ipcRenderer.invoke('get-patch-notes')
 };
 
 // Signal that the preload script has finished and the API is ready
