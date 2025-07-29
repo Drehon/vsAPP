@@ -23,3 +23,23 @@ Steps Taken:
 - Issue is here, but first attempt at solving it heavily broke stuff elsewhere
 - Next steps must be carefully considered, a misstep breaks excercises for L1 or disables the green/red correct answer highlight
 
+---
+
+**Solution:**
+
+The bug was indeed in `src/sub-functions/exercise-initializer.js`, but the root cause was in the `renderFase` function, not `addPhaseListeners`.
+
+1.  **`renderFase` function:**
+    *   For `fase1`, the `data-answer` attributes for the "Vero" and "Falso" buttons were hardcoded to `true` and `false` respectively. I changed them to `"A"` and `"B"` to match the answer format in the JSON data.
+    *   For `fase2`, the `data-answer` attributes were being set to the full text of the options. I changed this to use the index of the option to generate a letter ("A", "B", "C", etc.), which again matches the JSON data.
+
+2.  **`addPhaseListeners` function:**
+    *   I simplified this function by removing the logic that converted `"true"` and `"false"` to booleans. Now, it directly compares the `data-answer` string with the answer string from the JSON, which is the correct approach given the changes to `renderFase`.
+
+This approach is more robust and less likely to cause side effects in other exercises, as it makes the `data-answer` format consistent across all multiple-choice questions handled by this script.
+
+---
+
+USER NOTES
+Lessons 2 and 3 excercises are now fixed.
+The issue however is now present in the same way as before for lesson 1 excercises.

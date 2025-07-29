@@ -202,8 +202,8 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
                 <p class="text-lg text-slate-600">La seguente frase è grammaticalmente corretta?</p>
                 <div class="p-4 bg-slate-100 rounded-lg text-xl text-center font-semibold text-slate-800">${ex.question}</div>
                 <div class="flex justify-center space-x-4 pt-4">
-                    <button class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors" data-fase="fase1" data-answer="true">Vero</button>
-                    <button class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors" data-fase="fase1" data-answer="false">Falso</button>
+                    <button class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors" data-fase="fase1" data-answer="A">Vero</button>
+                    <button class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors" data-fase="fase1" data-answer="B">Falso</button>
                 </div>
             </div>`;
       } else if (fase === 'fase2') {
@@ -212,7 +212,7 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
                 <p class="text-lg text-slate-600">Scegli l'opzione corretta per completare la frase.</p>
                 <div class="p-4 bg-slate-100 rounded-lg text-xl text-center font-semibold text-slate-800">${ex.question}</div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                    ${ex.options.map(opt => `<button class="fase-btn border-2 font-bold py-3 px-6 rounded-lg transition-colors" data-fase="fase2" data-answer="${opt}">${opt}</button>`).join('')}
+                    ${ex.options.map((opt, i) => `<button class="fase-btn border-2 font-bold py-3 px-6 rounded-lg transition-colors" data-fase="fase2" data-answer="${String.fromCharCode(65 + i)}">${opt}</button>`).join('')}
                 </div>
             </div>`;
       } else if (fase === 'fase3') {
@@ -342,7 +342,7 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
         container.querySelectorAll('.fase-btn').forEach(btn => {
           btn.classList.add('btn-neutral'); // Ensure neutral style initially
           btn.onclick = (e) => { // Use onclick for single listener
-            const userAnswer = e.target.dataset.answer === 'true' ? true : e.target.dataset.answer === 'false' ? false : e.target.dataset.answer;
+            const userAnswer = e.target.dataset.answer;
             const index = appState.currentQuestion[fase];
             appState[fase].answers[index].userAnswer = userAnswer;
             appState[fase].answers[index].isCorrect = userAnswer === exercises[fase][index].answer;
