@@ -13,3 +13,8 @@ My fourth attempt was to revert the third attempt and remove the background colo
 My fifth attempt was to remove the `bg-slate-800` class from the `content-panes` div and add `z-0` to the `body` element in `src/index.html`. This should fix the background issue.
 
 USER NOTE: Issue not fixed. while the tabs never disappear. the toolbar disappears as soon as the 'white background ends'
+
+My sixth attempt is to remove the `bg-slate-800` class from the `content-panes` div. The `body` already has `bg-slate-800`, so this should prevent the background from showing through the tab bar.
+
+USER NOTE: Reverted, didn't fix issue AND broke updater
+
