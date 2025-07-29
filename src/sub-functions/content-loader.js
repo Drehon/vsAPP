@@ -42,7 +42,6 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
         `;
         toolbar.appendChild(rightGroup);
 
-        // THE FIX: Removed 'overflow-y-auto' to prevent nested scrollbars.
         const scrollableContent = document.createElement('div');
         scrollableContent.className = 'flex-grow p-6 md:p-10';
         const tempDiv = document.createElement('div');
@@ -110,7 +109,7 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerc
         homeContent = await window.api.getHomeContent();
     } catch (error) {
         console.error("Error fetching home content:", error);
-        homeContent = `<div class="p-6 text-red-700 bg-red-100 rounded-lg"><h2 class="font-bold text-lg">Error Loading Home Page</h2><p>Could not load the home page content. Please try reloading the application.</p><p>Details: ${error.message}</p></div>`;
+        homeContent = `<div class="p-6 text-red-700 bg-red-100 rounded-lg"><h2 class="font-bold text-lg">Error Loading Home Page</h2><p>Could not load the home page content.</p></div>`;
     }
 
     const pane = document.getElementById(`pane-${tab.id}`);
@@ -118,6 +117,7 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerc
     if (pane && homeContent) {
         pane.innerHTML = '';
 
+        // THE FIX: Restored h-full to make the container fill the vertical space.
         const contentWrapper = document.createElement('div');
         contentWrapper.className = "h-full flex flex-col bg-slate-600 text-white";
 
@@ -144,9 +144,8 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerc
         `;
         toolbar.appendChild(rightGroup);
 
-        // THE FIX: Removed 'overflow-y-auto' to prevent nested scrollbars.
         const scrollableContent = document.createElement('div');
-        scrollableContent.className = 'flex-grow container mx-auto max-w-7xl p-4 md:p-10';
+        scrollableContent.className = 'flex-grow';
         scrollableContent.innerHTML = homeContent;
 
         contentWrapper.appendChild(toolbar);
