@@ -1,34 +1,47 @@
-<div class="p-6 md:p-10">
+<div class="p-6 md:p-8">
   <header class="mb-8">
-    <!-- Changed text color to text-white for better readability against a dark background -->
     <h1 class="text-4xl font-bold text-white">Bentornato</h1>
-    <!-- Changed text color to text-slate-300 for better readability against a dark background -->
     <p class="text-lg text-slate-300 mt-2">Seleziona una lezione o un esercizio per iniziare.</p>
   </header>
   
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
     
     <!-- Sezione Lezioni -->
     <div class="bg-white p-6 rounded-lg shadow-md">
       <h2 class="text-2xl font-semibold mb-4 border-b-2 border-slate-200 pb-3 text-slate-700">Lezioni</h2>
-      <div id="lessons-list" class="space-y-4 mt-4">
-        <!-- I link alle lezioni verranno inseriti qui dinamicamente -->
-      </div>
+      <ul id="lessons-list" class="space-y-3 mt-4">
+        <!-- This list will be populated by renderer.js -->
+      </ul>
+    </div>
+
+    <!-- Sezione Lezioni AN -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-2xl font-semibold mb-4 border-b-2 border-slate-200 pb-3 text-slate-700">Lezioni AN</h2>
+      <ul id="lessons-an-list" class="space-y-3 mt-4">
+        <!-- This list will be populated by renderer.js -->
+      </ul>
     </div>
     
     <!-- Sezione Esercizi -->
     <div class="bg-white p-6 rounded-lg shadow-md">
       <h2 class="text-2xl font-semibold mb-4 border-b-2 border-slate-200 pb-3 text-slate-700">Esercizi</h2>
-      <div id="exercises-list" class="space-y-4 mt-4">
-        <!-- I link agli esercizi verranno inseriti qui dinamicamente -->
-      </div>
+      <ul id="exercises-list" class="space-y-3 mt-4">
+        <!-- This list will be populated by renderer.js -->
+      </ul>
+    </div>
+
+    <!-- Sezione Test e Altro -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-2xl font-semibold mb-4 border-b-2 border-slate-200 pb-3 text-slate-700">Test e Altro</h2>
+      <ul id="tests-list" class="space-y-3 mt-4">
+        <!-- This list will be populated by renderer.js -->
+      </ul>
     </div>
     
   </div>
 
   <footer class="mt-12 text-center text-sm text-white">
-    <!-- Changed text color to text-white for better readability against a dark background -->
-    <p>Applicazione per lo studio e la pratica della lingua inglese.</p>
+    <p>Applicazione per lo studio e la pratica della lingua italiana.</p>
     <p class="mt-1">&copy; 2024. Tutti i diritti riservati.</p>
   </footer>
 </div>

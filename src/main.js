@@ -445,3 +445,5 @@ const getContents = async (dir) => {
 
 ipcMain.handle('get-lessons', () => getContents('lessons'));
 ipcMain.handle('get-exercises', () => getContents('exercises'));
+ipcMain.handle('get-lessons-an', () => getContents('lessonsAN'));
+ipcMain.handle('get-tests', () => getContents('others'));

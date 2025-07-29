@@ -291,7 +291,9 @@ function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExe
       }
     };
 
-    // Call populateList for both lessons and exercises
+    // Call populateList for all four categories
     populateList('lessons-list', window.api.getLessons, 'lessons');
+    populateList('lessons-an-list', window.api.getLessonsAN, 'lessonsAN');
     populateList('exercises-list', window.api.getExercises, 'exercises');
+    populateList('tests-list', window.api.getTests, 'others');
 }
