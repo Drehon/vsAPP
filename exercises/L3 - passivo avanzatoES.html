@@ -4,6 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Esercizi Pratici: I Passivi Avanzati</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* bg-slate-200 */
+        }
+        .key-rule {
+            background-color: #eef2ff; /* bg-indigo-50 */
+            color: #3730a3; /* text-indigo-800 */
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .student-response {
+            background-color: #fffbeb; /* bg-amber-50 */
+            border-left: 4px solid #f59e0b; /* border-amber-500 */
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        h1, h2, h3, h4 {
+            font-weight: 700;
+        }
+        code, .font-mono {
+            font-family: 'Source Code Pro', monospace;
+        }
+        /* Custom styles for tabs and feedback */
+        .tab-btn {
+            color: #64748b; /* text-slate-500 */
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease-in-out;
+        }
+        .tab-btn:hover {
+            color: #475569; /* text-slate-600 */
+        }
+        .tab-active {
+            color: #4f46e5; /* text-indigo-600 */
+            border-color: #4f46e5; /* border-indigo-600 */
+            font-weight: 600;
+        }
+        .tab-inactive {
+            color: #64748b; /* text-slate-500 */
+        }
+        .feedback-correct {
+            border-color: #10b981; /* green-500 */
+            background-color: #ecfdf5; /* green-50 */
+        }
+        .feedback-incorrect {
+            border-color: #ef4444; /* red-500 */
+            background-color: #fef2f2; /* red-50 */
+        }
+        .explanation {
+            color: #475569; /* text-slate-600 */
+        }
+    </style>
 </head>
 <body class="text-slate-700">
 
@@ -29,9 +86,9 @@
             <!-- Tabs -->
             <div class="border-b border-slate-200">
                 <nav class="flex space-x-6 px-6" aria-label="Tabs">
-                    <button id="tab-btn-1" class="tab-btn py-4 px-1 text-sm font-medium tab-active">Fase 1: Comprensione</button>
-                    <button id="tab-btn-2" class="tab-btn py-4 px-1 text-sm font-medium tab-inactive">Fase 2: Riconoscimento</button>
-                    <button id="tab-btn-3" class="tab-btn py-4 px-1 text-sm font-medium tab-inactive">Fase 3: Produzione</button>
+                    <button id="tab-btn-1" data-tab="1" class="tab-btn py-4 px-1 text-sm font-medium tab-active">Fase 1: Comprensione</button>
+                    <button id="tab-btn-2" data-tab="2" class="tab-btn py-4 px-1 text-sm font-medium tab-inactive">Fase 2: Riconoscimento</button>
+                    <button id="tab-btn-3" data-tab="3" class="tab-btn py-4 px-1 text-sm font-medium tab-inactive">Fase 3: Produzione</button>
                 </nav>
             </div>
 
@@ -47,56 +104,56 @@
     <script id="exercise-data" type="application/json">
         {
             "fase1": [
-                { "question": "La frase 'I was given a book' è un esempio di passivo con due oggetti.", "answer": true, "explanation": "Corretto. 'A book' è l'oggetto diretto, 'I' (come soggetto) è l'oggetto indiretto." },
-                { "question": "Nella frase 'It is believed that he is innocent', 'it' si riferisce a una persona specifica.", "answer": false, "explanation": "Falso. 'It' è un soggetto impersonale, usato per introdurre un'opinione generale." },
-                { "question": "La frase 'He is said to be a genius' è la forma passiva di 'People say he is a genius'.", "answer": true, "explanation": "Corretto. È una costruzione passiva comune per esprimere opinioni generali." },
-                { "question": "La struttura 'have something done' è usata per indicare che si fa qualcosa personalmente.", "answer": false, "explanation": "Falso. Significa che si fa fare qualcosa da qualcun altro." },
-                { "question": "Nella frase 'The house is being built', l'azione è già completata.", "answer": false, "explanation": "Falso. 'Is being built' indica un'azione in corso (Present Continuous Passivo)." },
-                { "question": "La frase 'The criminal was caught red-handed' è un esempio di passivo con un complemento di modo.", "answer": true, "explanation": "Corretto. 'Red-handed' descrive il modo in cui è stato catturato." },
-                { "question": "La struttura 'It was decided that...' è più formale di 'They decided that...'.", "answer": true, "explanation": "Corretto. L'uso del passivo impersonale è spesso più formale e oggettivo." },
-                { "question": "Nella frase 'He was made to confess', 'to confess' è un infinito senza 'to'.", "answer": false, "explanation": "Falso. Nella forma passiva di 'make', si aggiunge 'to' prima dell'infinito." },
-                { "question": "La frase 'The problem needs solving' ha lo stesso significato di 'The problem needs to be solved'.", "answer": true, "explanation": "Corretto. Entrambe le forme esprimono la necessità di un'azione passiva." },
-                { "question": "La frase 'The children were given a reward by their parents' è un passivo con 'by' per indicare l'agente.", "answer": true, "explanation": "Corretto. 'By their parents' specifica chi ha dato la ricompensa." },
-                { "question": "Nella frase 'The book is thought to be lost', l'azione di 'thinking' è al passato.", "answer": false, "explanation": "Falso. 'Is thought' è al presente. L'azione di 'losing' potrebbe essere al passato." },
-                { "question": "La frase 'He was seen leaving the building' è un passivo con un participio presente.", "answer": true, "explanation": "Corretto. 'Leaving' è un participio presente che descrive l'azione in corso." },
-                { "question": "La struttura 'get + participio passato' è più formale di 'be + participio passato'.", "answer": false, "explanation": "Falso. 'Get' è spesso usato in contesti informali o per azioni che accadono inaspettatamente." },
-                { "question": "La frase 'The new policy has been announced' è al Present Perfect Passivo.", "answer": true, "explanation": "Corretto. 'Has been announced' indica un'azione completata con rilevanza nel presente." },
-                { "question": "Nella frase 'She was told to wait', l'agente che ha detto di aspettare è sconosciuto.", "answer": true, "explanation": "Corretto. Il passivo si usa spesso quando l'agente è sconosciuto o non importante." },
-                { "question": "La frase 'The car needs to be washed' è un esempio di passivo impersonale.", "answer": false, "explanation": "Falso. È un passivo che si riferisce a un oggetto specifico ('the car')." },
-                { "question": "La frase 'It is said that money doesn't buy happiness' usa una clausola 'that'.", "answer": true, "explanation": "Corretto. 'That money doesn't buy happiness' è la clausola nominale." },
-                { "question": "Nella frase 'He was believed to have escaped', l'azione di 'escaping' è avvenuta prima dell'azione di 'believing'.", "answer": true, "explanation": "Corretto. 'To have escaped' è l'infinito perfetto, che indica un'azione precedente." },
-                { "question": "La frase 'The bridge was built in 1900' è un passivo al Simple Past.", "answer": true, "explanation": "Corretto. 'Was built' è la forma passiva del Simple Past." },
-                { "question": "La struttura 'There is said to be...' è usata per introdurre un'informazione generica.", "answer": true, "explanation": "Corretto. Simile a 'It is said that...', ma con 'there' per l'esistenza." },
-                { "question": "La frase 'He gets paid weekly' è un esempio di passivo con 'get'.", "answer": true, "explanation": "Corretto. 'Gets paid' è una forma comune di passivo in contesti informali o per azioni abituali." },
-                { "question": "Nella frase 'The decision was made by the committee', 'by the committee' è un complemento d'agente.", "answer": true, "explanation": "Corretto. Indica chi ha compiuto l'azione." },
-                { "question": "La frase 'The window broke' è un passivo.", "answer": false, "explanation": "Falso. È un'azione intransitiva, non passiva. Non c'è un agente che compie l'azione sulla finestra." },
-                { "question": "La struttura 'be + to + infinito' (es. 'The new rules are to be followed') esprime un obbligo.", "answer": true, "explanation": "Corretto. Indica un dovere o un'istruzione." },
-                { "question": "Nella frase 'I was advised to study hard', l'agente è sempre specificato.", "answer": false, "explanation": "Falso. L'agente non è specificato in questo esempio." },
-                { "question": "La frase 'The book is being read by millions' è al Present Perfect Continuous Passivo.", "answer": false, "explanation": "Falso. È al Present Continuous Passivo." },
-                { "question": "La struttura 'It is thought that...' è usata per esprimere una certezza assoluta.", "answer": false, "explanation": "Falso. Esprime un'opinione o una credenza, non una certezza assoluta." },
-                { "question": "La frase 'He was given a second chance' è un passivo con un oggetto indiretto come soggetto.", "answer": true, "explanation": "Corretto. 'He' è l'oggetto indiretto del verbo 'give' nella forma attiva." },
-                { "question": "La frase 'The door was painted green' è un passivo con un complemento predicativo dell'oggetto.", "answer": true, "explanation": "Corretto. 'Green' descrive il risultato dell'azione sul soggetto ('the door')." },
-                { "question": "La struttura 'There is believed to be...' è sempre seguita da un plurale.", "answer": false, "explanation": "Falso. Dipende dal sostantivo che segue 'to be'. Es: 'There is believed to be a solution' (singolare)." },
-                { "question": "La frase 'The car got damaged in the accident' è un passivo con 'get'.", "answer": true, "explanation": "Corretto. 'Get damaged' è un passivo che indica un cambiamento di stato o un evento inaspettato." },
-                { "question": "La frase 'He was heard to sing' è più comune di 'He was heard singing'.", "answer": false, "explanation": "Falso. 'He was heard singing' è più comune e indica un'azione in corso." },
-                { "question": "La frase 'The report is to be submitted by Friday' esprime un obbligo o una disposizione.", "answer": true, "explanation": "Corretto. 'Is to be submitted' indica una scadenza o un requisito." },
-                { "question": "Nella frase 'The building was thought to have been destroyed', l'azione di 'destroying' è avvenuta prima di 'thinking'.", "answer": true, "explanation": "Corretto. 'To have been destroyed' è l'infinito perfetto passivo, che indica un'azione completata prima del verbo principale." },
-                { "question": "La frase 'The rules are being explained now' è al Present Simple Passivo.", "answer": false, "explanation": "Falso. È al Present Continuous Passivo, indica un'azione in corso." },
-                { "question": "La struttura 'It is known that...' è usata per informazioni ampiamente accettate.", "answer": true, "explanation": "Corretto. Indica una conoscenza o un fatto generale." },
-                { "question": "La frase 'I was made do it' è grammaticalmente corretta.", "answer": false, "explanation": "Falso. Dopo il passivo di 'make', si usa 'to' prima del verbo: 'I was made to do it'." },
-                { "question": "La frase 'The children were allowed to play outside' è un passivo di 'allow'.", "answer": true, "explanation": "Corretto. È la forma passiva di 'They allowed the children to play outside'." },
-                { "question": "Nella frase 'The house needs painting', 'painting' è un gerundio con significato passivo.", "answer": true, "explanation": "Corretto. Si usa il gerundio dopo 'need' per esprimere una necessità passiva." },
-                { "question": "La frase 'The problem is being discussed' significa che qualcuno sta discutendo il problema.", "answer": true, "explanation": "Corretto. Il Present Continuous Passivo indica un'azione in corso." },
-                { "question": "La frase 'He is understood to be a spy' è più comune di 'People understand he is a spy'.", "answer": true, "explanation": "Corretto. È una costruzione passiva più formale e concisa." },
-                { "question": "La frase 'The package was sent yesterday' è un passivo senza agente specificato.", "answer": true, "explanation": "Corretto. L'agente non è menzionato." },
-                { "question": "La struttura 'It is believed to have been...' si usa per eventi recenti.", "answer": false, "explanation": "Falso. Si usa per eventi che si ritiene siano accaduti nel passato, anche remoto." },
-                { "question": "La frase 'The car was driven by a robot' è un passivo con un agente non umano.", "answer": true, "explanation": "Corretto. Il complemento d'agente può essere anche non umano." },
-                { "question": "La frase 'The news was reported on TV' è un passivo senza 'by' perché il mezzo è ovvio.", "answer": true, "explanation": "Corretto. Quando l'agente è generico o ovvio, si omette 'by'." },
-                { "question": "Nella frase 'The patient was operated on immediately', 'on' è necessario.", "answer": true, "explanation": "Corretto. 'Operate on' è un verbo frasale e la preposizione è parte integrante." },
-                { "question": "La frase 'He was given good advice' è corretta.", "answer": true, "explanation": "Corretto. 'Advice' è un sostantivo non numerabile, quindi non ha 'a' o 'an'." },
-                { "question": "La struttura 'It is hoped that...' esprime una speranza generale.", "answer": true, "explanation": "Corretto. È un passivo impersonale per esprimere una speranza collettiva." },
-                { "question": "La frase 'The children were seen to play in the park' è più comune di 'The children were seen playing in the park'.", "answer": false, "explanation": "Falso. 'Seen playing' è più comune e indica l'azione in corso." },
-                { "question": "La frase 'The project is considered a success' è un passivo con un complemento del soggetto.", "answer": true, "explanation": "Corretto. 'A success' è un complemento del soggetto che descrive il progetto." }
+                { "question": "La frase 'I was given a book' è un esempio di passivo con due oggetti.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'A book' è l'oggetto diretto, 'I' (come soggetto) è l'oggetto indiretto." },
+                { "question": "Nella frase 'It is believed that he is innocent', 'it' si riferisce a una persona specifica.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. 'It' è un soggetto impersonale, usato per introdurre un'opinione generale." },
+                { "question": "La frase 'He is said to be a genius' è la forma passiva di 'People say he is a genius'.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. È una costruzione passiva comune per esprimere opinioni generali." },
+                { "question": "La struttura 'have something done' è usata per indicare che si fa qualcosa personalmente.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Significa che si fa fare qualcosa da qualcun altro." },
+                { "question": "Nella frase 'The house is being built', l'azione è già completata.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. 'Is being built' indica un'azione in corso (Present Continuous Passivo)." },
+                { "question": "La frase 'The criminal was caught red-handed' è un esempio di passivo con un complemento di modo.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'Red-handed' descrive il modo in cui è stato catturato." },
+                { "question": "La struttura 'It was decided that...' è più formale di 'They decided that...'.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. L'uso del passivo impersonale è spesso più formale e oggettivo." },
+                { "question": "Nella frase 'He was made to confess', 'to confess' è un infinito senza 'to'.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Nella forma passiva di 'make', si aggiunge 'to' prima dell'infinito." },
+                { "question": "La frase 'The problem needs solving' ha lo stesso significato di 'The problem needs to be solved'.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Entrambe le forme esprimono la necessità di un'azione passiva." },
+                { "question": "La frase 'The children were given a reward by their parents' è un passivo con 'by' per indicare l'agente.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'By their parents' specifica chi ha dato la ricompensa." },
+                { "question": "Nella frase 'The book is thought to be lost', l'azione di 'thinking' è al passato.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. 'Is thought' è al presente. L'azione di 'losing' potrebbe essere al passato." },
+                { "question": "La frase 'He was seen leaving the building' è un passivo con un participio presente.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'Leaving' è un participio presente che descrive l'azione in corso." },
+                { "question": "La struttura 'get + participio passato' è più formale di 'be + participio passato'.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. 'Get' è spesso usato in contesti informali o per azioni che accadono inaspettatamente." },
+                { "question": "La frase 'The new policy has been announced' è al Present Perfect Passivo.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'Has been announced' indica un'azione completata con rilevanza nel presente." },
+                { "question": "Nella frase 'She was told to wait', l'agente che ha detto di aspettare è sconosciuto.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Il passivo si usa spesso quando l'agente è sconosciuto o non importante." },
+                { "question": "La frase 'The car needs to be washed' è un esempio di passivo impersonale.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. È un passivo che si riferisce a un oggetto specifico ('the car')." },
+                { "question": "La frase 'It is said that money doesn't buy happiness' usa una clausola 'that'.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'That money doesn't buy happiness' è la clausola nominale." },
+                { "question": "Nella frase 'He was believed to have escaped', l'azione di 'escaping' è avvenuta prima dell'azione di 'believing'.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'To have escaped' è l'infinito perfetto, che indica un'azione precedente." },
+                { "question": "La frase 'The bridge was built in 1900' è un passivo al Simple Past.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'Was built' è la forma passiva del Simple Past." },
+                { "question": "La struttura 'There is said to be...' è usata per introdurre un'informazione generica.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Simile a 'It is said that...', ma con 'there' per l'esistenza." },
+                { "question": "La frase 'He gets paid weekly' è un esempio di passivo con 'get'.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'Gets paid' è una forma comune di passivo in contesti informali o per azioni abituali." },
+                { "question": "Nella frase 'The decision was made by the committee', 'by the committee' è un complemento d'agente.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Indica chi ha compiuto l'azione." },
+                { "question": "La frase 'The window broke' è un passivo.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. È un'azione intransitiva, non passiva. Non c'è un agente che compie l'azione sulla finestra." },
+                { "question": "La struttura 'be + to + infinito' (es. 'The new rules are to be followed') esprime un obbligo.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Indica un dovere o un'istruzione." },
+                { "question": "Nella frase 'I was advised to study hard', l'agente è sempre specificato.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. L'agente non è specificato in questo esempio." },
+                { "question": "La frase 'The book is being read by millions' è al Present Perfect Continuous Passivo.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. È al Present Continuous Passivo." },
+                { "question": "La struttura 'It is thought that...' è usata per esprimere una certezza assoluta.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Esprime un'opinione o una credenza, non una certezza assoluta." },
+                { "question": "La frase 'He was given a second chance' è un passivo con un oggetto indiretto come soggetto.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'He' è l'oggetto indiretto del verbo 'give' nella forma attiva." },
+                { "question": "La frase 'The door was painted green' è un passivo con un complemento predicativo dell'oggetto.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'Green' descrive il risultato dell'azione sul soggetto ('the door')." },
+                { "question": "La struttura 'There is believed to be...' è sempre seguita da un plurale.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Dipende dal sostantivo che segue 'to be'. Es: 'There is believed to be a solution' (singolare)." },
+                { "question": "La frase 'The car got damaged in the accident' è un passivo con 'get'.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'Get damaged' è un passivo che indica un cambiamento di stato o un evento inaspettato." },
+                { "question": "La frase 'He was heard to sing' è più comune di 'He was heard singing'.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. 'He was heard singing' è più comune e indica un'azione in corso." },
+                { "question": "La frase 'The report is to be submitted by Friday' esprime un obbligo o una disposizione.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'Is to be submitted' indica una scadenza o un requisito." },
+                { "question": "Nella frase 'The building was thought to have been destroyed', l'azione di 'destroying' è avvenuta prima di 'thinking'.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'To have been destroyed' è l'infinito perfetto passivo, che indica un'azione completata prima del verbo principale." },
+                { "question": "La frase 'The rules are being explained now' è al Present Simple Passivo.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. È al Present Continuous Passivo, indica un'azione in corso." },
+                { "question": "La struttura 'It is known that...' è usata per informazioni ampiamente accettate.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Indica una conoscenza o un fatto generale." },
+                { "question": "La frase 'I was made do it' è grammaticalmente corretta.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Dopo il passivo di 'make', si usa 'to' prima del verbo: 'I was made to do it'." },
+                { "question": "La frase 'The children were allowed to play outside' è un passivo di 'allow'.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. È la forma passiva di 'They allowed the children to play outside'." },
+                { "question": "Nella frase 'The house needs painting', 'painting' è un gerundio con significato passivo.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Si usa il gerundio dopo 'need' per esprimere una necessità passiva." },
+                { "question": "La frase 'The problem is being discussed' significa che qualcuno sta discutendo il problema.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Il Present Continuous Passivo indica un'azione in corso." },
+                { "question": "La frase 'He is understood to be a spy' è più comune di 'People understand he is a spy'.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. È una costruzione passiva più formale e concisa." },
+                { "question": "La frase 'The package was sent yesterday' è un passivo senza agente specificato.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. L'agente non è menzionato." },
+                { "question": "La struttura 'It is believed to have been...' si usa per eventi recenti.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. Si usa per eventi che si ritiene siano accaduti nel passato, anche remoto." },
+                { "question": "La frase 'The car was driven by a robot' è un passivo con un agente non umano.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Il complemento d'agente può essere anche non umano." },
+                { "question": "La frase 'The news was reported on TV' è un passivo senza 'by' perché il mezzo è ovvio.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. Quando l'agente è generico o ovvio, si omette 'by'." },
+                { "question": "Nella frase 'The patient was operated on immediately', 'on' è necessario.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'Operate on' è un verbo frasale e la preposizione è parte integrante." },
+                { "question": "La frase 'He was given good advice' è corretta.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'Advice' è un sostantivo non numerabile, quindi non ha 'a' o 'an'." },
+                { "question": "La struttura 'It is hoped that...' esprime una speranza generale.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. È un passivo impersonale per esprimere una speranza collettiva." },
+                { "question": "La frase 'The children were seen to play in the park' è più comune di 'The children were seen playing in the park'.", "type": "mc", "options": ["Vero", "Falso"], "answer": "B", "explanation": "Falso. 'Seen playing' è più comune e indica l'azione in corso." },
+                { "question": "La frase 'The project is considered a success' è un passivo con un complemento del soggetto.", "type": "mc", "options": ["Vero", "Falso"], "answer": "A", "explanation": "Corretto. 'A success' è un complemento del soggetto che descrive il progetto." }
             ],
             "fase2": [
                 { "question": "The new bridge ______ next year.", "options": ["is building", "will be built", "is built", "builds"], "answer": "B", "explanation": "Futuro Passivo: 'will be' + participio passato." },
@@ -131,26 +188,26 @@
                 { "question": "The ancient city ______ to exist deep in the jungle.", "options": ["is believed", "believes", "is believing", "believed"], "answer": "A", "explanation": "Passivo con infinito: 'is believed to exist'." }
             ],
             "fase3": [
-                { "prompt": "People say that he is very rich.", "question": "He is said...", "answer": "to be very rich", "explanation": "La struttura è 'soggetto + is/are said + to be + complemento'." },
-                { "prompt": "The company needs to clean the machines.", "question": "The machines need...", "answer": "cleaning", "explanation": "Dopo 'need', si può usare il gerundio con significato passivo." },
-                { "prompt": "They made him sign the contract.", "question": "He was made...", "answer": "to sign the contract", "explanation": "Nella forma passiva di 'make', si aggiunge 'to' prima del verbo." },
-                { "prompt": "Someone gave her a beautiful present.", "question": "She was given...", "answer": "a beautiful present", "explanation": "Passivo con due oggetti: l'oggetto indiretto diventa soggetto." },
-                { "prompt": "People believe that the ancient city exists.", "question": "The ancient city is believed...", "answer": "to exist", "explanation": "Struttura passiva con infinito." },
-                { "prompt": "They are building a new school.", "question": "A new school is being...", "answer": "built", "explanation": "Present Continuous Passivo: 'is being' + participio passato." },
-                { "prompt": "The police saw him run away.", "question": "He was seen...", "answer": "running away", "explanation": "Passivo con verbo di percezione + gerundio (o infinito senza 'to')." },
-                { "prompt": "It is necessary to follow these rules.", "question": "These rules are to...", "answer": "be followed", "explanation": "Passivo con 'be to' per esprimere obbligo." },
-                { "prompt": "Someone damaged my car in the parking lot.", "question": "My car got...", "answer": "damaged in the parking lot", "explanation": "Passivo con 'get' per un evento inaspettato." },
-                { "prompt": "People think that he has left the country.", "question": "He is thought...", "answer": "to have left the country", "explanation": "Passivo con infinito perfetto per un'azione precedente." },
-                { "prompt": "They advised us to take a break.", "question": "We were advised...", "answer": "to take a break", "explanation": "Passivo con infinito." },
-                { "prompt": "They say that there are many issues.", "question": "There are said...", "answer": "to be many issues", "explanation": "Passivo impersonale con 'there'." },
-                { "prompt": "The company announced the new policy yesterday.", "question": "The new policy was...", "answer": "announced yesterday", "explanation": "Past Simple Passivo." },
-                { "prompt": "The children need to feed the pets.", "question": "The pets need...", "answer": "feeding", "explanation": "Gerundio con significato passivo dopo 'need'." },
-                { "prompt": "Someone has stolen my wallet.", "question": "My wallet has been...", "answer": "stolen", "explanation": "Present Perfect Passivo." },
-                { "prompt": "People expect him to win the election.", "question": "He is expected...", "answer": "to win the election", "explanation": "Passivo con infinito." },
-                { "prompt": "They say that the treasure was hidden long ago.", "question": "The treasure is said...", "answer": "to have been hidden long ago", "explanation": "Passivo con infinito perfetto passivo per azione precedente." },
-                { "prompt": "They are discussing the new proposal.", "question": "The new proposal is being...", "answer": "discussed", "explanation": "Present Continuous Passivo." },
-                { "prompt": "Someone told me to wait outside.", "question": "I was told...", "answer": "to wait outside", "explanation": "Passivo con infinito." },
-                { "prompt": "People consider him a great leader.", "question": "He is considered...", "answer": "a great leader", "explanation": "Passivo con complemento del soggetto." }
+                { "prompt": "People say that he is very rich.", "question": "He is said...", "type": "input_rewrite", "answer": "to be very rich", "explanation": "La struttura è 'soggetto + is/are said + to be + complemento'." },
+                { "prompt": "The company needs to clean the machines.", "question": "The machines need...", "type": "input_rewrite", "answer": "cleaning", "explanation": "Dopo 'need', si può usare il gerundio con significato passivo." },
+                { "prompt": "They made him sign the contract.", "question": "He was made...", "type": "input_rewrite", "answer": "to sign the contract", "explanation": "Nella forma passiva di 'make', si aggiunge 'to' prima del verbo." },
+                { "prompt": "Someone gave her a beautiful present.", "question": "She was given...", "type": "input_rewrite", "answer": "a beautiful present", "explanation": "Passivo con due oggetti: l'oggetto indiretto diventa soggetto." },
+                { "prompt": "People believe that the ancient city exists.", "question": "The ancient city is believed...", "type": "input_rewrite", "answer": "to exist", "explanation": "Struttura passiva con infinito." },
+                { "prompt": "They are building a new school.", "question": "A new school is being...", "type": "input_rewrite", "answer": "built", "explanation": "Present Continuous Passivo: 'is being' + participio passato." },
+                { "prompt": "The police saw him run away.", "question": "He was seen...", "type": "input_rewrite", "answer": "running away", "explanation": "Passivo con verbo di percezione + gerundio (o infinito senza 'to')." },
+                { "prompt": "It is necessary to follow these rules.", "question": "These rules are to...", "type": "input_rewrite", "answer": "be followed", "explanation": "Passivo con 'be to' per esprimere obbligo." },
+                { "prompt": "Someone damaged my car in the parking lot.", "question": "My car got...", "type": "input_rewrite", "answer": "damaged in the parking lot", "explanation": "Passivo con 'get' per un evento inaspettato." },
+                { "prompt": "People think that he has left the country.", "question": "He is thought...", "type": "input_rewrite", "answer": "to have left the country", "explanation": "Passivo con infinito perfetto per un'azione precedente." },
+                { "prompt": "They advised us to take a break.", "question": "We were advised...", "type": "input_rewrite", "answer": "to take a break", "explanation": "Passivo con infinito." },
+                { "prompt": "They say that there are many issues.", "question": "There are said...", "type": "input_rewrite", "answer": "to be many issues", "explanation": "Passivo impersonale con 'there'." },
+                { "prompt": "The company announced the new policy yesterday.", "question": "The new policy was...", "type": "input_rewrite", "answer": "announced yesterday", "explanation": "Past Simple Passivo." },
+                { "prompt": "The children need to feed the pets.", "question": "The pets need...", "type": "input_rewrite", "answer": "feeding", "explanation": "Gerundio con significato passivo dopo 'need'." },
+                { "prompt": "Someone has stolen my wallet.", "question": "My wallet has been...", "type": "input_rewrite", "answer": "stolen", "explanation": "Present Perfect Passivo." },
+                { "prompt": "People expect him to win the election.", "question": "He is expected...", "type": "input_rewrite", "answer": "to win the election", "explanation": "Passivo con infinito." },
+                { "prompt": "They say that the treasure was hidden long ago.", "question": "The treasure is said...", "type": "input_rewrite", "answer": "to have been hidden long ago", "explanation": "Passivo con infinito perfetto passivo per azione precedente." },
+                { "prompt": "They are discussing the new proposal.", "question": "The new proposal is being...", "type": "input_rewrite", "answer": "discussed", "explanation": "Present Continuous Passivo." },
+                { "prompt": "Someone told me to wait outside.", "question": "I was told...", "type": "input_rewrite", "answer": "to wait outside", "explanation": "Passivo con infinito." },
+                { "prompt": "People consider him a great leader.", "question": "He is considered...", "type": "input_rewrite", "answer": "a great leader", "explanation": "Passivo con complemento del soggetto." }
             ]
         }
     </script>
@@ -216,15 +273,16 @@
                     questionElement.className = 'mb-6 p-4 border border-slate-200 rounded-lg bg-white shadow-sm';
 
                     // Use displayNum if available, otherwise just index + 1
-                    const displayNum = q.displayNum ? q.displayNum : `${phaseNum}-${index + 1}`;
+                    const displayNum = q.displayNum ? q.displayNum : `${index + 1}`; // Changed to just index + 1 for simplicity
                     let questionHtml = `<p class="font-semibold text-lg mb-3">${displayNum}. ${q.question}</p>`;
 
                     if (q.type === 'mc') {
-                        q.choices.forEach((choice, i) => {
+                        q.options.forEach((choice, i) => {
                             const inputId = `fase${phaseNum}-q${index}-${i}`;
+                            const value = String.fromCharCode(65 + i); // A, B, C, D
                             questionHtml += `
                                 <div class="flex items-center mb-2">
-                                    <input type="radio" id="${inputId}" name="q${index}" value="${String.fromCharCode(65 + i)}" class="mr-2 text-indigo-600 focus:ring-indigo-500">
+                                    <input type="radio" id="${inputId}" name="q${index}" value="${value}" class="mr-2 text-indigo-600 focus:ring-indigo-500">
                                     <label for="${inputId}" class="text-slate-700">${choice}</label>
                                 </div>
                             `;
@@ -262,7 +320,7 @@
             // Function to check answers and provide feedback
             const checkAnswers = (phaseNum) => {
                 const contentDiv = document.getElementById(`tab-content-${phaseNum}`);
-                const questions = exerciseData[phaseNum];
+                const questions = exerciseData[`fase${phaseNum}`];
 
                 questions.forEach((q, index) => {
                     const questionElement = contentDiv.children[index]; // Get the specific question div
