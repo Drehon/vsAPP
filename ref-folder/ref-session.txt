@@ -50,13 +50,13 @@
     (Complexity: 50)
     10b. **Settings UI:** Add a 'Reset All Saves' option below the 'Loaded Save Display'.
     (Complexity: 40)
-11. **Content Removal:** Remove the placeholder 'Periodo Ipotetico' content.
+11. **Content Removal:** Remove the placeholder 'Periodo Ipotetico' content. - COMPLETED
     (Complexity: 10)
-12. **Homepage Layout:** Reorganize the homepage into a four-column layout: Lessons, LessonsAN, Exercises, Tests and More.
+12. **Homepage Layout:** Reorganize the homepage into a four-column layout: Lessons, LessonsAN, Exercises, Tests and More. - COMPLETED
     (Complexity: 50)
 13. **Notepad Feature:** Add a 'Notepad' page to the 'Tests and More' column for free-form note-taking.
     (Complexity: 60)
 14. **Patch Notes Page:** Add a page to display patch notes from a local file, sorted from most to least recent.
     (Complexity: 50)
-15. **Folder Restructuring:** Create a new 'others' folder and move the test, patch notes, and notepad HTML files into it.
+15. **Folder Restructuring:** Create a new 'others' folder and move the test, patch notes, and notepad HTML files into it. - COMPLETED
     (Complexity: 30)
