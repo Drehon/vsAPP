@@ -145,7 +145,7 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerc
         toolbar.appendChild(rightGroup);
 
         const scrollableContent = document.createElement('div');
-        scrollableContent.className = 'flex-grow';
+        scrollableContent.className = 'flex-grow overflow-y-auto';
         scrollableContent.innerHTML = homeContent;
 
         contentWrapper.appendChild(toolbar);
