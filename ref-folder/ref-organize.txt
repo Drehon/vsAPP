@@ -1,0 +1,40 @@
+# Project File Organization and Key Information
+
+*This document will be continuously updated to serve as a long-term memory of the project's structure and critical file information.*
+
+**Last Updated:** 2025-07-29 12:03
+
+---
+
+## Core Application Logic (`/src`)
+
+-   `main.js`: Main process for Electron. Handles window creation and backend events.
+-   `preload.js`: Bridges the gap between the main process and the renderer process. Exposes Node.js/Electron APIs securely.
+-   `renderer.js`: Main renderer process script. Handles all client-side logic, DOM manipulation, and interactions for the entire application.
+-   `index.html`: The main HTML file for the application shell.
+-   `style.css` / `index.css`: Main stylesheets.
+
+## Content (`/lessons`, `/exercises`, `/tests`)
+
+-   **Lessons (`/lessons/*.html`):** Static HTML files containing teaching material.
+    -   `L*.html`: The main lesson content.
+    -   `L*AN.html`: "Anki Notes" version of the lesson, formatted for flashcard-style review.
+-   **Exercises (`/exercises/*.html`):** Interactive exercise pages.
+    -   `L*ES.html`: Corresponds to a lesson. Contains questions and interactive elements.
+-   **Tests (`/tests/*.html`):** Diagnostic tests.
+    -   `grammar_student.html`: Comprehensive grammar diagnostic.
+    -   `verb_student.html`: Comprehensive verb diagnostic.
+
+## Sub-Functions (`/src/sub-functions`)
+
+-   `content-loader.js`: Loads HTML content (lessons, exercises) into the main `index.html` shell.
+-   `exercise-initializer.js`: Initializes the interactive logic for exercise pages.
+-   `grammar-exercise.js` / `verb-exercise.js`: Contain specific logic and data for the diagnostic tests.
+-   `tab-manager.js`: Handles the tabbed interfaces within content pages.
+
+## Reference & Documentation (`/ref-folder`)
+
+-   `ref-session.txt`: The main log of our collaborative sessions.
+-   `ref-rules.txt`: The rulebook for creating and structuring all content.
+-   `ref-organize.txt`: This file. Documents the project structure.
+-   `ref-explain.txt`: User-facing explanation of application features.
