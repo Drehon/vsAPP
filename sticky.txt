@@ -47,3 +47,15 @@ This should resolve the background issue and the disappearing toolbar.
 USER NOTES:
 Didn't work, changed background of home in a way it wasn't supposed too. REVERTED
 Toolbar still disappeared and background didn't mesh.
+
+Eleventh attempt:
+The issue was twofold: the content panes had a different background color than the body, and the home page's toolbar was not sticky.
+To fix the background, I removed the `bg-slate-100` class from the `content-panes` div in `src/index.html`.
+To fix the toolbar, I added `sticky`, `top-0`, `bg-slate-800`, and `z-10` to the header in `src/home-template.html`.
+This should resolve both issues.
+
+USER NOTES:
+Same as tenth attempt. 
+Didn't work, changed background of home in a way it wasn't supposed too. REVERTED
+Toolbar still disappeared and background didn't mesh.
+I'm not sure you are on the right path, think.
