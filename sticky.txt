@@ -45,5 +45,5 @@ I also made the header in `src/home-template.html` sticky by adding `sticky`, `t
 This should resolve the background issue and the disappearing toolbar.
 
 USER NOTES:
-Didn't work, changed background of home in a way it wasn't supposed too.
+Didn't work, changed background of home in a way it wasn't supposed too. REVERTED
 Toolbar still disappeared and background didn't mesh.
