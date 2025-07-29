@@ -689,7 +689,7 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
         saveBtn.onclick = async () => {
             const dataStr = JSON.stringify(tab.exerciseState, null, 2);
             const defaultFilename = `${tab.title}-progress.json`;
-            const result = await window.api.showSaveDialogAndSaveFile(defaultFilename, dataStr);
+            const result = await window.api.showSaveDialogAndSaveFile({ defaultFilename: defaultFilename, data: dataStr });
             if (result.success) {
                 console.log(`Manually saved progress to: ${result.path}`);
             } else if (!result.canceled) {

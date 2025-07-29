@@ -326,7 +326,7 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
                     q.parts.forEach((part, index) => {
                         const partIdName = `q${q.displayNum}_part${index}`;
                         const userAnswer = userAnswers[partIdName] || '';
-                        const isCorrect = userAnswer === part.answer.toLowerCase();
+                        const isCorrect = userAnswer.toLowerCase() === part.answer.toLowerCase();
                         const inputEl = paneElement.querySelector(`[name="${partIdName}"]`);
                         if (inputEl) {
                             inputEl.value = userAnswer; // Display user's answer
@@ -637,7 +637,7 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
         saveBtn.onclick = async () => {
             const dataStr = JSON.stringify(tab.exerciseState, null, 2);
             const defaultFilename = `${tab.title}-progress.json`;
-            const result = await window.api.showSaveDialogAndSaveFile(defaultFilename, dataStr);
+            const result = await window.api.showSaveDialogAndSaveFile({ defaultFilename: defaultFilename, data: dataStr });
             if (result.success) {
                 console.log(`Manually saved progress to: ${result.path}`);
             } else if (!result.canceled) {
