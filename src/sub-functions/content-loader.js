@@ -8,23 +8,20 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
 
     tab.view = 'content';
     tab.filePath = filePath;
-    tab.title = filePath.split('/').pop().replace('.html', ''); // Set tab title from filename
+    tab.title = filePath.split('/').pop().replace('.html', '');
 
     const content = await window.api.getFileContent(filePath);
     const pane = document.getElementById(`pane-${tab.id}`);
 
     if (pane && content) {
-        pane.innerHTML = ''; // Clear existing content
+        pane.innerHTML = ''; 
 
-        // Create the main content wrapper
         const contentWrapper = document.createElement('div');
-        contentWrapper.className = "lesson-content bg-slate-200 text-slate-700 flex-grow flex flex-col h-full";
+        contentWrapper.className = "lesson-content bg-slate-200 text-slate-700 h-full flex flex-col";
 
-        // Create the toolbar
         const toolbar = document.createElement('div');
         toolbar.className = "flex-shrink-0 sticky top-0 z-10 bg-slate-700 border-b border-slate-600 px-4 py-1 flex justify-between items-center";
 
-        // Left group: Home and Reload
         const leftGroup = document.createElement('div');
         leftGroup.className = 'flex items-center gap-2';
         leftGroup.innerHTML = `
@@ -33,7 +30,6 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
         `;
         toolbar.appendChild(leftGroup);
 
-        // Right group: Actions and Info
         const rightGroup = document.createElement('div');
         rightGroup.className = 'flex items-center gap-2';
         rightGroup.innerHTML = `
@@ -46,13 +42,12 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
         `;
         toolbar.appendChild(rightGroup);
 
-        // Content area that will scroll
+        // THE FIX: Removed 'overflow-y-auto' to prevent nested scrollbars.
         const scrollableContent = document.createElement('div');
-        scrollableContent.className = 'flex-grow overflow-y-auto p-6 md:p-10';
+        scrollableContent.className = 'flex-grow p-6 md:p-10';
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = content;
 
-        // FIX: More robust selector for removing old buttons.
         const oldButtonContainer = tempDiv.querySelector('#save-btn')?.parentNode;
         if (oldButtonContainer && oldButtonContainer.querySelector('#load-btn')) {
             oldButtonContainer.remove();
@@ -60,18 +55,15 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
 
         scrollableContent.innerHTML = tempDiv.innerHTML;
 
-        // Assemble the pane
         contentWrapper.appendChild(toolbar);
         contentWrapper.appendChild(scrollableContent);
         pane.appendChild(contentWrapper);
 
-        // Attach event listeners to the new toolbar buttons
         document.getElementById(`home-btn-${tab.id}`).addEventListener('click', () => loadHomeIntoTab(tab.id, tabs, renderTabs, addTab, saveExerciseState));
         document.getElementById(`reload-btn-${tab.id}`).addEventListener('click', () => loadContentIntoTab(tab.id, filePath, tabs, renderTabs, addTab, saveExerciseState, setupLoadButton));
         document.getElementById(`github-btn-${tab.id}`).addEventListener('click', () => window.api.openExternalLink('https://github.com/Drehon/vsapp'));
         document.getElementById(`settings-btn-${tab.id}`).addEventListener('click', () => addTab(true, null, 'settings'));
 
-        // Pass the actual button element to the setup function
         const loadBtn = document.getElementById(`load-btn-${tab.id}`);
         if (loadBtn && typeof setupLoadButton === 'function') {
             setupLoadButton(loadBtn);
@@ -80,18 +72,14 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
         const resetBtn = document.getElementById(`reset-btn-${tab.id}`);
         if (resetBtn) {
             resetBtn.addEventListener('click', async () => {
-                const confirmReset = true; // No confirm dialog
+                const confirmReset = true;
                 if (confirmReset) {
                     await window.api.resetExerciseState(tab.filePath);
-                    // Reload the content to re-initialize the exercise
                     loadContentIntoTab(tab.id, filePath, tabs, renderTabs, addTab, saveExerciseState, setupLoadButton);
-                    console.log(`Exercise state reset and reloaded for ${tab.filePath}`);
                 }
             });
         }
 
-        // Check if the loaded content is an exercise and initialize it
-        // Only initialize with external JS if it's student-grammar or student-verbs
         if (scrollableContent.querySelector('#exercise-data')) {
             const savedState = await window.api.loadExerciseState(filePath);
             tab.exerciseState = savedState ? savedState : null;
@@ -101,15 +89,12 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
             } else if (filePath.includes('student-verbs')) {
                 initializeVerbsExercise(scrollableContent, tab, saveExerciseState);
             } 
-            // For other exercise files like causativoES and passivo avanzatoES,
-            // they are expected to have their own inline JavaScript for initialization.
-            // No external initializer is called for them here.
             else {
-                initializeExercise(scrollableContent, tab, saveExerciseState); // Fallback for generic exercises if needed
+                initializeExercise(scrollableContent, tab, saveExerciseState);
             }
         }
     }
-    renderTabs(); // Re-render tabs to update title etc.
+    renderTabs();
 }
 
 export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerciseState) {
@@ -123,30 +108,22 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerc
     let homeContent = '';
     try {
         homeContent = await window.api.getHomeContent();
-        console.log("Home content fetched successfully.");
     } catch (error) {
         console.error("Error fetching home content:", error);
-        // Provide a fallback or error message to the user
-        homeContent = `<div class="p-6 text-red-700 bg-red-100 rounded-lg">
-                            <h2 class="font-bold text-lg">Error Loading Home Page</h2>
-                            <p>Could not load the home page content. Please try reloading the application.</p>
-                            <p>Details: ${error.message}</p>
-                        </div>`;
+        homeContent = `<div class="p-6 text-red-700 bg-red-100 rounded-lg"><h2 class="font-bold text-lg">Error Loading Home Page</h2><p>Could not load the home page content. Please try reloading the application.</p><p>Details: ${error.message}</p></div>`;
     }
 
     const pane = document.getElementById(`pane-${tab.id}`);
 
     if (pane && homeContent) {
-        pane.innerHTML = ''; // Clear existing content
+        pane.innerHTML = '';
 
         const contentWrapper = document.createElement('div');
-        contentWrapper.className = "h-full flex flex-col bg-slate-600 text-white flex-grow"; // Home theme
+        contentWrapper.className = "h-full flex flex-col bg-slate-600 text-white";
 
-        // Create the toolbar for Home
         const toolbar = document.createElement('div');
         toolbar.className = "sticky top-0 z-10 bg-slate-700 border-b border-slate-600 px-4 py-1 flex justify-between items-center";
 
-        // Left group: Home and Reload
         const leftGroup = document.createElement('div');
         leftGroup.className = 'flex items-center gap-2';
         leftGroup.innerHTML = `
@@ -155,7 +132,6 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerc
         `;
         toolbar.appendChild(leftGroup);
 
-        // Right group: Actions and Info (disabled)
         const rightGroup = document.createElement('div');
         rightGroup.className = 'flex items-center gap-2';
         rightGroup.innerHTML = `
@@ -168,28 +144,23 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerc
         `;
         toolbar.appendChild(rightGroup);
 
-        // Content area that will scroll
+        // THE FIX: Removed 'overflow-y-auto' to prevent nested scrollbars.
         const scrollableContent = document.createElement('div');
-        // THIS IS THE FIX: Apply container classes here
-        scrollableContent.className = 'flex-grow overflow-y-auto container mx-auto max-w-7xl p-4 md:p-10';
+        scrollableContent.className = 'flex-grow container mx-auto max-w-7xl p-4 md:p-10';
         scrollableContent.innerHTML = homeContent;
 
-        // Assemble the pane
         contentWrapper.appendChild(toolbar);
         contentWrapper.appendChild(scrollableContent);
         pane.appendChild(contentWrapper);
 
-        // Attach event listeners
         document.getElementById(`reload-btn-${tab.id}`).addEventListener('click', () => loadHomeIntoTab(tab.id, tabs, renderTabs, addTab, saveExerciseState));
         document.getElementById(`github-btn-${tab.id}`).addEventListener('click', () => window.api.openExternalLink('https://github.com/Drehon/vsapp'));
         document.getElementById(`settings-btn-${tab.id}`).addEventListener('click', () => addTab(true, null, 'settings'));
         
         try {
             attachHomeEventListeners(scrollableContent, tabs, addTab, renderTabs, saveExerciseState);
-            console.log("Home event listeners attached.");
         } catch (error) {
             console.error("Error attaching home event listeners:", error);
-            // Log the error but allow the rest of the function to proceed
         }
     }
 
@@ -208,16 +179,14 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs) {
     const pane = document.getElementById(`pane-${tab.id}`);
 
     if (pane && settingsContent) {
-      pane.innerHTML = ''; // Clear existing content
+      pane.innerHTML = '';
 
       const contentWrapper = document.createElement('div');
-      contentWrapper.className = "h-full flex flex-col bg-slate-600 text-white"; // Settings theme
+      contentWrapper.className = "h-full flex flex-col bg-slate-600 text-white";
 
-      // Create the toolbar for Settings
       const toolbar = document.createElement('div');
       toolbar.className = "sticky top-0 z-10 bg-slate-700 border-b border-slate-600 px-4 py-1 flex justify-between items-center";
       
-      // Left group
       const leftGroup = document.createElement('div');
       leftGroup.className = 'flex items-center gap-2';
       leftGroup.innerHTML = `
@@ -226,7 +195,6 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs) {
       `;
       toolbar.appendChild(leftGroup);
 
-      // Right group
       const rightGroup = document.createElement('div');
       rightGroup.className = 'flex items-center gap-2';
       rightGroup.innerHTML = `
@@ -239,12 +207,10 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs) {
       scrollableContent.className = 'flex-grow overflow-y-auto p-8';
       scrollableContent.innerHTML = settingsContent;
 
-      // Assemble the pane
       contentWrapper.appendChild(toolbar);
       contentWrapper.appendChild(scrollableContent);
       pane.appendChild(contentWrapper);
 
-      // Attach event listeners
       document.getElementById(`home-btn-${tab.id}`).addEventListener('click', () => loadHomeIntoTab(tab.id, tabs, renderTabs));
       document.getElementById(`reload-btn-${tab.id}`).addEventListener('click', () => loadSettingsIntoTab(tab.id, tabs, renderTabs));
       document.getElementById(`github-btn-${tab.id}`).addEventListener('click', () => window.api.openExternalLink('https://github.com/Drehon/vsapp'));
@@ -284,7 +250,6 @@ function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExe
           });
           list.appendChild(link);
         });
-        console.log(`Home: Successfully populated ${listId}.`);
       }
       catch (error) {
         console.error(`Home: Failed to load ${folder}:`, error);
@@ -292,7 +257,6 @@ function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExe
       }
     };
 
-    // Call populateList for all four categories
     populateList('lessons-list', window.api.getLessons, 'lessons');
     populateList('lessons-an-list', window.api.getLessonsAN, 'lessonsAN');
     populateList('exercises-list', window.api.getExercises, 'exercises');

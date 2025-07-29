@@ -11,6 +11,9 @@ module.exports = {
     extraResource: [
       './lessons',
       './exercises',
+      // THE FIX IS HERE: Added the new content directories
+      './lessonsAN',
+      './others',
       './app-update.yml'
     ]
   },
