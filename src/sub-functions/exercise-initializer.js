@@ -345,9 +345,8 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
             const userAnswer = e.target.dataset.answer;
             const index = appState.currentQuestion[fase];
             let correctAnswer = exercises[fase][index].answer;
-            
-            // Specific handling for L1 Fase 1 where answer is boolean
-            if (fase === 'fase1') {
+
+            if (typeof correctAnswer === 'boolean') {
               correctAnswer = correctAnswer ? "A" : "B";
             }
 

@@ -66,7 +66,7 @@ Fase 1 - Works
 Fase 2 - Bugged
 Fase 3 - Works
 Lesson 2
-Fase 1 - Bugged
+Fase 1 - Bugged > Fixed
 Fase 2 - Works
 Fase 3 - Works
 Lesson 3 

@@ -26,3 +26,14 @@ Eight attempt:
   <!-- Content Panes -->
     <div id="content-panes" class="relative flex-grow overflow-y-auto"></div>
 was tried, didn't work. Reverted.
+
+Ninth attempt:
+The issue was that each content pane was being created with its own background color (`bg-slate-800`). This was causing the split background issue when multiple tabs were open.
+The fix was to remove the `bg-slate-800` class from the individual content panes in `src/sub-functions/tab-manager.js` and set a single background color on the `content-panes` container in `src/index.html`.
+I changed the background color of the `content-panes` div to `bg-slate-100` to ensure the content is readable.
+This should resolve the background issue and the sticky tab bar should now work as expected.
+
+USER NOTES.
+What was before light background (which was a grey kinda) and dark background
+is now light background and lighter background. if we can 'equalize' the second background to the first that would be ideal.
+HOWEVER, while the tabs work correctly, the toolbar, with home, save, load etc still disappears once we enter in the zone of the second background.
