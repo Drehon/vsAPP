@@ -2,3 +2,8 @@ The tabs were unstickied after some modifications to index.html.
 My first attempt to fix this by adding `sticky`, `top-0`, and `z-10` to the `tab-bar` was unsuccessful.
 My second attempt involves adding `position: relative` and `z-index: 1` to the `content-panes` div. I also kept the changes from the first attempt.
 This should prevent the content from overlapping the tab bar and help the browser to correctly calculate the sticky positioning.
+
+My third attempt is to make the `content-panes` div the scrolling container instead of the `body`.
+I have removed `h-screen` from the `body` element and added `overflow-y-auto` and `h-screen` to the `content-panes` div.
+This should make the tabs sticky as they will be positioned relative to the scrolling `content-panes` div.
+THIRD ATTEMPT WAS REVERTED CAUSE IT BROKE A LOT OF STUFF
