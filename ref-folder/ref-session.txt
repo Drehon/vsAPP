@@ -36,7 +36,7 @@
     (Complexity: 40)
 4.  **Navigation:** Add a 'Back to N1' button to return to the start of the test, in addition to the 'vai' button.
     (Complexity: 20)
-5.  **Content Review:** L2ES and L3ES lessons need a thorough review and rework due to pedagogical and content errors.
+5.  **Content Review:** L2ES and L3ES lessons need a thorough review and rework due to pedagogical and content errors. - COMPLETED
     (Complexity: 30 for implementation)
 6.  **Bug Fix:** In L2 - causativoES and L3 - passivo avanzatoES (fase 2), all clicked answers are incorrectly marked as wrong (red).
     (Complexity: 20)
