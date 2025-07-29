@@ -471,6 +471,10 @@ ipcMain.handle('get-patch-notes', async () => {
 
     const releases = await response.json();
 
+    if (!releases || releases.length === 0) {
+      throw new Error('No releases found on GitHub, proceeding to fallback.');
+    }
+
     let patchNotes = releases.map(release => ({
       version: release.tag_name,
       notes: release.body,
