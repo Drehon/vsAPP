@@ -260,6 +260,7 @@ ipcMain.handle('open-external-link', async (event, url) => {
 
 app.on('ready', () => {
   setupLogging();
+  console.log('--- setupLogging() has been called. This is the first log after setup. ---');
   loadConfig();
   createWindow();
 
