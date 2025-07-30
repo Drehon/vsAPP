@@ -1,0 +1,23 @@
+Analysis of Avast blocking and missing author name issue:
+
+**Missing Author Name:**
+
+* The `package.json` file specifies "Drehon" as the author.
+* The Windows installer is generated using `@electron-forge/maker-squirrel`.
+* The `forge.config.js` file does not contain any specific configuration for the author name in the installer.
+* The author information needs to be added to the `maker-squirrel` configuration in `forge.config.js`.
+
+**Avast Blocking:**
+
+* Avast is likely blocking the application because it is not code-signed.
+* Unsigned applications are often flagged as potentially malicious by antivirus software.
+* The `forge.config.js` file does not appear to have any code signing configuration.
+* To resolve this, the application needs to be signed with a valid code signing certificate.
+* A real code signing certificate (`.pfx` file) and its corresponding password are required. The password should be stored as an environment variable named `CERTIFICATE_PASSWORD`.
+* Building a Windows installer on a non-Windows machine requires Mono and Wine to be installed.
+
+**Next Steps:**
+
+1.  Modify `forge.config.js` to include author information for the Squirrel.Windows maker.
+2.  Investigate how to implement code signing with Electron Forge. This will likely involve obtaining a code signing certificate and configuring the build process to use it.
+3.  Document the code signing process for future reference.

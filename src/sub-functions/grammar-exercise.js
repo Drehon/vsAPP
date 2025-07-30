@@ -395,104 +395,33 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
         });
     }
 
-    function enterReviewMode(block, userAnswers) {
-        paneElement.querySelectorAll(`form input, form select, form textarea`).forEach(el => {
-            el.disabled = true;
-        });
+function enterReviewMode(block, userAnswers) {
+    paneElement.querySelectorAll(`form input, form select, form textarea`).forEach(el => {
+        el.disabled = true;
+    });
 
-        const blockQuestions = testData.filter(q => q.block === block);
-        blockQuestions.forEach(q => {
-            const wrapper = paneElement.querySelector(`#q-wrapper-${q.displayNum}`);
-            if (!wrapper) return;
+    const blockQuestions = testData.filter(q => q.block === block);
+    blockQuestions.forEach(q => {
+        const wrapper = paneElement.querySelector(`#q-wrapper-${q.displayNum}`);
+        if (!wrapper) return;
 
-            if (q.type === 'paragraph_input') {
-                q.parts.forEach((part, index) => {
-                    const partIdName = `q${q.displayNum}_part${index}`;
-                    const userAnswer = (userAnswers[partIdName] || '').toLowerCase().replace('(leave blank)', '');
-                    const isCorrect = userAnswer === (part.answer === '--' ? '' : part.answer.toLowerCase());
-                    const inputEl = paneElement.querySelector(`[name="${partIdName}"]`);
-                    
-                    if (inputEl) {
-                        inputEl.value = userAnswers[partIdName] || ''; // Display user's answer (original case)
-                        inputEl.classList.add(isCorrect ? 'correct-answer' : 'incorrect-answer');
-                        
-                        const feedbackContainer = document.createElement('div');
-                        feedbackContainer.className = 'feedback-container mt-1 flex items-center gap-2';
-                        
-                        const correctAnswerEl = document.createElement('div');
-                        correctAnswerEl.className = 'correct-answer-box text-xs font-semibold bg-green-100 border border-green-200 text-green-800 p-1 rounded';
-                        const correctAnswer = (part.answer === '--' || part.answer === '') ? '(blank)' : part.answer;
-                        correctAnswerEl.textContent = `Correct: ${correctAnswer}`;
-                        
-                        feedbackContainer.appendChild(correctAnswerEl);
-                        
-                        if (!isCorrect) {
-                            const markCorrectBtn = document.createElement('button');
-                            markCorrectBtn.type = 'button';
-                            markCorrectBtn.className = 'mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-1 px-2 rounded-lg transition-colors';
-                            markCorrectBtn.textContent = '✓';
-                            markCorrectBtn.title = 'Mark as Correct';
-                            markCorrectBtn.addEventListener('click', (e) => {
-                                inputEl.classList.remove('incorrect-answer');
-                                inputEl.classList.add('correct-answer');
-                                e.target.parentElement.remove(); // Removes the button's container
-                            });
-                            feedbackContainer.appendChild(markCorrectBtn);
-                        }
-                        
-                        inputEl.parentElement.appendChild(feedbackContainer);
-                    }
-                    const noteIdForPart = `${q.displayNum}_part${index}`;
-                    const noteArea = paneElement.querySelector(`#notes-${noteIdForPart}`);
-                    if (noteArea && tab.exerciseState.notes) {
-                        const savedNote = tab.exerciseState.notes[noteIdForPart];
-                        if (savedNote) {
-                            noteArea.value = savedNote;
-                            const notesContentDiv = noteArea.closest('.notes-content');
-                            const notesToggleButton = notesContentDiv ? notesContentDiv.previousElementSibling : null;
-                            if (notesContentDiv && notesContentDiv.classList.contains('hidden')) {
-                                notesContentDiv.classList.remove('hidden');
-                                if (notesToggleButton) {
-                                    notesToggleButton.textContent = 'Hide Notes';
-                                }
-                            }
-                        }
-                    }
-                });
-            } else { // Handles mc, input_correction, and input_rewrite
-                const inputEl = paneElement.querySelector(`[name="q${q.displayNum}"]`);
-                if (!inputEl) return;
+        if (q.type === 'paragraph_input') {
+            q.parts.forEach((part, index) => {
+                const partIdName = `q${q.displayNum}_part${index}`;
+                const userAnswer = (userAnswers[partIdName] || '').toLowerCase().replace('(leave blank)', '');
+                const isCorrect = userAnswer === (part.answer === '--' ? '' : part.answer.toLowerCase());
+                const inputEl = paneElement.querySelector(`[name="${partIdName}"]`);
                 
-                const userAnswer = (userAnswers[`q${q.displayNum}`] || '').toLowerCase();
-                let isCorrect = false;
-                if (q.type === 'mc') {
-                    isCorrect = userAnswer.toUpperCase() === q.answer;
-                    inputEl.classList.add('review-select');
-                    inputEl.value = userAnswer;
-
-                    const optionsDisplay = wrapper.querySelector('.mc-options-display');
-                    if (optionsDisplay) {
-                        optionsDisplay.querySelectorAll('.mc-option-item').forEach(item => {
-                            const optionValue = item.textContent.match(/\((.)\)/)[1];
-                            if (optionValue === q.answer) {
-                                item.classList.add('correct');
-                            }
-                            if (optionValue === userAnswer.toUpperCase() && optionValue !== q.answer) {
-                                item.classList.add('incorrect-selected');
-                            }
-                        });
-                    }
-
-                } else {
-                    isCorrect = userAnswer === q.answer.toLowerCase().replace(/[.,]/g, '');
-                    inputEl.value = userAnswers[`q${q.displayNum}`] || '';
-
+                if (inputEl) {
+                    inputEl.value = userAnswers[partIdName] || ''; // Display user's answer (original case)
+                    inputEl.classList.add(isCorrect ? 'correct-answer' : 'incorrect-answer');
+                    
                     const feedbackContainer = document.createElement('div');
-                    feedbackContainer.className = 'feedback-container mt-2 flex items-center gap-4';
+                    feedbackContainer.className = 'feedback-container mt-1 flex items-center gap-2';
                     
                     const correctAnswerEl = document.createElement('div');
-                    correctAnswerEl.className = 'correct-answer-box text-sm font-semibold bg-green-100 border border-green-200 text-green-800 py-1 px-3 rounded-md';
-                    const correctAnswer = (q.answer === '--' || q.answer === '') ? '(blank)' : q.answer;
+                    correctAnswerEl.className = 'correct-answer-box text-xs font-semibold bg-green-100 border border-green-200 text-green-800 p-1 rounded';
+                    const correctAnswer = (part.answer === '--' || part.answer === '') ? '(blank)' : part.answer;
                     correctAnswerEl.textContent = `Correct: ${correctAnswer}`;
                     
                     feedbackContainer.appendChild(correctAnswerEl);
@@ -501,22 +430,22 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                         const markCorrectBtn = document.createElement('button');
                         markCorrectBtn.type = 'button';
                         markCorrectBtn.className = 'mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-1 px-2 rounded-lg transition-colors';
-                        markCorrectBtn.textContent = 'Mark as Correct';
+                        markCorrectBtn.textContent = '✓';
+                        markCorrectBtn.title = 'Mark as Correct';
                         markCorrectBtn.addEventListener('click', (e) => {
                             inputEl.classList.remove('incorrect-answer');
                             inputEl.classList.add('correct-answer');
-                            e.target.parentElement.remove();
+                            e.target.parentElement.remove(); // Removes the button's container
                         });
                         feedbackContainer.appendChild(markCorrectBtn);
                     }
                     
                     inputEl.parentElement.appendChild(feedbackContainer);
                 }
-                inputEl.classList.add(isCorrect ? 'correct-answer' : 'incorrect-answer');
-
-                const noteArea = paneElement.querySelector(`#notes-${q.displayNum}`);
+                const noteIdForPart = `${q.displayNum}_part${index}`;
+                const noteArea = paneElement.querySelector(`#notes-${noteIdForPart}`);
                 if (noteArea && tab.exerciseState.notes) {
-                    const savedNote = tab.exerciseState.notes[q.displayNum];
+                    const savedNote = tab.exerciseState.notes[noteIdForPart];
                     if (savedNote) {
                         noteArea.value = savedNote;
                         const notesContentDiv = noteArea.closest('.notes-content');
@@ -529,35 +458,107 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                         }
                     }
                 }
+            });
+        } else { // Handles mc, input_correction, and input_rewrite
+            const inputEl = paneElement.querySelector(`[name="q${q.displayNum}"]`);
+            if (!inputEl) return;
+            
+            const userAnswer = (userAnswers[`q${q.displayNum}`] || '').toLowerCase();
+            let isCorrect = false;
+            if (q.type === 'mc') {
+                isCorrect = userAnswer.toUpperCase() === q.answer;
+                inputEl.classList.add('review-select');
+                inputEl.value = userAnswer;
+
+                const optionsDisplay = wrapper.querySelector('.mc-options-display');
+                if (optionsDisplay) {
+                    optionsDisplay.querySelectorAll('.mc-option-item').forEach(item => {
+                        const optionValue = item.textContent.match(/\((.)\)/)[1];
+                        if (optionValue === q.answer) {
+                            item.classList.add('correct');
+                        }
+                        if (optionValue === userAnswer.toUpperCase() && optionValue !== q.answer) {
+                            item.classList.add('incorrect-selected');
+                        }
+                    });
+                }
+
+            } else {
+                isCorrect = userAnswer === q.answer.toLowerCase().replace(/[.,]/g, '');
+                inputEl.value = userAnswers[`q${q.displayNum}`] || '';
+            }
+
+            inputEl.classList.add(isCorrect ? 'correct-answer' : 'incorrect-answer');
+
+            const feedbackContainer = document.createElement('div');
+            feedbackContainer.className = 'feedback-container mt-2 flex items-center gap-4';
+            
+            const correctAnswerEl = document.createElement('div');
+            correctAnswerEl.className = 'correct-answer-box text-sm font-semibold bg-green-100 border border-green-200 text-green-800 py-1 px-3 rounded-md';
+            const correctAnswer = (q.answer === '--' || q.answer === '') ? '(blank)' : q.answer;
+            correctAnswerEl.textContent = `Correct: ${correctAnswer}`;
+            
+            feedbackContainer.appendChild(correctAnswerEl);
+            
+            if (!isCorrect) {
+                const markCorrectBtn = document.createElement('button');
+                markCorrectBtn.type = 'button';
+                markCorrectBtn.className = 'mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-1 px-2 rounded-lg transition-colors';
+                markCorrectBtn.textContent = 'Mark as Correct';
+                markCorrectBtn.addEventListener('click', (e) => {
+                    inputEl.classList.remove('incorrect-answer');
+                    inputEl.classList.add('correct-answer');
+                    e.target.parentElement.remove();
+                });
+                feedbackContainer.appendChild(markCorrectBtn);
             }
             
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'explain-btn text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-1 px-3 rounded-full transition-colors mt-4';
-            btn.textContent = 'Explain';
-            wrapper.appendChild(btn);
-            const explanationContent = document.createElement('div');
-            explanationContent.className = 'explanation-content hidden mt-3 pt-3 border-t border-slate-200 text-sm text-slate-700 prose max-w-none';
-            if (q.type === 'paragraph_input') {
-                 explanationContent.innerHTML = q.parts.map((p, i) => `<div><p><b>Blank ${i+1} (${p.answer === '--' ? 'blank' : p.answer}):</b> ${p.explanation}</p></div>`).join('');
-            } else {
-                 explanationContent.innerHTML = q.explanation.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            }
-            wrapper.appendChild(explanationContent);
-        });
+            inputEl.parentElement.appendChild(feedbackContainer);
 
-        paneElement.querySelectorAll('.explain-btn').forEach(btn => {
-            if (btn) { // Null check for the button
-                btn.addEventListener('click', (e) => {
-                    const content = e.target.closest('.question-block').querySelector('.explanation-content');
-                    if (content) { // Null check for content
-                        content.classList.toggle('hidden');
-                        e.target.textContent = content.classList.contains('hidden') ? 'Explain' : 'Hide';
+            const noteArea = paneElement.querySelector(`#notes-${q.displayNum}`);
+            if (noteArea && tab.exerciseState.notes) {
+                const savedNote = tab.exerciseState.notes[q.displayNum];
+                if (savedNote) {
+                    noteArea.value = savedNote;
+                    const notesContentDiv = noteArea.closest('.notes-content');
+                    const notesToggleButton = notesContentDiv ? notesContentDiv.previousElementSibling : null;
+                    if (notesContentDiv && notesContentDiv.classList.contains('hidden')) {
+                        notesContentDiv.classList.remove('hidden');
+                        if (notesToggleButton) {
+                            notesToggleButton.textContent = 'Hide Notes';
+                        }
                     }
-                });
+                }
             }
-        });
-    }
+        }
+        
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'explain-btn text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-1 px-3 rounded-full transition-colors mt-4';
+        btn.textContent = 'Explain';
+        wrapper.appendChild(btn);
+        const explanationContent = document.createElement('div');
+        explanationContent.className = 'explanation-content hidden mt-3 pt-3 border-t border-slate-200 text-sm text-slate-700 prose max-w-none';
+        if (q.type === 'paragraph_input') {
+             explanationContent.innerHTML = q.parts.map((p, i) => `<div><p><b>Blank ${i+1} (${p.answer === '--' ? 'blank' : p.answer}):</b> ${p.explanation}</p></div>`).join('');
+        } else {
+             explanationContent.innerHTML = q.explanation.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        }
+        wrapper.appendChild(explanationContent);
+    });
+
+    paneElement.querySelectorAll('.explain-btn').forEach(btn => {
+        if (btn) { // Null check for the button
+            btn.addEventListener('click', (e) => {
+                const content = e.target.closest('.question-block').querySelector('.explanation-content');
+                if (content) { // Null check for content
+                    content.classList.toggle('hidden');
+                    e.target.textContent = content.classList.contains('hidden') ? 'Explain' : 'Hide';
+                }
+            });
+        }
+    });
+}
     
     function showDiagnostics() {
         if (!testContainer || !diagnosticsView) {
