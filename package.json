@@ -12,10 +12,7 @@
     "lint": "echo \"No linting configured\""
   },
   "keywords": [],
-  "author": {
-    "name": "Drehon",
-    "email": "myemail@email.com"
-  },
+  "author": "Drehon",
   "license": "MIT",
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",

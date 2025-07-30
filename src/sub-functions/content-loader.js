@@ -52,7 +52,35 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
             oldButtonContainer.remove();
         }
 
-        scrollableContent.innerHTML = tempDiv.innerHTML;
+        // If the content is a full HTML document, we need to handle scripts manually
+        if (content.trim().toLowerCase().startsWith('<!doctype html') || content.trim().toLowerCase().startsWith('<html')) {
+            console.log('[ContentLoader] Full HTML document detected. Parsing for scripts.');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(content, 'text/html');
+            const bodyContent = doc.body.innerHTML;
+            scrollableContent.innerHTML = bodyContent;
+            
+            const scripts = doc.querySelectorAll('script');
+            scripts.forEach(script => {
+                if (script.src) {
+                    // For external scripts, create a new script element and append it
+                    const newScript = document.createElement('script');
+                    newScript.src = script.src;
+                    newScript.async = false; // Ensure scripts execute in order
+                    console.log(`[ContentLoader] Appending external script: ${script.src}`);
+                    scrollableContent.appendChild(newScript);
+                } else {
+                    // For inline scripts, create a new script and set its content
+                    const newScript = document.createElement('script');
+                    newScript.textContent = script.textContent;
+                    console.log('[ContentLoader] Executing inline script.');
+                    scrollableContent.appendChild(newScript);
+                }
+            });
+        } else {
+             // Original behavior for HTML fragments
+            scrollableContent.innerHTML = tempDiv.innerHTML;
+        }
 
         contentWrapper.appendChild(toolbar);
         contentWrapper.appendChild(scrollableContent);
