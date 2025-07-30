@@ -417,17 +417,22 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                         inputEl.classList.add(isCorrect ? 'correct-answer' : 'incorrect-answer');
                         if (!isCorrect) {
                             const feedbackContainer = document.createElement('div');
-                            feedbackContainer.className = 'feedback-container mt-1 flex items-center gap-2';
-                            
+                            feedbackContainer.className = 'feedback-container mt-1 flex flex-col items-start gap-1';
+
+                            const userAnswerEl = document.createElement('div');
+                            userAnswerEl.className = 'user-answer-text text-sm text-red-600 font-semibold';
+                            userAnswerEl.textContent = `Your Answer: ${userAnswers[partIdName] || ''}`;
+                            feedbackContainer.appendChild(userAnswerEl);
+
                             const correctAnswerEl = document.createElement('div');
-                            correctAnswerEl.className = 'correct-answer-box text-xs font-semibold bg-green-100 border border-green-200 text-green-800 p-1 rounded';
+                            correctAnswerEl.className = 'correct-answer-text text-sm text-slate-600';
                             const correctAnswer = part.answer === '--' ? '(blank)' : part.answer;
-                            correctAnswerEl.textContent = `Correct: ${correctAnswer}`;
+                            correctAnswerEl.textContent = `Correct Answer: ${correctAnswer}`;
                             
                             const markCorrectBtn = document.createElement('button');
                             markCorrectBtn.type = 'button';
-                            markCorrectBtn.className = 'mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-1 px-2 rounded-lg transition-colors';
-                            markCorrectBtn.textContent = '✓';
+                            markCorrectBtn.className = 'mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold py-1 px-2 rounded-lg transition-colors mt-1';
+                            markCorrectBtn.textContent = 'Mark as Correct';
                             markCorrectBtn.title = 'Mark as Correct';
                             markCorrectBtn.addEventListener('click', (e) => {
                                 inputEl.classList.remove('incorrect-answer');
@@ -439,6 +444,7 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                             feedbackContainer.appendChild(markCorrectBtn);
                             
                             inputEl.parentElement.appendChild(feedbackContainer);
+                            inputEl.classList.add('hidden');
                         }
                     }
                     const noteIdForPart = `${q.displayNum}_part${index}`;
@@ -488,15 +494,22 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
 
                     if (!isCorrect) {
                         const feedbackContainer = document.createElement('div');
-                        feedbackContainer.className = 'feedback-container mt-2 flex items-center gap-4';
-                        
+                        feedbackContainer.className = 'feedback-container mt-2 flex flex-col items-start gap-1';
+
+                        const userAnswerEl = document.createElement('div');
+                        userAnswerEl.className = 'user-answer-text text-sm text-red-600 font-semibold';
+                        let userAnswerText = q.type === 'mc' ? (userAnswer ? `Your Answer: (${userAnswer.toUpperCase()}) ${q.choices[userAnswer.toUpperCase().charCodeAt(0) - 65]}`: 'Your Answer: (No answer)') : `Your Answer: ${userAnswers[`q${q.displayNum}`] || ''}`;
+                        userAnswerEl.textContent = userAnswerText;
+                        feedbackContainer.appendChild(userAnswerEl);
+
                         const correctAnswerEl = document.createElement('div');
-                        correctAnswerEl.className = 'correct-answer-box text-sm font-semibold bg-green-100 border border-green-200 text-green-800 py-1 px-3 rounded-md';
-                        correctAnswerEl.textContent = `Correct: ${q.answer}`;
+                        correctAnswerEl.className = 'correct-answer-text text-sm text-slate-600';
+                        let correctAnswerText = q.type === 'mc' ? `Correct Answer: (${q.answer}) ${q.choices[q.answer.charCodeAt(0) - 65]}` : `Correct Answer: ${q.answer}`;
+                        correctAnswerEl.textContent = correctAnswerText;
                         
                         const markCorrectBtn = document.createElement('button');
                         markCorrectBtn.type = 'button';
-                        markCorrectBtn.className = 'mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-1 px-2 rounded-lg transition-colors';
+                        markCorrectBtn.className = 'mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold py-1 px-2 rounded-lg transition-colors mt-1';
                         markCorrectBtn.textContent = 'Mark as Correct';
                         markCorrectBtn.addEventListener('click', (e) => {
                             inputEl.classList.remove('incorrect-answer');
@@ -507,6 +520,9 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                         feedbackContainer.appendChild(correctAnswerEl);
                         feedbackContainer.appendChild(markCorrectBtn);
                         inputEl.parentElement.appendChild(feedbackContainer);
+                        if (q.type !== 'mc') {
+                            inputEl.classList.add('hidden');
+                        }
                     }
                 }
                 inputEl.classList.add(isCorrect ? 'correct-answer' : 'incorrect-answer');
