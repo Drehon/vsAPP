@@ -2,6 +2,26 @@
 
 ---
 Date: 2025-07-30
+Work Summary: Fixed the save/load buttons for lesson 1 exercises.
+
+Thoughts & Hypothesis:
+The user reported that the save/load buttons were unresponsive for the lesson 1 exercise page (`L1 - congiuntivoES.html`).
+My hypothesis was that the `showSaveDialogAndSaveFile` function call in `src/sub-functions/exercise-initializer.js` was using an outdated signature. Previous fixes for the test pages had changed the function to accept a single object argument, but this change had not been propagated to the generic exercise initializer.
+
+Plan & Steps Taken:
+1. *Update `showSaveDialogAndSaveFile` call:*
+   - **Action:** Modified the `saveBtn.onclick` event handler in `src/sub-functions/exercise-initializer.js`.
+   - **Details:** I changed the call from `window.api.showSaveDialogAndSaveFile(defaultFilename, dataStr)` to `window.api.showSaveDialogAndSaveFile({ defaultFilename: defaultFilename, data: dataStr })`.
+   - **Outcome:** This aligns the function call with the updated API, fixing the bug and making the save/load buttons functional for all standard exercise pages.
+
+Next Steps:
+- The fix is complete. The next step is to submit the changes for the user's review.
+
+---
+[Jules's work log]
+
+---
+Date: 2025-07-30
 Work Summary: Fixed an issue on the Grammar test page where answers were not being saved by the auto-save ("save-state") mechanism.
 
 Thoughts & Hypothesis:
@@ -295,5 +315,5 @@ grammar-exercise.js:420 Uncaught (in promise) TypeError: Cannot read properties 
     at initializeGrammarExercise (grammar-exercise.js:760:1)
     at loadContentIntoTab (content-loader.js:102:42)
 
-5) save/load buttons don't work for L1 - congiuntivoES.html
+5) save/load buttons don't work for L1 - congiuntivoES.html > FIXED
    the buttons themselves are unresponding
