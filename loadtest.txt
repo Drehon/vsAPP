@@ -332,9 +332,65 @@ USER NOTES 6
 Expansion on 3
 Currently, on submit for grammar
 input answer has no green/red highlight/background shadow if correct/incorrect               > Bad
-correct answer for comparison is absent if input answer is correct   > Bad
+but issue varies by block/area of excercises
+
+block a
+A: Advanced Article and Quantifier Application
+   no green/red highlight instead of default grey on the back on input answer
+B: Multi-Error Identification
+   no green/red highlight instead of default grey on the back of THE AREA for input answer
+C: Sentence Transformation
+   wrong answers have no red highlight instead of default grey on the back of THE AREA for input answer
+   correct answers are preceded by correct (in input area, not needed there) but lack the green highlight instead of default grey on the back of THE AREA for input answer
+
+block b
+A: Complex Clause Construction
+   input answers disappear after submit, leaving not the 'empty' of non-input, but an actual empty space and a reddish highlight
+   empty/not inserted answers correctly have the reddish higlight
+   on pressing mark as correct, the green highlight is correctly implemented, but the 'correct answer: ' below (which you might think redundant) disappears
+B: Advanced Reported Speech
+   on pressing mark as correct, the 'correct: ..' disappears, i'd like to keep it.
+   correct answers are seemingly recognized as correct (by the lack of mark as correct, BUT have no green highlight)
+   incorrect answers also have no highlight in red
+C: Grammatical Form and Function
+   same as A: Complex Clause Construction
+
+block c
+A: Integrated Grammar Application
+same behaviour as A: Complex Clause Construction of block B
+
+also, before the list of questions.
+the FULL text should be displayed for clarity
+FULL Test
+question 1
+question 2 
+etc
+
+here the full text
+Full Text:
+
+The city council has approved a controversial plan to redevelop the waterfront, a decision ___  has angered many local residents. The project, ___ involves constructing a new luxury hotel, is intended to boost tourism. The area's unique character, ___  is a major draw for visitors in the first place, reducing congestion and, ___ , pollution. This transition is not without ___  challenges. ___  a vast amount of data is collected, ensuring its security becomes paramount. ___ , there is the question of digital inclusion. All residents, ___ of their age or technological proficiency, can benefit. ___ , the risk is creating a two-tiered society. The success of a true smart city depends as ___  on thoughtful policy as it does on technological innovation.
+
+Then questions.
+I MEAN YOU SHOULD LEAVE THE AREA FOR excercises UNCHANGED, but add BEFORE THEM, the full text!!
+This only applies to area A of block C!!
+
+B: Multi-Error Identification II
+   same behaviour as B: Advanced Reported Speech
+
+
+C: Sentence Transformation: Advanced Structures
+   same behaviour as B: Advanced Reported Speech
+
+
+
+retake full test button should be removed.
+diagnostics button should be removed.
+download all notes button should be removed.
+
+/
+
+correct answer for comparison is absent if input answer is correct   > Fixed
 correct answer for comparison has green highlight        > Good
 correct answer is missing in some cases, probably because the correct answer is 'empty' > Bad, should be replaced with 'empty' > FIXED
 mark as correct yellow/orange button is missing entirely    > Bad > FIXED
-
-
