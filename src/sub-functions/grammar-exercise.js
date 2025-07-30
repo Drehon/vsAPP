@@ -416,7 +416,7 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                     }
                     const noteIdForPart = `${q.displayNum}_part${index}`;
                     const noteArea = paneElement.querySelector(`#notes-${noteIdForPart}`);
-                    if (noteArea) {
+                    if (noteArea && tab.exerciseState.notes) {
                         const savedNote = tab.exerciseState.notes[noteIdForPart];
                         if (savedNote) {
                             noteArea.value = savedNote;
@@ -485,7 +485,7 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                 inputEl.classList.add(isCorrect ? 'correct-answer' : 'incorrect-answer');
 
                 const noteArea = paneElement.querySelector(`#notes-${q.displayNum}`);
-                if (noteArea) {
+                if (noteArea && tab.exerciseState.notes) {
                     const savedNote = tab.exerciseState.notes[q.displayNum];
                     if (savedNote) {
                         noteArea.value = savedNote;
