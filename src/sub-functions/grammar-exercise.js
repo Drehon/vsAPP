@@ -147,7 +147,7 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
         addNotesListeners();
         renderSubmissionArea();
 
-        if (testState[block].completed) {
+        if (testState[block].completed && testState[block].answers) {
             enterReviewMode(block, testState[block].answers);
         }
     };

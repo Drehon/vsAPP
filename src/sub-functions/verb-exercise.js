@@ -105,6 +105,7 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
             }
             loadNotes();
             addNotesListeners();
+            addAnswerListeners();
             renderSubmissionArea();
 
             if (testState[block].completed) {
@@ -257,6 +258,19 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
             });
         }
 
+        function addAnswerListeners() {
+            paneElement.querySelectorAll('input[name^="q"], select[name^="q"], textarea[name^="q"]').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const questionId = e.target.name;
+                    if (!testState[currentBlock].answers) {
+                        testState[currentBlock].answers = {};
+                    }
+                    testState[currentBlock].answers[questionId] = e.target.value;
+                    saveExerciseState(tab);
+                });
+            });
+        }
+
         function loadNotes() {
             if (!tab.exerciseState.notes) return;
             paneElement.querySelectorAll('textarea[id^="notes-"]').forEach(area => {
@@ -332,22 +346,23 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
                             inputEl.value = userAnswer; // Display user's answer
                             inputEl.classList.add(isCorrect ? 'correct-answer' : 'incorrect-answer');
                             
-                            const feedbackContainer = document.createElement('div');
-                            feedbackContainer.className = 'feedback-container mt-1 ml-32 pl-4 flex items-center gap-4';
-                            
-                            const correctAnswerEl = document.createElement('div');
-                            correctAnswerEl.className = 'correct-answer-text text-sm text-green-600 font-semibold';
-                            correctAnswerEl.textContent = `Correct: ${part.answer}`;
-                            feedbackContainer.appendChild(correctAnswerEl);
-
                             if (!isCorrect) {
+                                const feedbackContainer = document.createElement('div');
+                                feedbackContainer.className = 'feedback-container mt-1 ml-32 pl-4 flex items-center gap-4';
+                                
+                                const correctAnswerEl = document.createElement('div');
+                                correctAnswerEl.className = 'correct-answer-text text-sm text-green-600 font-semibold';
+                                correctAnswerEl.textContent = `Correct: ${part.answer}`;
+                                feedbackContainer.appendChild(correctAnswerEl);
+
                                 const markCorrectBtn = document.createElement('button');
                                 markCorrectBtn.type = 'button';
                                 markCorrectBtn.className = 'mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-1 px-2 rounded-lg transition-colors';
                                 markCorrectBtn.textContent = 'Mark as Correct';
                                 feedbackContainer.appendChild(markCorrectBtn);
+                                
+                                inputEl.parentElement.appendChild(feedbackContainer);
                             }
-                            inputEl.parentElement.appendChild(feedbackContainer);
                         }
                     });
                      const btn = document.createElement('button');

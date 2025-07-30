@@ -1,4 +1,38 @@
 [Jules's work log]
+[Jules's work log]
+
+---
+Date: 2025-07-30
+Work Summary: Fixed a crash on the Grammar test page, a review-mode bug on the Verbs test page, and implemented on-the-fly answer saving for the Verbs test page.
+
+Thoughts & Hypothesis:
+Based on the user's notes, I identified three distinct issues:
+1.  **Grammar Page Crash:** The page was unusable due to a `TypeError`. I hypothesized that the `enterReviewMode` function was being called with invalid data (a completed block with no `answers` object) during the initial load, causing a crash when trying to access the `answers`.
+2.  **Verbs Page Review Bug:** In review mode, the "Correct: ..." feedback was showing for all answers, even correct ones. I hypothesized that the logic to display this feedback was not correctly scoped and was executing unconditionally for certain question types.
+3.  **Verbs Page Answer Saving:** The user noted that answers were not being saved by the auto-save ("save-state") mechanism. I hypothesized that unlike the notes fields, the answer input fields lacked the necessary event listeners to trigger a save on every change.
+
+Plan & Steps Taken:
+1.  *Fix Verbs Page Review Mode Bug:*
+    - **Action:** Modified `enterReviewMode` in `src/sub-functions/verb-exercise.js`.
+    - **Details:** I moved the creation of the feedback container (which shows the correct answer) entirely inside the `if (!isCorrect)` block for the `paragraph_error_id` question type.
+    - **Outcome:** This ensures the "Correct: ..." feedback only appears for incorrect answers, as intended.
+
+2.  *Fix Grammar Page Crash:*
+    - **Action:** Modified `renderQuestions` in `src/sub-functions/grammar-exercise.js`.
+    - **Details:** I added a guard condition to the `enterReviewMode` call, changing `if (testState[block].completed)` to `if (testState[block].completed && testState[block].answers)`.
+    - **Outcome:** This prevents the function from executing with incomplete state, resolving the `TypeError` and making the page functional again.
+
+3.  *Implement On-the-fly Answer Saving for Verbs Page:*
+    - **Action:** Added a new `addAnswerListeners` function to `src/sub-functions/verb-exercise.js`.
+    - **Details:** This function attaches an `input` event listener to every answer field (`input`, `select`, `textarea`). On input, the listener updates the `testState` object and calls `saveExerciseState` to persist the changes immediately.
+    - **Outcome:** Answers on the Verbs page are now saved automatically as the user types, consistent with the behavior of the notes fields.
+
+Next Steps:
+- All planned fixes are complete. The test pages should now be stable and all save/load/review functionality should work as expected. The next step is to submit the changes for the user's review and testing.
+
+---
+
+[Jules's work log]
 
 ---
 Date: 2025-07-29
@@ -170,3 +204,23 @@ notes are saved in save-state, answers aren't
 save and load functions correctly for the notes, not for answers of course
 all answers still say 'Correct:' followed by correct answer, with Correct in green
 the text is fine, but it should be in red if answer is empty/incorrect
+
+---
+
+USER NOTES 5
+1) again, notes are saved in save-state, answers aren't
+2) save and load functions correctly for the notes, not for answers of course
+3 all answers still say 'Correct:' followed by correct answer, with Correct in green
+   the text is fine, but it should be in red if answer is empty/incorrect
+
+4) grammar page still crashes
+grammar-exercise.js:420 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'A1_part0')
+    at eval (grammar-exercise.js:420:1)
+    at Array.forEach (<anonymous>)
+    at eval (grammar-exercise.js:382:1)
+    at Array.forEach (<anonymous>)
+    at enterReviewMode (grammar-exercise.js:377:1)
+    at renderQuestions (grammar-exercise.js:151:1)
+    at switchTab (grammar-exercise.js:241:1)
+    at initializeGrammarExercise (grammar-exercise.js:760:1)
+    at loadContentIntoTab (content-loader.js:102:42)
