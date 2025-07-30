@@ -234,11 +234,24 @@ ipcMain.handle('get-settings-content', async () => {
   }
 });
 
+
 ipcMain.handle('get-file-content', async (event, relativePath) => {
+  // Log when a specific file is being accessed, for debugging purposes
+  if (relativePath.includes('patch-notes.html')) {
+    console.log(`[PatchNotes] Loading content for: ${relativePath}`);
+  }
+
   const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : process.resourcesPath;
   const filePath = path.join(basePath, relativePath);
   try {
     const content = await fs.readFile(filePath, 'utf-8');
+    
+    // For patch-notes, return the full HTML to ensure scripts are run
+    if (relativePath.includes('patch-notes.html')) {
+      return content;
+    }
+
+    // For other files, return only the body content as before
     const bodyContentMatch = content.match(/<body[^>]*>([\s\S]*)<\/body>/i);
     return bodyContentMatch ? bodyContentMatch[1] : content;
   } catch (err) {

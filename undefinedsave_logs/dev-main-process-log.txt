@@ -1,44 +1,8 @@
-[LOG][2025-07-30T08:51:24.670Z] --- Logging initialized using synchronous file append ---
-[LOG][2025-07-30T08:51:24.672Z] --- setupLogging() has been called. This is the first log after setup. ---
-[LOG][2025-07-30T08:51:24.674Z] Main Process: createWindow called. Initializing main window.
-[LOG][2025-07-30T08:51:24.768Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
-[LOG][2025-07-30T08:51:26.302Z] Main Process: Checking for updates...
-[LOG][2025-07-30T08:51:26.309Z] AutoUpdater configuration: [Unserializable Object]
-[LOG][2025-07-30T08:51:27.349Z] Main Process: Update not available. {"tag":"v1.2.8","version":"1.2.8","files":[{"url":"vsAPP-1.2.8.Setup.exe","sha512":"FyJs5zoBuaMJff+ejtrE8XNeSIDcLy2lOEagUUWWz/hAbXKfaXYSex72pQCAGKBJcR8ixZAhxv8mYZOZ9AFBuw==","size":114393088}],"path":"vsAPP-1.2.8.Setup.exe","sha512":"FyJs5zoBuaMJff+ejtrE8XNeSIDcLy2lOEagUUWWz/hAbXKfaXYSex72pQCAGKBJcR8ixZAhxv8mYZOZ9AFBuw==","releaseDate":"2025-07-30T08:45:24.332Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.2.8","releaseNotes":"<p>Sticky toolbar issue is back.<br>\nTests and load/saves are in general fixed.<br>\nSmall tweaks still required for tests pages though.<br>\nPatch notes page still resists implementation, logging is also proving problematic.</p>"}
-[LOG][2025-07-30T08:51:43.934Z] --- Logging initialized using synchronous file append ---
-[LOG][2025-07-30T08:51:43.937Z] --- setupLogging() has been called. This is the first log after setup. ---
-[LOG][2025-07-30T08:51:43.938Z] Main Process: createWindow called. Initializing main window.
-[LOG][2025-07-30T08:51:44.030Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
-[LOG][2025-07-30T08:51:45.568Z] Main Process: Checking for updates...
-[LOG][2025-07-30T08:51:45.574Z] AutoUpdater configuration: [Unserializable Object]
-[LOG][2025-07-30T08:51:46.960Z] Main Process: Update not available. {"tag":"v1.2.8","version":"1.2.8","files":[{"url":"vsAPP-1.2.8.Setup.exe","sha512":"FyJs5zoBuaMJff+ejtrE8XNeSIDcLy2lOEagUUWWz/hAbXKfaXYSex72pQCAGKBJcR8ixZAhxv8mYZOZ9AFBuw==","size":114393088}],"path":"vsAPP-1.2.8.Setup.exe","sha512":"FyJs5zoBuaMJff+ejtrE8XNeSIDcLy2lOEagUUWWz/hAbXKfaXYSex72pQCAGKBJcR8ixZAhxv8mYZOZ9AFBuw==","releaseDate":"2025-07-30T08:45:24.332Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.2.8","releaseNotes":"<p>Sticky toolbar issue is back.<br>\nTests and load/saves are in general fixed.<br>\nSmall tweaks still required for tests pages though.<br>\nPatch notes page still resists implementation, logging is also proving problematic.</p>"}
-[LOG][2025-07-30T08:55:17.226Z] --- Logging initialized using synchronous file append ---
-[LOG][2025-07-30T08:55:17.229Z] --- setupLogging() has been called. This is the first log after setup. ---
-[LOG][2025-07-30T08:55:17.230Z] Main Process: createWindow called. Initializing main window.
-[LOG][2025-07-30T08:55:17.318Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
-[LOG][2025-07-30T08:55:18.874Z] Main Process: Checking for updates...
-[LOG][2025-07-30T08:55:18.881Z] AutoUpdater configuration: [Unserializable Object]
-[LOG][2025-07-30T08:55:19.955Z] Main Process: Update not available. {"tag":"v1.2.8","version":"1.2.8","files":[{"url":"vsAPP-1.2.8.Setup.exe","sha512":"FyJs5zoBuaMJff+ejtrE8XNeSIDcLy2lOEagUUWWz/hAbXKfaXYSex72pQCAGKBJcR8ixZAhxv8mYZOZ9AFBuw==","size":114393088}],"path":"vsAPP-1.2.8.Setup.exe","sha512":"FyJs5zoBuaMJff+ejtrE8XNeSIDcLy2lOEagUUWWz/hAbXKfaXYSex72pQCAGKBJcR8ixZAhxv8mYZOZ9AFBuw==","releaseDate":"2025-07-30T08:45:24.332Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.2.8","releaseNotes":"<p>Sticky toolbar issue is back.<br>\nTests and load/saves are in general fixed.<br>\nSmall tweaks still required for tests pages though.<br>\nPatch notes page still resists implementation, logging is also proving problematic.</p>"}
-[LOG][2025-07-30T09:04:19.665Z] --- Logging initialized using synchronous file append ---
-[LOG][2025-07-30T09:04:19.668Z] --- setupLogging() has been called. This is the first log after setup. ---
-[LOG][2025-07-30T09:04:19.670Z] Main Process: createWindow called. Initializing main window.
-[LOG][2025-07-30T09:04:19.757Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
-[LOG][2025-07-30T09:04:21.324Z] Main Process: Checking for updates...
-[LOG][2025-07-30T09:04:21.332Z] AutoUpdater configuration: [Unserializable Object]
-[LOG][2025-07-30T09:04:22.450Z] Main Process: Update not available. {"tag":"v1.2.8","version":"1.2.8","files":[{"url":"vsAPP-1.2.8.Setup.exe","sha512":"FyJs5zoBuaMJff+ejtrE8XNeSIDcLy2lOEagUUWWz/hAbXKfaXYSex72pQCAGKBJcR8ixZAhxv8mYZOZ9AFBuw==","size":114393088}],"path":"vsAPP-1.2.8.Setup.exe","sha512":"FyJs5zoBuaMJff+ejtrE8XNeSIDcLy2lOEagUUWWz/hAbXKfaXYSex72pQCAGKBJcR8ixZAhxv8mYZOZ9AFBuw==","releaseDate":"2025-07-30T08:45:24.332Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.2.8","releaseNotes":"<p>Sticky toolbar issue is back.<br>\nTests and load/saves are in general fixed.<br>\nSmall tweaks still required for tests pages though.<br>\nPatch notes page still resists implementation, logging is also proving problematic.</p>"}
-[LOG][2025-07-30T09:26:41.034Z] --- Logging initialized using synchronous file append ---
-[LOG][2025-07-30T09:26:41.038Z] --- setupLogging() has been called. This is the first log after setup. ---
-[LOG][2025-07-30T09:26:41.040Z] Main Process: createWindow called. Initializing main window.
-[LOG][2025-07-30T09:26:41.118Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
-[LOG][2025-07-30T09:26:42.774Z] Main Process: Checking for updates...
-[LOG][2025-07-30T09:26:42.780Z] AutoUpdater configuration: [Unserializable Object]
-[ERROR][2025-07-30T09:26:42.784Z] Error: Error: ENOENT: no such file or directory, open 'C:\Users\User\Documents\TEFL Personal\undefineddev-app-update.yml'
-[ERROR][2025-07-30T09:26:42.786Z] Main Process: AutoUpdater emitted an error event: ENOENT: no such file or directory, open 'C:\Users\User\Documents\TEFL Personal\undefineddev-app-update.yml'
-[ERROR][2025-07-30T09:26:42.787Z] Main Process: Error during update check: ENOENT: no such file or directory, open 'C:\Users\User\Documents\TEFL Personal\undefineddev-app-update.yml'
-[LOG][2025-07-30T09:28:30.756Z] --- Logging initialized using synchronous file append ---
-[LOG][2025-07-30T09:28:30.759Z] --- setupLogging() has been called. This is the first log after setup. ---
-[LOG][2025-07-30T09:28:30.760Z] Main Process: createWindow called. Initializing main window.
-[LOG][2025-07-30T09:28:30.848Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
-[LOG][2025-07-30T09:28:32.400Z] Main Process: Checking for updates...
-[LOG][2025-07-30T09:28:32.408Z] AutoUpdater configuration: [Unserializable Object]
-[LOG][2025-07-30T09:28:33.437Z] Main Process: Update not available. {"tag":"v1.2.8","version":"1.2.8","files":[{"url":"vsAPP-1.2.8.Setup.exe","sha512":"FyJs5zoBuaMJff+ejtrE8XNeSIDcLy2lOEagUUWWz/hAbXKfaXYSex72pQCAGKBJcR8ixZAhxv8mYZOZ9AFBuw==","size":114393088}],"path":"vsAPP-1.2.8.Setup.exe","sha512":"FyJs5zoBuaMJff+ejtrE8XNeSIDcLy2lOEagUUWWz/hAbXKfaXYSex72pQCAGKBJcR8ixZAhxv8mYZOZ9AFBuw==","releaseDate":"2025-07-30T08:45:24.332Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.2.8","releaseNotes":"<p>Sticky toolbar issue is back.<br>\nTests and load/saves are in general fixed.<br>\nSmall tweaks still required for tests pages though.<br>\nPatch notes page still resists implementation, logging is also proving problematic.</p>"}
+[LOG][2025-07-30T09:32:51.190Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-07-30T09:32:51.192Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-07-30T09:32:51.194Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-07-30T09:32:51.278Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-07-30T09:32:54.890Z] Main Process: Checking for updates...
+[LOG][2025-07-30T09:32:54.895Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-07-30T09:32:55.937Z] Main Process: Update not available. {"tag":"v1.2.8","version":"1.2.8","files":[{"url":"vsAPP-1.2.8.Setup.exe","sha512":"FyJs5zoBuaMJff+ejtrE8XNeSIDcLy2lOEagUUWWz/hAbXKfaXYSex72pQCAGKBJcR8ixZAhxv8mYZOZ9AFBuw==","size":114393088}],"path":"vsAPP-1.2.8.Setup.exe","sha512":"FyJs5zoBuaMJff+ejtrE8XNeSIDcLy2lOEagUUWWz/hAbXKfaXYSex72pQCAGKBJcR8ixZAhxv8mYZOZ9AFBuw==","releaseDate":"2025-07-30T08:45:24.332Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.2.8","releaseNotes":"<p>Sticky toolbar issue is back.<br>\nTests and load/saves are in general fixed.<br>\nSmall tweaks still required for tests pages though.<br>\nPatch notes page still resists implementation, logging is also proving problematic.</p>"}
+[LOG][2025-07-30T09:32:56.577Z] [PatchNotes] Loading content for: others/patch-notes.html
