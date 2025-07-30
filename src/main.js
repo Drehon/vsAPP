@@ -287,7 +287,7 @@ app.on('ready', () => {
   }
 
   if (process.env.NODE_ENV === 'development') {
-    autoUpdater.updateConfigPath = path.join(process.cwd(), 'dev-app-update.yml');
+    autoUpdater.updateConfigPath = path.join(app.getAppPath(), 'dev-app-update.yml');
     autoUpdater.forceDevUpdateConfig = true;
   }
 

@@ -35,3 +35,10 @@
 [ERROR][2025-07-30T09:26:42.784Z] Error: Error: ENOENT: no such file or directory, open 'C:\Users\User\Documents\TEFL Personal\undefineddev-app-update.yml'
 [ERROR][2025-07-30T09:26:42.786Z] Main Process: AutoUpdater emitted an error event: ENOENT: no such file or directory, open 'C:\Users\User\Documents\TEFL Personal\undefineddev-app-update.yml'
 [ERROR][2025-07-30T09:26:42.787Z] Main Process: Error during update check: ENOENT: no such file or directory, open 'C:\Users\User\Documents\TEFL Personal\undefineddev-app-update.yml'
+[LOG][2025-07-30T09:28:30.756Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-07-30T09:28:30.759Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-07-30T09:28:30.760Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-07-30T09:28:30.848Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-07-30T09:28:32.400Z] Main Process: Checking for updates...
+[LOG][2025-07-30T09:28:32.408Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-07-30T09:28:33.437Z] Main Process: Update not available. {"tag":"v1.2.8","version":"1.2.8","files":[{"url":"vsAPP-1.2.8.Setup.exe","sha512":"FyJs5zoBuaMJff+ejtrE8XNeSIDcLy2lOEagUUWWz/hAbXKfaXYSex72pQCAGKBJcR8ixZAhxv8mYZOZ9AFBuw==","size":114393088}],"path":"vsAPP-1.2.8.Setup.exe","sha512":"FyJs5zoBuaMJff+ejtrE8XNeSIDcLy2lOEagUUWWz/hAbXKfaXYSex72pQCAGKBJcR8ixZAhxv8mYZOZ9AFBuw==","releaseDate":"2025-07-30T08:45:24.332Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.2.8","releaseNotes":"<p>Sticky toolbar issue is back.<br>\nTests and load/saves are in general fixed.<br>\nSmall tweaks still required for tests pages though.<br>\nPatch notes page still resists implementation, logging is also proving problematic.</p>"}
