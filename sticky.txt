@@ -69,3 +69,16 @@ The changes made include:
 FAILED
 Broke updater, didn't fix issues, rebroke verticality of home page (too much)
 FULLY REVERTED
+
+---
+
+The changes made include:
+- Making the `#content-panes` div the primary scrolling container.
+- Ensuring the home page header is sticky within its scrolling container.
+- Applying a consistent background color to all content panes.
+
+---
+
+Toolbar had been fixed.
+Probably because of changes to main.js, though maybe not.
+Toolbar once more disappears.

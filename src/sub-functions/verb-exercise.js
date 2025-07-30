@@ -105,6 +105,7 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
             }
             loadNotes();
             addNotesListeners();
+            loadAnswers();
             addAnswerListeners();
             renderSubmissionArea();
 
@@ -281,6 +282,18 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
                     area.value = savedNote;
                 }
             });
+        }
+
+        function loadAnswers() {
+            const savedAnswers = testState[currentBlock].answers;
+            if (!savedAnswers) return;
+
+            for (const questionId in savedAnswers) {
+                const inputEl = paneElement.querySelector(`[name="${questionId}"]`);
+                if (inputEl) {
+                    inputEl.value = savedAnswers[questionId];
+                }
+            }
         }
         
         function loadProgress() {

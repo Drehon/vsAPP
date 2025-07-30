@@ -10,3 +10,15 @@
 [LOG][2025-07-30T08:00:52.191Z] Main Process: Checking for updates...
 [LOG][2025-07-30T08:00:52.197Z] AutoUpdater configuration: [object Object]
 [LOG][2025-07-30T08:00:53.259Z] Main Process: Update not available. [object Object]
+[LOG][2025-07-30T08:03:37.396Z] --- Logging initialized ---
+[LOG][2025-07-30T08:03:37.398Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-07-30T08:03:37.480Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-07-30T08:03:39.049Z] Main Process: Checking for updates...
+[LOG][2025-07-30T08:03:39.055Z] AutoUpdater configuration: [object Object]
+[LOG][2025-07-30T08:03:40.210Z] Main Process: Update not available. [object Object]
+[LOG][2025-07-30T08:05:41.249Z] --- Logging initialized ---
+[LOG][2025-07-30T08:05:41.251Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-07-30T08:05:41.340Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-07-30T08:05:42.897Z] Main Process: Checking for updates...
+[LOG][2025-07-30T08:05:42.902Z] AutoUpdater configuration: [object Object]
+[LOG][2025-07-30T08:05:43.951Z] Main Process: Update not available. [object Object]
