@@ -7,23 +7,23 @@ const fsSync = require('fs');
 const { autoUpdater } = require('electron-updater');
 
 // --- Logging ---
-// We will set up the streams inside app.on('ready') to ensure paths are available.
-let logStream = null;
-let devLogStream = null;
-
 const setupLogging = () => {
-  // 1. Main log file in userData directory
   const logFilePath = path.join(app.getPath('userData'), 'main-process-log.txt');
-  logStream = fsSync.createWriteStream(logFilePath, { flags: 'a' });
+  let devLogFilePath = null;
 
-  // 2. Secondary log file for development in project folder
+  // Ensure user data log directory exists (usually does, but good practice)
+  const userDataDir = path.dirname(logFilePath);
+  if (!fsSync.existsSync(userDataDir)) {
+    fsSync.mkdirSync(userDataDir, { recursive: true });
+  }
+  
+  // Create dev log file path if in development
   if (!app.isPackaged) {
     const devLogDir = path.join(app.getAppPath(), 'undefinedsave_logs');
     if (!fsSync.existsSync(devLogDir)) {
       fsSync.mkdirSync(devLogDir, { recursive: true });
     }
-    const devLogFilePath = path.join(devLogDir, 'dev-main-process-log.txt');
-    devLogStream = fsSync.createWriteStream(devLogFilePath, { flags: 'a' });
+    devLogFilePath = path.join(devLogDir, 'dev-main-process-log.txt');
   }
 
   const originalLog = console.log;
@@ -31,12 +31,29 @@ const setupLogging = () => {
   const originalWarn = console.warn;
 
   const logToFile = (type, ...args) => {
-    const message = `[${type}][${new Date().toISOString()}] ${args.join(' ')}\n`;
-    if (logStream) {
-      logStream.write(message);
-    }
-    if (devLogStream) {
-      devLogStream.write(message);
+    // Sanitize arguments to prevent circular reference errors in JSON.stringify or similar issues
+    const sanitizedArgs = args.map(arg => {
+        if (typeof arg === 'object' && arg !== null) {
+            try {
+                // A simple way to handle objects, might need to be more robust
+                return JSON.stringify(arg);
+            } catch (e) {
+                return '[Unserializable Object]';
+            }
+        }
+        return arg;
+    });
+  
+    const message = `[${type}][${new Date().toISOString()}] ${sanitizedArgs.join(' ')}\n`;
+    
+    try {
+      fsSync.appendFileSync(logFilePath, message);
+      if (devLogFilePath) {
+        fsSync.appendFileSync(devLogFilePath, message);
+      }
+    } catch (err) {
+      // If logging fails, write to the original console to avoid infinite loops
+      originalError('Failed to write to log file:', err);
     }
   };
 
@@ -55,7 +72,7 @@ const setupLogging = () => {
     logToFile('WARN', ...args);
   };
   
-  console.log('--- Logging initialized ---');
+  console.log('--- Logging initialized using synchronous file append ---');
 };
 // --- End Logging ---
 
