@@ -93,13 +93,3 @@ This should resolve the background issue and the disappearing toolbar.
 - REVERTED, didn't work. broke stuff visually but didn't adress the issue
 I think the issue is that the toolbar acts as a sticky only for the page A, but lessons are.. above page A and once you scroll also page Bad
 can't you lock the toolbar to the tabs instead? those are properly sticky
-
-Fourteenth attempt:
-The user suggested locking the toolbar to the tabs.
-To achieve this, I've made the following changes:
-- In `src/index.html`, I've added a new `div` with `id="home-toolbar"` right below the `tab-bar`. This will act as a container for the home page's header. It's sticky and positioned right below the tab bar.
-- In `src/home-template.html`, I've removed the `<header>` element.
-- In `src/sub-functions/content-loader.js`, I've added logic to:
-    - Show the `#home-toolbar` and inject the header content into it when the home tab is active.
-    - Hide the `#home-toolbar` when any other tab is active.
-This should keep the toolbar visible and sticky along with the tabs, but only on the home page.
