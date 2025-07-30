@@ -105,6 +105,8 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
             }
             loadNotes();
             addNotesListeners();
+            loadAnswers();
+            addAnswerListeners();
             renderSubmissionArea();
 
             if (testState[block].completed) {
@@ -172,11 +174,11 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
                 if (q.type === 'paragraph_error_id') {
                     q.parts.forEach((part, index) => {
                         const inputEl = paneElement.querySelector(`[name="q${q.displayNum}_part${index}"]`);
-                        if(inputEl) userAnswers[`q${q.displayNum}_part${index}`] = inputEl.value.trim().toLowerCase();
+                        if(inputEl) userAnswers[`q${q.displayNum}_part${index}`] = inputEl.value.trim();
                     });
                 } else {
                     const inputEl = paneElement.querySelector(`[name="q${q.displayNum}"]`);
-                    if(inputEl) userAnswers[`q${q.displayNum}`] = inputEl.value.trim().toLowerCase();
+                    if(inputEl) userAnswers[`q${q.displayNum}`] = inputEl.value.trim();
                 }
             });
 
@@ -257,6 +259,19 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
             });
         }
 
+        function addAnswerListeners() {
+            paneElement.querySelectorAll('input[name^="q"], select[name^="q"], textarea[name^="q"]').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const questionId = e.target.name;
+                    if (!testState[currentBlock].answers) {
+                        testState[currentBlock].answers = {};
+                    }
+                    testState[currentBlock].answers[questionId] = e.target.value;
+                    saveExerciseState(tab);
+                });
+            });
+        }
+
         function loadNotes() {
             if (!tab.exerciseState.notes) return;
             paneElement.querySelectorAll('textarea[id^="notes-"]').forEach(area => {
@@ -267,6 +282,18 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
                     area.value = savedNote;
                 }
             });
+        }
+
+        function loadAnswers() {
+            const savedAnswers = testState[currentBlock].answers;
+            if (!savedAnswers) return;
+
+            for (const questionId in savedAnswers) {
+                const inputEl = paneElement.querySelector(`[name="${questionId}"]`);
+                if (inputEl) {
+                    inputEl.value = savedAnswers[questionId];
+                }
+            }
         }
         
         function loadProgress() {
@@ -326,28 +353,29 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
                     q.parts.forEach((part, index) => {
                         const partIdName = `q${q.displayNum}_part${index}`;
                         const userAnswer = userAnswers[partIdName] || '';
-                        const isCorrect = userAnswer === part.answer.toLowerCase();
+                        const isCorrect = userAnswer.toLowerCase() === part.answer.toLowerCase();
                         const inputEl = paneElement.querySelector(`[name="${partIdName}"]`);
                         if (inputEl) {
                             inputEl.value = userAnswer; // Display user's answer
                             inputEl.classList.add(isCorrect ? 'correct-answer' : 'incorrect-answer');
                             
-                            const feedbackContainer = document.createElement('div');
-                            feedbackContainer.className = 'feedback-container mt-1 ml-32 pl-4 flex items-center gap-4';
-                            
-                            const correctAnswerEl = document.createElement('div');
-                            correctAnswerEl.className = 'correct-answer-text text-sm text-green-600 font-semibold';
-                            correctAnswerEl.textContent = `Correct: ${part.answer}`;
-                            feedbackContainer.appendChild(correctAnswerEl);
-
                             if (!isCorrect) {
+                                const feedbackContainer = document.createElement('div');
+                                feedbackContainer.className = 'feedback-container mt-1 ml-32 pl-4 flex items-center gap-4';
+                                
+                                const correctAnswerEl = document.createElement('div');
+                                correctAnswerEl.className = 'correct-answer-text text-sm text-green-600 font-semibold';
+                                correctAnswerEl.textContent = `Correct: ${part.answer}`;
+                                feedbackContainer.appendChild(correctAnswerEl);
+
                                 const markCorrectBtn = document.createElement('button');
                                 markCorrectBtn.type = 'button';
                                 markCorrectBtn.className = 'mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-1 px-2 rounded-lg transition-colors';
                                 markCorrectBtn.textContent = 'Mark as Correct';
                                 feedbackContainer.appendChild(markCorrectBtn);
+                                
+                                inputEl.parentElement.appendChild(feedbackContainer);
                             }
-                            inputEl.parentElement.appendChild(feedbackContainer);
                         }
                     });
                      const btn = document.createElement('button');
@@ -624,5 +652,84 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
             });
         });
 
+        // Save/Load functionality
+    const saveBtn = document.getElementById(`save-btn-${tab.id}`);
+    const loadBtn = document.getElementById(`load-btn-${tab.id}`);
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.json';
+    fileInput.style.display = 'none';
+    paneElement.appendChild(fileInput); // Add it to the DOM to be clickable
+
+    if (saveBtn) {
+        saveBtn.onclick = async () => {
+            const dataStr = JSON.stringify(tab.exerciseState, null, 2);
+            const defaultFilename = `${tab.title}-progress.json`;
+            const result = await window.api.showSaveDialogAndSaveFile({ defaultFilename: defaultFilename, data: dataStr });
+            if (result.success) {
+                console.log(`Manually saved progress to: ${result.path}`);
+            } else if (!result.canceled) {
+                console.error('Failed to manually save progress:', result.error);
+            }
+        };
+    }
+
+    if (loadBtn) {
+        loadBtn.onclick = () => {
+            fileInput.click();
+        };
+    }
+
+    fileInput.onchange = (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const fileContent = e.target.result;
+          if (!fileContent || fileContent.trim() === '') {
+            console.error("Error loading JSON: File is empty.");
+            // Optionally, show an error to the user in the UI
+            return;
+          }
+
+          const newState = JSON.parse(fileContent);
+          
+          // More robust validation
+          const isValidState = newState && 
+                               typeof newState === 'object' &&
+                               newState['1'] && newState['2'] && newState['3'] &&
+                               'completed' in newState['1'] && 'answers' in newState['1'] &&
+                               'completed' in newState['2'] && 'answers' in newState['2'] &&
+                               'completed' in newState['3'] && 'answers' in newState['3'];
+                               
+          if (isValidState) {
+            tab.exerciseState = newState;
+            testState = newState; // Update the local reference
+            saveExerciseState(tab); // Auto-save the newly loaded state to the default path
+            
+            // Determine which block to show after loading
+            let blockToRender = 1;
+            for (let i = 1; i <= 3; i++) {
+                if (!testState[i].completed) {
+                    blockToRender = i;
+                    break;
+                }
+                if (i === 3) blockToRender = 3; // If all are complete, show the last one
+            }
+            switchTab(blockToRender); // Re-render the UI
+            
+            console.log(`Manually loaded progress for ${tab.title}`);
+          } else { 
+            throw new Error("Invalid test progress file structure."); 
+          }
+        } catch (error) {
+          console.error("Error loading JSON:", error);
+          // Optionally, show an error to the user in the UI
+        }
+      };
+      reader.readAsText(file);
+      fileInput.value = ''; // Reset for next load
+    };
         renderQuestions(currentBlock);
   }

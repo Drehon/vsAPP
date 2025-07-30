@@ -145,9 +145,11 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
         }
         loadNotes();
         addNotesListeners();
+        loadAnswers();
+        addAnswerListeners();
         renderSubmissionArea();
 
-        if (testState[block].completed) {
+        if (testState[block].completed && testState[block].answers) {
             enterReviewMode(block, testState[block].answers);
         }
     };
@@ -303,6 +305,19 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
         });
     }
 
+    function addAnswerListeners() {
+        paneElement.querySelectorAll('input[name^="q"], select[name^="q"], textarea[name^="q"]').forEach(input => {
+            input.addEventListener('input', (e) => {
+                const questionId = e.target.name;
+                if (!testState[currentBlock].answers) {
+                    testState[currentBlock].answers = {};
+                }
+                testState[currentBlock].answers[questionId] = e.target.value;
+                saveExerciseState(tab);
+            });
+        });
+    }
+
     function loadNotes() {
         if (!tab.exerciseState.notes) return;
         // Only load notes for currently rendered elements.
@@ -325,6 +340,18 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
         });
     }
     
+    function loadAnswers() {
+        const savedAnswers = testState[currentBlock].answers;
+        if (!savedAnswers) return;
+
+        for (const questionId in savedAnswers) {
+            const inputEl = paneElement.querySelector(`[name="${questionId}"]`);
+            if (inputEl) {
+                inputEl.value = savedAnswers[questionId];
+            }
+        }
+    }
+
     function loadProgress() {
         if (loadFileInput) {
             loadFileInput.click();
@@ -416,7 +443,7 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                     }
                     const noteIdForPart = `${q.displayNum}_part${index}`;
                     const noteArea = paneElement.querySelector(`#notes-${noteIdForPart}`);
-                    if (noteArea) {
+                    if (noteArea && tab.exerciseState.notes) {
                         const savedNote = tab.exerciseState.notes[noteIdForPart];
                         if (savedNote) {
                             noteArea.value = savedNote;
@@ -485,7 +512,7 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                 inputEl.classList.add(isCorrect ? 'correct-answer' : 'incorrect-answer');
 
                 const noteArea = paneElement.querySelector(`#notes-${q.displayNum}`);
-                if (noteArea) {
+                if (noteArea && tab.exerciseState.notes) {
                     const savedNote = tab.exerciseState.notes[q.displayNum];
                     if (savedNote) {
                         noteArea.value = savedNote;
@@ -675,6 +702,86 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
     diagTabs.forEach(tab => {
         tab.addEventListener('click', () => { if(!tab.disabled) switchDiagTab(tab.dataset.tab); });
     });
+
+    // Save/Load functionality
+    const saveBtn = document.getElementById(`save-btn-${tab.id}`);
+    const loadBtn = document.getElementById(`load-btn-${tab.id}`);
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.json';
+    fileInput.style.display = 'none';
+    paneElement.appendChild(fileInput); // Add it to the DOM to be clickable
+
+    if (saveBtn) {
+        saveBtn.onclick = async () => {
+            const dataStr = JSON.stringify(tab.exerciseState, null, 2);
+            const defaultFilename = `${tab.title}-progress.json`;
+            const result = await window.api.showSaveDialogAndSaveFile({ defaultFilename: defaultFilename, data: dataStr });
+            if (result.success) {
+                console.log(`Manually saved progress to: ${result.path}`);
+            } else if (!result.canceled) {
+                console.error('Failed to manually save progress:', result.error);
+            }
+        };
+    }
+
+    if (loadBtn) {
+        loadBtn.onclick = () => {
+            fileInput.click();
+        };
+    }
+
+    fileInput.onchange = (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const fileContent = e.target.result;
+          if (!fileContent || fileContent.trim() === '') {
+            console.error("Error loading JSON: File is empty.");
+            // Optionally, show an error to the user in the UI
+            return;
+          }
+
+          const newState = JSON.parse(fileContent);
+          
+          // More robust validation
+          const isValidState = newState && 
+                               typeof newState === 'object' &&
+                               newState['1'] && newState['2'] && newState['3'] &&
+                               'completed' in newState['1'] && 'answers' in newState['1'] &&
+                               'completed' in newState['2'] && 'answers' in newState['2'] &&
+                               'completed' in newState['3'] && 'answers' in newState['3'];
+
+          if (isValidState) {
+            tab.exerciseState = newState;
+            testState = newState; // Update the local reference
+            saveExerciseState(tab); // Auto-save the newly loaded state to the default path
+            
+            // Determine which block to show after loading
+            let blockToRender = 1;
+            for (let i = 1; i <= 3; i++) {
+                if (!testState[i].completed) {
+                    blockToRender = i;
+                    break;
+                }
+                if (i === 3) blockToRender = 3; // If all are complete, show the last one
+            }
+            switchTab(blockToRender); // Re-render the UI
+            
+            console.log(`Manually loaded progress for ${tab.title}`);
+          } else { 
+            throw new Error("Invalid test progress file structure."); 
+          }
+        } catch (error) {
+          console.error("Error loading JSON:", error);
+          // Optionally, show an error to the user in the UI
+        }
+      };
+      reader.readAsText(file);
+      fileInput.value = ''; // Reset for next load
+    };
 
     // Initial render
     switchTab(currentBlock);

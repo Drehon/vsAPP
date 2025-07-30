@@ -21,13 +21,19 @@ window.api = {
   openExternalLink: (url) => ipcRenderer.invoke('open-external-link', url),
   getLessons: () => ipcRenderer.invoke('get-lessons'),
   getExercises: () => ipcRenderer.invoke('get-exercises'),
+  getLessonsAN: () => ipcRenderer.invoke('get-lessons-an'),
+  getTests: () => ipcRenderer.invoke('get-tests'),
   saveExerciseState: (filePath, state) => ipcRenderer.invoke('save-exercise-state', filePath, state),
   loadExerciseState: (filePath) => ipcRenderer.invoke('load-exercise-state', filePath),
   resetExerciseState: (filePath) => ipcRenderer.invoke('reset-exercise-state', filePath),
   showSaveDialogAndSaveFile: (options) => ipcRenderer.invoke('show-save-dialog-and-save-file', options),
   getConfig: () => ipcRenderer.invoke('get-config'),
   saveConfig: (config) => ipcRenderer.invoke('save-config', config),
-  openDirectoryDialog: () => ipcRenderer.invoke('open-directory-dialog')
+  openDirectoryDialog: () => ipcRenderer.invoke('open-directory-dialog'),
+  
+  // ADDED: Expose the showOpenDialogAndLoadFile handler
+  showOpenDialogAndLoadFile: () => ipcRenderer.invoke('show-open-dialog-and-load-file'),
+  getPatchNotes: () => ipcRenderer.invoke('get-patch-notes')
 };
 
 // Signal that the preload script has finished and the API is ready

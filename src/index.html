@@ -15,7 +15,7 @@
   <body class="bg-slate-800 text-white flex flex-col h-screen">
 
     <!-- Tab Bar -->
-    <div id="tab-bar" class="flex-shrink-0 bg-slate-900 flex items-center pr-2">
+    <div id="tab-bar" class="sticky top-0 z-10 flex-shrink-0 bg-slate-900 flex items-center pr-2">
       <!-- Tabs will be added here dynamically -->
       <!-- MODIFIED: Reduced button size from w-10 h-10 to h-9 w-9 and SVG size from w-6 h-6 to w-5 h-5 -->
       <button id="new-tab-btn" class="w-9 h-9 bg-slate-700 hover:bg-indigo-600 flex-shrink-0 flex items-center justify-center">
@@ -24,7 +24,7 @@
     </div>
 
     <!-- Content Panes -->
-    <div id="content-panes" class="flex-grow bg-slate-800 overflow-y-auto"></div>
+    <div id="content-panes" class="relative flex-grow bg-slate-100 overflow-y-auto"></div>
 
     <!-- Footer -->
     <footer class="flex-shrink-0 bg-slate-900 text-slate-400 text-xs p-2 flex justify-between items-center">

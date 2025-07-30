@@ -5,6 +5,9 @@ module.exports = {
     './lessons/**/*.html',
     './exercises/**/*.html',
     './tests/**/*.html',
+    // ADDED: Paths to the new content folders
+    './lessonsAN/**/*.html',
+    './others/**/*.html',
   ],
   theme: {
     extend: {

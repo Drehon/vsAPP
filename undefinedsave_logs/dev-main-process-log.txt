@@ -1,0 +1,24 @@
+[LOG][2025-07-30T08:26:52.602Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-07-30T08:26:52.605Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-07-30T08:26:52.693Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-07-30T08:26:54.235Z] Main Process: Checking for updates...
+[LOG][2025-07-30T08:26:54.241Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-07-30T08:26:55.410Z] Main Process: Update not available. {"tag":"v1.2.7","version":"1.2.7","files":[{"url":"vsAPP-1.2.7.Setup.exe","sha512":"Ng8BRALgwKOM++MSiNjcp5hjT03qTybT8JVFab3iHr+/9cHdAglCXuqQCy/slQhNG4kF8Po/hMaP9tZYcf1c2Q==","size":114384384}],"path":"vsAPP-1.2.7.Setup.exe","sha512":"Ng8BRALgwKOM++MSiNjcp5hjT03qTybT8JVFab3iHr+/9cHdAglCXuqQCy/slQhNG4kF8Po/hMaP9tZYcf1c2Q==","releaseDate":"2025-07-29T20:16:37.624Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.2.7","releaseNotes":"<p>Implemented patch notes page.<br>\nStill to be verified as fully functional.<br>\nSAVE/LOAD for tests work in progress still.</p>"}
+[LOG][2025-07-30T08:31:59.405Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-07-30T08:31:59.408Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-07-30T08:31:59.502Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-07-30T08:32:01.067Z] Main Process: Checking for updates...
+[LOG][2025-07-30T08:32:01.073Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-07-30T08:32:02.300Z] Main Process: Update not available. {"tag":"v1.2.7","version":"1.2.7","files":[{"url":"vsAPP-1.2.7.Setup.exe","sha512":"Ng8BRALgwKOM++MSiNjcp5hjT03qTybT8JVFab3iHr+/9cHdAglCXuqQCy/slQhNG4kF8Po/hMaP9tZYcf1c2Q==","size":114384384}],"path":"vsAPP-1.2.7.Setup.exe","sha512":"Ng8BRALgwKOM++MSiNjcp5hjT03qTybT8JVFab3iHr+/9cHdAglCXuqQCy/slQhNG4kF8Po/hMaP9tZYcf1c2Q==","releaseDate":"2025-07-29T20:16:37.624Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.2.7","releaseNotes":"<p>Implemented patch notes page.<br>\nStill to be verified as fully functional.<br>\nSAVE/LOAD for tests work in progress still.</p>"}
+[LOG][2025-07-30T08:41:11.085Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-07-30T08:41:11.088Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-07-30T08:41:11.177Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-07-30T08:41:12.834Z] Main Process: Checking for updates...
+[LOG][2025-07-30T08:41:12.842Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-07-30T08:41:14.071Z] Main Process: Update not available. {"tag":"v1.2.7","version":"1.2.7","files":[{"url":"vsAPP-1.2.7.Setup.exe","sha512":"Ng8BRALgwKOM++MSiNjcp5hjT03qTybT8JVFab3iHr+/9cHdAglCXuqQCy/slQhNG4kF8Po/hMaP9tZYcf1c2Q==","size":114384384}],"path":"vsAPP-1.2.7.Setup.exe","sha512":"Ng8BRALgwKOM++MSiNjcp5hjT03qTybT8JVFab3iHr+/9cHdAglCXuqQCy/slQhNG4kF8Po/hMaP9tZYcf1c2Q==","releaseDate":"2025-07-29T20:16:37.624Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.2.7","releaseNotes":"<p>Implemented patch notes page.<br>\nStill to be verified as fully functional.<br>\nSAVE/LOAD for tests work in progress still.</p>"}
+[LOG][2025-07-30T08:42:45.340Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-07-30T08:42:45.343Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-07-30T08:42:45.453Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-07-30T08:42:46.976Z] Main Process: Checking for updates...
+[LOG][2025-07-30T08:42:46.983Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-07-30T08:42:48.153Z] Main Process: Update not available. {"tag":"v1.2.7","version":"1.2.7","files":[{"url":"vsAPP-1.2.7.Setup.exe","sha512":"Ng8BRALgwKOM++MSiNjcp5hjT03qTybT8JVFab3iHr+/9cHdAglCXuqQCy/slQhNG4kF8Po/hMaP9tZYcf1c2Q==","size":114384384}],"path":"vsAPP-1.2.7.Setup.exe","sha512":"Ng8BRALgwKOM++MSiNjcp5hjT03qTybT8JVFab3iHr+/9cHdAglCXuqQCy/slQhNG4kF8Po/hMaP9tZYcf1c2Q==","releaseDate":"2025-07-29T20:16:37.624Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.2.7","releaseNotes":"<p>Implemented patch notes page.<br>\nStill to be verified as fully functional.<br>\nSAVE/LOAD for tests work in progress still.</p>"}

@@ -1,0 +1,38 @@
+Unlike the 'Save/Salva' Button, which correctly opens to the save folder
+The Load buttons keeps defaulting to a folder of the app in appData 
+
+This is an issue
+Evaluate this issue, try to understand it
+
+---
+
+jules - 1
+
+* I've made the "Load" button default to the correct save folder.
+* I've implemented the missing `showOpenDialogAndLoadFile` IPC handler in `main.js`.
+* I've updated `renderer.js` to handle the loaded data.
+
+---
+
+jules - 2
+
+Hypothesis:
+The "Load" button was not working correctly because the event listener was not being attached to it properly. The `renderer.js` file was trying to find a button with a static ID (`load-btn-1`), but the button's ID was being dynamically generated in `content-loader.js` (e.g., `load-btn-2`, `load-btn-3`, etc.).
+
+Steps taken:
+1.  Modified `src/sub-functions/content-loader.js`:
+    - Updated the `loadContentIntoTab` function to pass the newly created "Load" button element to the `setupLoadButton` function in `renderer.js`.
+2.  Modified `src/renderer.js`:
+    - Updated the `setupLoadButton` function to accept the button element as an argument and attach the event listener directly to it.
+    - Updated the `handleLoadButtonClick` function to pass the `setupLoadButton` function when reloading the content, ensuring the event listener is re-attached after a load operation.
+
+This ensures that the event listener is always attached to the correct "Load" button, regardless of the tab it's in. The `defaultPath` in `main.js` was already correctly configured to use the `saves` directory, so no changes were needed there.
+
+---
+
+save works, but load still doesn't lead to the same folder
+
+jules - 3
+
+
+---

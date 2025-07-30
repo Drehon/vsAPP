@@ -1,0 +1,84 @@
+The tabs were unstickied after some modifications to index.html.
+My first attempt to fix this by adding `sticky`, `top-0`, and `z-10` to the `tab-bar` was unsuccessful.
+My second attempt involves adding `position: relative` and `z-index: 1` to the `content-panes` div. I also kept the changes from the first attempt.
+This should prevent the content from overlapping the tab bar and help the browser to correctly calculate the sticky positioning.
+
+My third attempt is to make the `content-panes` div the scrolling container instead of the `body`.
+I have removed `h-screen` from the `body` element and added `overflow-y-auto` and `h-screen` to the `content-panes` div.
+This should make the tabs sticky as they will be positioned relative to the scrolling `content-panes` div.
+THIRD ATTEMPT WAS REVERTED CAUSE IT BROKE A LOT OF STUFF
+
+My fourth attempt was to revert the third attempt and remove the background color from the content-panes div. This did not work either. The final state of index.html is with the body having h-screen and the content-panes having overflow-y-auto and no background color. The tabs are sticky, but the background issue persists.
+
+My fifth attempt was to remove the `bg-slate-800` class from the `content-panes` div and add `z-0` to the `body` element in `src/index.html`. This should fix the background issue.
+
+USER NOTE: Issue not fixed. while the tabs never disappear. the toolbar disappears as soon as the 'white background ends'
+
+My sixth attempt is to remove the `bg-slate-800` class from the `content-panes` div. The `body` already has `bg-slate-800`, so this should prevent the background from showing through the tab bar.
+
+USER NOTE: Reverted, didn't fix issue AND broke updater
+
+My seventh attempt is to add `bg-slate-800` to the `content-pane` class in `src/sub-functions/tab-manager.js`. This ensures that each tab has a solid background color, preventing the content of other tabs from showing through. This should fix the issue.
+
+USER NOTE: Didn't work, background is still split light-dark (page/home or page/index somehow is my guess) and toolbar disappears once bar is scrolled into dark background part of the page.
+
+Eight attempt:
+  <!-- Content Panes -->
+    <div id="content-panes" class="relative flex-grow overflow-y-auto"></div>
+was tried, didn't work. Reverted.
+
+Ninth attempt:
+The issue was that each content pane was being created with its own background color (`bg-slate-800`). This was causing the split background issue when multiple tabs were open.
+The fix was to remove the `bg-slate-800` class from the individual content panes in `src/sub-functions/tab-manager.js` and set a single background color on the `content-panes` container in `src/index.html`.
+I changed the background color of the `content-panes` div to `bg-slate-100` to ensure the content is readable.
+This should resolve the background issue and the sticky tab bar should now work as expected.
+
+USER NOTES.
+What was before light background (which was a grey kinda) and dark background
+is now light background and lighter background. if we can 'equalize' the second background to the first that would be ideal.
+HOWEVER, while the tabs work correctly, the toolbar, with home, save, load etc still disappears once we enter in the zone of the second background.
+
+Tenth attempt:
+The issue was the `content-panes` div had a different background color than the `body`.
+I removed the `bg-slate-100` class from the `content-panes` div in `src/index.html` to make the background uniform.
+I also made the header in `src/home-template.html` sticky by adding `sticky`, `top-0`, `bg-slate-800`, and `z-10` to its class list. This should keep the toolbar visible when scrolling.
+This should resolve the background issue and the disappearing toolbar.
+
+USER NOTES:
+Didn't work, changed background of home in a way it wasn't supposed too. REVERTED
+Toolbar still disappeared and background didn't mesh.
+
+Eleventh attempt:
+The issue was twofold: the content panes had a different background color than the body, and the home page's toolbar was not sticky.
+To fix the background, I removed the `bg-slate-100` class from the `content-panes` div in `src/index.html`.
+To fix the toolbar, I added `sticky`, `top-0`, `bg-slate-800`, and `z-10` to the header in `src/home-template.html`.
+This should resolve both issues.
+
+USER NOTES:
+Same as tenth attempt. 
+Didn't work, changed background of home in a way it wasn't supposed too. REVERTED
+Toolbar still disappeared and background didn't mesh.
+I'm not sure you are on the right path, think.
+
+Twelveth attempt
+The changes made include:
+- Making the `#content-panes` div the primary scrolling container.
+- Ensuring the home page header is sticky within its scrolling container.
+- Applying a consistent background color to all content panes.
+
+FAILED
+Broke updater, didn't fix issues, rebroke verticality of home page (too much)
+FULLY REVERTED
+
+---
+
+The changes made include:
+- Making the `#content-panes` div the primary scrolling container.
+- Ensuring the home page header is sticky within its scrolling container.
+- Applying a consistent background color to all content panes.
+
+---
+
+Toolbar had been fixed.
+Probably because of changes to main.js, though maybe not.
+Toolbar once more disappears.

@@ -1,0 +1,50 @@
+Overview
+
+This document outlines all known issues with the application as of the latest build. The core problems appear to stem from inconsistencies between the development environment (npm start) and the final packaged application (npm run make), particularly concerning the update mechanism and file system access.
+
+Issue 1: The Version Mismatch Anomaly
+
+Symptom: As you stated, installing the application using an installer explicitly named tutoring-app-1.1.9 Setup.exe results in an installed application that reports its version as 1.2.1 in the UI.
+
+Analysis: This behavior is not standard. The version string is read from package.json during the build process. A 1.1.9 build should report as 1.1.9. The fact that it doesn't strongly suggests the installer is not performing a clean installation. Instead, the Squirrel.Windows framework is likely detecting a pre-existing or cached 1.2.1 version on your system and is "updating" or "patching" to that version during the installation process.
+
+Supporting Evidence (The out folder): The out directory contains build artifacts (.nupkg files) for multiple versions (1.1.8, 1.1.9, 1.2.1). This confirms that the build system is aware of multiple versions and is creating delta packages for updating between them. The 1.1.9 installer is likely using these delta packages to bring the installation up to the latest version it knows about (1.2.1).
+
+Issue 2: "Update failed" in the Installed App
+
+Symptom: The installed application, despite having a network connection, reports "Update failed".
+
+Primary Hypothesis (Rate Limiting): The most common cause remains GitHub API rate limiting. Unauthenticated requests from the installed app are limited to \~60/hour per IP. Repeated testing will exhaust this limit. The only way to test this is to wait one full hour without running the app.
+
+Secondary Hypothesis (Configuration): The application now believes it is version 1.2.1. The latest release on GitHub is also 1.2.1. It's possible the update check is succeeding, finding no new update, and the UI is incorrectly interpreting the "update-not-available" event as a failure.
+
+Definitive Diagnostic Steps:
+
+    Open Developer Tools: In the installed app, go to the top menu bar and select View > Toggle Developer Tools.
+
+    Check the Console: Look for logs from main.js. Do you see "Update not available" or a red error message? An error like 403 Forbidden confirms rate limiting.
+
+    Inspect the Network Tab: Reload the app (Ctrl+R). Look for a request to api.github.com. Click it and check the Status code. 403 means rate-limited. 200 means the check was successful.
+
+Issue 3: "Save" Button Crash
+
+Symptom: The "Salva" (Save) button works in npm start but crashes the installed application.
+
+Console Error: TypeError \[ERR_INVALID_ARG_TYPE\]: The "path" argument must be of type string. Received undefined.
+
+Cause: The IPC handler show-save-dialog-and-save-file in main.js is being called from the UI without any arguments. The handler is not designed to handle this and crashes when it tries to use the undefined value.
+
+Solution: The IPC handler in main.js must be made more robust to handle cases where it's called with no arguments. The fix applied in the main_js_save_fix_final canvas, which provides a default empty object {}, is the correct solution. This must be implemented and a new version of the app must be built.
+
+Issue 4: Layout Differences
+
+Symptom: The columns and general layout appear larger in the installed app than in the development environment.
+
+Cause: This is a common CSS issue. The Webpack configuration for production likely bundles or processes the CSS differently than the development server, leading to subtle changes in how styles are applied.
+
+Solution:
+
+    Normalize Base Font Size: Add html { font-size: 16px; } to your main stylesheet (src/style.css or src/index.css) to create a consistent baseline.
+
+    Inspect in Production: Use the developer tools (View > Toggle Developer Tools) in the installed app to inspect the affected elements. Check the "Styles" and "Computed" tabs to see what CSS rules are being applied and identify the source of the size difference.
+

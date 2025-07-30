@@ -106,3 +106,9 @@
 #      per lo Studente); "L'insegnante ti fornirà i mazzi..." (Testo all'interno di un HTML
 #      destinato allo Studente).
 
+---
+
+bonus rule
+Lessons AN should contain an higher number of cards that are more concise/to the point.
+For better memorization.
+Rather than a smaller number of longer cards.

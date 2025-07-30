@@ -202,8 +202,8 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
                 <p class="text-lg text-slate-600">La seguente frase è grammaticalmente corretta?</p>
                 <div class="p-4 bg-slate-100 rounded-lg text-xl text-center font-semibold text-slate-800">${ex.question}</div>
                 <div class="flex justify-center space-x-4 pt-4">
-                    <button class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors" data-fase="fase1" data-answer="true">Vero</button>
-                    <button class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors" data-fase="fase1" data-answer="false">Falso</button>
+                    <button class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors" data-fase="fase1" data-answer="A">Vero</button>
+                    <button class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors" data-fase="fase1" data-answer="B">Falso</button>
                 </div>
             </div>`;
       } else if (fase === 'fase2') {
@@ -211,9 +211,16 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
             <div class="space-y-4">
                 <p class="text-lg text-slate-600">Scegli l'opzione corretta per completare la frase.</p>
                 <div class="p-4 bg-slate-100 rounded-lg text-xl text-center font-semibold text-slate-800">${ex.question}</div>
+                ${ex.options.length > 1 ? `
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                    ${ex.options.map(opt => `<button class="fase-btn border-2 font-bold py-3 px-6 rounded-lg transition-colors" data-fase="fase2" data-answer="${opt}">${opt}</button>`).join('')}
+                    ${ex.options.map((opt, i) => `<button class="fase-btn border-2 font-bold py-3 px-6 rounded-lg transition-colors" data-fase="fase2" data-answer="${String.fromCharCode(65 + i)}">${opt}</button>`).join('')}
                 </div>
+                ` : `
+                <div class="flex justify-center space-x-4 pt-4">
+                    <input type="text" id="fase2-input" class="font-normal text-base border-b-2 border-slate-300 focus:border-indigo-500 outline-none w-1/2 bg-slate-100 p-2 text-center">
+                    <button id="check-fase2" class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors">Controlla</button>
+                </div>
+                `}
             </div>`;
       } else if (fase === 'fase3') {
         contentHTML = `
@@ -246,20 +253,51 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
         feedbackContainer.innerHTML = ''; // Clear previous feedback
         feedbackContainer.appendChild(feedbackEl);
 
-        if (fase === 'fase1' || fase === 'fase2') {
-          questionWrapper.querySelectorAll('.fase-btn').forEach(b => {
-            b.disabled = true;
-            const isCorrectAnswer = String(ex.answer) === b.dataset.answer;
-            const isUserAnswer = String(answerState.userAnswer) === b.dataset.answer;
-            if (isCorrectAnswer) b.classList.add('btn-correct');
-            if (isUserAnswer && !answerState.isCorrect) b.classList.add('btn-incorrect');
-            if (!isCorrectAnswer && !isUserAnswer) b.classList.add('opacity-50');
-          });
-        } else { // fase3
-          const inputEl = questionWrapper.querySelector('#fase3-input');
-          inputEl.value = answerState.userAnswer;
-          inputEl.disabled = true;
-          questionWrapper.querySelector('#check-fase3').disabled = true;
+        if (fase === 'fase1' || (fase === 'fase2' && ex.options.length > 1)) {
+            const buttons = questionWrapper.querySelectorAll('.fase-btn');
+            buttons.forEach(b => {
+                b.disabled = true;
+                let correctAnswerForButton = String(ex.answer);
+                if (typeof ex.answer === 'boolean') {
+                    correctAnswerForButton = ex.answer ? "A" : "B";
+                } else if (fase === 'fase2' && !/^[A-D]$/.test(correctAnswerForButton)) {
+                    // This logic converts a word answer to its corresponding letter option (A, B, C, D)
+                    const correctIndex = ex.options.indexOf(correctAnswerForButton);
+                    if (correctIndex !== -1) {
+                        correctAnswerForButton = String.fromCharCode(65 + correctIndex);
+                    }
+                }
+                
+                const isCorrectButton = correctAnswerForButton === b.dataset.answer;
+                const isUserButton = String(answerState.userAnswer) === b.dataset.answer;
+
+                if (isCorrectButton) {
+                    b.classList.add('btn-correct');
+                }
+                if (isUserButton && !answerState.isCorrect) {
+                    b.classList.add('btn-incorrect');
+                }
+                if (!isCorrectButton && !isUserButton) {
+                    b.classList.add('opacity-50');
+                }
+            });
+        } else { // fase3, and text-input based fase2
+            const inputEl = questionWrapper.querySelector('input[type="text"]');
+            if (inputEl) {
+                inputEl.value = answerState.userAnswer;
+                inputEl.disabled = true;
+
+                if (answerState.isCorrect) {
+                    inputEl.classList.add('input-correct');
+                } else {
+                    inputEl.classList.add('input-incorrect');
+                }
+
+                const checkBtn = questionWrapper.querySelector('#check-fase3') || questionWrapper.querySelector('#check-fase2');
+                if (checkBtn) {
+                    checkBtn.disabled = true;
+                }
+            }
         }
 
       } else {
@@ -342,34 +380,51 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
         container.querySelectorAll('.fase-btn').forEach(btn => {
           btn.classList.add('btn-neutral'); // Ensure neutral style initially
           btn.onclick = (e) => { // Use onclick for single listener
-            const userAnswer = e.target.dataset.answer === 'true' ? true : e.target.dataset.answer === 'false' ? false : e.target.dataset.answer;
+            const userAnswer = e.target.dataset.answer;
             const index = appState.currentQuestion[fase];
+            let correctAnswer = exercises[fase][index].answer;
+
+            if (typeof correctAnswer === 'boolean') {
+              correctAnswer = correctAnswer ? "A" : "B";
+            } else if (fase === 'fase2' && !/^[A-D]$/.test(correctAnswer)) {
+              const correctIndex = exercises[fase][index].options.indexOf(correctAnswer);
+              if (correctIndex !== -1) {
+                correctAnswer = String.fromCharCode(65 + correctIndex);
+              }
+            }
+
             appState[fase].answers[index].userAnswer = userAnswer;
-            appState[fase].answers[index].isCorrect = userAnswer === exercises[fase][index].answer;
+            appState[fase].answers[index].isCorrect = userAnswer === correctAnswer;
             saveExerciseState(tab); // Auto-save on answer
             renderFase(fase);
           };
         });
-      } else { // fase3
-        const checkBtn = container.querySelector('#check-fase3');
-        const inputEl = container.querySelector('#fase3-input');
+      } else { // fase3 or text-input based fase2
+        const checkBtn = container.querySelector('#check-fase3, #check-fase2');
+        const inputEl = container.querySelector('#fase3-input, #fase2-input');
+        
         if (checkBtn && inputEl) {
-          checkBtn.classList.add('btn-neutral'); // Ensure neutral style initially
-          checkBtn.onclick = () => { // Use onclick for single listener
-            const userAnswer = inputEl.value.trim();
-            const index = appState.currentQuestion[fase];
-            const correctAnswer = exercises.fase3[index].answer.trim();
-            appState.fase3.answers[index].userAnswer = userAnswer;
-            // Case-insensitive and punctuation-agnostic comparison
-            appState.fase3.answers[index].isCorrect = userAnswer.toLowerCase().replace(/[.,]/g, '') === correctAnswer.toLowerCase().replace(/[.,]/g, '');
-            saveExerciseState(tab); // Auto-save on answer
-            renderFase('fase3');
-          };
-          inputEl.onkeydown = (e) => { // Use onkeydown for single listener
-            if (e.key === 'Enter') checkBtn.click();
-          };
+            checkBtn.classList.add('btn-neutral'); // Ensure neutral style initially
+            const currentFase = inputEl.id.includes('fase3') ? 'fase3' : 'fase2';
+
+            checkBtn.onclick = () => { // Use onclick for single listener
+                const userAnswer = inputEl.value.trim();
+                const index = appState.currentQuestion[currentFase];
+                const correctAnswer = exercises[currentFase][index].answer.trim();
+                
+                appState[currentFase].answers[index].userAnswer = userAnswer;
+                // Case-insensitive and punctuation-agnostic comparison
+                appState[currentFase].answers[index].isCorrect = userAnswer.toLowerCase().replace(/[.,]/g, '') === correctAnswer.toLowerCase().replace(/[.,]/g, '');
+                
+                saveExerciseState(tab); // Auto-save on answer
+                renderFase(currentFase);
+            };
+
+            inputEl.onkeydown = (e) => { // Use onkeydown for single listener
+                if (e.key === 'Enter') checkBtn.click();
+            };
         }
-      }
+    }
     }
 
     /**
@@ -414,7 +469,10 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
         saveBtn.onclick = async () => {
             const dataStr = JSON.stringify(tab.exerciseState, null, 2);
             const defaultFilename = `${tab.title}-manual-progress.json`;
-            const result = await window.api.showSaveDialogAndSaveFile(defaultFilename, dataStr);
+            const result = await window.api.showSaveDialogAndSaveFile({
+                defaultFilename: defaultFilename,
+                data: dataStr
+            });
             if (result.success) {
                 console.log(`Manually saved progress to: ${result.path}`);
             } else if (!result.canceled) {

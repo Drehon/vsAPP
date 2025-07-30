@@ -6,6 +6,77 @@ const fs = require('fs').promises;
 const fsSync = require('fs');
 const { autoUpdater } = require('electron-updater');
 
+// --- Logging ---
+const setupLogging = () => {
+  const logFilePath = path.join(app.getPath('userData'), 'main-process-log.txt');
+  let devLogFilePath = null;
+
+  // Ensure user data log directory exists (usually does, but good practice)
+  const userDataDir = path.dirname(logFilePath);
+  if (!fsSync.existsSync(userDataDir)) {
+    fsSync.mkdirSync(userDataDir, { recursive: true });
+  }
+  
+  // Create dev log file path if in development
+  if (!app.isPackaged) {
+    const devLogDir = path.join(app.getAppPath(), 'undefinedsave_logs');
+    if (!fsSync.existsSync(devLogDir)) {
+      fsSync.mkdirSync(devLogDir, { recursive: true });
+    }
+    devLogFilePath = path.join(devLogDir, 'dev-main-process-log.txt');
+  }
+
+  const originalLog = console.log;
+  const originalError = console.error;
+  const originalWarn = console.warn;
+
+  const logToFile = (type, ...args) => {
+    // Sanitize arguments to prevent circular reference errors in JSON.stringify or similar issues
+    const sanitizedArgs = args.map(arg => {
+        if (typeof arg === 'object' && arg !== null) {
+            try {
+                // A simple way to handle objects, might need to be more robust
+                return JSON.stringify(arg);
+            } catch (e) {
+                return '[Unserializable Object]';
+            }
+        }
+        return arg;
+    });
+  
+    const message = `[${type}][${new Date().toISOString()}] ${sanitizedArgs.join(' ')}\n`;
+    
+    try {
+      fsSync.appendFileSync(logFilePath, message);
+      if (devLogFilePath) {
+        fsSync.appendFileSync(devLogFilePath, message);
+      }
+    } catch (err) {
+      // If logging fails, write to the original console to avoid infinite loops
+      originalError('Failed to write to log file:', err);
+    }
+  };
+
+  console.log = (...args) => {
+    originalLog(...args);
+    logToFile('LOG', ...args);
+  };
+
+  console.error = (...args) => {
+    originalError(...args);
+    logToFile('ERROR', ...args);
+  };
+
+  console.warn = (...args) => {
+    originalWarn(...args);
+    logToFile('WARN', ...args);
+  };
+  
+  console.log('--- Logging initialized using synchronous file append ---');
+};
+// --- End Logging ---
+
+
 // --- Configuration Management ---
 const configPath = path.join(app.getPath('userData'), 'config.json');
 let appConfig = {};
@@ -48,8 +119,19 @@ if (require('electron-squirrel-startup')) {
 }
 
 let mainWindow; // Define mainWindow in a broader scope
+let isMainWindowCreated = false;
 
 const createWindow = () => {
+  // Prevent multiple windows if one already exists
+  if (isMainWindowCreated) {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.focus();
+    }
+    return;
+  }
+
+  isMainWindowCreated = true;
+  console.log('Main Process: createWindow called. Initializing main window.'); // Added log
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1200,
@@ -63,10 +145,15 @@ const createWindow = () => {
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  // We only open dev tools in development, not in the installed app.
-  // if (process.env.NODE_ENV === 'development') {
-  //   mainWindow.webContents.openDevTools();
-  // }
+  // Open dev tools for debugging. This should ideally be conditional on NODE_ENV.
+  // Changed to explicitly use app.isPackaged to control dev tools.
+  if (!app.isPackaged) {
+    mainWindow.webContents.openDevTools();
+  }
+
+  mainWindow.on('closed', () => {
+    mainWindow = null; // Dereference the window object
+  });
 };
 
 // --- IPC Handlers ---
@@ -83,6 +170,30 @@ ipcMain.handle('save-config', async (event, newConfig) => {
   }
 });
 
+ipcMain.handle('show-open-dialog-and-load-file', async (event) => {
+  const window = BrowserWindow.fromWebContents(event.sender);
+  const savesDir = getSavesDir();
+
+  const { canceled, filePaths } = await dialog.showOpenDialog(window, {
+    defaultPath: savesDir,
+    filters: [{ name: 'JSON Files', extensions: ['json'] }, { name: 'All Files', extensions: ['*'] }],
+    properties: ['openFile']
+  });
+
+  if (canceled) {
+    return { success: false, canceled: true };
+  }
+
+  const filePath = filePaths[0];
+
+  try {
+    const data = await fs.readFile(filePath, 'utf-8');
+    return { success: true, path: filePath, data: data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
 ipcMain.handle('open-directory-dialog', async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openDirectory'] });
     if (canceled) {
@@ -95,7 +206,6 @@ ipcMain.handle('open-directory-dialog', async () => {
 ipcMain.on('navigate', (event, relativePath) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (win) {
-    // CORRECTED: Use process.resourcesPath for production to correctly locate files outside the asar archive.
     const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : process.resourcesPath;
     const filePath = path.join(basePath, relativePath);
     win.loadFile(filePath);
@@ -125,7 +235,6 @@ ipcMain.handle('get-settings-content', async () => {
 });
 
 ipcMain.handle('get-file-content', async (event, relativePath) => {
-  // CORRECTED: Use process.resourcesPath for production to correctly locate files outside the asar archive.
   const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : process.resourcesPath;
   const filePath = path.join(basePath, relativePath);
   try {
@@ -150,6 +259,7 @@ ipcMain.handle('open-external-link', async (event, url) => {
 });
 
 app.on('ready', () => {
+  setupLogging();
   loadConfig();
   createWindow();
 
@@ -182,6 +292,7 @@ app.on('ready', () => {
 
   mainWindow.once('ready-to-show', () => {
     console.log('Main Process: Checking for updates...');
+    console.log('AutoUpdater configuration:', autoUpdater);
     autoUpdater.checkForUpdates().catch(err => {
       console.error('Main Process: Error during update check:', err.message);
       if (mainWindow) {
@@ -193,17 +304,23 @@ app.on('ready', () => {
   // --- Auto-Updater Event Listeners ---
   autoUpdater.on('update-available', (info) => {
     console.log('Main Process: Update available!', info);
-    mainWindow.webContents.send('update-status', 'available', info);
+    if (mainWindow) { // Ensure mainWindow exists before sending
+      mainWindow.webContents.send('update-status', 'available', info);
+    }
   });
 
   autoUpdater.on('update-not-available', (info) => {
     console.log('Main Process: Update not available.', info);
-    mainWindow.webContents.send('update-status', 'not-available', info);
+    if (mainWindow) { // Ensure mainWindow exists before sending
+      mainWindow.webContents.send('update-status', 'not-available', info);
+    }
   });
 
   autoUpdater.on('update-downloaded', (info) => {
     console.log('Main Process: Update downloaded.', info);
-    mainWindow.webContents.send('update-status', 'downloaded', info);
+    if (mainWindow) { // Ensure mainWindow exists before sending
+      mainWindow.webContents.send('update-status', 'downloaded', info);
+    }
   });
   
   autoUpdater.on('download-progress', (progressObj) => {
@@ -211,12 +328,16 @@ app.on('ready', () => {
     log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
     log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
     console.log(log_message);
-    mainWindow.webContents.send('download-progress', progressObj);
+    if (mainWindow) { // Ensure mainWindow exists before sending
+      mainWindow.webContents.send('download-progress', progressObj);
+    }
   });
 
   autoUpdater.on('error', (err) => {
     console.error('Main Process: AutoUpdater emitted an error event:', err.message);
-    mainWindow.webContents.send('update-status', 'error', { error: err.message });
+    if (mainWindow) { // Ensure mainWindow exists before sending
+      mainWindow.webContents.send('update-status', 'error', { error: err.message });
+    }
   });
 
   // --- IPC Listeners for UI Actions ---
@@ -236,6 +357,7 @@ app.on('ready', () => {
       label: 'File',
       submenu: [
         { label: 'Open Save States Folder', click: () => { shell.openPath(getSavesDir()); } },
+        { label: 'Show Logs in Folder', click: () => { shell.openPath(app.getPath('userData')); } },
         { type: 'separator' },
         { role: 'quit' }
       ]
@@ -253,14 +375,18 @@ app.on('ready', () => {
         { type: 'separator' },
         { role: 'togglefullscreen' }
       ]
-    },
-    {
+    }
+  ];
+
+  // Add Help menu only if not in production
+  if (process.env.NODE_ENV !== 'production') {
+    menuTemplate.push({
       label: 'Help',
       submenu: [
         { label: 'Learn More', click: async () => { await shell.openExternal('https://electronjs.org'); } }
       ]
-    }
-  ];
+    });
+  }
 
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
@@ -277,6 +403,8 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
+  // On macOS it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
@@ -285,7 +413,7 @@ app.on('activate', () => {
 // --- Save/Load Handlers ---
 
 const getExerciseSavePath = (exerciseFilePath) => {
-  const savesDir = getSavesDir();
+  const savesDir = appConfig.savePath || path.join(app.getPath('userData'), 'saves'); // Use appConfig.savePath
   const sanitizedFileName = exerciseFilePath.replace(/[\\/:]/g, '-').replace(/\.html$/, '').toLowerCase();
   return path.join(savesDir, `${sanitizedFileName}_state.json`);
 };
@@ -323,12 +451,16 @@ ipcMain.handle('reset-exercise-state', async (event, filePath) => {
   }
 });
 
-ipcMain.handle('show-save-dialog-and-save-file', async (event, { defaultFilename, data }) => {
+ipcMain.handle('show-save-dialog-and-save-file', async (event, { defaultFilename, data } = {}) => {
   const window = BrowserWindow.fromWebContents(event.sender);
   const savesDir = getSavesDir();
+  
+  // THE FIX IS HERE: The destructured argument now has a default value of an empty object.
+  // This prevents a crash if the renderer calls the function with no arguments.
+  const finalFilename = defaultFilename || 'exercise-save-state.json';
 
   const { canceled, filePath } = await dialog.showSaveDialog(window, {
-    defaultPath: path.join(savesDir, defaultFilename),
+    defaultPath: path.join(savesDir, finalFilename),
     filters: [{ name: 'JSON Files', extensions: ['json'] }, { name: 'All Files', extensions: ['*'] }]
   });
 
@@ -336,7 +468,7 @@ ipcMain.handle('show-save-dialog-and-save-file', async (event, { defaultFilename
     return { success: false, canceled: true };
   } else {
     try {
-      await fs.writeFile(filePath, data);
+      await fs.writeFile(filePath, data || '');
       return { success: true, path: filePath };
     } catch (err) {
       return { success: false, error: err.message };
@@ -347,10 +479,8 @@ ipcMain.handle('show-save-dialog-and-save-file', async (event, { defaultFilename
 const getContents = async (dir) => {
   let directoryPath;
   if (process.env.NODE_ENV === 'development') {
-    // In development, files are relative to the project root
     directoryPath = path.join(process.cwd(), dir);
   } else {
-    // In production, extraResources are placed at the root of the `resources` directory.
     directoryPath = path.join(process.resourcesPath, dir);
   }
   try {
@@ -364,3 +494,81 @@ const getContents = async (dir) => {
 
 ipcMain.handle('get-lessons', () => getContents('lessons'));
 ipcMain.handle('get-exercises', () => getContents('exercises'));
+ipcMain.handle('get-lessons-an', () => getContents('lessonsAN'));
+ipcMain.handle('get-tests', () => getContents('others'));
+
+ipcMain.handle('get-patch-notes', async () => {
+  const owner = 'Drehon';
+  const repo = 'vsAPP';
+  const url = `https://api.github.com/repos/${owner}/${repo}/releases`;
+  const patchNotesPath = path.join(app.getPath('userData'), 'patchnotes.json');
+  console.log('[PatchNotes] User data path for patch notes:', patchNotesPath);
+
+  const requestOptions = {};
+  if (process.env.GITHUB_TOKEN) {
+    requestOptions.headers = {
+      Authorization: `token ${process.env.GITHUB_TOKEN}`,
+      'User-Agent': 'vsAPP-patch-notes-fetcher'
+    };
+  }
+
+  try {
+    console.log('[PatchNotes] Attempting to fetch from GitHub API...');
+    const response = await net.fetch(url, requestOptions);
+    
+    if (!response.ok) {
+      throw new Error(`GitHub API responded with status: ${response.status}`);
+    }
+
+    const releases = await response.json();
+
+    if (!releases || releases.length === 0) {
+      throw new Error('No releases found on GitHub, proceeding to fallback.');
+    }
+
+    console.log(`[PatchNotes] Successfully fetched ${releases.length} releases from GitHub.`);
+    let patchNotes = releases.map(release => ({
+      version: release.tag_name,
+      notes: release.body,
+      date: release.published_at
+    }));
+
+    await fs.writeFile(patchNotesPath, JSON.stringify(patchNotes, null, 2));
+    console.log('[PatchNotes] Wrote fetched releases to userData cache.');
+
+    return patchNotes;
+  } catch (error) {
+    console.error('[PatchNotes] Failed to fetch or process patch notes from GitHub:', error);
+    
+    // Fallback 1: Try to return local data from userData (cache)
+    console.log('[PatchNotes] Attempting to load from userData cache...');
+    if (fsSync.existsSync(patchNotesPath)) {
+      try {
+        const data = await fs.readFile(patchNotesPath, 'utf-8');
+        console.log('[PatchNotes] Successfully loaded patch notes from userData cache.');
+        return JSON.parse(data);
+      } catch (readError) {
+        console.error(`[PatchNotes] Failed to read patch notes from ${patchNotesPath}:`, readError);
+        // Continue to next fallback
+      }
+    } else {
+        console.log('[PatchNotes] No patch notes cache found in userData.');
+    }
+
+    // Fallback 2: Try to return local data from app source (for first run/offline)
+    console.log('[PatchNotes] Attempting to load from local app resources...');
+    try {
+      // FIX: Use app.getAppPath() for a more reliable path in development.
+      const basePath = app.isPackaged ? process.resourcesPath : app.getAppPath();
+      const fallbackPath = path.join(basePath, 'patchnotes.json');
+      console.log('[PatchNotes] Trying fallback path:', fallbackPath);
+      
+      const fallbackData = await fs.readFile(fallbackPath, 'utf-8');
+      console.log('[PatchNotes] Successfully loaded from fallback path.');
+      return JSON.parse(fallbackData);
+    } catch (fallbackError) {
+      console.error('[PatchNotes] Failed to load fallback patch notes:', fallbackError);
+      return []; // Ultimate fallback
+    }
+  }
+});

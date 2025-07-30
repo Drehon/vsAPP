@@ -12,7 +12,14 @@ if (!installerPath || !fs.existsSync(installerPath)) {
 }
 
 // Extract the filename from the provided path.
-const installerFileName = path.basename(installerPath);
+let installerFileName = path.basename(installerPath);
+console.log(`DEBUG: Original extracted installer filename: ${installerFileName}`); // Added log for verification
+
+// IMPORTANT FIX: Replace spaces with dots to match GitHub's filename transformation
+// This ensures the filename in latest.yml matches the actual file on GitHub.
+installerFileName = installerFileName.replace(/ /g, '.');
+console.log(`DEBUG: Transformed installer filename for YAML: ${installerFileName}`); // Log transformed name
+
 // Get the output directory from the installer path.
 const outputDir = path.dirname(installerPath);
 
@@ -24,22 +31,31 @@ console.log(`Detected app version: v${appVersion}`);
 
 // Calculate the SHA512 checksum of the setup file.
 const fileBuffer = fs.readFileSync(installerPath);
-const sha512 = crypto.createHash('sha512').update(fileBuffer).digest('hex');
+const sha512 = crypto.createHash('sha512').update(fileBuffer).digest('base64');
 console.log(`SHA512 checksum for ${installerFileName}: ${sha512}`);
+
+// Define owner and repo for GitHub URL construction
+const owner = 'Drehon'; // Replace with your GitHub username
+const repo = 'vsAPP'; // Replace with your GitHub repository name
 
 // Create the YAML content.
 const yamlContent = {
   version: appVersion,
   files: [
     {
-      url: installerFileName,
+      url: installerFileName, // Use the transformed filename
       sha512: sha512,
       size: fs.statSync(installerPath).size,
     },
   ],
-  path: installerFileName,
+  path: installerFileName, // Use the transformed filename
   sha512: sha512,
   releaseDate: new Date().toISOString(),
+  // electron-updater specific properties
+  provider: 'github',
+  url: `https://github.com/${owner}/${repo}/releases/latest`, // Base URL for GitHub releases
+  disableWebInstaller: true, // Set to true as you are providing a full installer
+  updaterCacheDirName: 'vsAPP-updater', // Resolve updaterCacheDirName warning
 };
 
 // Convert the JavaScript object to a YAML string.

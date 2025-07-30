@@ -1,0 +1,41 @@
+# Application Functionality Explanation (User Tutorial)
+
+*This document explains how the application's features work from a user's perspective. It will be continuously updated and may eventually be converted into an HTML tutorial page.*
+
+**Last Updated:** 2025-07-29 12:03
+
+---
+
+## 1. Navigation
+
+The application is divided into several main sections, accessible from the home page:
+
+-   **Lessons:** Detailed explanations of grammar topics.
+-   **Lessons AN (Anki Notes):** Condensed, flashcard-style versions of the lessons for quick review.
+-   **Exercises:** Interactive practice related to each lesson.
+-   **Tests and More:** Diagnostic tests and other tools.
+
+## 2. Working with Exercises and Tests
+
+### 2.1. Answering Questions
+
+-   **Multiple Choice:** Click the button corresponding to your chosen answer.
+-   **Fill in the Blank:** Type your answer directly into the input field.
+
+### 2.2. Saving and Loading Progress
+
+-   **Automatic Saving (Save-State):** Your progress on any exercise or test is automatically saved to your computer as you work. If you close the app and reopen it, your answers will still be there. This is called the "save-state".
+-   **Manual Saving (Exporting a File):**
+    -   Click the **`Save`** button to download a `.json` file of your current progress.
+    -   This is useful for creating backups or moving your progress to a different computer.
+-   **Manual Loading (Importing a File):**
+    -   Click the **`Load`** button and select a `.json` file you previously saved.
+    -   This will overwrite the current "save-state" with the data from the file.
+
+### 2.3. Resetting Progress
+
+-   Click the **`Azzera`** (Reset) button to clear all your answers and notes for the current exercise. This will erase the "save-state" for that page only.
+
+### 2.4. Taking Notes
+
+-   Each question has a dedicated notes area. You can type any thoughts or reminders here. Your notes are saved along with your answers.
