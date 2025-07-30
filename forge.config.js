@@ -46,8 +46,11 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
+        authors: 'Drehon',
         // THE FIX IS HERE: The remoteReleases line has been removed.
         // This prevents the installer from checking GitHub for updates during installation.
+        certificateFile: './cert.pfx',
+        certificatePassword: process.env.CERTIFICATE_PASSWORD
       },
     },
     {
