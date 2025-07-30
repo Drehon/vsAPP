@@ -369,7 +369,11 @@ etc
 here the full text
 Full Text:
 
-The city council has approved a controversial plan to redevelop the waterfront, a decision [BLANK C1] has angered many local residents. The project, [BLANK C2] involves constructing a new luxury hotel, is intended to boost tourism. The area's unique character, [BLANK C3] is a major draw for visitors in the first place, reducing congestion and, [BLANK C4], pollution. This transition is not without [BLANK C5] challenges. [BLANK C6] a vast amount of data is collected, ensuring its security becomes paramount. [BLANK C7], there is the question of digital inclusion. All residents, [BLANK C8] of their age or technological proficiency, can benefit. [BLANK C9], the risk is creating a two-tiered society. The success of a true smart city depends as [BLANK C10] on thoughtful policy as it does on technological innovation.
+The city council has approved a controversial plan to redevelop the waterfront, a decision ___  has angered many local residents. The project, ___ involves constructing a new luxury hotel, is intended to boost tourism. The area's unique character, ___  is a major draw for visitors in the first place, reducing congestion and, ___ , pollution. This transition is not without ___  challenges. ___  a vast amount of data is collected, ensuring its security becomes paramount. ___ , there is the question of digital inclusion. All residents, ___ of their age or technological proficiency, can benefit. ___ , the risk is creating a two-tiered society. The success of a true smart city depends as ___  on thoughtful policy as it does on technological innovation.
+
+Then questions.
+I MEAN YOU SHOULD LEAVE THE AREA FOR excercises UNCHANGED, but add BEFORE THEM, the full text!!
+This only applies to area A of block C!!
 
 B: Multi-Error Identification II
    same behaviour as B: Advanced Reported Speech
