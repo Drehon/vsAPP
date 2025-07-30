@@ -361,26 +361,14 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
                             
                             if (!isCorrect) {
                                 const feedbackContainer = document.createElement('div');
-                                feedbackContainer.className = 'feedback-container mt-1 ml-32 pl-4 flex flex-col items-start gap-1'; // Changed to column layout
-
-                                const userAnswerEl = document.createElement('div');
-                                userAnswerEl.className = 'user-answer-text text-sm text-red-600 font-semibold';
-                                userAnswerEl.textContent = `Your Answer: ${userAnswer}`;
-                                feedbackContainer.appendChild(userAnswerEl);
+                                feedbackContainer.className = 'feedback-container mt-1 ml-32 pl-4 flex items-center gap-4';
                                 
                                 const correctAnswerEl = document.createElement('div');
-                                correctAnswerEl.className = 'correct-answer-text text-sm text-slate-600'; // Less prominent color
-                                correctAnswerEl.textContent = `Correct Answer: ${part.answer}`;
+                                correctAnswerEl.className = 'correct-answer-text text-sm text-green-600 font-semibold';
+                                correctAnswerEl.textContent = `Correct: ${part.answer}`;
                                 feedbackContainer.appendChild(correctAnswerEl);
 
-                                const markCorrectBtn = document.createElement('button');
-                                markCorrectBtn.type = 'button';
-                                markCorrectBtn.className = 'mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold py-1 px-2 rounded-lg transition-colors mt-1';
-                                markCorrectBtn.textContent = 'Mark as Correct';
-                                feedbackContainer.appendChild(markCorrectBtn);
-                                
                                 inputEl.parentElement.appendChild(feedbackContainer);
-                                inputEl.classList.add('hidden'); // Hide the original input
                             }
                         }
                     });
@@ -427,31 +415,15 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
                     
                     if (!isCorrect) {
                         const feedbackContainer = document.createElement('div');
-                        feedbackContainer.className = 'feedback-container mt-2 flex flex-col items-start gap-1';
-
-                        const userAnswerEl = document.createElement('div');
-                        userAnswerEl.className = 'user-answer-text text-sm text-red-600 font-semibold';
-                        let userAnswerText = q.type === 'mc' ? (userAnswer ? `Your Answer: (${userAnswer.toUpperCase()}) ${q.choices[userAnswer.toUpperCase().charCodeAt(0) - 65]}` : 'Your Answer: (No answer)') : `Your Answer: ${userAnswer}`;
-                        userAnswerEl.textContent = userAnswerText;
-                        feedbackContainer.appendChild(userAnswerEl);
+                        feedbackContainer.className = 'feedback-container mt-2 flex items-center gap-4';
                         
                         const correctAnswerEl = document.createElement('div');
-                        correctAnswerEl.className = 'correct-answer-text text-sm text-slate-600';
-                        let correctAnswerText = q.type === 'mc' ? `Correct Answer: (${q.answer}) ${q.choices[q.answer.charCodeAt(0) - 65]}` : `Correct Answer: ${q.answer}`;
+                        correctAnswerEl.className = 'correct-answer-text text-sm text-green-600 font-semibold';
+                        let correctAnswerText = q.type === 'mc' ? `Correct: (${q.answer}) ${q.choices[q.answer.charCodeAt(0) - 65]}` : `Correct: ${q.answer}`;
                         correctAnswerEl.textContent = correctAnswerText;
                         
-                        const markCorrectBtn = document.createElement('button');
-                        markCorrectBtn.type = 'button';
-                        markCorrectBtn.className = 'mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold py-1 px-2 rounded-lg transition-colors mt-1';
-                        markCorrectBtn.textContent = 'Mark as Correct';
-                        
                         feedbackContainer.appendChild(correctAnswerEl);
-                        feedbackContainer.appendChild(markCorrectBtn);
                         inputEl.parentElement.appendChild(feedbackContainer);
-                        
-                        if(q.type !== 'mc') {
-                           inputEl.classList.add('hidden'); // Hide the original input unless it's the dropdown
-                        }
                     }
                     
                     const btn = document.createElement('button');
@@ -480,24 +452,6 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
                 }
             });
 
-            paneElement.querySelectorAll('.mark-correct-btn').forEach(btn => {
-                if (btn) { // Null check for mark-correct-btn
-                    btn.addEventListener('click', (e) => {
-                        const button = e.target;
-                        const feedbackContainer = button.parentElement;
-                        const inputEl = feedbackContainer.parentElement.querySelector('[name^="q"], [id^="q"]');
-                        
-                        if (inputEl) {
-                            inputEl.classList.remove('incorrect-answer');
-                            inputEl.classList.add('correct-answer');
-                        }
-                        
-                        if (feedbackContainer) { // Null check for feedbackContainer
-                            feedbackContainer.remove();
-                        }
-                    });
-                }
-            });
         }
         
         function showDiagnostics() {
