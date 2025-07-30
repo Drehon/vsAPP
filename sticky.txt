@@ -82,3 +82,14 @@ The changes made include:
 Toolbar had been fixed.
 Probably because of changes to main.js, though maybe not.
 Toolbar once more disappears.
+
+Thirteenth attempt:
+The issue is that the `content-panes` div has a different background color than the `body`.
+I changed the `bg-slate-100` on the `content-panes` div to `bg-slate-800` to match the body.
+I also wrapped the main content of the home page in a new `div` with a `bg-white` and `text-slate-800` class. This will create the light-colored content area.
+I also made the header in `src/home-template.html` sticky by adding `sticky`, `top-0`, `bg-slate-800`, and `z-10` to its class list. This should keep the toolbar visible when scrolling.
+This should resolve the background issue and the disappearing toolbar.
+
+- REVERTED, didn't work. broke stuff visually but didn't adress the issue
+I think the issue is that the toolbar acts as a sticky only for the page A, but lessons are.. above page A and once you scroll also page Bad
+can't you lock the toolbar to the tabs instead? those are properly sticky
