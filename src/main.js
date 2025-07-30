@@ -10,6 +10,22 @@ const { autoUpdater } = require('electron-updater');
 const logFilePath = path.join(app.getPath('userData'), 'main-process-log.txt');
 const logStream = fsSync.createWriteStream(logFilePath, { flags: 'a' });
 
+// --- ADDED: Development-specific logging to project folder ---
+let devLogStream;
+if (!app.isPackaged) {
+  try {
+    const devLogDir = path.join(process.cwd(), 'save_logs');
+    if (!fsSync.existsSync(devLogDir)) {
+      fsSync.mkdirSync(devLogDir, { recursive: true });
+    }
+    const devLogPath = path.join(devLogDir, 'dev-main-process-log.txt');
+    devLogStream = fsSync.createWriteStream(devLogPath, { flags: 'a' });
+  } catch (error) {
+    console.error('Failed to create development log file:', error);
+  }
+}
+// ---
+
 const originalLog = console.log;
 const originalError = console.error;
 const originalWarn = console.warn;
@@ -17,6 +33,10 @@ const originalWarn = console.warn;
 const logToFile = (type, ...args) => {
   const message = `[${type}][${new Date().toISOString()}] ${args.join(' ')}\n`;
   logStream.write(message);
+  // --- ADDED: Write to dev log if it exists ---
+  if (devLogStream) {
+    devLogStream.write(message);
+  }
 };
 
 console.log = (...args) => {
@@ -244,7 +264,7 @@ app.on('ready', () => {
   }
 
   if (process.env.NODE_ENV === 'development') {
-    autoUpdater.updateConfigPath = path.join(process.cwd(), 'dev-app-update.yml');
+    autoUpdater.updateConfigPath = path.join(app.getAppPath(), 'dev-app-update.yml');
     autoUpdater.forceDevUpdateConfig = true;
   }
 
@@ -516,9 +536,14 @@ ipcMain.handle('get-patch-notes', async () => {
     // Fallback 2: Try to return local data from app source (for first run/offline)
     console.log('[PatchNotes] Attempting to load from local app resources...');
     try {
-      // FIX: Use app.getAppPath() for a more reliable path in development.
-      const basePath = app.isPackaged ? process.resourcesPath : app.getAppPath();
-      const fallbackPath = path.join(basePath, 'patchnotes.json');
+      // FIX: Use a more reliable path for development vs. packaged.
+      const isDev = !app.isPackaged;
+      // In dev, __dirname is .webpack/main. We need to go up one level to the project root.
+      // In packaged, resources are in the 'resources' directory.
+      const fallbackPath = isDev
+        ? path.join(__dirname, '..', 'patchnotes.json') 
+        : path.join(process.resourcesPath, 'patchnotes.json');
+
       console.log('[PatchNotes] Trying fallback path:', fallbackPath);
       
       const fallbackData = await fs.readFile(fallbackPath, 'utf-8');
