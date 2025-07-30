@@ -145,6 +145,8 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
         }
         loadNotes();
         addNotesListeners();
+        loadAnswers();
+        addAnswerListeners();
         renderSubmissionArea();
 
         if (testState[block].completed && testState[block].answers) {
@@ -303,6 +305,19 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
         });
     }
 
+    function addAnswerListeners() {
+        paneElement.querySelectorAll('input[name^="q"], select[name^="q"], textarea[name^="q"]').forEach(input => {
+            input.addEventListener('input', (e) => {
+                const questionId = e.target.name;
+                if (!testState[currentBlock].answers) {
+                    testState[currentBlock].answers = {};
+                }
+                testState[currentBlock].answers[questionId] = e.target.value;
+                saveExerciseState(tab);
+            });
+        });
+    }
+
     function loadNotes() {
         if (!tab.exerciseState.notes) return;
         // Only load notes for currently rendered elements.
@@ -325,6 +340,18 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
         });
     }
     
+    function loadAnswers() {
+        const savedAnswers = testState[currentBlock].answers;
+        if (!savedAnswers) return;
+
+        for (const questionId in savedAnswers) {
+            const inputEl = paneElement.querySelector(`[name="${questionId}"]`);
+            if (inputEl) {
+                inputEl.value = savedAnswers[questionId];
+            }
+        }
+    }
+
     function loadProgress() {
         if (loadFileInput) {
             loadFileInput.click();
