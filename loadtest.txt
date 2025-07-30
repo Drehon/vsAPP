@@ -244,3 +244,5 @@ grammar-exercise.js:420 Uncaught (in promise) TypeError: Cannot read properties 
     at switchTab (grammar-exercise.js:241:1)
     at initializeGrammarExercise (grammar-exercise.js:760:1)
     at loadContentIntoTab (content-loader.js:102:42)
+
+5) save and load buttons have stopped working for the exercises for lesson 1 - congiuntivo

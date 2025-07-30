@@ -1,10 +1,12 @@
-[LOG][2025-07-30T07:30:53.335Z] Main Process: createWindow called. Initializing main window.
-[LOG][2025-07-30T07:30:53.422Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
-[LOG][2025-07-30T07:30:54.987Z] Main Process: Checking for updates...
-[LOG][2025-07-30T07:30:54.993Z] AutoUpdater configuration: [object Object]
-[LOG][2025-07-30T07:30:56.147Z] Main Process: Update not available. [object Object]
-[LOG][2025-07-30T07:54:58.735Z] Main Process: createWindow called. Initializing main window.
-[LOG][2025-07-30T07:54:58.820Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
-[LOG][2025-07-30T07:55:00.393Z] Main Process: Checking for updates...
-[LOG][2025-07-30T07:55:00.398Z] AutoUpdater configuration: [object Object]
-[LOG][2025-07-30T07:55:01.671Z] Main Process: Update not available. [object Object]
+[LOG][2025-07-30T07:58:36.234Z] --- Logging initialized ---
+[LOG][2025-07-30T07:58:36.236Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-07-30T07:58:36.322Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-07-30T07:58:37.865Z] Main Process: Checking for updates...
+[LOG][2025-07-30T07:58:37.870Z] AutoUpdater configuration: [object Object]
+[LOG][2025-07-30T07:58:38.974Z] Main Process: Update not available. [object Object]
+[LOG][2025-07-30T08:00:50.565Z] --- Logging initialized ---
+[LOG][2025-07-30T08:00:50.567Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-07-30T08:00:50.659Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-07-30T08:00:52.191Z] Main Process: Checking for updates...
+[LOG][2025-07-30T08:00:52.197Z] AutoUpdater configuration: [object Object]
+[LOG][2025-07-30T08:00:53.259Z] Main Process: Update not available. [object Object]
