@@ -228,3 +228,23 @@ user notes
 from the log now seems like page is present in the log
 but there's no mention of what content the app is trying to load
 [LOG][2025-07-30T09:32:56.577Z] [PatchNotes] Loading content for: others/patch-notes.html
+
+---
+### Jules's Final Fix - 2025-07-30
+
+#### Investigation and Hypothesis
+*   **Symptom:** The log showed that `getFileContent` was correctly returning the full HTML for `patch-notes.html`, but no logs from the `get-patch-notes` IPC call were appearing.
+*   **Analysis:** The `loadContentIntoTab` function in `src/sub-functions/content-loader.js` was injecting the *entire* HTML document (including `<html>` and `<body>` tags) into a `div`. This was causing the browser's parser to fail to execute the script tag within the loaded content.
+*   **Hypothesis:** To fix this, I needed to simplify `others/patch-notes.html` into an HTML snippet and ensure the script runs immediately upon injection.
+
+#### Plan
+1.  **Simplify `others/patch-notes.html`:** Remove the `<html>`, `<head>`, and `<body>` tags.
+2.  **Modify the script:** Change the script to be a self-executing anonymous function that doesn't rely on `DOMContentLoaded`.
+
+#### Steps Taken
+*   **Step 1 & 2:** I have modified `others/patch-notes.html` to be a simple HTML snippet with a self-executing script. This will ensure that the script is executed correctly when loaded into the main application.
+
+---
+
+user notes
+log seems unchanged
