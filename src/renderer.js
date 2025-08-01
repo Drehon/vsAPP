@@ -6,6 +6,7 @@ window.addEventListener('api-ready', () => {
   // --- STATE MANAGEMENT ---
   let tabs = [];
   let nextTabId = 1;
+  let activeTab = null;
 
   // --- DOM ELEMENTS ---
   const tabBar = document.getElementById('tab-bar');
@@ -15,22 +16,98 @@ window.addEventListener('api-ready', () => {
   const networkIndicator = document.getElementById('network-indicator');
   const networkLabel = document.getElementById('network-label');
   const updateIndicator = document.getElementById('update-indicator');
-  const updateContainer = document.getElementById('update-label'); 
-  // const loadSaveBtn = document.getElementById('load-save-btn'); // Removed reference to the old Load button
-  // NEW: Reference to the 'Carica' button with id="load-btn-1"
-  let loadBtn1 = null; // Initialize as null, will be assigned when content loads
+  const updateContainer = document.getElementById('update-label');
+  
+  // Global Toolbar Buttons
+  const globalHomeBtn = document.getElementById('global-home-btn');
+  const globalReloadBtn = document.getElementById('global-reload-btn');
+  const globalSaveBtn = document.getElementById('global-save-btn');
+  const globalLoadBtn = document.getElementById('global-load-btn');
+  const globalResetBtn = document.getElementById('global-reset-btn');
+  const globalGithubBtn = document.getElementById('global-github-btn');
+  const globalSettingsBtn = document.getElementById('global-settings-btn');
+
 
   // --- CORE FUNCTIONS ---
-  const { addTab, switchTab, closeTab, renderTabs } = initializeTabManager(
+  const { renderTabs, addTab: _addTab, switchTab: _switchTab, closeTab: _closeTab } = initializeTabManager(
     tabs,
     nextTabId,
     tabBar,
     newTabBtn,
     contentPanes,
-    (tabId) => loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerciseState),
-    (tabId, filePath) => loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState, setupLoadButton), // Pass setupLoadButton
-    (tabId) => loadSettingsIntoTab(tabId, tabs, renderTabs)
+    handleLoadHome,
+    handleLoadContent,
+    handleLoadSettings
   );
+
+  // --- WRAPPER FUNCTIONS for Tab Manager ---
+  // These wrappers ensure the activeTab and toolbar are always updated
+  async function addTab(setActive = true, filePath = null, type = 'home') {
+    activeTab = await _addTab(setActive, filePath, type);
+    updateGlobalToolbar(activeTab);
+  }
+
+  async function switchTab(tabId) {
+    activeTab = await _switchTab(tabId);
+    updateGlobalToolbar(activeTab);
+  }
+
+  async function closeTab(tabId) {
+    activeTab = await _closeTab(tabId);
+    updateGlobalToolbar(activeTab);
+  }
+
+  // --- HANDLERS for Content Loading ---
+  function handleLoadHome(tabId, ...args) {
+    loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerciseState);
+  }
+
+  function handleLoadContent(tabId, filePath, ...args) {
+    loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState);
+  }
+  
+  function handleLoadSettings(tabId, ...args) {
+    loadSettingsIntoTab(tabId, tabs, renderTabs);
+  }
+
+  // --- GLOBAL TOOLBAR LOGIC ---
+  function updateGlobalToolbar(tab) {
+    if (!tab) { // No active tab, disable everything
+      [globalHomeBtn, globalReloadBtn, globalSaveBtn, globalLoadBtn, globalResetBtn, globalSettingsBtn].forEach(btn => btn.disabled = true);
+      return;
+    }
+    
+    const isHome = tab.view === 'home';
+    const isContent = tab.view === 'content';
+    const isSettings = tab.view === 'settings';
+
+    // Enable/Disable buttons based on view
+    globalHomeBtn.disabled = isHome;
+    globalSettingsBtn.disabled = isSettings;
+    globalSaveBtn.disabled = !isContent;
+    globalLoadBtn.disabled = !isContent;
+    globalResetBtn.disabled = !isContent;
+    globalReloadBtn.disabled = false; // Always enabled
+    globalGithubBtn.disabled = false; // Always enabled
+
+    // Update onclick listeners to point to the active tab's context
+    globalHomeBtn.onclick = () => !isHome && handleLoadHome(tab.id);
+    globalReloadBtn.onclick = () => {
+      if (isHome) handleLoadHome(tab.id);
+      if (isContent) handleLoadContent(tab.id, tab.filePath);
+      if (isSettings) handleLoadSettings(tab.id);
+    };
+    globalSettingsBtn.onclick = () => !isSettings && addTab(true, null, 'settings');
+    globalGithubBtn.onclick = () => window.api.openExternalLink('https://github.com/Drehon/vsapp');
+
+    // Specific listeners for content-related buttons
+    globalSaveBtn.onclick = isContent ? () => saveExerciseState(tab, true) : null;
+    globalLoadBtn.onclick = isContent ? handleLoadButtonClick : null;
+    globalResetBtn.onclick = isContent ? async () => {
+      await window.api.resetExerciseState(tab.filePath);
+      handleLoadContent(tab.id, tab.filePath);
+    } : null;
+  }
 
   // --- UTILITY & SETUP FUNCTIONS ---
   
@@ -119,43 +196,15 @@ window.addEventListener('api-ready', () => {
       }
   }
 
-  // NEW: Function to set up the load button listener
-  function setupLoadButton(buttonElement) {
-    if (buttonElement) {
-      // Remove any existing listener to prevent duplicates
-      buttonElement.removeEventListener('click', handleLoadButtonClick); 
-      buttonElement.addEventListener('click', handleLoadButtonClick);
-      console.log(`Load button event listener attached to ${buttonElement.id}.`);
-    } else {
-      console.log('setupLoadButton was called with an invalid element.');
-    }
-  }
-
-  // Handler for the load button click, now defined to be reused.
   async function handleLoadButtonClick() {
-    console.log('Load button clicked.');
     const result = await window.api.showOpenDialogAndLoadFile();
   
     if (result.success && !result.canceled) {
       try {
         const loadedState = JSON.parse(result.data);
-        const activeTab = tabs.find(t => t.active);
-  
         if (activeTab && activeTab.filePath) {
-          // Save the loaded state to the standard autosave location
           await window.api.saveExerciseState(activeTab.filePath, loadedState);
-          
-          // Reload the content in the current tab to apply the new state
-          await loadContentIntoTab(
-            activeTab.id, 
-            activeTab.filePath, 
-            tabs, 
-            renderTabs, 
-            addTab, 
-            saveExerciseState,
-            setupLoadButton // Pass the setup function again for the reloaded content
-          );
-  
+          handleLoadContent(activeTab.id, activeTab.filePath);
           console.log('Successfully loaded and applied state from', result.path);
         } else {
           console.error('No active exercise tab to load the state into.');
@@ -172,13 +221,13 @@ window.addEventListener('api-ready', () => {
 
   // --- INITIALIZATION ---
 
-  const saveExerciseState = debounce(async (tab) => {
+  const saveExerciseState = debounce(async (tab, force = false) => {
     if (tab && tab.filePath && tab.exerciseState) {
       try {
         await window.api.saveExerciseState(tab.filePath, tab.exerciseState);
-        console.log(`Autosaved progress for ${tab.filePath}`);
+        console.log(`${force ? 'Manually saved' : 'Autosaved'} progress for ${tab.filePath}`);
       } catch (error) {
-        console.error(`Failed to autosave progress for ${tab.filePath}:`, error);
+        console.error(`Failed to save progress for ${tab.filePath}:`, error);
       }
     }
   }, 500);
@@ -195,18 +244,10 @@ window.addEventListener('api-ready', () => {
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
 
-    // Listen for all update status messages from the main process
     window.api.onUpdateStatus(handleUpdateStatus);
     window.api.onDownloadProgress(handleDownloadProgress);
 
-    // No longer attach listener here directly to loadSaveBtn as it's removed/replaced
-    // The setupLoadButton will be called when new content is loaded into a tab.
-
     await addTab(true); // Add initial home tab
-    // After adding the initial tab, if it contains a load button, set it up.
-    // This assumes the home tab might contain load-btn-1, or that setupLoadButton
-    // will be called when other content (like exercises) is loaded.
-    // The loadContentIntoTab function now takes setupLoadButton as an argument.
   }
 
   if (document.readyState === 'loading') {
