@@ -29,38 +29,55 @@
             const patchNotesContainer = document.getElementById('patch-notes-container');
             patchNotesContainer.innerHTML = '<p>Loading patch notes...</p>';
 
-            try {
-                // Fetch patch notes directly for standalone viewing
-                const response = await fetch('../patchnotes.json');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const patchNotes = await response.json();
-                patchNotesContainer.innerHTML = '';
+            // The 'api-ready' event ensures we don't call the API before the preload script has finished setting it up.
+            window.addEventListener('api-ready', async () => {
+                if (window.api && window.api.getPatchNotes) {
+                    try {
+                        const patchNotes = await window.api.getPatchNotes();
+                        patchNotesContainer.innerHTML = ''; // Clear "Loading..." message
 
-                if (patchNotes && patchNotes.length > 0) {
-                    patchNotes.forEach(note => {
-                        const noteElement = document.createElement('div');
-                        noteElement.className = 'bg-white rounded-lg shadow-lg overflow-hidden p-6';
-                        
-                        const titleElement = document.createElement('h2');
-                        titleElement.className = 'text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4';
-                        titleElement.textContent = note.version;
-                        
-                        const contentElement = document.createElement('div');
-                        contentElement.className = 'prose max-w-none mt-4';
-                        contentElement.innerHTML = marked.parse(note.notes);
+                        if (patchNotes && patchNotes.length > 0) {
+                            patchNotes.forEach(note => {
+                                const noteElement = document.createElement('div');
+                                noteElement.className = 'bg-white rounded-lg shadow-lg overflow-hidden p-6';
+                                
+                                const titleElement = document.createElement('h2');
+                                titleElement.className = 'text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4';
+                                titleElement.textContent = note.version;
+                                
+                                const contentElement = document.createElement('div');
+                                contentElement.className = 'prose max-w-none mt-4';
+                                
+                                // Use marked.parse for rich text, which is loaded from a CDN.
+                                if (window.marked) {
+                                    contentElement.innerHTML = marked.parse(note.notes);
+                                } else {
+                                    // Fallback if marked.js fails to load, display as plain text.
+                                    const pre = document.createElement('pre');
+                                    pre.textContent = note.notes;
+                                    contentElement.appendChild(pre);
+                                }
 
-                        noteElement.appendChild(titleElement);
-                        noteElement.appendChild(contentElement);
-                        patchNotesContainer.appendChild(noteElement);
-                    });
+                                noteElement.appendChild(titleElement);
+                                noteElement.appendChild(contentElement);
+                                patchNotesContainer.appendChild(noteElement);
+                            });
+                        } else {
+                            patchNotesContainer.innerHTML = '<p>No patch notes found.</p>';
+                        }
+                    } catch (error) {
+                        console.error('Error loading patch notes via Electron API:', error);
+                        patchNotesContainer.innerHTML = '<p>Could not load patch notes. Please try again later.</p>';
+                    }
                 } else {
-                    patchNotesContainer.innerHTML = '<p>No patch notes found.</p>';
+                    console.error('Electron API (window.api.getPatchNotes) is not available.');
+                    patchNotesContainer.innerHTML = '<p>Error: Application context is not available. Cannot load patch notes.</p>';
                 }
-            } catch (error) {
-                console.error('Error loading patch notes:', error);
-                patchNotesContainer.innerHTML = '<p>Could not load patch notes. Please try again later.</p>';
+            });
+
+            // In case the api-ready event has already fired before this listener was added
+            if (window.api) {
+                 window.dispatchEvent(new Event('api-ready'));
             }
         });
     </script>
