@@ -2,13 +2,17 @@ import { initializeExercise } from './exercise-initializer.js';
 import { initializeGrammarExercise } from './grammar-exercise.js';
 import { initializeVerbsExercise } from './verb-exercise.js';
 
-export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState) {
+export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState, updateGlobalToolbar) {
     const tab = tabs.find(t => t.id === tabId);
     if (!tab) return;
 
     tab.view = 'content';
     tab.filePath = filePath;
     tab.title = filePath.split('/').pop().replace('.html', '');
+
+    if (updateGlobalToolbar) {
+        updateGlobalToolbar(tab);
+    }
 
     const content = await window.api.getFileContent(filePath);
     const pane = document.getElementById(`pane-${tab.id}`);
@@ -64,13 +68,17 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
     renderTabs();
 }
 
-export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerciseState) {
+export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerciseState, updateGlobalToolbar) {
     const tab = tabs.find(t => t.id === tabId);
     if (!tab) return;
 
     tab.view = 'home';
     tab.filePath = null;
     tab.title = 'Home';
+
+    if (updateGlobalToolbar) {
+        updateGlobalToolbar(tab);
+    }
 
     let homeContent = '';
     try {
@@ -92,7 +100,7 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerc
 
         try {
             // Attach listeners to the newly added home content
-            attachHomeEventListeners(scrollableContent, tabs, addTab, renderTabs, saveExerciseState);
+            attachHomeEventListeners(scrollableContent, tabs, addTab, renderTabs, saveExerciseState, updateGlobalToolbar);
         } catch (error) {
             console.error("Error attaching home event listeners:", error);
         }
@@ -101,13 +109,17 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerc
     renderTabs();
 }
 
-export async function loadSettingsIntoTab(tabId, tabs, renderTabs) {
+export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalToolbar) {
     const tab = tabs.find(t => t.id === tabId);
     if (!tab) return;
 
     tab.view = 'settings';
     tab.filePath = null;
     tab.title = 'Settings';
+
+    if (updateGlobalToolbar) {
+        updateGlobalToolbar(tab);
+    }
 
     const settingsContent = await window.api.getSettingsContent();
     const pane = document.getElementById(`pane-${tab.id}`);
@@ -124,7 +136,7 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs) {
     renderTabs();
 }
 
-function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExerciseState) {
+function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExerciseState, updateGlobalToolbar) {
     const populateList = async (listId, getFiles, folder) => {
       const list = paneElement.querySelector(`#${listId}`);
       if (!list) {
@@ -149,7 +161,7 @@ function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExe
             e.preventDefault();
             const activeTab = tabs.find(t => t.active);
             if (activeTab.view === 'home') {
-              loadContentIntoTab(activeTab.id, `${folder}/${file}`, tabs, renderTabs, addTab, saveExerciseState);
+              loadContentIntoTab(activeTab.id, `${folder}/${file}`, tabs, renderTabs, addTab, saveExerciseState, updateGlobalToolbar);
             } else {
               addTab(true, `${folder}/${file}`, 'content');
             }

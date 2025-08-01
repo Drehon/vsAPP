@@ -394,3 +394,6 @@ correct answer for comparison is absent if input answer is correct   > Fixed
 correct answer for comparison has green highlight        > Good
 correct answer is missing in some cases, probably because the correct answer is 'empty' > Bad, should be replaced with 'empty' > FIXED
 mark as correct yellow/orange button is missing entirely    > Bad > FIXED
+
+
+

@@ -59,15 +59,15 @@ window.addEventListener('api-ready', () => {
 
   // --- HANDLERS for Content Loading ---
   function handleLoadHome(tabId, ...args) {
-    loadHomeIntoTab(tabId, tabs, renderTabs, addTab, autoSaveExerciseState);
+    loadHomeIntoTab(tabId, tabs, renderTabs, addTab, autoSaveExerciseState, updateGlobalToolbar);
   }
 
   function handleLoadContent(tabId, filePath, ...args) {
-    loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, autoSaveExerciseState);
+    loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, autoSaveExerciseState, updateGlobalToolbar);
   }
   
   function handleLoadSettings(tabId, ...args) {
-    loadSettingsIntoTab(tabId, tabs, renderTabs);
+    loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalToolbar);
   }
 
   // --- GLOBAL TOOLBAR LOGIC ---
