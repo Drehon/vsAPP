@@ -2,17 +2,24 @@
 
 ---
 Date: 2025-07-30
-Work Summary: Fixed the save/load buttons for lesson 1 exercises.
+Work Summary: Improved visual clarity on grammar test page after submission.
 
 Thoughts & Hypothesis:
-The user reported that the save/load buttons were unresponsive for the lesson 1 exercise page (`L1 - congiuntivoES.html`).
-My hypothesis was that the `showSaveDialogAndSaveFile` function call in `src/sub-functions/exercise-initializer.js` was using an outdated signature. Previous fixes for the test pages had changed the function to accept a single object argument, but this change had not been propagated to the generic exercise initializer.
+The user reported several issues with the grammar test page after submission, including:
+- Input answer not highlighted.
+- Correct answer not shown for correct user answers.
+- Empty correct answers not displayed correctly.
+- "Mark as correct" button missing.
+
+My hypothesis was that the `enterReviewMode` function in `src/sub-functions/grammar-exercise.js` was not correctly handling these cases.
 
 Plan & Steps Taken:
-1. *Update `showSaveDialogAndSaveFile` call:*
-   - **Action:** Modified the `saveBtn.onclick` event handler in `src/sub-functions/exercise-initializer.js`.
-   - **Details:** I changed the call from `window.api.showSaveDialogAndSaveFile(defaultFilename, dataStr)` to `window.api.showSaveDialogAndSaveFile({ defaultFilename: defaultFilename, data: dataStr })`.
-   - **Outcome:** This aligns the function call with the updated API, fixing the bug and making the save/load buttons functional for all standard exercise pages.
+1. *Always show correct answer:*
+   - **Action:** Modified `enterReviewMode` to always create the feedback container with the correct answer, regardless of whether the user's answer was correct.
+2. *Handle empty answers:*
+   - **Action:** Updated the logic to display `(blank)` for correct answers that are either `'--'` or `''`.
+3. *Add "Mark as correct" button:*
+   - **Action:** Added logic to create and display the "Mark as correct" button in the feedback container for incorrect answers.
 
 Next Steps:
 - The fix is complete. The next step is to submit the changes for the user's review.
@@ -317,3 +324,76 @@ grammar-exercise.js:420 Uncaught (in promise) TypeError: Cannot read properties 
 
 5) save/load buttons don't work for L1 - congiuntivoES.html > FIXED
    the buttons themselves are unresponding
+
+---
+
+USER NOTES 6
+
+Expansion on 3
+Currently, on submit for grammar
+input answer has no green/red highlight/background shadow if correct/incorrect               > Bad
+but issue varies by block/area of excercises
+
+block a
+A: Advanced Article and Quantifier Application
+   no green/red highlight instead of default grey on the back on input answer
+B: Multi-Error Identification
+   no green/red highlight instead of default grey on the back of THE AREA for input answer
+C: Sentence Transformation
+   wrong answers have no red highlight instead of default grey on the back of THE AREA for input answer
+   correct answers are preceded by correct (in input area, not needed there) but lack the green highlight instead of default grey on the back of THE AREA for input answer
+
+block b
+A: Complex Clause Construction
+   input answers disappear after submit, leaving not the 'empty' of non-input, but an actual empty space and a reddish highlight
+   empty/not inserted answers correctly have the reddish higlight
+   on pressing mark as correct, the green highlight is correctly implemented, but the 'correct answer: ' below (which you might think redundant) disappears
+B: Advanced Reported Speech
+   on pressing mark as correct, the 'correct: ..' disappears, i'd like to keep it.
+   correct answers are seemingly recognized as correct (by the lack of mark as correct, BUT have no green highlight)
+   incorrect answers also have no highlight in red
+C: Grammatical Form and Function
+   same as A: Complex Clause Construction
+
+block c
+A: Integrated Grammar Application
+same behaviour as A: Complex Clause Construction of block B
+
+also, before the list of questions.
+the FULL text should be displayed for clarity
+FULL Test
+question 1
+question 2 
+etc
+
+here the full text
+Full Text:
+
+The city council has approved a controversial plan to redevelop the waterfront, a decision ___  has angered many local residents. The project, ___ involves constructing a new luxury hotel, is intended to boost tourism. The area's unique character, ___  is a major draw for visitors in the first place, reducing congestion and, ___ , pollution. This transition is not without ___  challenges. ___  a vast amount of data is collected, ensuring its security becomes paramount. ___ , there is the question of digital inclusion. All residents, ___ of their age or technological proficiency, can benefit. ___ , the risk is creating a two-tiered society. The success of a true smart city depends as ___  on thoughtful policy as it does on technological innovation.
+
+Then questions.
+I MEAN YOU SHOULD LEAVE THE AREA FOR excercises UNCHANGED, but add BEFORE THEM, the full text!!
+This only applies to area A of block C!!
+
+B: Multi-Error Identification II
+   same behaviour as B: Advanced Reported Speech
+
+
+C: Sentence Transformation: Advanced Structures
+   same behaviour as B: Advanced Reported Speech
+
+
+
+retake full test button should be removed.
+diagnostics button should be removed.
+download all notes button should be removed.
+
+/
+
+correct answer for comparison is absent if input answer is correct   > Fixed
+correct answer for comparison has green highlight        > Good
+correct answer is missing in some cases, probably because the correct answer is 'empty' > Bad, should be replaced with 'empty' > FIXED
+mark as correct yellow/orange button is missing entirely    > Bad > FIXED
+
+
+

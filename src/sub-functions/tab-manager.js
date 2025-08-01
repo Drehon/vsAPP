@@ -1,11 +1,9 @@
 export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, contentPanes, loadHomeIntoTab, loadContentIntoTab, loadSettingsIntoTab) {
   function renderTabs() {
-    // Clear existing tab elements, except for the new tab button
     while (tabBar.children.length > 1) {
       tabBar.removeChild(tabBar.firstChild);
     }
 
-    // Create and append tab elements for each tab in the state
     tabs.forEach(tab => {
       const tabEl = document.createElement('div');
       tabEl.id = `tab-${tab.id}`;
@@ -17,28 +15,23 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
         </button>
       `;
 
-      // Event listener for clicking on a tab (to switch or go home)
       tabEl.addEventListener('click', (e) => {
-        if (e.target.closest('.close-tab-btn')) return; // Ignore clicks on the close button
+        if (e.target.closest('.close-tab-btn')) return;
         if (tab.active && tab.view !== 'home') {
-          // If active tab is clicked and it's not home, go to home view for that tab
           loadHomeIntoTab(tab.id, tabs, renderTabs, addTab);
         } else if (!tab.active) {
-          // If inactive tab is clicked, switch to it
           switchTab(tab.id);
         }
       });
 
-      // Event listener for closing a tab
       tabEl.querySelector('.close-tab-btn').addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent the tab click event from firing
+        e.stopPropagation();
         closeTab(tab.id);
       });
 
-      tabBar.insertBefore(tabEl, newTabBtn); // Insert tab before the "New Tab" button
+      tabBar.insertBefore(tabEl, newTabBtn);
     });
 
-    // Show/hide content panes based on the active tab
     const activeTab = tabs.find(t => t.active);
     if (activeTab) {
       document.querySelectorAll('.content-pane').forEach(pane => {
@@ -49,7 +42,7 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
 
   async function addTab(setActive = true, filePath = null, type = 'home') {
     if (setActive) {
-      tabs.forEach(t => t.active = false); // Deactivate all other tabs if setting new one active
+      tabs.forEach(t => t.active = false);
     }
 
     const newTab = {
@@ -58,14 +51,13 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
       view: 'home',
       filePath: null,
       active: true,
-      exerciseState: null, // Initialize exercise state as null
+      exerciseState: null,
     };
     tabs.push(newTab);
 
-    // Create a new content pane for the tab
     const paneEl = document.createElement('div');
     paneEl.id = `pane-${newTab.id}`;
-    paneEl.className = 'content-pane h-full w-full flex flex-col';
+    paneEl.className = 'content-pane h-full w-full';
     contentPanes.appendChild(paneEl);
 
     if (type === 'content' && filePath) {
@@ -76,50 +68,46 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
       await loadHomeIntoTab(newTab.id, tabs, renderTabs, addTab);
     }
 
-    // Ensure the new tab is marked as active before rendering, or just render if not setting active
     if (setActive) {
-      await switchTab(newTab.id);
+      return switchTab(newTab.id);
     } else {
       renderTabs();
+      return newTab;
     }
   }
 
-  async function switchTab(tabId) { // Made async to await content loading
-    const previouslyActiveTab = tabs.find(t => t.active);
-    tabs.forEach(t => t.active = (t.id === tabId)); // Set active flag for the selected tab
+  async function switchTab(tabId) {
+    tabs.forEach(t => t.active = (t.id === tabId));
+    const newActiveTab = tabs.find(t => t.active);
 
-    const newActiveTab = tabs.find(t => t.id === tabId);
-
-    // If the new active tab has content (lesson/exercise), reload it to ensure latest state
-    if (newActiveTab && newActiveTab.view === 'content' && newActiveTab.filePath) {
-      // This will re-fetch the content and re-initialize the exercise state from the file system
-      await loadContentIntoTab(newActiveTab.id, newActiveTab.filePath);
+    if (newActiveTab) {
+      // No need to reload content here, just show the pane.
+      // Reloading will be handled by the reload button.
     }
-
-    renderTabs(); // Re-render the tab bar and content panes
+    
+    renderTabs();
+    return newActiveTab;
   }
 
   function closeTab(tabId) {
     const tabIndex = tabs.findIndex(t => t.id === tabId);
-    if (tabIndex === -1) return; // Tab not found
+    if (tabIndex === -1) return null;
 
     const pane = document.getElementById(`pane-${tabId}`);
-    if (pane) pane.remove(); // Remove the content pane from the DOM
+    if (pane) pane.remove();
 
     const wasActive = tabs[tabIndex].active;
-    tabs.splice(tabIndex, 1); // Remove the tab from the array
+    tabs.splice(tabIndex, 1);
 
-    // If the closed tab was active and there are other tabs, activate the nearest one
     if (wasActive && tabs.length > 0) {
-      const newActiveIndex = Math.max(0, tabIndex - 1); // Activate previous tab or first if none
-      switchTab(tabs[newActiveIndex].id); // Use switchTab to trigger potential reload
+      const newActiveIndex = Math.max(0, tabIndex - 1);
+      return switchTab(tabs[newActiveIndex].id);
     } else if (tabs.length === 0) {
-      // If no tabs left, add a new default home tab
-      addTab();
-      return;
+      return addTab();
     }
 
-    renderTabs(); // Re-render the UI
+    renderTabs();
+    return tabs.find(t => t.active) || null;
   }
 
   return { renderTabs, addTab, switchTab, closeTab };

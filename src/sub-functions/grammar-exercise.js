@@ -1,4 +1,4 @@
-export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
+export function initializeGrammarExercise(paneElement, tab, autoSaveExerciseState) {
     const exerciseDataEl = paneElement.querySelector('#exercise-data');
     if (!exerciseDataEl) return;
 
@@ -179,35 +179,38 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
         }
         
         const completedBlocks = Object.values(testState).filter(b => b.completed).length;
-        if (completedBlocks > 0) {
+        if (testState[currentBlock].completed) {
              const buttonContainer = document.createElement('div');
              buttonContainer.className = 'mt-6 flex flex-col md:flex-row justify-center items-center gap-4';
              buttonContainer.innerHTML = `
-                <button type="button" id="view-diagnostics-btn" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300 shadow-md">View Diagnostics</button>
-                <button type="button" id="download-notes-btn" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300 shadow-md">Download All Notes</button>
-                <button type="button" id="retake-test-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300 shadow-md">Retake Full Test</button>
+                <button type="button" id="reverse-submit-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300 shadow-md">Reverse</button>
              `;
              submissionArea.appendChild(buttonContainer);
              
-             // Null checks for these buttons
-             const viewDiagnosticsBtn = paneElement.querySelector('#view-diagnostics-btn');
-             if (viewDiagnosticsBtn) {
-                 viewDiagnosticsBtn.addEventListener('click', showDiagnostics);
-             }
-
-             const retakeTestBtn = paneElement.querySelector('#retake-test-btn');
-             if (retakeTestBtn) {
-                 retakeTestBtn.addEventListener('click', () => {
-                    // Using a custom modal for confirmation instead of alert/confirm
-                    // This still uses `confirm` which is problematic in an iframe.
-                    // A custom modal UI should be implemented here.
-                    if(confirm('Are you sure you want to retake the entire test? All your progress and notes will be lost.')) {
-                        localStorage.clear();
-                        window.location.reload();
-                    }
-                });
+             const reverseSubmitBtn = paneElement.querySelector('#reverse-submit-btn');
+             if (reverseSubmitBtn) {
+                 reverseSubmitBtn.addEventListener('click', reverseSubmit);
              }
         }
+    }
+
+    function reverseSubmit() {
+        testState[currentBlock].completed = false;
+        autoSaveExerciseState(tab);
+        
+        paneElement.querySelectorAll(`form input, form select, form textarea`).forEach(el => {
+            el.disabled = false;
+        });
+
+        paneElement.querySelectorAll('.feedback-container').forEach(el => el.remove());
+        paneElement.querySelectorAll('.correct-answer').forEach(el => el.classList.remove('correct-answer'));
+        paneElement.querySelectorAll('.incorrect-answer').forEach(el => el.classList.remove('incorrect-answer'));
+        paneElement.querySelectorAll('.correct').forEach(el => el.classList.remove('correct'));
+        paneElement.querySelectorAll('.incorrect-selected').forEach(el => el.classList.remove('incorrect-selected'));
+        paneElement.querySelectorAll('.explain-btn').forEach(el => el.remove());
+        paneElement.querySelectorAll('.explanation-content').forEach(el => el.remove());
+
+        renderSubmissionArea();
     }
 
     function handleBlockSubmit() {
@@ -228,7 +231,7 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
 
         testState[currentBlock].completed = true;
         testState[currentBlock].answers = userAnswers;
-        saveExerciseState(tab);
+        autoSaveExerciseState(tab);
         
         enterReviewMode(currentBlock, userAnswers);
         renderSubmissionArea();
@@ -289,7 +292,7 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                     tab.exerciseState.notes = {};
                 }
                 tab.exerciseState.notes[questionId] = e.target.value;
-                saveExerciseState(tab);
+                autoSaveExerciseState(tab);
             });
         });
         paneElement.querySelectorAll('.notes-toggle-btn').forEach(btn => {
@@ -313,7 +316,7 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                     testState[currentBlock].answers = {};
                 }
                 testState[currentBlock].answers[questionId] = e.target.value;
-                saveExerciseState(tab);
+                autoSaveExerciseState(tab);
             });
         });
     }
@@ -415,15 +418,18 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                     if (inputEl) {
                         inputEl.value = userAnswers[partIdName] || ''; // Display user's answer (original case)
                         inputEl.classList.add(isCorrect ? 'correct-answer' : 'incorrect-answer');
+                        
+                        const feedbackContainer = document.createElement('div');
+                        feedbackContainer.className = 'feedback-container mt-1 flex items-center gap-2';
+                        
+                        const correctAnswerEl = document.createElement('div');
+                        correctAnswerEl.className = 'correct-answer-box text-xs font-semibold bg-green-100 border border-green-200 text-green-800 p-1 rounded';
+                        const correctAnswer = (part.answer === '--' || part.answer === '') ? '(blank)' : part.answer;
+                        correctAnswerEl.textContent = `Correct: ${correctAnswer}`;
+                        
+                        feedbackContainer.appendChild(correctAnswerEl);
+                        
                         if (!isCorrect) {
-                            const feedbackContainer = document.createElement('div');
-                            feedbackContainer.className = 'feedback-container mt-1 flex items-center gap-2';
-                            
-                            const correctAnswerEl = document.createElement('div');
-                            correctAnswerEl.className = 'correct-answer-box text-xs font-semibold bg-green-100 border border-green-200 text-green-800 p-1 rounded';
-                            const correctAnswer = part.answer === '--' ? '(blank)' : part.answer;
-                            correctAnswerEl.textContent = `Correct: ${correctAnswer}`;
-                            
                             const markCorrectBtn = document.createElement('button');
                             markCorrectBtn.type = 'button';
                             markCorrectBtn.className = 'mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-1 px-2 rounded-lg transition-colors';
@@ -432,14 +438,12 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                             markCorrectBtn.addEventListener('click', (e) => {
                                 inputEl.classList.remove('incorrect-answer');
                                 inputEl.classList.add('correct-answer');
-                                if (e.target.parentElement) e.target.parentElement.remove(); // Null check
+                                e.target.parentElement.remove(); // Removes the button's container
                             });
-
-                            feedbackContainer.appendChild(correctAnswerEl);
                             feedbackContainer.appendChild(markCorrectBtn);
-                            
-                            inputEl.parentElement.appendChild(feedbackContainer);
                         }
+                        
+                        inputEl.parentElement.appendChild(feedbackContainer);
                     }
                     const noteIdForPart = `${q.displayNum}_part${index}`;
                     const noteArea = paneElement.querySelector(`#notes-${noteIdForPart}`);
@@ -467,7 +471,7 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                 if (q.type === 'mc') {
                     isCorrect = userAnswer.toUpperCase() === q.answer;
                     inputEl.classList.add('review-select');
-                    inputEl.value = userAnswer;
+                    inputEl.value = userAnswer.toUpperCase();
 
                     const optionsDisplay = wrapper.querySelector('.mc-options-display');
                     if (optionsDisplay) {
@@ -486,14 +490,17 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                     isCorrect = userAnswer === q.answer.toLowerCase().replace(/[.,]/g, '');
                     inputEl.value = userAnswers[`q${q.displayNum}`] || '';
 
+                    const feedbackContainer = document.createElement('div');
+                    feedbackContainer.className = 'feedback-container mt-2 flex items-center gap-4';
+                    
+                    const correctAnswerEl = document.createElement('div');
+                    correctAnswerEl.className = 'correct-answer-box text-sm font-semibold bg-green-100 border border-green-200 text-green-800 py-1 px-3 rounded-md';
+                    const correctAnswer = (q.answer === '--' || q.answer === '') ? '(blank)' : q.answer;
+                    correctAnswerEl.textContent = `Correct: ${correctAnswer}`;
+                    
+                    feedbackContainer.appendChild(correctAnswerEl);
+                    
                     if (!isCorrect) {
-                        const feedbackContainer = document.createElement('div');
-                        feedbackContainer.className = 'feedback-container mt-2 flex items-center gap-4';
-                        
-                        const correctAnswerEl = document.createElement('div');
-                        correctAnswerEl.className = 'correct-answer-box text-sm font-semibold bg-green-100 border border-green-200 text-green-800 py-1 px-3 rounded-md';
-                        correctAnswerEl.textContent = `Correct: ${q.answer}`;
-                        
                         const markCorrectBtn = document.createElement('button');
                         markCorrectBtn.type = 'button';
                         markCorrectBtn.className = 'mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-1 px-2 rounded-lg transition-colors';
@@ -501,13 +508,12 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
                         markCorrectBtn.addEventListener('click', (e) => {
                             inputEl.classList.remove('incorrect-answer');
                             inputEl.classList.add('correct-answer');
-                            if (e.target.parentElement) e.target.parentElement.remove(); // Null check
+                            e.target.parentElement.remove();
                         });
-                        
-                        feedbackContainer.appendChild(correctAnswerEl);
                         feedbackContainer.appendChild(markCorrectBtn);
-                        inputEl.parentElement.appendChild(feedbackContainer);
                     }
+                    
+                    inputEl.parentElement.appendChild(feedbackContainer);
                 }
                 inputEl.classList.add(isCorrect ? 'correct-answer' : 'incorrect-answer');
 
@@ -757,7 +763,7 @@ export function initializeGrammarExercise(paneElement, tab, saveExerciseState) {
           if (isValidState) {
             tab.exerciseState = newState;
             testState = newState; // Update the local reference
-            saveExerciseState(tab); // Auto-save the newly loaded state to the default path
+            autoSaveExerciseState(tab); // Auto-save the newly loaded state to the default path
             
             // Determine which block to show after loading
             let blockToRender = 1;

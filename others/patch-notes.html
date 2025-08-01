@@ -20,44 +20,14 @@
         </header>
         
         <main id="patch-notes-container" class="space-y-8">
-            <!-- Patch notes will be loaded here -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
+                <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4">1.0.0</h2>
+                <div class="prose max-w-none mt-4">
+                    <h3>Welcome!</h3>
+                    <p>This is the initial version of the application. More patch notes will appear here automatically as new versions are released.</p>
+                </div>
+            </div>
         </main>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const patchNotesContainer = document.getElementById('patch-notes-container');
-            patchNotesContainer.innerHTML = '<p>Loading patch notes...</p>';
-
-            try {
-                const patchNotes = await window.api.getPatchNotes();
-                patchNotesContainer.innerHTML = '';
-
-                if (patchNotes && patchNotes.length > 0) {
-                    patchNotes.forEach(note => {
-                        const noteElement = document.createElement('div');
-                        noteElement.className = 'bg-white rounded-lg shadow-lg overflow-hidden p-6';
-                        
-                        const titleElement = document.createElement('h2');
-                        titleElement.className = 'text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4';
-                        titleElement.textContent = note.version;
-                        
-                        const contentElement = document.createElement('div');
-                        contentElement.className = 'prose max-w-none mt-4';
-                        contentElement.innerHTML = marked.parse(note.notes);
-
-                        noteElement.appendChild(titleElement);
-                        noteElement.appendChild(contentElement);
-                        patchNotesContainer.appendChild(noteElement);
-                    });
-                } else {
-                    patchNotesContainer.innerHTML = '<p>No patch notes found.</p>';
-                }
-            } catch (error) {
-                console.error('Error loading patch notes:', error);
-                patchNotesContainer.innerHTML = '<p>Could not load patch notes. Please try again later.</p>';
-            }
-        });
-    </script>
 </body>
 </html>
