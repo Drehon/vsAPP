@@ -22,3 +22,26 @@
 
 **Expected Outcome:**
 *   This change should resolve the timing issue. The script will now wait for the `window.api` object to be fully initialized before attempting to call `window.api.getPatchNotes()`. This should allow the patch notes to be fetched and displayed correctly.
+
+------
+
+FAILED
+
+------
+
+fix(renderer): Resolve race condition in patch notes loading
+
+The patch notes page was not loading its content because of a race condition in the event-based loading mechanism.
+
+The `preload.js` script was dispatching an `api-ready` event on `DOMContentLoaded`, but the event listener in `others/patch-notes.html` was sometimes attached after the event had already fired, causing the loading script to never execute.
+
+This change simplifies the loading logic by removing the event-based communication entirely:
+- The unnecessary `api-ready` event dispatch is removed from `preload.js`.
+- The script in `others/patch-notes.html` is modified to execute directly when parsed, removing the event listener.
+
+This ensures the patch notes are fetched reliably as the `preload.js` script is guaranteed to execute before the page's scripts.
+
+-----
+
+FAILED
+And reverted cause it broke the app.
