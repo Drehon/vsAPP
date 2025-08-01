@@ -30,7 +30,12 @@
             patchNotesContainer.innerHTML = '<p>Loading patch notes...</p>';
 
             try {
-                const patchNotes = await window.api.getPatchNotes();
+                // Fetch patch notes directly for standalone viewing
+                const response = await fetch('../patchnotes.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const patchNotes = await response.json();
                 patchNotesContainer.innerHTML = '';
 
                 if (patchNotes && patchNotes.length > 0) {

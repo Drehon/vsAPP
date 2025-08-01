@@ -134,3 +134,4 @@ New issues caused by last modification.
 
 save/load buttons no longer work, they are unresponsive on clicks 
 for excercises and tests pages
+i assume this is because of how we moved the toolbar (where save and load buttons are located) into index.html, changing the logic?
