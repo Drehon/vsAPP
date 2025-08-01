@@ -127,3 +127,16 @@ Your suggestion to "lock the toolbar to the tabs" was the correct solution. I ha
     *   **`renderer.js`:** I've centralized the control for the new global toolbar here. A new function, `updateGlobalToolbar`, is now responsible for managing the buttons. It checks which tab is currently active and enables, disables, and assigns the correct actions to the buttons based on the context. For example, the "Save" button is disabled on the Home screen but enabled for a lesson.
 
 This new architecture permanently solves the disappearing toolbar issue and makes the application's structure more logical and easier to maintain.
+
+----
+
+New issues caused by last modification.
+Now excercises and tests pages no longer function correctly.
+
+content-loader.js:60 Uncaught (in promise) ReferenceError: scrollableContent is not defined
+    at loadContentIntoTab (content-loader.js:60:35)
+loadContentIntoTab @ content-loader.js:60
+await in loadContentIntoTab (async)
+eval @ content-loader.js:152
+content-loader.js:55 Uncaught (in promise) ReferenceError: scrollableContent is not defined
+    at loadContentIntoTab (content-loader.js:55:42)
