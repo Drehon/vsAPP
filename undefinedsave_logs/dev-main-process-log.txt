@@ -131,3 +131,37 @@
 [LOG][2025-08-01T18:43:12.613Z] AutoUpdater configuration: [Unserializable Object]
 [LOG][2025-08-01T18:43:13.948Z] [PatchNotes] Loading content for: others/patch-notes.html
 [LOG][2025-08-01T18:43:13.958Z] Main Process: Update not available. {"tag":"v1.2.9","version":"1.2.9","files":[{"url":"vsAPP-1.2.9.Setup.exe","sha512":"qd4NBJyGgtndaCgWOpTRzU83OVbryXYbZ7DrhT/SA8k88hqN/mHpKKyPyLO6CtMc80cWH1KCNLb0/VuJRgYu7A==","size":114392576}],"path":"vsAPP-1.2.9.Setup.exe","sha512":"qd4NBJyGgtndaCgWOpTRzU83OVbryXYbZ7DrhT/SA8k88hqN/mHpKKyPyLO6CtMc80cWH1KCNLb0/VuJRgYu7A==","releaseDate":"2025-07-30T10:58:35.394Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.2.9","releaseNotes":"<p>Mostly functional release. Quite buggy but can be used.</p>"}
+[LOG][2025-08-01T19:19:09.363Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-01T19:19:09.366Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-01T19:19:09.369Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-01T19:19:09.470Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-01T19:19:14.106Z] Main Process: Checking for updates...
+[LOG][2025-08-01T19:19:14.113Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-01T19:19:15.527Z] Main Process: Update not available. {"tag":"v1.2.9","version":"1.2.9","files":[{"url":"vsAPP-1.2.9.Setup.exe","sha512":"qd4NBJyGgtndaCgWOpTRzU83OVbryXYbZ7DrhT/SA8k88hqN/mHpKKyPyLO6CtMc80cWH1KCNLb0/VuJRgYu7A==","size":114392576}],"path":"vsAPP-1.2.9.Setup.exe","sha512":"qd4NBJyGgtndaCgWOpTRzU83OVbryXYbZ7DrhT/SA8k88hqN/mHpKKyPyLO6CtMc80cWH1KCNLb0/VuJRgYu7A==","releaseDate":"2025-07-30T10:58:35.394Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.2.9","releaseNotes":"<p>Mostly functional release. Quite buggy but can be used.</p>"}
+[LOG][2025-08-01T19:19:16.876Z] [PatchNotes] Loading content for: others/patch-notes.html
+[LOG][2025-08-01T19:19:22.604Z] [PatchNotes] Loading content for: others/patch-notes.html
+[LOG][2025-08-01T19:21:24.878Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-01T19:21:24.881Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-01T19:21:24.882Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-01T19:21:24.969Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-01T19:21:26.531Z] Main Process: Checking for updates...
+[LOG][2025-08-01T19:21:26.537Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-01T19:21:27.696Z] Main Process: Update not available. {"tag":"v1.2.9","version":"1.2.9","files":[{"url":"vsAPP-1.2.9.Setup.exe","sha512":"qd4NBJyGgtndaCgWOpTRzU83OVbryXYbZ7DrhT/SA8k88hqN/mHpKKyPyLO6CtMc80cWH1KCNLb0/VuJRgYu7A==","size":114392576}],"path":"vsAPP-1.2.9.Setup.exe","sha512":"qd4NBJyGgtndaCgWOpTRzU83OVbryXYbZ7DrhT/SA8k88hqN/mHpKKyPyLO6CtMc80cWH1KCNLb0/VuJRgYu7A==","releaseDate":"2025-07-30T10:58:35.394Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.2.9","releaseNotes":"<p>Mostly functional release. Quite buggy but can be used.</p>"}
+[LOG][2025-08-01T19:27:44.812Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-01T19:27:44.815Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-01T19:27:44.817Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-01T19:27:44.907Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-01T19:27:46.388Z] Main Process: Checking for updates...
+[LOG][2025-08-01T19:27:46.395Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-01T19:27:47.589Z] Main Process: Update not available. {"tag":"v1.3.0","version":"1.3.0","files":[{"url":"vsAPP-1.3.0.Setup.exe","sha512":"oKeOMXqLZ+/6h64M0/HdB6CF6m6Z3Ov0ru9eYQyGtj5xroHOxKNfetOVhef8M2PDgj6/XyfX0Z6paWOymmgxew==","size":114391040}],"path":"vsAPP-1.3.0.Setup.exe","sha512":"oKeOMXqLZ+/6h64M0/HdB6CF6m6Z3Ov0ru9eYQyGtj5xroHOxKNfetOVhef8M2PDgj6/XyfX0Z6paWOymmgxew==","releaseDate":"2025-08-01T18:47:07.100Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.0","releaseNotes":"<p>Fixed toolbar<br>\nMade progress with patchnotes page implementation, missing download on release-notes.<br>\nMade progress with fixing of last small issues with tests pages.</p>"}
+[LOG][2025-08-01T19:30:20.173Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-01T19:30:20.176Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-01T19:30:20.177Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-01T19:30:20.271Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-01T19:30:21.763Z] Main Process: Checking for updates...
+[LOG][2025-08-01T19:30:21.769Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-01T19:30:22.974Z] Main Process: Update not available. {"tag":"v1.3.0","version":"1.3.0","files":[{"url":"vsAPP-1.3.0.Setup.exe","sha512":"oKeOMXqLZ+/6h64M0/HdB6CF6m6Z3Ov0ru9eYQyGtj5xroHOxKNfetOVhef8M2PDgj6/XyfX0Z6paWOymmgxew==","size":114391040}],"path":"vsAPP-1.3.0.Setup.exe","sha512":"oKeOMXqLZ+/6h64M0/HdB6CF6m6Z3Ov0ru9eYQyGtj5xroHOxKNfetOVhef8M2PDgj6/XyfX0Z6paWOymmgxew==","releaseDate":"2025-08-01T18:47:07.100Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.0","releaseNotes":"<p>Fixed toolbar<br>\nMade progress with patchnotes page implementation, missing download on release-notes.<br>\nMade progress with fixing of last small issues with tests pages.</p>"}
+[LOG][2025-08-01T19:31:10.182Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-01T19:31:10.184Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-01T19:31:10.186Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-01T19:31:10.280Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
