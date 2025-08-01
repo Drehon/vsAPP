@@ -20,14 +20,66 @@
         </header>
         
         <main id="patch-notes-container" class="space-y-8">
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
-                <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4">1.0.0</h2>
-                <div class="prose max-w-none mt-4">
-                    <h3>Welcome!</h3>
-                    <p>This is the initial version of the application. More patch notes will appear here automatically as new versions are released.</p>
-                </div>
-            </div>
+            <!-- Patch notes will be dynamically loaded here -->
         </main>
     </div>
+    <script>
+        window.addEventListener('api-ready', () => {
+            const container = document.getElementById('patch-notes-container');
+            if (!container) {
+                console.error('Patch notes container not found!');
+                return;
+            }
+
+            // Clear any existing static content
+            container.innerHTML = '';
+
+            window.api.getPatchNotes().then(patchNotes => {
+                if (!patchNotes || patchNotes.length === 0) {
+                    const emptyMessage = document.createElement('div');
+                    emptyMessage.className = 'bg-white rounded-lg shadow-lg overflow-hidden p-6 text-slate-500';
+                    emptyMessage.textContent = 'No patch notes are available at this time.';
+                    container.appendChild(emptyMessage);
+                    return;
+                }
+
+                patchNotes.forEach(note => {
+                    const patchElement = document.createElement('div');
+                    patchElement.className = 'bg-white rounded-lg shadow-lg overflow-hidden p-6';
+
+                    const title = document.createElement('h2');
+                    // Handle multiple potential version fields
+                    const version = note.name || note.tagName || note.version || 'Unnamed Version';
+                    const date = note.published_at || note.date;
+                    const formattedDate = date ? new Date(date).toLocaleDateString() : '';
+                    
+                    title.className = 'text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4';
+                    title.textContent = formattedDate ? `${version} - ${formattedDate}` : version;
+
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'prose max-w-none mt-4';
+                    // Handle multiple potential notes fields
+                    const notesBody = note.body || note.notes || 'No details provided for this patch.';
+                    
+                    // Convert newlines to <br> tags for proper HTML rendering
+                    contentDiv.innerHTML = notesBody
+                        .replace(/\\r\\n/g, '<br>')
+                        .replace(/\r\n/g, '<br>')
+                        .replace(/\\n/g, '<br>')
+                        .replace(/\n/g, '<br>');
+
+                    patchElement.appendChild(title);
+                    patchElement.appendChild(contentDiv);
+                    container.appendChild(patchElement);
+                });
+            }).catch(error => {
+                console.error('Failed to load patch notes:', error);
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'bg-white rounded-lg shadow-lg overflow-hidden p-6 text-red-500';
+                errorMessage.textContent = 'Failed to load patch notes. Please check the logs for more details.';
+                container.appendChild(errorMessage);
+            });
+        });
+    </script>
 </body>
 </html>

@@ -29,3 +29,7 @@ page is still empty
 I have modified the file `others/patch-notes.html` to statically display the patch notes from `patchnotes.json`.
 I removed the JavaScript code that was dynamically loading the notes and instead embedded the content directly into the HTML.
 This makes the page load faster and independent of any client-side API.
+
+---
+
+now what i wanted

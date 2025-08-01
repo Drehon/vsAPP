@@ -512,77 +512,18 @@ ipcMain.handle('get-lessons-an', () => getContents('lessonsAN'));
 ipcMain.handle('get-tests', () => getContents('others'));
 
 ipcMain.handle('get-patch-notes', async () => {
-  const owner = 'Drehon';
-  const repo = 'vsAPP';
-  const url = `https://api.github.com/repos/${owner}/${repo}/releases`;
-  const patchNotesPath = path.join(app.getPath('userData'), 'patchnotes.json');
-  console.log('[PatchNotes] User data path for patch notes:', patchNotesPath);
-
-  const requestOptions = {};
-  if (process.env.GITHUB_TOKEN) {
-    requestOptions.headers = {
-      Authorization: `token ${process.env.GITHUB_TOKEN}`,
-      'User-Agent': 'vsAPP-patch-notes-fetcher'
-    };
-  }
-
+  console.log('[PatchNotes] Attempting to load from local app resources...');
   try {
-    console.log('[PatchNotes] Attempting to fetch from GitHub API...');
-    const response = await net.fetch(url, requestOptions);
+    // FIX: Use app.getAppPath() for a more reliable path in development.
+    const basePath = app.isPackaged ? process.resourcesPath : app.getAppPath();
+    const fallbackPath = path.join(basePath, 'patchnotes.json');
+    console.log('[PatchNotes] Trying fallback path:', fallbackPath);
     
-    if (!response.ok) {
-      throw new Error(`GitHub API responded with status: ${response.status}`);
-    }
-
-    const releases = await response.json();
-
-    if (!releases || releases.length === 0) {
-      throw new Error('No releases found on GitHub, proceeding to fallback.');
-    }
-
-    console.log(`[PatchNotes] Successfully fetched ${releases.length} releases from GitHub.`);
-    let patchNotes = releases.map(release => ({
-      version: release.tag_name,
-      notes: release.body,
-      date: release.published_at
-    }));
-
-    await fs.writeFile(patchNotesPath, JSON.stringify(patchNotes, null, 2));
-    console.log('[PatchNotes] Wrote fetched releases to userData cache.');
-
-    return patchNotes;
-  } catch (error) {
-    console.error('[PatchNotes] Failed to fetch or process patch notes from GitHub:', error);
-    
-    // Fallback 1: Try to return local data from userData (cache)
-    console.log('[PatchNotes] Attempting to load from userData cache...');
-    if (fsSync.existsSync(patchNotesPath)) {
-      try {
-        const data = await fs.readFile(patchNotesPath, 'utf-8');
-        console.log('[PatchNotes] Successfully loaded patch notes from userData cache.');
-        return JSON.parse(data);
-      } catch (readError) {
-        console.error(`[PatchNotes] Failed to read patch notes from ${patchNotesPath}:`, readError);
-        // Continue to next fallback
-      }
-    } else {
-        console.log('[PatchNotes] No patch notes cache found in userData.');
-    }
-
-    // Fallback 2: Try to return local data from app source (for first run/offline)
-    console.log('[PatchNotes] Attempting to load from local app resources...');
-    try {
-      // FIX: Use app.getAppPath() for a more reliable path in development.
-      const basePath = app.isPackaged ? process.resourcesPath : app.getAppPath();
-      const fallbackPath = path.join(basePath, 'patchnotes.json');
-      console.log('[PatchNotes] Trying fallback path:', fallbackPath);
-      
-      const fallbackData = await fs.readFile(fallbackPath, 'utf-8');
-      console.log('[PatchNotes] Successfully loaded from fallback path.');
-      return JSON.parse(fallbackData);
-    } catch (fallbackError) {
-      console.error('[PatchNotes] Failed to load fallback patch notes:', fallbackError);
-      return []; // Ultimate fallback
-    }
+    const fallbackData = await fs.readFile(fallbackPath, 'utf-8');
+    console.log('[PatchNotes] Successfully loaded from fallback path.');
+    return JSON.parse(fallbackData);
+  } catch (fallbackError) {
+    console.error('[PatchNotes] Failed to load fallback patch notes:', fallbackError);
+    return []; // Ultimate fallback
   }
 });
