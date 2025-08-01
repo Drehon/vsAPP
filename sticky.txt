@@ -167,4 +167,4 @@ This change permanently fixes the unresponsive button issue by removing the conf
 
 ---
 post-attempt
-buttons in the toolbar remain unresponsive when the tab for excercises or tests is open.
+buttons in the toolbar, which should be used to save the content of the excercises and tests pages remain unresponsive ALWAYS.
