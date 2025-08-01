@@ -1,7 +1,56 @@
 [
   {
-    "version": "1.0.0",
-    "notes": "### Welcome!\n\nThis is the initial version of the application. More patch notes will appear here automatically as new versions are released.",
-    "date": "2023-01-01T00:00:00Z"
+    "body": "Fixed tests buttons. minimal improvements.",
+    "name": "v1.3.1",
+    "publishedAt": "2025-08-01T19:36:02Z",
+    "tagName": "v1.3.1"
+  },
+  {
+    "body": "Fixed toolbar\r\nMade progress with patchnotes page implementation, missing download on release-notes.\r\nMade progress with fixing of last small issues with tests pages.",
+    "name": "v1.3.0",
+    "publishedAt": "2025-08-01T19:23:13Z",
+    "tagName": "v1.3.0"
+  },
+  {
+    "body": "Mostly functional release. Quite buggy but can be used.",
+    "name": "v1.2.9",
+    "publishedAt": "2025-07-30T10:59:10Z",
+    "tagName": "v1.2.9"
+  },
+  {
+    "body": "Sticky toolbar issue is back.\r\nTests and load/saves are in general fixed.\r\nSmall tweaks still required for tests pages though.\r\nPatch notes page still resists implementation, logging is also proving problematic.",
+    "name": "v1.2.8",
+    "publishedAt": "2025-07-30T08:46:47Z",
+    "tagName": "v1.2.8"
+  },
+  {
+    "body": "Implemented patch notes page.\r\nStill to be verified as fully functional.\r\nSAVE/LOAD for tests work in progress still.",
+    "name": "v1.2.7",
+    "publishedAt": "2025-07-29T20:18:49Z",
+    "tagName": "v1.2.7"
+  },
+  {
+    "body": "Finally fixed the excercise errors.\r\nVisual fixes are still a work in progress though.\r\nNext are also save/load buttons for tests.\r\nAnd the patches page.",
+    "name": "v1.2.6",
+    "publishedAt": "2025-07-29T19:48:11Z",
+    "tagName": "v1.2.6"
+  },
+  {
+    "body": "Updated lessons and excercises.\r\nVisual bug in pages background being worked on.\r\nBug that shows all phase 1 and phase 2 excercises for L2 and L3 as false, persists.",
+    "name": "v1.2.5",
+    "publishedAt": "2025-07-29T18:42:56Z",
+    "tagName": "v1.2.5"
+  },
+  {
+    "body": "Fixed Home Page.\r\nImplemented better folder separation.\r\nOther minor tweaks.",
+    "name": "v1.2.4",
+    "publishedAt": "2025-07-29T16:09:12Z",
+    "tagName": "v1.2.4"
+  },
+  {
+    "body": "Stable (theoretically) full first release",
+    "name": "v1.2.1",
+    "publishedAt": "2025-07-28T13:09:18Z",
+    "tagName": "v1.2.1"
   }
 ]

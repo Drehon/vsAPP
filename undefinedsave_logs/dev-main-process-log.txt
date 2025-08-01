@@ -165,3 +165,11 @@
 [LOG][2025-08-01T19:31:10.184Z] --- setupLogging() has been called. This is the first log after setup. ---
 [LOG][2025-08-01T19:31:10.186Z] Main Process: createWindow called. Initializing main window.
 [LOG][2025-08-01T19:31:10.280Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-01T19:50:08.274Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-01T19:50:08.277Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-01T19:50:08.278Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-01T19:50:08.383Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-01T19:50:08.861Z] Main Process: Checking for updates...
+[LOG][2025-08-01T19:50:08.867Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-01T19:50:09.926Z] Main Process: Update not available. {"tag":"v1.3.1","version":"1.3.1","files":[{"url":"vsAPP-1.3.1.Setup.exe","sha512":"F1aL0xK3Fd2sflvllF1T51camgTrARWUaYSrEPPln+QCczaTomKGWDmw971vbAyEF+VXwx0F8uLoSkYtlmSMrA==","size":114390016}],"path":"vsAPP-1.3.1.Setup.exe","sha512":"F1aL0xK3Fd2sflvllF1T51camgTrARWUaYSrEPPln+QCczaTomKGWDmw971vbAyEF+VXwx0F8uLoSkYtlmSMrA==","releaseDate":"2025-08-01T19:32:50.167Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.1","releaseNotes":"<p>Fixed tests buttons. minimal improvements.</p>"}
+[LOG][2025-08-01T19:50:12.214Z] [PatchNotes] Loading content for: others/patch-notes.html
