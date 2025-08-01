@@ -1,4 +1,4 @@
-export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
+export function initializeVerbsExercise(paneElement, tab, autoSaveExerciseState) {
     const exerciseDataEl = paneElement.querySelector('#exercise-data');
     if (!exerciseDataEl) return;
 
@@ -184,7 +184,7 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
 
             testState[currentBlock].completed = true;
             testState[currentBlock].answers = userAnswers;
-            saveExerciseState(tab);
+            autoSaveExerciseState(tab);
             
             enterReviewMode(currentBlock, userAnswers);
             renderSubmissionArea();
@@ -245,7 +245,7 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
                         tab.exerciseState.notes = {};
                     }
                     tab.exerciseState.notes[questionId] = e.target.value;
-                    saveExerciseState(tab);
+                    autoSaveExerciseState(tab);
                 });
             });
             paneElement.querySelectorAll('.notes-toggle-btn').forEach(btn => {
@@ -267,7 +267,7 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
                         testState[currentBlock].answers = {};
                     }
                     testState[currentBlock].answers[questionId] = e.target.value;
-                    saveExerciseState(tab);
+                    autoSaveExerciseState(tab);
                 });
             });
         }
@@ -676,7 +676,7 @@ export function initializeVerbsExercise(paneElement, tab, saveExerciseState) {
           if (isValidState) {
             tab.exerciseState = newState;
             testState = newState; // Update the local reference
-            saveExerciseState(tab); // Auto-save the newly loaded state to the default path
+            autoSaveExerciseState(tab); // Auto-save the newly loaded state to the default path
             
             // Determine which block to show after loading
             let blockToRender = 1;

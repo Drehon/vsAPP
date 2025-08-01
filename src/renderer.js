@@ -59,11 +59,11 @@ window.addEventListener('api-ready', () => {
 
   // --- HANDLERS for Content Loading ---
   function handleLoadHome(tabId, ...args) {
-    loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerciseState);
+    loadHomeIntoTab(tabId, tabs, renderTabs, addTab, autoSaveExerciseState);
   }
 
   function handleLoadContent(tabId, filePath, ...args) {
-    loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState);
+    loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, autoSaveExerciseState);
   }
   
   function handleLoadSettings(tabId, ...args) {
@@ -101,8 +101,8 @@ window.addEventListener('api-ready', () => {
     globalGithubBtn.onclick = () => window.api.openExternalLink('https://github.com/Drehon/vsapp');
 
     // Specific listeners for content-related buttons
-    globalSaveBtn.onclick = isContent ? () => saveExerciseState(tab, true) : null;
-    globalLoadBtn.onclick = isContent ? handleLoadButtonClick : null;
+    globalSaveBtn.onclick = isContent ? () => handleSaveButtonClick(tab) : null;
+    globalLoadBtn.onclick = isContent ? () => handleLoadButtonClick(tab) : null;
     globalResetBtn.onclick = isContent ? async () => {
       await window.api.resetExerciseState(tab.filePath);
       handleLoadContent(tab.id, tab.filePath);
@@ -196,18 +196,43 @@ window.addEventListener('api-ready', () => {
       }
   }
 
-  async function handleLoadButtonClick() {
+  async function handleSaveButtonClick(tab) {
+    if (!tab || !tab.filePath || !tab.exerciseState) {
+      console.error('No active exercise tab or state to save.');
+      return;
+    }
+    const dataStr = JSON.stringify(tab.exerciseState, null, 2);
+    const defaultFilename = `${tab.title}-manual-progress.json`;
+    const result = await window.api.showSaveDialogAndSaveFile({
+        defaultFilename: defaultFilename,
+        data: dataStr
+    });
+    if (result.success) {
+        console.log(`Manually saved progress to: ${result.path}`);
+    } else if (!result.canceled) {
+        console.error('Failed to manually save progress:', result.error);
+    }
+  }
+
+  async function handleLoadButtonClick(tab) {
+    if (!tab) return;
     const result = await window.api.showOpenDialogAndLoadFile();
   
     if (result.success && !result.canceled) {
       try {
         const loadedState = JSON.parse(result.data);
-        if (activeTab && activeTab.filePath) {
-          await window.api.saveExerciseState(activeTab.filePath, loadedState);
-          handleLoadContent(activeTab.id, activeTab.filePath);
+        // Basic validation to ensure the loaded file is a valid state object
+        const isValidState = loadedState && typeof loadedState === 'object' && Object.keys(loadedState).length > 0;
+
+        if (isValidState && tab.filePath) {
+          await window.api.saveExerciseState(tab.filePath, loadedState); // Overwrite autosave with this state
+          handleLoadContent(tab.id, tab.filePath); // Reload content to apply the new state
           console.log('Successfully loaded and applied state from', result.path);
-        } else {
+        } else if (!tab.filePath) {
           console.error('No active exercise tab to load the state into.');
+        } else {
+          console.error('Loaded file does not appear to be a valid progress file.');
+          // Optionally, inform the user via a UI element
         }
       } catch (e) {
         console.error('Failed to parse or apply loaded file:', e);
@@ -221,13 +246,13 @@ window.addEventListener('api-ready', () => {
 
   // --- INITIALIZATION ---
 
-  const saveExerciseState = debounce(async (tab, force = false) => {
+  const autoSaveExerciseState = debounce(async (tab, force = false) => {
     if (tab && tab.filePath && tab.exerciseState) {
       try {
         await window.api.saveExerciseState(tab.filePath, tab.exerciseState);
-        console.log(`${force ? 'Manually saved' : 'Autosaved'} progress for ${tab.filePath}`);
+        console.log(`Autosaved progress for ${tab.filePath}`);
       } catch (error) {
-        console.error(`Failed to save progress for ${tab.filePath}:`, error);
+        console.error(`Failed to autosave progress for ${tab.filePath}:`, error);
       }
     }
   }, 500);

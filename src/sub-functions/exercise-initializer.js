@@ -1,4 +1,4 @@
-export function initializeExercise(paneElement, tab, saveExerciseState) {
+export function initializeExercise(paneElement, tab, autoSaveExerciseState) {
     const exerciseDataEl = paneElement.querySelector('#exercise-data');
     if (!exerciseDataEl) return;
 
@@ -83,7 +83,7 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
       // Ensure the listener is added only once or properly cleaned up
       textarea.onkeyup = () => { // Using onkeyup to avoid multiple listeners
         appState[fase].answers[index].note = textarea.value;
-        saveExerciseState(tab); // Auto-save on note change
+        autoSaveExerciseState(tab); // Auto-save on note change
       };
       return notesArea;
     }
@@ -109,7 +109,7 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
       // Ensure the listener is added only once or properly cleaned up
       textarea.onkeyup = () => { // Using onkeyup to avoid multiple listeners
         appState[fase].phaseNote = textarea.value;
-        saveExerciseState(tab); // Auto-save on phase note change
+        autoSaveExerciseState(tab); // Auto-save on phase note change
       };
       return phaseNotesEl;
     }
@@ -145,7 +145,7 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
           markBtn.onclick = (e) => { // Use onclick to avoid multiple listeners
             const { fase, index } = e.target.dataset;
             appState[fase].answers[parseInt(index)].isCorrect = true;
-            saveExerciseState(tab); // Auto-save on marking correct
+            autoSaveExerciseState(tab); // Auto-save on marking correct
             rerenderAll();
           };
         }
@@ -335,7 +335,7 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
           if (appState.currentQuestion[fase] > 0) {
             appState.currentQuestion[fase]--;
             renderFase(fase);
-            saveExerciseState(tab); // Auto-save on navigation
+            autoSaveExerciseState(tab); // Auto-save on navigation
           }
         };
       }
@@ -347,7 +347,7 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
           if (appState.currentQuestion[fase] < total) {
             appState.currentQuestion[fase]++;
             renderFase(fase);
-            saveExerciseState(tab); // Auto-save on navigation
+            autoSaveExerciseState(tab); // Auto-save on navigation
           }
         };
       }
@@ -359,7 +359,7 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
           if (!isNaN(questionNum) && questionNum >= 1 && questionNum <= total) {
             appState.currentQuestion[fase] = questionNum - 1;
             renderFase(fase);
-            saveExerciseState(tab); // Auto-save on jump
+            autoSaveExerciseState(tab); // Auto-save on jump
           }
         };
         jumpInput.onkeydown = (e) => { // Use onkeydown for single listener
@@ -395,7 +395,7 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
 
             appState[fase].answers[index].userAnswer = userAnswer;
             appState[fase].answers[index].isCorrect = userAnswer === correctAnswer;
-            saveExerciseState(tab); // Auto-save on answer
+            autoSaveExerciseState(tab); // Auto-save on answer
             renderFase(fase);
           };
         });
@@ -416,7 +416,7 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
                 // Case-insensitive and punctuation-agnostic comparison
                 appState[currentFase].answers[index].isCorrect = userAnswer.toLowerCase().replace(/[.,]/g, '') === correctAnswer.toLowerCase().replace(/[.,]/g, '');
                 
-                saveExerciseState(tab); // Auto-save on answer
+                autoSaveExerciseState(tab); // Auto-save on answer
                 renderFase(currentFase);
             };
 
@@ -455,57 +455,4 @@ export function initializeExercise(paneElement, tab, saveExerciseState) {
         if (content) content.classList.remove('hidden');
       };
     });
-
-
-
-    // Save/Load functionality
-    const saveBtn = document.getElementById(`save-btn-${tab.id}`);
-    const loadBtn = document.getElementById(`load-btn-${tab.id}`);
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.json';
-
-    if (saveBtn) {
-        saveBtn.onclick = async () => {
-            const dataStr = JSON.stringify(tab.exerciseState, null, 2);
-            const defaultFilename = `${tab.title}-manual-progress.json`;
-            const result = await window.api.showSaveDialogAndSaveFile({
-                defaultFilename: defaultFilename,
-                data: dataStr
-            });
-            if (result.success) {
-                console.log(`Manually saved progress to: ${result.path}`);
-            } else if (!result.canceled) {
-                console.error('Failed to manually save progress:', result.error);
-            }
-        };
-    }
-
-    if (loadBtn) {
-        loadBtn.onclick = () => {
-            fileInput.click();
-        };
-    }
-
-    fileInput.onchange = (event) => { // Use onchange for single listener
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const newState = JSON.parse(e.target.result);
-          if (newState.fase1 && newState.fase2 && newState.fase3) {
-            tab.exerciseState = newState;
-            initializeState(); // Re-initialize with loaded state
-            rerenderAll(); // Re-render UI
-            saveExerciseState(tab); // Auto-save the newly loaded state
-            console.log(`Manually loaded progress for ${tab.title}`);
-          } else { throw new Error("Invalid JSON structure"); }
-        } catch (error) {
-          console.error("Error loading JSON:", error);
-        }
-      };
-      reader.readAsText(file);
-      fileInput.value = ''; // Reset for next load
-    };
   }
