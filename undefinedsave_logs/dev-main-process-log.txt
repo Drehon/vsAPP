@@ -49,3 +49,11 @@
 [LOG][2025-08-01T17:13:54.135Z] AutoUpdater configuration: [Unserializable Object]
 [LOG][2025-08-01T17:13:55.378Z] Main Process: Update not available. {"tag":"v1.2.9","version":"1.2.9","files":[{"url":"vsAPP-1.2.9.Setup.exe","sha512":"qd4NBJyGgtndaCgWOpTRzU83OVbryXYbZ7DrhT/SA8k88hqN/mHpKKyPyLO6CtMc80cWH1KCNLb0/VuJRgYu7A==","size":114392576}],"path":"vsAPP-1.2.9.Setup.exe","sha512":"qd4NBJyGgtndaCgWOpTRzU83OVbryXYbZ7DrhT/SA8k88hqN/mHpKKyPyLO6CtMc80cWH1KCNLb0/VuJRgYu7A==","releaseDate":"2025-07-30T10:58:35.394Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.2.9","releaseNotes":"<p>Mostly functional release. Quite buggy but can be used.</p>"}
 [LOG][2025-08-01T17:14:06.268Z] [PatchNotes] Loading content for: others/patch-notes.html
+[LOG][2025-08-01T17:51:10.453Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-01T17:51:10.456Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-01T17:51:10.458Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-01T17:51:10.553Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-01T17:51:12.113Z] Main Process: Checking for updates...
+[LOG][2025-08-01T17:51:12.119Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-01T17:51:13.290Z] Main Process: Update not available. {"tag":"v1.2.9","version":"1.2.9","files":[{"url":"vsAPP-1.2.9.Setup.exe","sha512":"qd4NBJyGgtndaCgWOpTRzU83OVbryXYbZ7DrhT/SA8k88hqN/mHpKKyPyLO6CtMc80cWH1KCNLb0/VuJRgYu7A==","size":114392576}],"path":"vsAPP-1.2.9.Setup.exe","sha512":"qd4NBJyGgtndaCgWOpTRzU83OVbryXYbZ7DrhT/SA8k88hqN/mHpKKyPyLO6CtMc80cWH1KCNLb0/VuJRgYu7A==","releaseDate":"2025-07-30T10:58:35.394Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.2.9","releaseNotes":"<p>Mostly functional release. Quite buggy but can be used.</p>"}
+[LOG][2025-08-01T17:51:50.740Z] [PatchNotes] Loading content for: others/patch-notes.html

@@ -131,12 +131,6 @@ This new architecture permanently solves the disappearing toolbar issue and make
 ----
 
 New issues caused by last modification.
-Now excercises and tests pages no longer function correctly.
 
-content-loader.js:60 Uncaught (in promise) ReferenceError: scrollableContent is not defined
-    at loadContentIntoTab (content-loader.js:60:35)
-loadContentIntoTab @ content-loader.js:60
-await in loadContentIntoTab (async)
-eval @ content-loader.js:152
-content-loader.js:55 Uncaught (in promise) ReferenceError: scrollableContent is not defined
-    at loadContentIntoTab (content-loader.js:55:42)
+save/load buttons no longer work, they are unresponsive on clicks 
+for excercises and tests pages

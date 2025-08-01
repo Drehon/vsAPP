@@ -52,12 +52,12 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
             tab.exerciseState = isValidState ? savedState : null;
             
             if (filePath.includes('student-grammar')) {
-                initializeGrammarExercise(scrollableContent, tab, saveExerciseState);
+                initializeGrammarExercise(contentWrapper, tab, saveExerciseState);
             } else if (filePath.includes('student-verbs')) {
-                initializeVerbsExercise(scrollableContent, tab, saveExerciseState);
+                initializeVerbsExercise(contentWrapper, tab, saveExerciseState);
             }
             else {
-                initializeExercise(scrollableContent, tab, saveExerciseState);
+                initializeExercise(contentWrapper, tab, saveExerciseState);
             }
         }
     }
