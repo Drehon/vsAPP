@@ -139,3 +139,35 @@ This new architecture is significantly more reliable because it operates at the 
 
 ---
 
+Patchnotes after update to 1.3.5
+I'm not sure how to proceed.
+Patch Notes
+Here you can find the latest updates and changes to the application.
+
+v1.3.5 - 8/2/2025
+No release notes provided.
+v1.3.3 - 8/2/2025
+Testing full implementation.
+v1.3.2 - 8/2/2025
+Attempt at patch notes generation-implementation.
+If it works we can move to finalize the patch-notes implementation.
+etc etc
+
+>
+
+I want to update to 1.3.6 and directly get
+
+v1.3.6 - 8/2/2025
+Correct release notes.
+v1.3.5 - 8/2/2025
+Correct release notes.
+v1.3.5 - 8/2/2025
+Correct release notes.
+v1.3.3 - 8/2/2025
+Testing full implementation.
+v1.3.2 - 8/2/2025
+Attempt at patch notes generation-implementation.
+If it works we can move to finalize the patch-notes implementation.
+etc etc
+
+But i don't understand the issue
