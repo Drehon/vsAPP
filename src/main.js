@@ -114,7 +114,7 @@ function getSavesDir() {
     return savesDir;
 }
 
-const { updateAndGeneratePatchNotes } = require('./patch-updater.js');
+const { generatePatchHTML } = require('./patch-updater.js');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -244,23 +244,16 @@ ipcMain.handle('get-file-content', async (event, relativePath) => {
         console.log(`[PatchNotes] Loading content for: ${relativePath}`);
         const userPatchNotesPath = path.join(app.getPath('userData'), 'patch-notes.html');
         try {
+            // Always try to read the generated file from userData.
+            // The generation now happens on startup if an update occurred.
             const content = await fs.readFile(userPatchNotesPath, 'utf-8');
             return content; // Return full HTML
         } catch (error) {
-            if (error.code === 'ENOENT') {
-                console.log('[PatchNotes] No user patch-notes.html found, generating for the first time.');
-                await updateAndGeneratePatchNotes(app, null);
-                try {
-                    const content = await fs.readFile(userPatchNotesPath, 'utf-8');
-                    return content;
-                } catch (retryError) {
-                    console.error(`Failed to read patch notes after generation:`, retryError);
-                    return '<html><body>Error loading patch notes. Please check logs.</body></html>';
-                }
-            } else {
-                console.error(`Failed to read ${relativePath} from userData: ${error}`);
-                return '<html><body>Error loading patch notes. Please check logs.</body></html>';
-            }
+            // If it doesn't exist, it means it's the first run or something went wrong.
+            // We'll let the post-update/first-run handler deal with creating it.
+            // For now, return a helpful message.
+            console.warn(`[PatchNotes] Could not find ${userPatchNotesPath}. It should be generated on startup.`);
+            return '<html><body>Patch notes are being generated. Please restart the application or check back shortly.</body></html>';
         }
     }
 
@@ -335,7 +328,12 @@ app.on('ready', () => {
   // --- Auto-Updater Event Listeners ---
   autoUpdater.on('update-available', (info) => {
     console.log('Main Process: Update available!', info);
-    updateInfo = info; // Store the info for the download process
+    // Persist the update info to a file so we can access it after the restart.
+    const pendingUpdatePath = path.join(app.getPath('userData'), 'pending-update.json');
+    fs.writeFile(pendingUpdatePath, JSON.stringify(info, null, 2))
+      .then(() => console.log(`[Updater] Saved pending update info to ${pendingUpdatePath}`))
+      .catch(err => console.error('[Updater] Failed to save pending update info:', err));
+
     if (mainWindow) { // Ensure mainWindow exists before sending
       mainWindow.webContents.send('update-status', 'available', info);
     }
@@ -375,16 +373,9 @@ app.on('ready', () => {
   // --- IPC Listeners for UI Actions ---
   
   ipcMain.on('start-download', () => {
-    console.log('Main Process: Download initiated by user.');
-    if (updateInfo) {
-        updateAndGeneratePatchNotes(app, updateInfo).then(() => {
-            console.log('[PatchNotes] Generation complete. Starting download.');
-            autoUpdater.downloadUpdate();
-        });
-    } else {
-        console.log('Main Process: No update info, starting download directly.');
-        autoUpdater.downloadUpdate(); // Fallback if no info is present
-    }
+    console.log('Main Process: Download initiated by user. Starting download directly.');
+    // The patch notes generation will now happen after the app restarts.
+    autoUpdater.downloadUpdate();
   });
 
   ipcMain.on('restart-app', () => {
@@ -430,7 +421,93 @@ app.on('ready', () => {
 
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
+
+  handlePostUpdateTasks();
 });
+
+/**
+ * Handles the post-update tasks, specifically for updating patch notes.
+ * This function is called on startup.
+ */
+const handlePostUpdateTasks = async () => {
+  const userDataPath = app.getPath('userData');
+  const pendingUpdatePath = path.join(userDataPath, 'pending-update.json');
+
+  try {
+    // Check if a pending update file exists.
+    const pendingUpdateData = await fs.readFile(pendingUpdatePath, 'utf8');
+    const updateInfo = JSON.parse(pendingUpdateData);
+    console.log('[PostUpdate] Detected a pending update for version', updateInfo.version);
+
+    // 1. Copy the canonical patchnotes.json from the app resources to userData.
+    const basePath = app.isPackaged ? process.resourcesPath : app.getAppPath();
+    const bundledPatchNotesPath = path.join(basePath, 'patchnotes.json');
+    const userPatchNotesPath = path.join(userDataPath, 'patchnotes.json');
+    
+    await fs.copyFile(bundledPatchNotesPath, userPatchNotesPath);
+    console.log('[PostUpdate] Copied new patchnotes.json to userData.');
+
+    // 2. Load the newly copied patchnotes.json.
+    let patchNotes = JSON.parse(await fs.readFile(userPatchNotesPath, 'utf8'));
+
+    // 3. Augment with the release notes from the update info.
+    const newTagName = `v${updateInfo.version}`;
+    const existingNoteIndex = patchNotes.findIndex(note => note.tagName === newTagName);
+
+    if (existingNoteIndex !== -1) {
+      // If a note for this version already exists (from manual prepublish step), update it.
+      // This is useful if the GitHub release notes are more detailed.
+      console.log(`[PostUpdate] Updating existing note for ${newTagName}.`);
+      patchNotes[existingNoteIndex].body = updateInfo.notes || patchNotes[existingNoteIndex].body;
+      patchNotes[existingNoteIndex].publishedAt = updateInfo.releaseDate || patchNotes[existingNoteIndex].publishedAt;
+    } else {
+      // If no note exists, create a new one.
+      console.log(`[PostUpdate] Adding new note for ${newTagName}.`);
+      const newNote = {
+        body: updateInfo.notes || 'No release notes provided.',
+        name: updateInfo.releaseName || `Version ${updateInfo.version}`,
+        publishedAt: updateInfo.releaseDate,
+        tagName: newTagName,
+        version: updateInfo.version,
+      };
+      patchNotes.unshift(newNote);
+    }
+    
+    // 4. Save the final, augmented patch notes.
+    await fs.writeFile(userPatchNotesPath, JSON.stringify(patchNotes, null, 2));
+    console.log('[PostUpdate] Augmented and saved patchnotes.json.');
+
+    // 5. Generate the new HTML from the final data.
+    await generatePatchHTML(app, patchNotes);
+    console.log('[PostUpdate] Generated new patch-notes.html.');
+
+    // 6. Clean up the pending update file.
+    await fs.unlink(pendingUpdatePath);
+    console.log('[PostUpdate] Post-update tasks complete. Removed pending update file.');
+
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      // This is normal - no pending update.
+      console.log('[PostUpdate] No pending update file found. Checking for first run...');
+      // Also handle first-run generation.
+      const userPatchNotesPath = path.join(userDataPath, 'patch-notes.html');
+      try {
+        await fs.access(userPatchNotesPath);
+      } catch (accessError) {
+        if (accessError.code === 'ENOENT') {
+          console.log('[PostUpdate] First run detected. Generating initial patch notes.');
+          const basePath = app.isPackaged ? process.resourcesPath : app.getAppPath();
+          const bundledPatchNotesPath = path.join(basePath, 'patchnotes.json');
+          const patchNotes = JSON.parse(await fs.readFile(bundledPatchNotesPath, 'utf8'));
+          await generatePatchHTML(app, patchNotes);
+        }
+      }
+    } else {
+      // An actual error occurred during the post-update process.
+      console.error('[PostUpdate] Error during post-update task handling:', error);
+    }
+  }
+};
 
 ipcMain.handle('get-app-version', () => {
   return app.getVersion();

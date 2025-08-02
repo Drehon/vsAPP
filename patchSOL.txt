@@ -106,3 +106,36 @@ but the latest patch release note isn't being implemented correctly
 since it displays this in-app
 v1.3.5 - 8/2/2025
 No release notes provided.
+---
+### Final Solution: A Robust Post-Update Implementation
+
+**Problem Analysis:**
+After a thorough review of the entire workflow, I identified a fundamental architectural flaw in how patch notes were being updated. The previous system attempted to generate new patch notes *before* the application update was downloaded. This created several critical issues:
+1.  **Incorrect Source of Truth:** The process was reading the `patchnotes.json` from the *currently installed* version, not the one from the new version being downloaded. This meant any updates or corrections in the new version's patch history were ignored, leading to the user's observation that "the version of the json ALREADY installed is being favored."
+2.  **Race Condition:** The process relied on fetching release notes from the GitHub release page at the moment the user clicked "update". As the user noted, these notes are often finalized *after* the release is published. This meant the application would frequently fetch incomplete or empty notes, resulting in the "No release notes provided" message.
+3.  **Impossible Workflow:** The user's desired workflow—using the new `patchnotes.json` from the update before it's installed—is technically impossible, as the new application files are not accessible until after a restart.
+
+**Solution Architecture:**
+To solve these problems, I re-architected the process to be more robust and to align with the application's update lifecycle. The new system works by handling patch note generation **after** the update is successfully installed and the application restarts.
+
+**Implementation Details:**
+1.  **`src/patch-updater.js` Refactoring:** I simplified `src/patch-updater.js` to have a single responsibility: generating the `patch-notes.html` file from a definitive set of JSON data. It no longer contains any logic for fetching, merging, or choosing data sources.
+
+2.  **Persisting Update Information:** When the `update-available` event is triggered, the application now saves the entire `updateInfo` object (which contains the version, release notes, etc.) to a temporary file named `pending-update.json` in the `userData` directory.
+
+3.  **Streamlined Download:** The "update" button in the UI now triggers the download immediately, without any premature attempts to generate patch notes.
+
+4.  **Core Post-Update Logic (`main.js`):** The main intelligence of the new system resides in a function called `handlePostUpdateTasks` that runs every time the application starts:
+    - **Detection:** It checks for the existence of `pending-update.json`. If the file is found, it knows an update has just been completed.
+    - **Update Canonical History:** It copies the authoritative `patchnotes.json` from the newly installed application's resources, overwriting the old one in `userData`. This ensures the complete patch history is always correct.
+    - **Augment with Final Notes:** It reads the `updateInfo` from `pending-update.json` and intelligently merges the final release notes from the GitHub release into the `patchnotes.json` data. It can either update an existing entry (if one was added manually before release) or create a new one.
+    - **Generate HTML:** It calls the refactored `generatePatchHTML` function to create the final, correct `patch-notes.html`.
+    - **Cleanup:** It deletes `pending-update.json` to ensure the process only runs once per update.
+
+5.  **First-Run Handling:** The `handlePostUpdateTasks` function also gracefully handles the first time the application is ever run. If it finds no pending update and no existing `patch-notes.html`, it generates the initial version from the bundled resources.
+
+**Reasoning for Change:**
+This new architecture is significantly more reliable because it operates at the correct point in the application lifecycle. By waiting until after the restart, it guarantees access to the correct `patchnotes.json` and avoids the race condition with the GitHub release notes, fully resolving the issues the user was experiencing.
+
+---
+
