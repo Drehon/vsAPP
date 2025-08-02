@@ -12,9 +12,9 @@
     "tagName": "v1.3.0"
   },
   {
-    "body": "Mostly functional release. Quite buggy but can be used.",
+    "body": "Fixed toolbar issues.\r\nMade progress with patchnotes page implementation, missing download on release-notes.\r\nMade progress with fixing of last small issues with tests pages.",
     "name": "v1.2.9",
-    "publishedAt": "2025-07-30T10:59:10Z",
+    "publishedAt": "2025-07-30T09:01:47Z",
     "tagName": "v1.2.9"
   },
   {

@@ -10,7 +10,7 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\"",
-    "prepublishOnly": "powershell -File scripts/update-patchnotes.ps1"
+    "prepublishOnly": "node scripts/update-patch-notes.js"
   },
   "keywords": [],
   "author": {
