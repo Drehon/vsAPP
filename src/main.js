@@ -499,7 +499,7 @@ const getContents = async (dir) => {
   }
   try {
     const files = await fs.readdir(directoryPath);
-    return files.filter(file => file.endsWith('.html'));
+    return files.filter(file => file.endsWith('.html') && file !== 'patch-notes-template.html');
   } catch (err) {
     console.error(`Error reading directory ${directoryPath}:`, err);
     return [];

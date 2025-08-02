@@ -227,3 +227,10 @@
 [LOG][2025-08-02T09:51:50.458Z] AutoUpdater configuration: [Unserializable Object]
 [LOG][2025-08-02T09:51:51.683Z] Main Process: Update not available. {"tag":"v1.3.1","version":"1.3.1","files":[{"url":"vsAPP-1.3.1.Setup.exe","sha512":"F1aL0xK3Fd2sflvllF1T51camgTrARWUaYSrEPPln+QCczaTomKGWDmw971vbAyEF+VXwx0F8uLoSkYtlmSMrA==","size":114390016}],"path":"vsAPP-1.3.1.Setup.exe","sha512":"F1aL0xK3Fd2sflvllF1T51camgTrARWUaYSrEPPln+QCczaTomKGWDmw971vbAyEF+VXwx0F8uLoSkYtlmSMrA==","releaseDate":"2025-08-01T19:32:50.167Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.1","releaseNotes":"<p>Fixed tests buttons. minimal improvements.</p>"}
 [LOG][2025-08-02T09:51:53.330Z] [PatchNotes] Loading content for: others/patch-notes.html
+[LOG][2025-08-02T10:23:47.077Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-02T10:23:47.080Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-02T10:23:47.081Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-02T10:23:47.167Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-02T10:23:48.672Z] Main Process: Checking for updates...
+[LOG][2025-08-02T10:23:48.678Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-02T10:23:49.673Z] Main Process: Update not available. {"tag":"v1.3.2","version":"1.3.2","files":[{"url":"vsAPP-1.3.2.Setup.exe","sha512":"uXbdIBuZuHSxEs+1COj3NdRHZc/3GBazxvAiMNXPcT1NN9s2ivUcTT1INTgV+1YLps6cgPPm2FCH80o+enu6RQ==","size":114391552}],"path":"vsAPP-1.3.2.Setup.exe","sha512":"uXbdIBuZuHSxEs+1COj3NdRHZc/3GBazxvAiMNXPcT1NN9s2ivUcTT1INTgV+1YLps6cgPPm2FCH80o+enu6RQ==","releaseDate":"2025-08-02T10:15:08.681Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.2","releaseNotes":"<p>Attempt at patch notes generation-implementation.<br>\nIf it works we can move to finalize the patch-notes implementation.</p>"}
