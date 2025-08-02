@@ -28,38 +28,35 @@
 
 ### Numbered Task List
 
-1.  **load.txt:** Check out the issue in `load.txt`. Will need to paste its content into a new empty canvas.
-    (Complexity: 10)
-2.  **Multiple-Choice Questions:** Modify so that after selecting an answer, other options remain clickable. Incorrect answers turn red and stay red. Correct answers turn green. A number (1-4) should appear next to each clicked answer to show the selection order.
+1.  **Multiple-Choice Questions:** Modify so that after selecting an answer, other options remain clickable. Incorrect answers turn red and stay red. Correct answers turn green. A number (1-4) should appear next to each clicked answer to show the selection order.
     (Complexity: 80)
-3.  **Azzera Button:** The reset button should clear the save-state (reset answers, empty notes) without reloading the page or changing the current phase (e.g., stay in phase 2).
+2.  **Azzera Button:** The reset button should clear the save-state (reset answers, empty notes) without reloading the page or changing the current phase (e.g., stay in phase 2).
     (Complexity: 40)
-4.  **Navigation:** Add a 'Back to N1' button to return to the start of the test, in addition to the 'vai' button.
+3.  **Navigation:** Add a 'Back to N1' button to return to the start of the test, in addition to the 'vai' button.
     (Complexity: 20)
-5.  **Content Review:** L2ES and L3ES lessons need a thorough review and rework due to pedagogical and content errors. - COMPLETED
-    (Complexity: 30 for implementation)
-6.  **Bug Fix:** In L2 - causativoES and L3 - passivo avanzatoES (fase 2), all clicked answers are incorrectly marked as wrong (red).
-    (Complexity: 20)
-7.  **Answer Explanations:** Answers should include a clear demonstration of the correct solution, not just an explanation.
-    (Complexity: 20 for implementation)
-8.  **Save Naming Convention:** Fix the save functionality to use the format `LX save [date]` (e.g., `L3 save 2025-07-29`) instead of the generic 'exercise-save-state'.
+4.  **Save Naming Convention:** Fix the save functionality to use the format `LX save [date]` (e.g., `L3 save 2025-07-29`) instead of the generic 'exercise-save-state'.
     (Complexity: 40)
-9.  **Save/Load Functionality:** The save and load buttons for the verbs and grammar tests are not working, although save-states appear functional.
-    (Complexity: 60)
-10. **Settings UI:** Add a 'Loaded Save Display' to the settings page to show both the current save-state and the most recently loaded file save.
+5. **Settings UI:** Add a 'Loaded Save Display' to the settings page to show both ALL the currently active save-states and the most recently loaded file save.
     (Complexity: 50)
     10b. **Settings UI:** Add a 'Reset All Saves' option below the 'Loaded Save Display'.
     (Complexity: 40)
-11. **Content Removal:** Remove the placeholder 'Periodo Ipotetico' content. - COMPLETED
-    (Complexity: 10)
-12. **Homepage Layout:** Reorganize the homepage into a four-column layout: Lessons, LessonsAN, Exercises, Tests and More. - COMPLETED
-    (Complexity: 50)
-13. **Notepad Feature:** Add a 'Notepad' page to the 'Tests and More' column for free-form note-taking.
-    (Complexity: 60)
-14. **Patch Notes Page:** Add a page to display patch notes from a local file, sorted from most to least recent.
-    (Complexity: 50)
-15. **Folder Restructuring:** Create a new 'others' folder and move the test, patch notes, and notepad HTML files into it. - COMPLETED
-    (Complexity: 30)
 
+---
 
-16 on reset do not reload page
+Next patches - planned 
+- bookmark
+Add a bookmark that can be applied to any page via shortcut OR by right-click mouse menu 
+    beside the relevant text row, with a small text that can be inputted for WHY the bookmark is there
+    Bookmark should work similarly to save states, meaning there should be a file that keeps track of ALL BOOKMARKS across the whole app.
+    that automatically updates every time a bookmark is placed
+    and refreshes the bookmark on a page every time a page is opened or the user clicks on a different tab
+    page-state.json maybe
+
+    you can do multiple bookmarks per page
+    bookmark should be a bluish triangle on the right of the 'page' i think, with the tip of the piramid toward the text
+    Bookmarks should be recognizable but also visually pleasing.
+
+- Hihglihgt
+Same reasoning as bookmark
+    User should be able to highlight portions of text (set a default color that is visually pleasing)
+    Save information in same file as bookmarks, we can call said file page-state
