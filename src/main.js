@@ -448,36 +448,10 @@ const handlePostUpdateTasks = async () => {
     console.log('[PostUpdate] Copied new patchnotes.json to userData.');
 
     // 2. Load the newly copied patchnotes.json.
-    let patchNotes = JSON.parse(await fs.readFile(userPatchNotesPath, 'utf8'));
-
-    // 3. Augment with the release notes from the update info.
-    const newTagName = `v${updateInfo.version}`;
-    const existingNoteIndex = patchNotes.findIndex(note => note.tagName === newTagName);
-
-    if (existingNoteIndex !== -1) {
-      // If a note for this version already exists (from manual prepublish step), update it.
-      // This is useful if the GitHub release notes are more detailed.
-      console.log(`[PostUpdate] Updating existing note for ${newTagName}.`);
-      patchNotes[existingNoteIndex].body = updateInfo.notes || patchNotes[existingNoteIndex].body;
-      patchNotes[existingNoteIndex].publishedAt = updateInfo.releaseDate || patchNotes[existingNoteIndex].publishedAt;
-    } else {
-      // If no note exists, create a new one. This is an edge case.
-      console.log(`[PostUpdate] Adding new note for ${newTagName}.`);
-      const newNote = {
-        body: updateInfo.notes || 'Release notes for this version were not available at the time of update.',
-        name: updateInfo.releaseName || `Version ${updateInfo.version}`,
-        publishedAt: updateInfo.releaseDate,
-        tagName: newTagName,
-        version: updateInfo.version,
-      };
-      patchNotes.unshift(newNote);
-    }
+    const patchNotes = JSON.parse(await fs.readFile(userPatchNotesPath, 'utf8'));
+    console.log('[PostUpdate] Loaded new patchnotes.json.');
     
-    // 4. Save the final, augmented patch notes.
-    await fs.writeFile(userPatchNotesPath, JSON.stringify(patchNotes, null, 2));
-    console.log('[PostUpdate] Augmented and saved patchnotes.json.');
-
-    // 5. Generate the new HTML from the final data.
+    // 3. Generate the new HTML from the final data.
     await generatePatchHTML(app, patchNotes);
     console.log('[PostUpdate] Generated new patch-notes.html.');
 
