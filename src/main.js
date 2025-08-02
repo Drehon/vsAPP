@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs').promises;
 const fsSync = require('fs');
 const { autoUpdater } = require('electron-updater');
+let updateInfo = null;
 
 // --- Logging ---
 const setupLogging = () => {
@@ -112,6 +113,74 @@ function getSavesDir() {
     }
     return savesDir;
 }
+
+// --- Patch Notes Management ---
+const updateAndGeneratePatchNotes = async (releaseInfo) => {
+  console.log('[PatchNotes] Starting update and generation process.');
+  const userDataPath = app.getPath('userData');
+  const userPatchNotesPath = path.join(userDataPath, 'patchnotes.json');
+  
+  // In development, app path is project root. In production, it's resources/app.
+  const appPath = app.getAppPath();
+  const bundledPatchNotesPath = path.join(appPath, 'patchnotes.json');
+  const templatePath = path.join(appPath, 'others', 'patch-notes-template.html');
+
+  try {
+      let patchNotes = [];
+      try {
+          const data = await fs.readFile(userPatchNotesPath, 'utf8');
+          patchNotes = JSON.parse(data);
+      } catch (error) {
+          if (error.code === 'ENOENT') {
+              console.log('[PatchNotes] No user patch notes found. Copying from bundle.');
+              const bundledData = await fs.readFile(bundledPatchNotesPath, 'utf8');
+              await fs.writeFile(userPatchNotesPath, bundledData);
+              patchNotes = JSON.parse(bundledData);
+          } else {
+              throw error;
+          }
+      }
+
+      if (releaseInfo) {
+          const newTagName = `v${releaseInfo.version}`;
+          const alreadyExists = patchNotes.some(note => note.tagName === newTagName);
+
+          if (!alreadyExists) {
+              console.log(`[PatchNotes] Adding new version ${newTagName}.`);
+              const newNote = {
+                  body: releaseInfo.notes || 'No release notes provided.',
+                  name: releaseInfo.releaseName || `Version ${releaseInfo.version}`,
+                  publishedAt: releaseInfo.releaseDate,
+                  tagName: newTagName,
+                  version: releaseInfo.version,
+              };
+              patchNotes.unshift(newNote);
+              await fs.writeFile(userPatchNotesPath, JSON.stringify(patchNotes, null, 2));
+              console.log('[PatchNotes] Successfully updated user patchnotes.json');
+          }
+      }
+
+      const userOutputPath = path.join(userDataPath, 'patch-notes.html');
+      const template = await fs.readFile(templatePath, 'utf8');
+      const patchNotesHtml = patchNotes.map(note => {
+          const date = new Date(note.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' });
+          const body = note.body ? note.body.replace(/\r\n/g, '<br>') : '';
+          return `
+              <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
+                  <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4">${note.name} - ${date}</h2>
+                  <div class="prose max-w-none mt-4">
+                      ${body}
+                  </div>
+              </div>
+          `;
+      }).join('');
+      const outputHtml = template.replace('<!-- PATCH_NOTES_CONTENT -->', patchNotesHtml);
+      await fs.writeFile(userOutputPath, outputHtml);
+      console.log('[PatchNotes] Successfully generated user patch-notes.html');
+  } catch (error) {
+      console.error('[PatchNotes] Failed to update and generate patch notes:', error);
+  }
+};
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -236,28 +305,42 @@ ipcMain.handle('get-settings-content', async () => {
 
 
 ipcMain.handle('get-file-content', async (event, relativePath) => {
-  // Log when a specific file is being accessed, for debugging purposes
-  if (relativePath.includes('patch-notes.html')) {
-    console.log(`[PatchNotes] Loading content for: ${relativePath}`);
-  }
-
-  const basePath = process.env.NODE_ENV === 'development' ? process.cwd() : process.resourcesPath;
-  const filePath = path.join(basePath, relativePath);
-  try {
-    const content = await fs.readFile(filePath, 'utf-8');
-    
-    // For patch-notes, return the full HTML to ensure scripts are run
-    if (relativePath.includes('patch-notes.html')) {
-      return content;
+    // Special handling for patch notes
+    if (relativePath === 'others/patch-notes.html') {
+        console.log(`[PatchNotes] Loading content for: ${relativePath}`);
+        const userPatchNotesPath = path.join(app.getPath('userData'), 'patch-notes.html');
+        try {
+            const content = await fs.readFile(userPatchNotesPath, 'utf-8');
+            return content; // Return full HTML
+        } catch (error) {
+            if (error.code === 'ENOENT') {
+                console.log('[PatchNotes] No user patch-notes.html found, generating for the first time.');
+                await updateAndGeneratePatchNotes(null);
+                try {
+                    const content = await fs.readFile(userPatchNotesPath, 'utf-8');
+                    return content;
+                } catch (retryError) {
+                    console.error(`Failed to read patch notes after generation:`, retryError);
+                    return '<html><body>Error loading patch notes. Please check logs.</body></html>';
+                }
+            } else {
+                console.error(`Failed to read ${relativePath} from userData: ${error}`);
+                return '<html><body>Error loading patch notes. Please check logs.</body></html>';
+            }
+        }
     }
 
-    // For other files, return only the body content as before
-    const bodyContentMatch = content.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-    return bodyContentMatch ? bodyContentMatch[1] : content;
-  } catch (err) {
-    console.error(`Failed to read file content for ${relativePath}: ${err}`);
-    return null;
-  }
+    // Original logic for all other files
+    const basePath = app.isPackaged ? process.resourcesPath : process.cwd();
+    const filePath = path.join(basePath, relativePath);
+    try {
+        const content = await fs.readFile(filePath, 'utf-8');
+        const bodyContentMatch = content.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+        return bodyContentMatch ? bodyContentMatch[1] : content;
+    } catch (err) {
+        console.error(`Failed to read file content for ${relativePath}: ${err}`);
+        return null;
+    }
 });
 
 ipcMain.on('navigate-home', (event) => {
@@ -318,6 +401,7 @@ app.on('ready', () => {
   // --- Auto-Updater Event Listeners ---
   autoUpdater.on('update-available', (info) => {
     console.log('Main Process: Update available!', info);
+    updateInfo = info; // Store the info for the download process
     if (mainWindow) { // Ensure mainWindow exists before sending
       mainWindow.webContents.send('update-status', 'available', info);
     }
@@ -357,8 +441,16 @@ app.on('ready', () => {
   // --- IPC Listeners for UI Actions ---
   
   ipcMain.on('start-download', () => {
-    console.log('Main Process: Download started by user.');
-    autoUpdater.downloadUpdate();
+    console.log('Main Process: Download initiated by user.');
+    if (updateInfo) {
+        updateAndGeneratePatchNotes(updateInfo).then(() => {
+            console.log('[PatchNotes] Generation complete. Starting download.');
+            autoUpdater.downloadUpdate();
+        });
+    } else {
+        console.log('Main Process: No update info, starting download directly.');
+        autoUpdater.downloadUpdate(); // Fallback if no info is present
+    }
   });
 
   ipcMain.on('restart-app', () => {
@@ -510,20 +602,3 @@ ipcMain.handle('get-lessons', () => getContents('lessons'));
 ipcMain.handle('get-exercises', () => getContents('exercises'));
 ipcMain.handle('get-lessons-an', () => getContents('lessonsAN'));
 ipcMain.handle('get-tests', () => getContents('others'));
-
-ipcMain.handle('get-patch-notes', async () => {
-  console.log('[PatchNotes] Attempting to load from local app resources...');
-  try {
-    // FIX: Use app.getAppPath() for a more reliable path in development.
-    const basePath = app.isPackaged ? process.resourcesPath : app.getAppPath();
-    const fallbackPath = path.join(basePath, 'patchnotes.json');
-    console.log('[PatchNotes] Trying fallback path:', fallbackPath);
-    
-    const fallbackData = await fs.readFile(fallbackPath, 'utf-8');
-    console.log('[PatchNotes] Successfully loaded from fallback path.');
-    return JSON.parse(fallbackData);
-  } catch (fallbackError) {
-    console.error('[PatchNotes] Failed to load fallback patch notes:', fallbackError);
-    return []; // Ultimate fallback
-  }
-});

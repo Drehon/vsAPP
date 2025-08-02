@@ -234,3 +234,15 @@
 [LOG][2025-08-02T10:23:48.672Z] Main Process: Checking for updates...
 [LOG][2025-08-02T10:23:48.678Z] AutoUpdater configuration: [Unserializable Object]
 [LOG][2025-08-02T10:23:49.673Z] Main Process: Update not available. {"tag":"v1.3.2","version":"1.3.2","files":[{"url":"vsAPP-1.3.2.Setup.exe","sha512":"uXbdIBuZuHSxEs+1COj3NdRHZc/3GBazxvAiMNXPcT1NN9s2ivUcTT1INTgV+1YLps6cgPPm2FCH80o+enu6RQ==","size":114391552}],"path":"vsAPP-1.3.2.Setup.exe","sha512":"uXbdIBuZuHSxEs+1COj3NdRHZc/3GBazxvAiMNXPcT1NN9s2ivUcTT1INTgV+1YLps6cgPPm2FCH80o+enu6RQ==","releaseDate":"2025-08-02T10:15:08.681Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.2","releaseNotes":"<p>Attempt at patch notes generation-implementation.<br>\nIf it works we can move to finalize the patch-notes implementation.</p>"}
+[LOG][2025-08-02T10:52:36.521Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-02T10:52:36.524Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-02T10:52:36.525Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-02T10:52:36.615Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-02T10:52:38.151Z] Main Process: Checking for updates...
+[LOG][2025-08-02T10:52:38.157Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-02T10:52:39.287Z] Main Process: Update not available. {"tag":"v1.3.2","version":"1.3.2","files":[{"url":"vsAPP-1.3.2.Setup.exe","sha512":"uXbdIBuZuHSxEs+1COj3NdRHZc/3GBazxvAiMNXPcT1NN9s2ivUcTT1INTgV+1YLps6cgPPm2FCH80o+enu6RQ==","size":114391552}],"path":"vsAPP-1.3.2.Setup.exe","sha512":"uXbdIBuZuHSxEs+1COj3NdRHZc/3GBazxvAiMNXPcT1NN9s2ivUcTT1INTgV+1YLps6cgPPm2FCH80o+enu6RQ==","releaseDate":"2025-08-02T10:15:08.681Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.2","releaseNotes":"<p>Attempt at patch notes generation-implementation.<br>\nIf it works we can move to finalize the patch-notes implementation.</p>"}
+[LOG][2025-08-02T10:52:47.904Z] [PatchNotes] Loading content for: others/patch-notes.html
+[LOG][2025-08-02T10:52:47.906Z] [PatchNotes] No user patch-notes.html found, generating for the first time.
+[LOG][2025-08-02T10:52:47.907Z] [PatchNotes] Starting update and generation process.
+[LOG][2025-08-02T10:52:47.908Z] [PatchNotes] No user patch notes found. Copying from bundle.
+[LOG][2025-08-02T10:52:47.931Z] [PatchNotes] Successfully generated user patch-notes.html

@@ -1,0 +1,31 @@
+## Jules's Log for Patch Notes Automation
+
+### Task Description
+The user wants to automate the process of updating the application's patch notes. When the user clicks the "update" button, the application should:
+1. Fetch the latest release information.
+2. Update the `patchnotes.json` file with this information.
+3. Regenerate the `patch-notes.html` file using the `scripts/update-patch-notes.js` logic.
+4. Log all actions and reasoning in this file (`patchSOL.txt`).
+
+### Plan Step 1: Modify `src/main.js`
+
+**Actions Taken:**
+- **Initial Analysis:** I identified that `src/main.js` contains the `electron-updater` logic, which is the core of the app's update mechanism. The key was to find the right place to inject the patch notes update logic. The user-initiated `start-download` event was the perfect trigger.
+- **Problem with Read-Only Files:** I realized that when the application is packaged, files like `patchnotes.json` are stored in a read-only `asar` archive. This would prevent me from updating the file directly.
+- **Solution - `userData` Directory:** To solve the read-only problem, I decided to manage the patch notes files in the `userData` directory, which is always writable.
+    - On the first run, the application will copy the bundled `patchnotes.json` to the `userData` directory.
+    - All subsequent updates will modify this writable copy.
+- **Code Implementation:**
+    1. **`updateInfo` variable:** Created a global variable to hold the release information received from the `update-available` event, so it could be used later when `start-download` is triggered.
+    2. **`updateAndGeneratePatchNotes` function:** Created a new async function to encapsulate all the patch notes logic. This function:
+        - Manages the `patchnotes.json` file in `userData`.
+        - Adds the new release notes to it, checking for duplicates.
+        - Re-implements the logic from `scripts/update-patch-notes.js` directly within the function to read the updated JSON, populate the HTML template, and write the final `patch-notes.html` to the `userData` directory. This avoids the complexity of spawning a separate script with correct file paths.
+    3. **Modified `ipcMain.handle('get-file-content', ...)`:** Updated this handler to be aware of the new location for `patch-notes.html`. When the renderer process requests `others/patch-notes.html`, it's now served from the `userData` directory. It also handles the initial creation if the file doesn't exist yet.
+    4. **Modified `autoUpdater` event listeners:**
+        - The `update-available` listener now saves the received `info` object to the `updateInfo` variable.
+        - The `start-download` listener now calls `updateAndGeneratePatchNotes(updateInfo)` and waits for it to complete *before* calling `autoUpdater.downloadUpdate()`.
+    5. **Removed `get-patch-notes`:** The old IPC handler for getting patch notes was removed as its logic was integrated into the new `get-file-content` handler.
+
+**Reasoning:**
+This approach is robust because it doesn't rely on modifying the application's bundled files, which is not recommended and often impossible. By using the `userData` directory, I ensure that the patch notes can be updated dynamically, even in a packaged and installed application. The logic is centralized and triggered at the most logical point in the user flow—right when they confirm they want to get the new update. This fulfills all the user's requirements in a clean and maintainable way.
