@@ -1,0 +1,31 @@
+ri1. Read patchnotes.json to get the patch notes data.
+2. Generated static HTML content from the JSON data.
+3. Replaced the dynamic JavaScript in others/patch-notes.html with the static HTML.
+4. Verified the changes by reading the updated file.
+
+---
+Detailed process for automating the update of patch-notes.html:
+
+1.  **Create a Node.js Script (`scripts/update-patch-notes.js`):**
+    *   The script will be responsible for reading `patchnotes.json`, generating the HTML content, and updating `others/patch-notes.html`.
+    *   It will use the `fs` module to read and write files.
+    *   The script will first read the `patchnotes.json` file from the root of the project.
+    *   It will then read a template file. Instead of overwriting the existing `patch-notes.html`, it's better to have a `patch-notes-template.html` that contains a placeholder like `<!-- PATCH_NOTES_CONTENT -->`.
+    *   The script will iterate over the patch notes from the JSON data and generate the corresponding HTML for each note.
+    *   The generated HTML will replace the placeholder in the template.
+    *   Finally, the script will write the updated content to `others/patch-notes.html`.
+
+2.  **Create a Template File (`others/patch-notes-template.html`):**
+    *   This file will be a copy of the original `others/patch-notes.html`, but instead of the list of patch notes, it will have a single placeholder comment, for example: `<main id="patch-notes-container" class="space-y-8"><!-- PATCH_NOTES_CONTENT --></main>`.
+    *   This makes the script more robust, as it won't have to parse complex HTML to find where to insert the new content.
+
+3.  **Update `package.json`:**
+    *   The `scripts` section in `package.json` will be modified to include the new script in the `publish` command.
+    *   A new script, `prepublishOnly`, could be added. This script is automatically executed by npm before the `publish` script.
+    *   The `prepublishOnly` script would be: `"prepublishOnly": "node ./scripts/update-patch-notes.js"`.
+    *   Alternatively, the `publish` script can be modified to chain the commands: `"publish": "node ./scripts/update-patch-notes.js && electron-forge publish"`. Using a pre-publish hook is generally cleaner.
+
+4.  **Add to `.gitignore`:**
+    *   The generated file `others/patch-notes.html` should be added to the `.gitignore` file. This is because it is a build artifact, and the canonical source is the template and the JSON file. This prevents the generated file from being committed to version control.
+
+By following these steps, the `patch-notes.html` file will be automatically updated with the latest patch notes every time `npm run publish` is executed.
