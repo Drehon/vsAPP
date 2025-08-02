@@ -96,3 +96,13 @@ For future debugging, here are some steps you can take in your local environment
 
 ---
 
+to Clarify
+the update should download the new patchnotes.json WITH the download
+then, it should add as last step the release notes of the patch that is being downloaded, since that is not included, but part of the 'post - release' on github
+where i add the notes to move from draft to full release
+
+at the moment not only it seems like the version of the json ALREADY installed is being favored
+but the latest patch release note isn't being implemented correctly
+since it displays this in-app
+v1.3.5 - 8/2/2025
+No release notes provided.
