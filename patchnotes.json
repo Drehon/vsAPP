@@ -1,11 +1,5 @@
 [
   {
-    "body": "Verifying implementation.",
-    "name": "v1.3.4",
-    "publishedAt": "2025-08-02T11:38:41Z",
-    "tagName": "v1.3.4"
-  },
-  {
     "body": "Testing full implementation.",
     "name": "v1.3.3",
     "publishedAt": "2025-08-02T11:33:44Z",
