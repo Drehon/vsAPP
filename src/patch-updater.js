@@ -4,11 +4,13 @@ const fs = require('fs').promises;
 const updateAndGeneratePatchNotes = async (app, releaseInfo) => {
   console.log('[PatchNotes] Starting update and generation process.');
   const userDataPath = app.getPath('userData');
-  const appPath = app.getAppPath();
-  
+  // In a packaged app, asset files are in the 'resources' directory, not the 'app.asar' archive.
+  // process.resourcesPath points there directly. In dev, app.getAppPath() is the project root.
+  const basePath = app.isPackaged ? process.resourcesPath : app.getAppPath();
+
   const userPatchNotesPath = path.join(userDataPath, 'patchnotes.json');
-  const bundledPatchNotesPath = path.join(appPath, 'patchnotes.json');
-  const templatePath = path.join(appPath, 'others', 'patch-notes-template.html');
+  const bundledPatchNotesPath = path.join(basePath, 'patchnotes.json');
+  const templatePath = path.join(basePath, 'others', 'patch-notes-template.html');
 
   try {
       let patchNotes = [];
