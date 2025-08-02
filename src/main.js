@@ -461,10 +461,10 @@ const handlePostUpdateTasks = async () => {
       patchNotes[existingNoteIndex].body = updateInfo.notes || patchNotes[existingNoteIndex].body;
       patchNotes[existingNoteIndex].publishedAt = updateInfo.releaseDate || patchNotes[existingNoteIndex].publishedAt;
     } else {
-      // If no note exists, create a new one.
+      // If no note exists, create a new one. This is an edge case.
       console.log(`[PostUpdate] Adding new note for ${newTagName}.`);
       const newNote = {
-        body: updateInfo.notes || 'No release notes provided.',
+        body: updateInfo.notes || 'Release notes for this version were not available at the time of update.',
         name: updateInfo.releaseName || `Version ${updateInfo.version}`,
         publishedAt: updateInfo.releaseDate,
         tagName: newTagName,
