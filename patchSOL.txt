@@ -29,3 +29,9 @@ The user wants to automate the process of updating the application's patch notes
 
 **Reasoning:**
 This approach is robust because it doesn't rely on modifying the application's bundled files, which is not recommended and often impossible. By using the `userData` directory, I ensure that the patch notes can be updated dynamically, even in a packaged and installed application. The logic is centralized and triggered at the most logical point in the user flow—right when they confirm they want to get the new update. This fulfills all the user's requirements in a clean and maintainable way.
+
+---
+
+Attempt 1 at publishing 1.3.3
+Downloaded update to 1.3.3
+Patchnotes page displays only up to 1.3.1
