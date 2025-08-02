@@ -192,3 +192,11 @@ The definitive solution is to make the `patchnotes.json` file bundled with the a
 
 **Reasoning for Final Change:**
 This approach is the most robust because it eliminates the race condition entirely. The application is now self-contained and does not depend on an external resource (the GitHub release notes) being available at a specific time. It correctly uses the bundled `patchnotes.json` as the authoritative history, while still allowing for enhancement from the GitHub release notes if they are available. This resolves the user's issue completely and provides a clear, reliable workflow for future updates.
+
+---
+
+now it says
+
+v1.3.6 - 8/2/2025
+Release notes for this version were not available at the time of update.
+
