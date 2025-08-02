@@ -1,0 +1,62 @@
+### Session Log
+
+*This document acts as the main reference for our collaboration across all sessions. The processes and tasks outlined below are to be followed by default unless you, the user, explicitly request a deviation. In such cases, I will ask for confirmation before proceeding.*
+
+* **Last Update:** 2025-07-29 12:03
+
+---
+
+### Process & Documentation Tasks (Ongoing)
+
+* **A. Open Files As-Is:** Always open any file in canvas exactly as it is and do not begin modifying it within the same response.
+* **B. Minimal Modifications:** Keep modifications to a minimum to avoid damaging the repository or introducing new issues.
+* **C. One File Per Response:** Modify only one file for each response.
+* **D. Clarify for Testing:** Provide clear instructions for the user for testing and troubleshooting.
+* **E. Inquire Before Assuming:** Seek more information on any issues via console logs, troubleshooting, etc.
+* **F. Avoid Regressions:** Be careful that changes do not conflict with previous ones that solved prior issues.
+* **G. Handling Disagreements:** If user-provided information appears incorrect, I will state that proof may be required or ask you to affirm your certainty.
+* **H. Canvas Formatting:** All reference `.txt` files should be opened in a canvas with `type="code"` and a language like `html` to ensure a code editor view.
+* **I. Preserve Content Integrity:** Do not shorten, cut, or simplify already written content in our reference documents.
+* **J. Adherence to `ref-rules.txt`:** Apply `ref-rules.txt` to all `.html` file modifications.
+* **K. Expand `ref-rules.txt`:** Significantly expand `ref-rules.txt`. (Complexity: 40)
+* **L. `ref-organize.txt`:** Continuously document file structure and purpose.
+* **M. `ref-explain.txt`:** Create and maintain a user-facing explanation of all app functionalities.
+* **N. Main Log (`ref-session.txt`) Maintenance:** Keep this log brief and synthetic.
+* **O. Secondary Task Logs (`taskX.txt`):** Create a detailed `taskX.txt` log for each specific numbered task.
+
+---
+
+### Numbered Task List
+
+1.  **Multiple-Choice Questions:** Modify so that after selecting an answer, other options remain clickable. Incorrect answers turn red and stay red. Correct answers turn green. A number (1-4) should appear next to each clicked answer to show the selection order.
+    (Complexity: 80)
+2.  **Azzera Button:** The reset button should clear the save-state (reset answers, empty notes) without reloading the page or changing the current phase (e.g., stay in phase 2).
+    (Complexity: 40)
+3.  **Navigation:** Add a 'Back to N1' button to return to the start of the test, in addition to the 'vai' button.
+    (Complexity: 20)
+4.  **Save Naming Convention:** Fix the save functionality to use the format `LX save [date]` (e.g., `L3 save 2025-07-29`) instead of the generic 'exercise-save-state'.
+    (Complexity: 40)
+5. **Settings UI:** Add a 'Loaded Save Display' to the settings page to show both ALL the currently active save-states and the most recently loaded file save.
+    (Complexity: 50)
+    10b. **Settings UI:** Add a 'Reset All Saves' option below the 'Loaded Save Display'.
+    (Complexity: 40)
+
+---
+
+Next patches - planned 
+- bookmark
+Add a bookmark that can be applied to any page via shortcut OR by right-click mouse menu 
+    beside the relevant text row, with a small text that can be inputted for WHY the bookmark is there
+    Bookmark should work similarly to save states, meaning there should be a file that keeps track of ALL BOOKMARKS across the whole app.
+    that automatically updates every time a bookmark is placed
+    and refreshes the bookmark on a page every time a page is opened or the user clicks on a different tab
+    page-state.json maybe
+
+    you can do multiple bookmarks per page
+    bookmark should be a bluish triangle on the right of the 'page' i think, with the tip of the piramid toward the text
+    Bookmarks should be recognizable but also visually pleasing.
+
+- Hihglihgt
+Same reasoning as bookmark
+    User should be able to highlight portions of text (set a default color that is visually pleasing)
+    Save information in same file as bookmarks, we can call said file page-state
