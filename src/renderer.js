@@ -27,6 +27,7 @@ window.addEventListener('api-ready', () => {
   const globalResetBtn = document.getElementById('global-reset-btn');
   const globalGithubBtn = document.getElementById('global-github-btn');
   const globalSettingsBtn = document.getElementById('global-settings-btn');
+  const resetFeedbackMessage = document.getElementById('reset-feedback-message');
 
 
   // --- CORE FUNCTIONS ---
@@ -105,8 +106,23 @@ window.addEventListener('api-ready', () => {
     globalSaveBtn.onclick = isContent ? () => handleSaveButtonClick(tab) : null;
     globalLoadBtn.onclick = isContent ? () => handleLoadButtonClick(tab) : null;
     globalResetBtn.onclick = isContent ? async () => {
-      await window.api.resetExerciseState(tab.filePath);
-      handleLoadContent(tab.id, tab.filePath);
+      const result = await window.api.resetExerciseState(tab.filePath);
+      handleLoadContent(tab.id, tab.filePath); // Reload content
+
+      if (result.success && resetFeedbackMessage) {
+        resetFeedbackMessage.textContent = 'Reset Complete';
+        resetFeedbackMessage.classList.remove('opacity-0');
+
+        setTimeout(() => {
+          resetFeedbackMessage.classList.add('opacity-0');
+          // Clear text after the fade-out transition for cleanliness
+          setTimeout(() => {
+            resetFeedbackMessage.textContent = '';
+          }, 500); // Matches the transition duration
+        }, 5000); // Display for 5 seconds
+      } else if (!result.success) {
+        console.error('Failed to reset state:', result.error);
+      }
     } : null;
   }
 

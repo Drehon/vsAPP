@@ -1,4 +1,10 @@
 [
+  {
+    "body": "",
+    "name": "v1.3.8",
+    "publishedAt": "2025-08-03T20:40:00Z",
+    "tagName": "v1.3.8"
+  },
     {
     "body": "Implemented 'Return to N1' button for exercises, fixed save naming convention, implemented displaying active saves in settings and separating saves-state folder from saves folder.",
     "name": "v1.3.7",

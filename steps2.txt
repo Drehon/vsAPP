@@ -1,0 +1,57 @@
+ORIGINAL REQUEST
+
+Azzera Button: 
+The reset button should clear the save-state (reset answers, empty notes) without reloading the page or changing the current phase (e.g., stay in phase 2). 
+It should however also give some kind of visual feedback. 
+Perhaps in the toolbar we can add besides the reset button a new area, where we can display text 'Reset Complete' to fade over 5 seconds or so.
+
+---
+
+Implemented the Azzera (Reset) button functionality with visual feedback.
+
+Here are the steps taken:
+
+1.  **Modified `src/index.html`:**
+    *   Added a `<span>` element with the ID `reset-feedback-message` next to the "Azzera" button (`global-reset-btn`).
+    *   This span is used to display the "Reset Complete" message.
+    *   It is initially hidden using Tailwind CSS classes (`opacity-0`).
+
+2.  **Updated `src/renderer.js`:**
+    *   Added a constant `resetFeedbackMessage` to get the new `span` element from the DOM.
+    *   Modified the `onclick` event handler for the `global-reset-btn`.
+    *   The new handler now performs the following actions:
+        - Calls the `window.api.resetExerciseState` function as before.
+        - Immediately reloads the tab's content using `handleLoadContent` to reflect the cleared state.
+        - If the reset was successful, it updates the `reset-feedback-message` span:
+            - Sets its text to "Reset Complete".
+            - Makes it visible by removing the `opacity-0` class.
+            - Uses `setTimeout` to hide the message again after 5 seconds by re-adding the `opacity-0` class.
+            - A nested `setTimeout` clears the text content after the fade-out transition completes.
+
+---
+
+User request:
+i'd like the reset complete to have its own static space instead of appearing and moving things to the left. 
+the text is the thing that has to appear and disappear, but its space should remain static and have a slighly darker background to differentiate it from the rest of the toolbar
+
+---
+
+Implemented the Azzera (Reset) button functionality with visual feedback, ensuring the feedback area has a static size to prevent layout shifts.
+
+Here are the steps taken:
+
+1.  **Modified `src/index.html`:**
+    *   Replaced the original feedback `<span>` with a `<div>` container to create a static, reserved space in the toolbar.
+    *   This `div` is styled with a fixed width (`w-32`), a height matching the toolbar buttons (`h-8`), and a slightly darker background (`bg-slate-600`) to differentiate it.
+    *   Inside this container, a new `<span>` with the ID `reset-feedback-message` was added. This inner span is responsible for displaying the text.
+
+2.  **Verified `src/renderer.js`:**
+    *   The existing JavaScript logic was reviewed and confirmed to be compatible with the new HTML structure.
+    *   Since the script targets the `reset-feedback-message` ID, which was preserved for the inner `span`, no changes to the JavaScript were necessary. The logic correctly controls the opacity and text content of the message, making it appear and disappear within its static container.
+
+---
+
+empty space is now static, but colored background isn't.
+also the colored background is slimmer compared to those of 'salva' 'carica' and 'azzera'.
+please find a middle ground between the two vertical sizes and apply it to the three buttons and the new area.
+make the toolbar as a whole a bit less vertically high afterwards. 
