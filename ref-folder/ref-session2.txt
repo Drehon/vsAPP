@@ -50,3 +50,10 @@ Add a bookmark that can be applied to any page via shortcut OR by right-click mo
 Same reasoning as bookmark
     User should be able to highlight portions of text (set a default color that is visually pleasing)
     Save information in same file as bookmarks, we can call said file page-state
+
+
+- note page for app as a whole,
+    useful for adding vocabulary, probably to be implemented on the right
+    not as a static window, but as something that can be opened/closed with a click.
+
+- dictionary based on web?
