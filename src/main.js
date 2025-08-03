@@ -87,10 +87,22 @@ function loadConfig() {
     if (fsSync.existsSync(configPath)) {
       const rawData = fsSync.readFileSync(configPath);
       appConfig = JSON.parse(rawData);
+      
+      // Migration for users with the old 'savePath'
+      if (appConfig.savePath && !appConfig.autoSavePath && !appConfig.manualSavePath) {
+        console.log('Migrating old savePath to new dual-path system.');
+        appConfig.autoSavePath = path.join(app.getPath('userData'), 'save-states');
+        appConfig.manualSavePath = appConfig.savePath; // Old path becomes manual save path
+        delete appConfig.savePath; // Remove old key
+        // Immediately save the migrated config
+        fsSync.writeFileSync(configPath, JSON.stringify(appConfig, null, 2));
+      }
+
     } else {
       // Create default config if it doesn't exist
       appConfig = {
-        savePath: path.join(app.getPath('userData'), 'saves'),
+        autoSavePath: path.join(app.getPath('userData'), 'save-states'),
+        manualSavePath: path.join(app.getPath('userData'), 'saves'),
         externalBrowser: 'Default Browser'
       };
       fsSync.writeFileSync(configPath, JSON.stringify(appConfig, null, 2));
@@ -99,15 +111,30 @@ function loadConfig() {
     console.error('Failed to load or create config file:', error);
     // Fallback to defaults in case of error
     appConfig = {
-      savePath: path.join(app.getPath('userData'), 'saves'),
+      autoSavePath: path.join(app.getPath('userData'), 'save-states'),
+      manualSavePath: path.join(app.getPath('userData'), 'saves'),
       externalBrowser: 'Default Browser'
     };
   }
+  // Ensure default paths are set if they are missing for any reason
+  if (!appConfig.autoSavePath) {
+    appConfig.autoSavePath = path.join(app.getPath('userData'), 'save-states');
+  }
+  if (!appConfig.manualSavePath) {
+    appConfig.manualSavePath = path.join(app.getPath('userData'), 'saves');
+  }
 }
 
-function getSavesDir() {
-    // Ensure the configured directory exists
-    const savesDir = appConfig.savePath || path.join(app.getPath('userData'), 'saves');
+function getAutoSavesDir() {
+    const savesDir = appConfig.autoSavePath || path.join(app.getPath('userData'), 'save-states');
+    if (!fsSync.existsSync(savesDir)) {
+        fsSync.mkdirSync(savesDir, { recursive: true });
+    }
+    return savesDir;
+}
+
+function getManualSavesDir() {
+    const savesDir = appConfig.manualSavePath || path.join(app.getPath('userData'), 'saves');
     if (!fsSync.existsSync(savesDir)) {
         fsSync.mkdirSync(savesDir, { recursive: true });
     }
@@ -175,7 +202,7 @@ ipcMain.handle('save-config', async (event, newConfig) => {
 
 ipcMain.handle('show-open-dialog-and-load-file', async (event) => {
   const window = BrowserWindow.fromWebContents(event.sender);
-  const savesDir = getSavesDir();
+  const savesDir = getManualSavesDir();
 
   const { canceled, filePaths } = await dialog.showOpenDialog(window, {
     defaultPath: savesDir,
@@ -387,7 +414,8 @@ app.on('ready', () => {
     {
       label: 'File',
       submenu: [
-        { label: 'Open Save States Folder', click: () => { shell.openPath(getSavesDir()); } },
+        { label: 'Open Auto-Saves Folder', click: () => { shell.openPath(getAutoSavesDir()); } },
+        { label: 'Open Manual Saves Folder', click: () => { shell.openPath(getManualSavesDir()); } },
         { label: 'Show Logs in Folder', click: () => { shell.openPath(app.getPath('userData')); } },
         { type: 'separator' },
         { role: 'quit' }
@@ -504,7 +532,7 @@ app.on('activate', () => {
 // --- Save/Load Handlers ---
 
 const getExerciseSavePath = (exerciseFilePath) => {
-  const savesDir = appConfig.savePath || path.join(app.getPath('userData'), 'saves'); // Use appConfig.savePath
+  const savesDir = getAutoSavesDir(); // Use the new function
   const sanitizedFileName = exerciseFilePath.replace(/[\\/:]/g, '-').replace(/\.html$/, '').toLowerCase();
   return path.join(savesDir, `${sanitizedFileName}_state.json`);
 };
@@ -544,7 +572,7 @@ ipcMain.handle('reset-exercise-state', async (event, filePath) => {
 
 ipcMain.handle('show-save-dialog-and-save-file', async (event, { defaultFilename, data } = {}) => {
   const window = BrowserWindow.fromWebContents(event.sender);
-  const savesDir = getSavesDir();
+  const savesDir = getManualSavesDir();
   
   // THE FIX IS HERE: The destructured argument now has a default value of an empty object.
   // This prevents a crash if the renderer calls the function with no arguments.
@@ -589,7 +617,7 @@ ipcMain.handle('get-lessons-an', () => getContents('lessonsAN'));
 ipcMain.handle('get-tests', () => getContents('others'));
 
 ipcMain.handle('get-active-save-states', async () => {
-  const savesDir = getSavesDir();
+  const savesDir = getAutoSavesDir();
   try {
     const files = await fs.readdir(savesDir);
     // Optional: Filter for only .json files if other files might be present

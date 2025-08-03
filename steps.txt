@@ -114,3 +114,23 @@ save path
 AND 
 under file, there is already open save-state folder
 we also need an open save folder
+---
+
+I have refactored `main.js` to support separate auto-save and manual save directories.
+- Added `autoSavePath` and `manualSavePath` to the config.
+- Created `getAutoSavesDir` and `getManualSavesDir` functions.
+- Updated file operations to use the new directory functions.
+- Updated the File menu with "Open Auto-Saves Folder" and "Open Manual Saves Folder".
+---
+
+I have updated the Settings page UI to support the new dual-path save system.
+- In `src/settings-template.html`, I replaced the single save path input with two distinct sections: one for the "Auto-Saves Folder" and one for the "Manual Saves Folder".
+- I assigned unique IDs to the new inputs and buttons to prepare for the logic implementation.
+- I also added a "Save Settings" button to the template, which will be used to persist the user's path choices.
+---
+
+I have implemented the client-side logic for the new settings UI.
+- In `src/sub-functions/content-loader.js`, I updated the `loadSettingsIntoTab` function.
+- The function now fetches the application config and populates the two new path input fields with the correct values.
+- I added event listeners to the "Browse" buttons, which allow a user to select a new directory via a native dialog.
+- I also added an event listener to the "Save Settings" button that gathers the new paths and calls the backend to save the updated configuration, providing feedback to the user on success or failure.

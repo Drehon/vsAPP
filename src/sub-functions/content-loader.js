@@ -132,10 +132,64 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
         scrollableContent.innerHTML = settingsContent;
         pane.appendChild(scrollableContent);
 
-        // --- New logic to populate save display ---
-        
-        // Populate Active Auto-Saves
+        // --- Get DOM elements ---
+        const autoSavePathInput = scrollableContent.querySelector('#auto-save-path');
+        const browseAutoSavePathBtn = scrollableContent.querySelector('#browse-auto-save-path');
+        const manualSavePathInput = scrollableContent.querySelector('#manual-save-path');
+        const browseManualSavePathBtn = scrollableContent.querySelector('#browse-manual-save-path');
+        const saveSettingsBtn = scrollableContent.querySelector('#save-settings-btn');
         const activeSavesList = scrollableContent.querySelector('#active-saves-list');
+        const recentLoadDisplay = scrollableContent.querySelector('#recent-load-display');
+
+        // --- Load and Display Configurable Paths ---
+        const config = await window.api.getConfig();
+        if (config) {
+            if (autoSavePathInput) autoSavePathInput.value = config.autoSavePath || '';
+            if (manualSavePathInput) manualSavePathInput.value = config.manualSavePath || '';
+        }
+
+        // --- Add Event Listeners ---
+        if (browseAutoSavePathBtn && autoSavePathInput) {
+            browseAutoSavePathBtn.addEventListener('click', async () => {
+                const result = await window.api.openDirectoryDialog();
+                if (!result.canceled && result.path) {
+                    autoSavePathInput.value = result.path;
+                }
+            });
+        }
+
+        if (browseManualSavePathBtn && manualSavePathInput) {
+            browseManualSavePathBtn.addEventListener('click', async () => {
+                const result = await window.api.openDirectoryDialog();
+                if (!result.canceled && result.path) {
+                    manualSavePathInput.value = result.path;
+                }
+            });
+        }
+
+        if (saveSettingsBtn) {
+            saveSettingsBtn.addEventListener('click', async () => {
+                try {
+                    const currentConfig = await window.api.getConfig();
+                    const newConfig = {
+                        ...currentConfig,
+                        autoSavePath: autoSavePathInput.value,
+                        manualSavePath: manualSavePathInput.value
+                    };
+                    const result = await window.api.saveConfig(newConfig);
+                    if (result.success) {
+                        alert('Settings saved successfully!');
+                    } else {
+                        throw new Error(result.error);
+                    }
+                } catch (error) {
+                    console.error('Failed to save settings:', error);
+                    alert(`Failed to save settings: ${error.message}`);
+                }
+            });
+        }
+
+        // --- Populate Save Display Information ---
         if (activeSavesList) {
             const saveFiles = await window.api.getActiveSaveStates();
             activeSavesList.innerHTML = ''; // Clear placeholder
@@ -150,8 +204,6 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
             }
         }
 
-        // Populate Most Recent Manual Load
-        const recentLoadDisplay = scrollableContent.querySelector('#recent-load-display');
         if (recentLoadDisplay) {
             if (mostRecentlyLoadedFile) {
                 recentLoadDisplay.textContent = mostRecentlyLoadedFile;

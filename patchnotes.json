@@ -1,4 +1,10 @@
 [
+    {
+    "body": "Implemented 'Return to N1' button for exercises, fixed save naming convention, implemented displaying active saves in settings and separating saves-state folder from saves folder.",
+    "name": "v1.3.7",
+    "publishedAt": "2025-08-03T19:40:00Z",
+    "tagName": "v1.3.7"
+  },
   {
     "body": "Simplified patch notes system. The application now generates patch notes directly from this file, which must be manually updated before each release.",
     "name": "v1.3.6",
