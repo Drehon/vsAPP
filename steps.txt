@@ -31,3 +31,16 @@ I have updated the save functionality to use a more descriptive naming conventio
 
 ---
 
+I have implemented the 'Loaded Save Display' feature in the settings page. Here are the steps I took:
+
+1.  **Exposing Save Data**: I created a new IPC handler in `src/main.js` called `get-active-save-states`. This function reads the contents of the user's auto-save directory and returns a list of all the `.json` save files.
+
+2.  **Creating the UI**: I added a new "Loaded Save Display" section to `src/settings-template.html`. This section includes a list to show the active auto-saves and a designated area to display the path of the most recently manually loaded file.
+
+3.  **Tracking Loaded Files**: I modified `src/renderer.js` to keep track of the most recently loaded file. I added a new variable, `mostRecentlyLoadedFile`, which gets updated with the file path inside the `handleLoadButtonClick` function whenever a user successfully loads a save file.
+
+4.  **Displaying the Data**: I updated the `loadSettingsIntoTab` function in `src/sub-functions/content-loader.js`. This function now:
+    *   Accepts the `mostRecentlyLoadedFile` path from `renderer.js`.
+    *   Calls the new `get-active-save-states` IPC handler to get the list of auto-saves.
+    *   Populates the new UI elements in the settings page with both the list of auto-saves and the path of the recently loaded file.
+

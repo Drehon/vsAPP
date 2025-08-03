@@ -109,7 +109,7 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerc
     renderTabs();
 }
 
-export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalToolbar) {
+export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalToolbar, mostRecentlyLoadedFile) {
     const tab = tabs.find(t => t.id === tabId);
     if (!tab) return;
 
@@ -125,13 +125,40 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
     const pane = document.getElementById(`pane-${tab.id}`);
 
     if (pane && settingsContent) {
-      pane.innerHTML = ''; // Clear previous content
+        pane.innerHTML = ''; // Clear previous content
 
-      // Settings content is wrapped in a div that allows scrolling
-      const scrollableContent = document.createElement('div');
-      scrollableContent.className = 'h-full overflow-y-auto p-8';
-      scrollableContent.innerHTML = settingsContent;
-      pane.appendChild(scrollableContent);
+        const scrollableContent = document.createElement('div');
+        scrollableContent.className = 'h-full overflow-y-auto p-8';
+        scrollableContent.innerHTML = settingsContent;
+        pane.appendChild(scrollableContent);
+
+        // --- New logic to populate save display ---
+        
+        // Populate Active Auto-Saves
+        const activeSavesList = scrollableContent.querySelector('#active-saves-list');
+        if (activeSavesList) {
+            const saveFiles = await window.api.getActiveSaveStates();
+            activeSavesList.innerHTML = ''; // Clear placeholder
+            if (saveFiles && saveFiles.length > 0) {
+                saveFiles.forEach(file => {
+                    const li = document.createElement('li');
+                    li.textContent = file;
+                    activeSavesList.appendChild(li);
+                });
+            } else {
+                activeSavesList.innerHTML = '<li class="italic">No active auto-saves found.</li>';
+            }
+        }
+
+        // Populate Most Recent Manual Load
+        const recentLoadDisplay = scrollableContent.querySelector('#recent-load-display');
+        if (recentLoadDisplay) {
+            if (mostRecentlyLoadedFile) {
+                recentLoadDisplay.textContent = mostRecentlyLoadedFile;
+            } else {
+                recentLoadDisplay.innerHTML = '<span class="italic">No file loaded in this session.</span>';
+            }
+        }
     }
     renderTabs();
 }

@@ -7,6 +7,7 @@ window.addEventListener('api-ready', () => {
   let tabs = [];
   let nextTabId = 1;
   let activeTab = null;
+  let mostRecentlyLoadedFile = null; // Variable to track the last loaded file
 
   // --- DOM ELEMENTS ---
   const tabBar = document.getElementById('tab-bar');
@@ -67,7 +68,7 @@ window.addEventListener('api-ready', () => {
   }
   
   function handleLoadSettings(tabId, ...args) {
-    loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalToolbar);
+    loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalToolbar, mostRecentlyLoadedFile);
   }
 
   // --- GLOBAL TOOLBAR LOGIC ---
@@ -245,6 +246,7 @@ window.addEventListener('api-ready', () => {
         const isValidState = loadedState && typeof loadedState === 'object' && Object.keys(loadedState).length > 0;
 
         if (isValidState && tab.filePath) {
+          mostRecentlyLoadedFile = result.path; // Track the recently loaded file
           await window.api.saveExerciseState(tab.filePath, loadedState); // Overwrite autosave with this state
           handleLoadContent(tab.id, tab.filePath); // Reload content to apply the new state
           console.log('Successfully loaded and applied state from', result.path);

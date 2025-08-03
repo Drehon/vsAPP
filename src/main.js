@@ -587,3 +587,15 @@ ipcMain.handle('get-lessons', () => getContents('lessons'));
 ipcMain.handle('get-exercises', () => getContents('exercises'));
 ipcMain.handle('get-lessons-an', () => getContents('lessonsAN'));
 ipcMain.handle('get-tests', () => getContents('others'));
+
+ipcMain.handle('get-active-save-states', async () => {
+  const savesDir = getSavesDir();
+  try {
+    const files = await fs.readdir(savesDir);
+    // Optional: Filter for only .json files if other files might be present
+    return files.filter(file => file.endsWith('.json'));
+  } catch (err) {
+    console.error(`Error reading save states directory ${savesDir}:`, err);
+    return []; // Return empty array on error
+  }
+});
