@@ -34,9 +34,6 @@
     It should however also give some kind of visual feedback, perhaps in the toolbar we can add besides the reset button a new area, where we can display text 'Reset Complete' to fade over 5 seconds or so. 
     (Complexity: 40)
 
-    10b. **Settings UI:** Add a 'Reset All Saves' option below the 'Loaded Save Display'.
-    (Complexity: 40)
-
 ---
 
 Next patches - planned 
