@@ -2,7 +2,7 @@ import { initializeExercise } from './exercise-initializer.js';
 import { initializeGrammarExercise } from './grammar-exercise.js';
 import { initializeVerbsExercise } from './verb-exercise.js';
 
-export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState, updateGlobalToolbar) {
+export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState, updateGlobalToolbar, options) {
     const tab = tabs.find(t => t.id === tabId);
     if (!tab) return;
 
@@ -62,6 +62,23 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
             }
             else {
                 initializeExercise(contentWrapper, tab, saveExerciseState);
+            }
+        }
+        
+        // After initialization, restore view state if options are provided
+        if (options) {
+            // Restore active phase/tab by simulating a click
+            if (options.activePhaseId) {
+                const phaseButton = pane.querySelector(`#tab-btn-${options.activePhaseId}`);
+                if (phaseButton) {
+                    phaseButton.click(); // This will show the correct tab content
+                }
+            }
+
+            // Restore scroll position
+            if (options.scrollTop) {
+                // The scrollable element is the contentWrapper itself
+                contentWrapper.scrollTop = options.scrollTop;
             }
         }
     }

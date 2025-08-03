@@ -64,8 +64,8 @@ window.addEventListener('api-ready', () => {
     loadHomeIntoTab(tabId, tabs, renderTabs, addTab, autoSaveExerciseState, updateGlobalToolbar);
   }
 
-  function handleLoadContent(tabId, filePath, ...args) {
-    loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, autoSaveExerciseState, updateGlobalToolbar);
+  function handleLoadContent(tabId, filePath, options, ...args) {
+    loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, autoSaveExerciseState, updateGlobalToolbar, options);
   }
   
   function handleLoadSettings(tabId, ...args) {
@@ -106,8 +106,28 @@ window.addEventListener('api-ready', () => {
     globalSaveBtn.onclick = isContent ? () => handleSaveButtonClick(tab) : null;
     globalLoadBtn.onclick = isContent ? () => handleLoadButtonClick(tab) : null;
     globalResetBtn.onclick = isContent ? async () => {
+      // --- Capture View State Before Reset ---
+      const pane = document.getElementById(`pane-${tab.id}`);
+      let activePhaseId = null;
+      let scrollTop = 0;
+
+      if (pane) {
+        // Find active phase
+        const activeButton = pane.querySelector('.tab-btn.tab-active');
+        if (activeButton) {
+          activePhaseId = activeButton.id.split('-').pop();
+        }
+        // Find scroll position
+        const scrollable = pane.querySelector('.lesson-content');
+        if (scrollable) {
+          scrollTop = scrollable.scrollTop;
+        }
+      }
+      
       const result = await window.api.resetExerciseState(tab.filePath);
-      handleLoadContent(tab.id, tab.filePath); // Reload content
+
+      // --- Reload content with view state ---
+      handleLoadContent(tab.id, tab.filePath, { activePhaseId, scrollTop });
 
       if (result.success && resetFeedbackMessage) {
         resetFeedbackMessage.textContent = 'Reset Complete';

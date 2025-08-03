@@ -65,6 +65,25 @@ on reset save the 'currently open excercise block' somehow and reload to that! i
 
 ---
 
+Addressed feedback on the reset button's feedback area and functionality.
 
+Here are the steps taken:
+
+1.  **Fixed Reset Feedback Area Styling (`src/index.html`):**
+    *   Modified the `div` for the feedback message to ensure its size and background are static and consistent with adjacent buttons.
+    *   Replaced the fixed height class (`h-8`) with vertical padding (`py-1`) to match the buttons' height behavior.
+    *   Changed the corner rounding from `rounded-md` to `rounded-lg` for visual consistency.
+    *   This ensures the background area is always visible and correctly sized, with only the text fading in and out.
+
+2.  **Enhanced Reset Functionality (`src/renderer.js`, `src/sub-functions/content-loader.js`):**
+    *   Implemented the request to return the user to their position within an exercise after a reset.
+    *   The `globalResetBtn` click handler in `renderer.js` now captures two pieces of state before resetting:
+        - The ID of the currently active exercise phase (e.g., "fase 2").
+        - The current scroll position of the content area.
+    *   The `loadContentIntoTab` function in `content-loader.js` was updated to accept this state.
+    *   After reloading the exercise, it now programmatically clicks the correct phase tab and restores the scroll position, placing the user exactly where they were before the reset.
 
 ---
+
+the static area is not wide enough, increase it by just a few letters worth. 
+also when empty it vertically collapses to be incredibly small vertically instead of staying fixed at the correct size regardless of if text is there .

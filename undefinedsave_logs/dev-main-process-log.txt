@@ -103,3 +103,35 @@
 [LOG][2025-08-03T18:05:51.365Z] Main Process: Checking for updates...
 [LOG][2025-08-03T18:05:51.373Z] AutoUpdater configuration: [Unserializable Object]
 [LOG][2025-08-03T18:05:52.338Z] Main Process: Update not available. {"tag":"v1.3.7","version":"1.3.7","files":[{"url":"vsAPP-1.3.7.Setup.exe","sha512":"xnOS6Qa3V6WbU7lyjU6EgxlLhQzK33XkHrBKtGDctRkqUnH+Zl+4jjJI9lNGzY5B3oSZB/cUmkNTOom7nH3AcA==","size":114394624}],"path":"vsAPP-1.3.7.Setup.exe","sha512":"xnOS6Qa3V6WbU7lyjU6EgxlLhQzK33XkHrBKtGDctRkqUnH+Zl+4jjJI9lNGzY5B3oSZB/cUmkNTOom7nH3AcA==","releaseDate":"2025-08-03T17:34:52.845Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.7","releaseNotes":"<p>Implemented 'Return to N1' button for exercises, fixed save naming convention.<br>\nImplemented displaying active saves in settings and separating saves-state folder from saves folder.</p>"}
+[LOG][2025-08-03T18:15:42.954Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-03T18:15:42.957Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-03T18:15:42.958Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-03T18:15:43.054Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-03T18:15:43.061Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-03T18:15:44.633Z] Main Process: Checking for updates...
+[LOG][2025-08-03T18:15:44.640Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-03T18:15:45.804Z] Main Process: Update not available. {"tag":"v1.3.7","version":"1.3.7","files":[{"url":"vsAPP-1.3.7.Setup.exe","sha512":"xnOS6Qa3V6WbU7lyjU6EgxlLhQzK33XkHrBKtGDctRkqUnH+Zl+4jjJI9lNGzY5B3oSZB/cUmkNTOom7nH3AcA==","size":114394624}],"path":"vsAPP-1.3.7.Setup.exe","sha512":"xnOS6Qa3V6WbU7lyjU6EgxlLhQzK33XkHrBKtGDctRkqUnH+Zl+4jjJI9lNGzY5B3oSZB/cUmkNTOom7nH3AcA==","releaseDate":"2025-08-03T17:34:52.845Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.7","releaseNotes":"<p>Implemented 'Return to N1' button for exercises, fixed save naming convention.<br>\nImplemented displaying active saves in settings and separating saves-state folder from saves folder.</p>"}
+[LOG][2025-08-03T18:16:32.963Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-03T18:16:32.966Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-03T18:16:32.968Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-03T18:16:33.060Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-03T18:16:33.067Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-03T18:16:34.548Z] Main Process: Checking for updates...
+[LOG][2025-08-03T18:16:34.555Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-03T18:16:35.552Z] Main Process: Update not available. {"tag":"v1.3.7","version":"1.3.7","files":[{"url":"vsAPP-1.3.7.Setup.exe","sha512":"xnOS6Qa3V6WbU7lyjU6EgxlLhQzK33XkHrBKtGDctRkqUnH+Zl+4jjJI9lNGzY5B3oSZB/cUmkNTOom7nH3AcA==","size":114394624}],"path":"vsAPP-1.3.7.Setup.exe","sha512":"xnOS6Qa3V6WbU7lyjU6EgxlLhQzK33XkHrBKtGDctRkqUnH+Zl+4jjJI9lNGzY5B3oSZB/cUmkNTOom7nH3AcA==","releaseDate":"2025-08-03T17:34:52.845Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.7","releaseNotes":"<p>Implemented 'Return to N1' button for exercises, fixed save naming convention.<br>\nImplemented displaying active saves in settings and separating saves-state folder from saves folder.</p>"}
+[LOG][2025-08-03T18:17:18.794Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-03T18:17:18.797Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-03T18:17:18.798Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-03T18:17:18.901Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-03T18:17:18.908Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-03T18:17:20.372Z] Main Process: Checking for updates...
+[LOG][2025-08-03T18:17:20.379Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-03T18:17:21.571Z] Main Process: Update not available. {"tag":"v1.3.7","version":"1.3.7","files":[{"url":"vsAPP-1.3.7.Setup.exe","sha512":"xnOS6Qa3V6WbU7lyjU6EgxlLhQzK33XkHrBKtGDctRkqUnH+Zl+4jjJI9lNGzY5B3oSZB/cUmkNTOom7nH3AcA==","size":114394624}],"path":"vsAPP-1.3.7.Setup.exe","sha512":"xnOS6Qa3V6WbU7lyjU6EgxlLhQzK33XkHrBKtGDctRkqUnH+Zl+4jjJI9lNGzY5B3oSZB/cUmkNTOom7nH3AcA==","releaseDate":"2025-08-03T17:34:52.845Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.7","releaseNotes":"<p>Implemented 'Return to N1' button for exercises, fixed save naming convention.<br>\nImplemented displaying active saves in settings and separating saves-state folder from saves folder.</p>"}
+[LOG][2025-08-03T18:21:12.650Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-03T18:21:12.653Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-03T18:21:12.656Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-03T18:21:12.753Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-03T18:21:12.759Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-03T18:21:14.236Z] Main Process: Checking for updates...
+[LOG][2025-08-03T18:21:14.243Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-03T18:21:15.383Z] Main Process: Update not available. {"tag":"v1.3.7","version":"1.3.7","files":[{"url":"vsAPP-1.3.7.Setup.exe","sha512":"xnOS6Qa3V6WbU7lyjU6EgxlLhQzK33XkHrBKtGDctRkqUnH+Zl+4jjJI9lNGzY5B3oSZB/cUmkNTOom7nH3AcA==","size":114394624}],"path":"vsAPP-1.3.7.Setup.exe","sha512":"xnOS6Qa3V6WbU7lyjU6EgxlLhQzK33XkHrBKtGDctRkqUnH+Zl+4jjJI9lNGzY5B3oSZB/cUmkNTOom7nH3AcA==","releaseDate":"2025-08-03T17:34:52.845Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.7","releaseNotes":"<p>Implemented 'Return to N1' button for exercises, fixed save naming convention.<br>\nImplemented displaying active saves in settings and separating saves-state folder from saves folder.</p>"}
