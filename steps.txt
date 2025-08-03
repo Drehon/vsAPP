@@ -12,5 +12,22 @@ I have implemented the 'Back to N1' button feature by following these steps:
 
 5.  **Verification**: I read the modified `src/sub-functions/exercise-initializer.js` file to ensure that my changes were applied correctly and that the new feature would function as intended.
 
+I have updated the save functionality to use a more descriptive naming convention. Here are the steps I took:
+
+1.  **Codebase Exploration**: I started by exploring the codebase to understand how the save functionality was implemented. I used `grep` to search for "save" and identified that the manual save was likely handled by a function called `handleSaveButtonClick`. I then read `src/renderer.js` and `src/main.js` to confirm this.
+
+2.  **Identifying Key Files**: My exploration led me to `src/renderer.js` as the place where the save process is initiated and the default filename is created. I also looked at `src/sub-functions/content-loader.js` to understand how the tab titles (which were used for the old save names) are generated.
+
+3.  **Implementing the New Naming Convention**:
+    *   I modified the `handleSaveButtonClick` function in `src/renderer.js`.
+    *   I added logic to get the current date and format it as `YYYY-MM-DD`.
+    *   I used the `tab.filePath` and `tab.title` properties to determine the correct filename format based on the user's requirements:
+        *   `Verbs save [date].json` for verb tests.
+        *   `Grammar save [date].json` for grammar tests.
+        *   `LXes save [date].json` for standard exercises.
+    *   I included a fallback to the old naming scheme to prevent any unforeseen issues.
+
+4.  **Verification**: After applying the changes, I read the modified `src/renderer.js` file to ensure the new logic was implemented correctly.
+
 ---
 
