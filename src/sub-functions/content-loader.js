@@ -69,7 +69,7 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
         if (options) {
             // Restore active phase/tab by simulating a click
             if (options.activePhaseId) {
-                const phaseButton = pane.querySelector(`#tab-btn-${options.activePhaseId}`);
+                const phaseButton = pane.querySelector(`#${options.activePhaseId}`);
                 if (phaseButton) {
                     phaseButton.click(); // This will show the correct tab content
                 }

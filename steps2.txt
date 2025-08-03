@@ -93,3 +93,49 @@ probably cause they are coded differently.
 to clarify
 the area where the text is displayed after a reset must have a static background as high as that of the other buttons
 and large enough for the text that must appear inside
+
+---
+
+Addressed feedback on the reset button's feedback area and extended reset functionality to all page types.
+
+Here are the steps taken:
+
+1.  **Fixed Reset Feedback Area Styling (`src/index.html`):**
+    *   Modified the `div` for the feedback message to prevent it from collapsing and to increase its size.
+    *   Increased the width from `w-32` to `w-40` to provide more space for text.
+    *   Replaced the vertical padding class (`py-1`) with a fixed height class (`h-8`) to ensure the container maintains its size even when the feedback text is not visible. This prevents the vertical collapse issue.
+
+2.  **Fixed Post-Reset State Restoration for Test Pages (`src/renderer.js`, `src/sub-functions/content-loader.js`):**
+    *   The previous implementation failed on test pages because it made incorrect assumptions about the format of the phase/block tab IDs.
+    *   In `renderer.js`, the logic was updated to store the *entire* `id` of the active tab button (e.g., `tab-block-1`) instead of just a part of it.
+    *   In `content-loader.js`, the logic was updated to use this full, unmodified `id` to find and click the correct tab after reloading.
+    *   This makes the state restoration logic more robust and ensures it works correctly across all content types, including exercises and tests.
+
+---
+
+Corrected the styling of the reset feedback area to ensure consistent height.
+
+Here are the steps taken:
+
+1.  **Re-fixed Reset Feedback Area Styling (`src/index.html`):**
+    *   The previous fix using a fixed height (`h-8`) was incorrect as it did not align properly with the other buttons in the flex container.
+    *   The styling was updated to use `py-1` for vertical padding, matching the adjacent buttons.
+    *   To prevent the container from collapsing when empty, a non-breaking space (`&nbsp;`) was added to the feedback `span` in the HTML.
+
+2.  **Updated `src/renderer.js` to Preserve Height:**
+    *   The `globalResetBtn` click handler was modified.
+    *   When the feedback message fades out, its content is now set to `&nbsp;` instead of an empty string. This ensures the `span` always has content, giving the container an intrinsic height and preventing it from collapsing, which maintains visual consistency in the toolbar.
+
+---
+
+a few issues still
+the horizontal area of the feedback area must be expanded slightly, maybe to 40 or 42
+but if i or you do that, horizontally the area collapses to abouth 1 character worth of width when the text is not displayed.
+
+also, add more feedback displays for when a file is saved or loaded
+and for when a savestate is used for the first time after a reset
+'Loaded object' with object replaced by 'LX' (lesson followed by number) or 'verbs' or 'grammar'
+and 'Saved object' with the same logic
+
+consider that the horizontal width of the feedback area must be constant regardless of if it's empty or full with text
+for this purpose the default width must be more than the length of any of the feedback phrases

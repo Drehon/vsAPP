@@ -115,7 +115,7 @@ window.addEventListener('api-ready', () => {
         // Find active phase
         const activeButton = pane.querySelector('.tab-btn.tab-active');
         if (activeButton) {
-          activePhaseId = activeButton.id.split('-').pop();
+          activePhaseId = activeButton.id; // Store the full ID
         }
         // Find scroll position
         const scrollable = pane.querySelector('.lesson-content');
@@ -137,7 +137,7 @@ window.addEventListener('api-ready', () => {
           resetFeedbackMessage.classList.add('opacity-0');
           // Clear text after the fade-out transition for cleanliness
           setTimeout(() => {
-            resetFeedbackMessage.textContent = '';
+            resetFeedbackMessage.innerHTML = '&nbsp;';
           }, 500); // Matches the transition duration
         }, 5000); // Display for 5 seconds
       } else if (!result.success) {
