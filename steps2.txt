@@ -54,4 +54,8 @@ Here are the steps taken:
 empty space is now static, but colored background isn't.
 also the colored background is slimmer compared to those of 'salva' 'carica' and 'azzera'.
 please find a middle ground between the two vertical sizes and apply it to the three buttons and the new area.
-make the toolbar as a whole a bit less vertically high afterwards. 
+make the home, reload, github and settings icon slightly smaller too.
+finally make the toolbar as a whole a bit less vertically high afterwards. 
+
+as for the discussed reset without reloading
+on reset save the 'currently open excercise block' somehow and reload to that! instead of the default block for the page
