@@ -131,16 +131,86 @@ The goal is to have a single, flexible way to create any type of content, from a
 *   **Dropdown/Input Exercises:** Determined by `data-exercise-type` and the corresponding data in the JSON island.
 *   **Green/Red Highlights & Mark as Correct:** This logic would live entirely in the central JS module. When a user answers, the JS checks the answer against the JSON data, applies the appropriate CSS class (`.input-correct` or `.input-incorrect`), and can generate a "Mark as Correct" button if the answer is wrong.
 
-### 3. Implementation Steps
+### 3. Detailed Implementation Plan
 
-This is a significant refactoring. The process should be:
+This is a significant refactoring. To manage complexity, it should be executed in phased sprints. This plan provides a detailed roadmap that accounts for the app's structure, including `content-loader.js`, `renderer.js`, and the various initializers.
 
-1.  **Create the Central Logic:** Develop the main JavaScript controller that can read the `data-*` attributes from a loaded HTML fragment.
-2.  **Refactor One Page:** Convert a single interactive page (e.g., `exercises/L1 - congiuntivoES.html`) to the new universal template format. This involves:
-    *   Stripping the `<html>`, `<head>`, `<body>` tags.
-    *   Restructuring the HTML to match the proposed template.
-    *   Moving all the logic from its inline `<script>` tag into a new, reusable JS module (e.g., `src/sub-functions/exercise-handler.js`).
-3.  **Extend and Repeat:** Gradually refactor all other HTML files to use the new template system, adding handlers for different exercise types as needed.
-4.  **Remove Redundant Code:** Once all pages are migrated, the old, large inline scripts can be deleted.
+---
 
-By adopting this model, the codebase will become significantly more streamlined, maintainable, and scalable. Adding new types of lessons or exercises will be as simple as creating a new HTML fragment and defining its data in the JSON block, without having to write custom JavaScript for each one.
+#### **Phase 1: Foundation - The Content Hydration Engine**
+*Objective: Build the core system that loads and initializes content based on the new universal template format.*
+
+1.  **Create the Central Initializer:** Create a new file: `src/sub-functions/content-initializer.js`. This module will export a main `initializeContent(paneElement)` function.
+2.  **Delegate from Loader:** Modify `src/sub-functions/content-loader.js`. The `loadContentIntoTab` function should be simplified. Its primary job is to fetch and inject the HTML fragment. After injection, it must call `initializeContent(paneElement)`.
+3.  **Implement Module-Based Loading:** Inside `content-initializer.js`, the `initializeContent` function will inspect the root element of the injected content for a `data-module` attribute (e.g., `<div data-module="static-lesson">`). It will use this attribute to delegate to the correct handler function (e.g., `handleStaticLesson(pane)`).
+4.  **Proof of Concept (Static Page):** Convert a single static lesson from the `lessons/` directory into a pure HTML fragment. Add `data-module="static-lesson"` to its root element. Confirm that it loads correctly through the new system.
+
+---
+
+#### **Phase 2: Componentization - Building Reusable Features**
+*Objective: Extract common UI features into reusable components that can be plugged into any page.*
+
+1.  **Create a Notes Component:** Create a new `src/sub-functions/components/notes-component.js`. This module should find all elements with a `.notes-component` class, attach event listeners for the toggle button, and handle saving the `textarea` content to the tab's state, keyed by `data-note-id`.
+2.  **Universalize State Management:** Refactor the global toolbar buttons in `src/renderer.js`. The `handleSaveButtonClick`, `handleLoadButtonClick`, and `globalResetBtn.onclick` functions should be updated to be more generic. Instead of relying on `tab.filePath`, they should read the `data-page-id` from the active content pane to use as the key for all state-saving operations. This decouples state from the file system structure.
+
+---
+
+#### **Phase 3: Refactoring the First Interactive Module**
+*Objective: Convert the first, and most common, type of interactive exercise to the new system.*
+
+1.  **Create the Generic Exercise Handler:** Create a new file, `src/sub-functions/handlers/exercise-handler.js`, which will replace the old `exercise-initializer.js`.
+2.  **Port and Generalize Logic:** Move the core logic from `exercise-initializer.js` into the new handler. This logic must be made generic. It should read the `#page-data` JSON island and dynamically render questions based on the `type` specified for each exercise in the JSON (e.g., `multiple-choice-dropdown`, `fill-in-the-blanks`).
+3.  **Convert a Simple Exercise Page:** Refactor `exercises/L1 - congiuntivoES.html` to the full universal template. It must have `data-module="interactive-exercise"`, a `data-page-id`, and all its questions and answers defined in the `#page-data` JSON block. All inline `<script>` logic must be removed.
+4.  **Integrate and Test:** Add a case for `"interactive-exercise"` in `content-initializer.js` that calls the new `exercise-handler.js`. Thoroughly test the converted page, ensuring that answering questions, saving/loading state, using notes, and getting feedback all work correctly.
+
+---
+
+#### **Phase 4: Full-Scale Migration**
+*Objective: Methodically convert all remaining content to the new universal template system.*
+
+1.  **Migrate All Simple Exercises:** Convert all remaining pages in the `exercises/` directory.
+2.  **Create the Diagnostic Test Handler:** Create `src/sub-functions/handlers/diagnostic-test-handler.js`. This will be a complex module that refactors and combines the logic currently spread across `grammar-exercise.js` and `verb-exercise.js`. It must handle the multi-block structure, advanced question types, and diagnostic chart generation.
+3.  **Migrate Diagnostic Tests:** Convert `others/student-grammar.html` and `others/student-verbs.html` to the universal template, using `data-module="diagnostic-test"`.
+4.  **Migrate All Static Content:** Convert all remaining files in `lessons/` and `lessonsAN/` to the simple HTML fragment format with `data-module="static-lesson"`.
+
+---
+
+#### **Phase 5: Cleanup and Finalization**
+*Objective: Remove all obsolete code and verify the refactoring is complete.*
+
+1.  **Delete Obsolete Files:** Delete the now-redundant `src/sub-functions/exercise-initializer.js`, `src/sub-functions/grammar-exercise.js`, and `src/sub-functions/verb-exercise.js`.
+2.  **Refactor the Content Loader:** Remove any legacy code from `content-loader.js` that was responsible for parsing `<body>` tags or handling old file formats. Its role should now be minimal.
+3.  **Final Code Review:** Perform a repository-wide search for any remaining inline `<script>` or `<style>` tags within HTML content files. Ensure all content has been migrated and the old logic is fully excised.
+
+---
+
+### 4. Recommended Assessment Cadence
+
+This refactoring is a major undertaking. To ensure it stays on track and to catch any architectural issues early, the process should be broken down into sprints, with a dedicated assessment after each key phase. I recommend the following three-part assessment cycle:
+
+**1. Assessment after Phase 2 (Foundation and Components):**
+*   **Focus:** Core Engine and Reusability.
+*   **Questions to Answer:**
+    *   Does the new `content-initializer.js` correctly delegate to different modules based on `data-module` attributes?
+    *   Has the `content-loader.js` been successfully simplified?
+    *   Are the generic state management functions (save/load/reset) in `renderer.js` working correctly with `data-page-id` on a converted static page?
+    *   Is the notes component successfully attaching its functionality to any page where it's included?
+*   **Goal:** To verify the foundational plumbing is solid and extensible before building the complex interactive handlers on top of it.
+
+**2. Assessment after Phase 3 (First Interactive Module):**
+*   **Focus:** Interactive Template Design and Handler Logic.
+*   **Questions to Answer:**
+    *   Was the universal template flexible enough to represent the `L1 - congiuntivoES.html` exercise without compromise?
+    *   Is the `exercise-handler.js` truly generic? Can it handle different question types defined in the JSON?
+    *   Is the separation of data (JSON), structure (HTML), and logic (JS) clear and maintainable?
+    *   Do all features (notes, save/load, feedback) work on this first converted interactive page?
+*   **Goal:** To validate the design of the interactive module system. This is the most critical checkpoint to catch design flaws before they are replicated across dozens of other exercises.
+
+**3. Assessment after Phase 5 (Completion and Cleanup):**
+*   **Focus:** Final State and Code Health.
+*   **Questions to Answer:**
+    *   Have all old initializer files and redundant logic been successfully removed?
+    *   Are there any remaining inline scripts or styles in any content HTML files?
+    *   Does the application remain fully functional? (Full regression test).
+    *   Is the final codebase demonstrably more maintainable, consistent, and easier to extend?
+*   **Goal:** To confirm that the refactoring is truly complete and has achieved its stated goals of improving the codebase's architecture and maintainability.
