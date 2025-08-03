@@ -1,6 +1,4 @@
-import { initializeExercise } from './exercise-initializer.js';
-import { initializeGrammarExercise } from './grammar-exercise.js';
-import { initializeVerbsExercise } from './verb-exercise.js';
+import { hydrateContent } from './content-hydrator.js';
 
 export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState, updateGlobalToolbar, options) {
     const tab = tabs.find(t => t.id === tabId);
@@ -36,34 +34,9 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
         contentWrapper.innerHTML = tempDiv.innerHTML;
         pane.appendChild(contentWrapper);
 
-        if (contentWrapper.querySelector('#exercise-data')) {
-            const savedState = await window.api.loadExerciseState(filePath);
-
-            // Validation logic for test pages
-            let isValidState = false;
-            if (filePath.includes('student-grammar') || filePath.includes('student-verbs')) {
-                isValidState = savedState &&
-                    typeof savedState === 'object' &&
-                    savedState['1'] && savedState['2'] && savedState['3'] &&
-                    'completed' in savedState['1'] && 'answers' in savedState['1'] &&
-                    'completed' in savedState['2'] && 'answers' in savedState['2'] &&
-                    'completed' in savedState['3'] && 'answers' in savedState['3'];
-            } else {
-                // For now, assume other exercises are valid if they exist.
-                isValidState = savedState ? true : false;
-            }
-    
-            tab.exerciseState = isValidState ? savedState : null;
-            
-            if (filePath.includes('student-grammar')) {
-                initializeGrammarExercise(contentWrapper, tab, saveExerciseState);
-            } else if (filePath.includes('student-verbs')) {
-                initializeVerbsExercise(contentWrapper, tab, saveExerciseState);
-            }
-            else {
-                initializeExercise(contentWrapper, tab, saveExerciseState);
-            }
-        }
+        // The new universal hydrator is called here.
+        // It's responsible for inspecting the content and attaching the correct logic.
+        hydrateContent(contentWrapper);
         
         // After initialization, restore view state if options are provided
         if (options) {

@@ -9,6 +9,6 @@ function hydrateContent(paneElement) {
   console.log('Hydrating content in:', paneElement);
 }
 
-module.exports = {
+export {
   hydrateContent
 };

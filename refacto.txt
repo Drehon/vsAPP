@@ -4,8 +4,27 @@ This file tracks the execution of the refactoring plan outlined in uniform.txt.
 
 ## Phase 1: Foundation - The Content Hydration Engine
 
-### Step 1: Create the Central Hydrator
+### Step 1: Create the Central Hydrator (Completed)
 
-- [x] Create a new file: `src/sub-functions/content-hydrator.js`.
-- [x] Export a main `hydrateContent(paneElement)` function.
-- [x] The function currently contains placeholder logic.
+- **File Created**: `src/sub-functions/content-hydrator.js`
+- **Details**: The file was created and exports a placeholder `hydrateContent(paneElement)` function.
+
+---
+
+### Step 2: Refactor the Content Loader (Completed)
+
+- **File Modified**: `src/sub-functions/content-loader.js`
+- **File Modified**: `src/sub-functions/content-hydrator.js`
+
+**Summary of Changes:**
+
+1.  **Standardized Module Exports**: Changed `content-hydrator.js` to use ES Module `export` syntax instead of CommonJS `module.exports` to ensure consistency with the rest of the codebase.
+2.  **Simplified `content-loader.js`**:
+    - Removed the imports for the old, specialized initializers (`exercise-initializer.js`, `grammar-exercise.js`, `verb-exercise.js`).
+    - Imported the new, universal `hydrateContent` function from `content-hydrator.js`.
+    - Deleted the large `if/else if` block that checked the `filePath` to decide which initializer to run.
+    - Added a single, unconditional call to `hydrateContent(contentWrapper)` after injecting the HTML into the content pane.
+
+**Outcome:**
+
+The `content-loader.js` module is now significantly simplified. Its sole responsibility is to fetch and inject HTML content. It no longer contains brittle, path-based logic for initialization. All initialization logic is now delegated to the `content-hydrator.js` module, fulfilling the requirements of Phase 1, Step 2 of the refactoring plan.
