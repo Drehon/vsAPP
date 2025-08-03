@@ -134,3 +134,18 @@ I have implemented the client-side logic for the new settings UI.
 - The function now fetches the application config and populates the two new path input fields with the correct values.
 - I added event listeners to the "Browse" buttons, which allow a user to select a new directory via a native dialog.
 - I also added an event listener to the "Save Settings" button that gathers the new paths and calls the backend to save the updated configuration, providing feedback to the user on success or failure.
+
+---
+
+I have added a 'Reset All Saves' option to the settings page. Here are the steps I took:
+
+1.  **UI Implementation**: I added a new "Danger Zone" section to `src/settings-template.html`. This section contains the "Reset All Auto-Saves" button and a warning message to inform the user that the action is irreversible.
+
+2.  **Backend Logic**: I created a new IPC handler in `src/main.js` called `reset-all-auto-saves`. This function is responsible for finding the auto-saves directory and deleting all the `.json` files within it. It also handles cases where the directory might not exist.
+
+3.  **Exposing the Function**: I updated `src/preload.js` to expose the new `reset-all-auto-saves` function to the renderer process through the `window.api` object.
+
+4.  **Frontend Logic**: I modified the `loadSettingsIntoTab` function in `src/sub-functions/content-loader.js`. I added an event listener to the new reset button that:
+    *   Shows a confirmation dialog to the user before proceeding.
+    *   Calls the `reset-all-auto-saves` function from the backend.
+    *   Refreshes the "Active Auto-Saves" list in the UI to reflect the changes and alerts the user upon completion.

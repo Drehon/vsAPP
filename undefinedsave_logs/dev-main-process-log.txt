@@ -47,3 +47,11 @@
 [LOG][2025-08-03T17:18:08.393Z] Main Process: Checking for updates...
 [LOG][2025-08-03T17:18:08.401Z] AutoUpdater configuration: [Unserializable Object]
 [LOG][2025-08-03T17:18:09.467Z] Main Process: Update not available. {"tag":"v1.3.6","version":"1.3.6","files":[{"url":"vsAPP-1.3.6.Setup.exe","sha512":"BETExnECeYaEt6ugYIv4e0loHzLUM1fWBYcjdy4ty7Of0WkLhcIA2xWYkVvLze5RJWH4+s+ukeb18FvwPLsMOQ==","size":114393088}],"path":"vsAPP-1.3.6.Setup.exe","sha512":"BETExnECeYaEt6ugYIv4e0loHzLUM1fWBYcjdy4ty7Of0WkLhcIA2xWYkVvLze5RJWH4+s+ukeb18FvwPLsMOQ==","releaseDate":"2025-08-02T13:19:40.868Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.6","releaseNotes":"<p>Simplified patch notes system.<br>\nThe application now generates patch notes directly from a file, which must be manually updated before each release.</p>"}
+[LOG][2025-08-03T17:27:12.547Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-03T17:27:12.550Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-03T17:27:12.553Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-03T17:27:12.657Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-03T17:27:12.665Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-03T17:27:14.126Z] Main Process: Checking for updates...
+[LOG][2025-08-03T17:27:14.133Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-03T17:27:15.240Z] Main Process: Update not available. {"tag":"v1.3.6","version":"1.3.6","files":[{"url":"vsAPP-1.3.6.Setup.exe","sha512":"BETExnECeYaEt6ugYIv4e0loHzLUM1fWBYcjdy4ty7Of0WkLhcIA2xWYkVvLze5RJWH4+s+ukeb18FvwPLsMOQ==","size":114393088}],"path":"vsAPP-1.3.6.Setup.exe","sha512":"BETExnECeYaEt6ugYIv4e0loHzLUM1fWBYcjdy4ty7Of0WkLhcIA2xWYkVvLze5RJWH4+s+ukeb18FvwPLsMOQ==","releaseDate":"2025-08-02T13:19:40.868Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.6","releaseNotes":"<p>Simplified patch notes system.<br>\nThe application now generates patch notes directly from a file, which must be manually updated before each release.</p>"}

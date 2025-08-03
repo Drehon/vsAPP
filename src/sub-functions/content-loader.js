@@ -211,6 +211,31 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
                 recentLoadDisplay.innerHTML = '<span class="italic">No file loaded in this session.</span>';
             }
         }
+
+        // --- Add Reset All Saves Logic ---
+        const resetAllSavesBtn = scrollableContent.querySelector('#reset-all-saves-btn');
+        if (resetAllSavesBtn) {
+            resetAllSavesBtn.addEventListener('click', async () => {
+                const confirmed = confirm('Are you sure you want to delete all auto-saved progress? This action cannot be undone.');
+                if (confirmed) {
+                    try {
+                        const result = await window.api.resetAllAutoSaves();
+                        if (result.success) {
+                            alert(`Successfully deleted ${result.count} auto-save file(s). The list will now be updated.`);
+                            // Refresh the active saves list
+                            if (activeSavesList) {
+                                activeSavesList.innerHTML = '<li class="italic">No active auto-saves found.</li>';
+                            }
+                        } else {
+                            throw new Error(result.error);
+                        }
+                    } catch (error) {
+                        console.error('Failed to reset all auto-saves:', error);
+                        alert(`An error occurred: ${error.message}`);
+                    }
+                }
+            });
+        }
     }
     renderTabs();
 }

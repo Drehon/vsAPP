@@ -570,6 +570,23 @@ ipcMain.handle('reset-exercise-state', async (event, filePath) => {
   }
 });
 
+ipcMain.handle('reset-all-auto-saves', async () => {
+  const savesDir = getAutoSavesDir();
+  try {
+    const files = await fs.readdir(savesDir);
+    await Promise.all(files.map(file => fs.unlink(path.join(savesDir, file))));
+    console.log(`Successfully deleted all files from ${savesDir}`);
+    return { success: true, count: files.length };
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      console.log(`Auto-saves directory ${savesDir} not found. Nothing to delete.`);
+      return { success: true, count: 0 }; // It's not an error if the folder doesn't exist
+    }
+    console.error(`Failed to reset all auto-saves:`, err);
+    return { success: false, error: err.message };
+  }
+});
+
 ipcMain.handle('show-save-dialog-and-save-file', async (event, { defaultFilename, data } = {}) => {
   const window = BrowserWindow.fromWebContents(event.sender);
   const savesDir = getManualSavesDir();

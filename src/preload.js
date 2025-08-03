@@ -26,6 +26,7 @@ window.api = {
   saveExerciseState: (filePath, state) => ipcRenderer.invoke('save-exercise-state', filePath, state),
   loadExerciseState: (filePath) => ipcRenderer.invoke('load-exercise-state', filePath),
   resetExerciseState: (filePath) => ipcRenderer.invoke('reset-exercise-state', filePath),
+  resetAllAutoSaves: () => ipcRenderer.invoke('reset-all-auto-saves'),
   showSaveDialogAndSaveFile: (options) => ipcRenderer.invoke('show-save-dialog-and-save-file', options),
   getConfig: () => ipcRenderer.invoke('get-config'),
   saveConfig: (config) => ipcRenderer.invoke('save-config', config),
