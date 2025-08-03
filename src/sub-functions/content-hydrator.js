@@ -1,12 +1,51 @@
+// Placeholder handlers for different content modules.
+// These will be replaced with actual implementations in later phases.
+
+function handleStaticLesson(paneElement) {
+  console.log('Hydrating a static lesson.', paneElement);
+  // Future logic for static lessons (e.g., initializing notes component) will go here.
+}
+
+function handleInteractiveExercise(paneElement) {
+  console.log('Hydrating an interactive exercise.', paneElement);
+  // Future logic for standard exercises will go here.
+}
+
+function handleDiagnosticTest(paneElement) {
+  console.log('Hydrating a diagnostic test.', paneElement);
+  // Future logic for complex diagnostic tests will go here.
+}
+
+// Map module names to their handler functions.
+const moduleHandlers = {
+  'static-lesson': handleStaticLesson,
+  'interactive-exercise': handleInteractiveExercise,
+  'diagnostic-test': handleDiagnosticTest,
+};
+
 /**
- * Hydrates the content of a given pane element by attaching
- * the appropriate event listeners and dynamic functionality.
+ * Hydrates the content of a given pane element by inspecting its
+ * data-module attribute and delegating to the appropriate handler.
  *
- * @param {HTMLElement} paneElement - The content pane to hydrate.
+ * @param {HTMLElement} paneElement - The content pane containing the new content.
  */
 function hydrateContent(paneElement) {
-  // Placeholder for hydration logic
-  console.log('Hydrating content in:', paneElement);
+  const contentRoot = paneElement.querySelector('[data-module]');
+
+  if (!contentRoot) {
+    console.warn('Content loaded without a "data-module" attribute. No hydration will occur.', paneElement);
+    return;
+  }
+
+  const moduleName = contentRoot.dataset.module;
+  const handler = moduleHandlers[moduleName];
+
+  if (handler) {
+    console.log(`Found module "${moduleName}", delegating to handler.`);
+    handler(paneElement);
+  } else {
+    console.warn(`No handler found for module: "${moduleName}".`);
+  }
 }
 
 export {

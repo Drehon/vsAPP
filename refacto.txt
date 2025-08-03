@@ -28,3 +28,12 @@ This file tracks the execution of the refactoring plan outlined in uniform.txt.
 **Outcome:**
 
 The `content-loader.js` module is now significantly simplified. Its sole responsibility is to fetch and inject HTML content. It no longer contains brittle, path-based logic for initialization. All initialization logic is now delegated to the `content-hydrator.js` module, fulfilling the requirements of Phase 1, Step 2 of the refactoring plan.
+
+---
+
+### Step 3: Implement Module-Based Delegation (Completed)
+
+- **File Modified:** `src/sub-functions/content-hydrator.js`
+- **Summary:** Implemented the core delegation logic in the `hydrateContent` function. The function now inspects the loaded HTML for a `data-module` attribute on a root element.
+- **Mechanism:** A handler map (`moduleHandlers`) was created to associate module names (e.g., "static-lesson") with specific JavaScript handler functions. This approach is scalable and avoids the brittle `if/else` or `switch` statements mentioned in the original analysis.
+- **Status:** The system can now delegate to the correct logic handler based on the content type. Placeholder handlers have been created for `static-lesson`, `interactive-exercise`, and `diagnostic-test` to facilitate future development. This completes the core objective of Phase 1, Step 3.

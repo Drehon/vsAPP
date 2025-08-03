@@ -94,7 +94,7 @@ This refactoring will be executed in phased sprints to manage complexity and all
 1.  **Create the Central Hydrator:** Create a new file: `src/sub-functions/content-hydrator.js`. This module will export a main `hydrateContent(paneElement)` function.
 2.  **Refactor the Content Loader:** Modify `src/sub-functions/content-loader.js`. The `loadContentIntoTab` function will be drastically simplified. Its only responsibilities will be to fetch and inject the HTML fragment. The entire `if/else if` block that checks `filePath` to determine which initializer to call will be **deleted**. After injecting the HTML, it must make a single call: `hydrateContent(pane)`.
 3.  **Implement Module-Based Delegation:** Inside `content-hydrator.js`, the `hydrateContent` function will inspect the root element of the injected content for a `data-module` attribute (e.g., `<div data-module="static-lesson">`). It will use a `switch` statement or a map to delegate to the correct handler function (e.g., `handleStaticLesson(pane)`).
-4.  **Proof of Concept (Static Page):** Convert a single static lesson from `lessons/` to the new format (a pure HTML fragment with `data-module="static-lesson"`). Verify that it loads correctly through the new, simplified system. (Do L1 - congiuntivo.html)
+4.  **Proof of Concept (Static Page):** Convert a single static lesson from `lessons/` to the new format (a pure HTML fragment with `data-module="static-lesson"`). Verify that it loads correctly through the new, simplified system. (Refactor L1 - congiuntivoRE.html which was created for this specific purpose)
 
 ---
 
