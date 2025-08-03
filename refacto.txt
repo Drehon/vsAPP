@@ -54,3 +54,25 @@ The `content-loader.js` module is now significantly simplified. Its sole respons
 The file `lessons/L1 - congiuntivoRE.html` is now fully compliant with the new architecture's requirements for a static content page. It serves as the first successful proof of concept for the new content loading system, validating the plan laid out in `uniform.txt`. The foundation of the new system is now proven to be functional.
 
 > User notes: Verified that the refactored html works correctly
+
+---
+---
+
+## Phase 2: Componentization - Reusable Features & State Management
+
+### Step 1: Create a Notes Component (Completed)
+
+- **File Created**: `src/sub-functions/components/notes-component.js`
+- **Objective**: Extract the duplicated notes logic from various test files into a single, reusable, and state-agnostic component.
+
+**Actions Taken**:
+1.  **Created Component File**: A new file was created to house the component's logic.
+2.  **Defined Standard HTML**: A comment was added to the file defining the standard HTML structure the component expects, which includes a root `.notes-component` element with a `data-note-id` attribute.
+3.  **Implemented `initializeNotes` function**: The core function `initializeNotes(container, notesState, onUpdate)` was implemented.
+    - It finds all `.notes-component` instances within a given `container`.
+    - It populates the `textarea` for each component based on the `notesState` object passed to it.
+    - It attaches event listeners to the toggle button and the `textarea`.
+    - Crucially, it **does not** interact with `localStorage`. Instead, it calls the `onUpdate` callback function when a note's text is changed, informing a parent handler of the state change. This makes the component fully reusable and decoupled from global state.
+
+**Outcome**:
+The application now has a standardized, reusable component for handling notes. This completely removes the duplicated code from the old HTML files and establishes a clean pattern for UI components going forward: they receive state and emit updates, but do not manage state themselves. This successfully completes the first step of Phase 2.
