@@ -129,21 +129,36 @@ window.addEventListener('api-ready', () => {
       // --- Reload content with view state ---
       handleLoadContent(tab.id, tab.filePath, { activePhaseId, scrollTop });
 
-      if (result.success && resetFeedbackMessage) {
-        resetFeedbackMessage.textContent = 'Reset Complete';
-        resetFeedbackMessage.classList.remove('opacity-0');
-
-        setTimeout(() => {
-          resetFeedbackMessage.classList.add('opacity-0');
-          // Clear text after the fade-out transition for cleanliness
-          setTimeout(() => {
-            resetFeedbackMessage.innerHTML = '&nbsp;';
-          }, 500); // Matches the transition duration
-        }, 5000); // Display for 5 seconds
-      } else if (!result.success) {
+      if (result.success) {
+        showFeedbackMessage('Reset Complete');
+      } else {
         console.error('Failed to reset state:', result.error);
       }
     } : null;
+  }
+
+  // --- FEEDBACK MESSAGE LOGIC ---
+  // Store the timer ID in a closure to ensure only one feedback message runs at a time
+  let feedbackTimer = null;
+
+  function showFeedbackMessage(message, duration = 5000) {
+    if (!resetFeedbackMessage) return;
+
+    // Clear any existing feedback timeout
+    clearTimeout(feedbackTimer);
+
+    resetFeedbackMessage.textContent = message;
+    resetFeedbackMessage.classList.remove('opacity-0');
+
+    feedbackTimer = setTimeout(() => {
+      resetFeedbackMessage.classList.add('opacity-0');
+      
+      // Use another timeout to clear the content after the transition ends
+      feedbackTimer = setTimeout(() => {
+        resetFeedbackMessage.innerHTML = '&nbsp;';
+      }, 500); // This duration should match the CSS transition duration
+
+    }, duration);
   }
 
   // --- UTILITY & SETUP FUNCTIONS ---
@@ -266,6 +281,22 @@ window.addEventListener('api-ready', () => {
 
     if (result.success) {
         console.log(`Manually saved progress to: ${result.path}`);
+        
+        // --- Show Feedback Message ---
+        let objectName;
+        const lessonMatch = tab.title.match(/^(L\d+)/);
+        if (tab.filePath.includes('student-verbs')) {
+            objectName = 'Verbs';
+        } else if (tab.filePath.includes('student-grammar')) {
+            objectName = 'Grammar';
+        } else if (lessonMatch) {
+            objectName = lessonMatch[1];
+        } else {
+            objectName = 'File'; // Fallback
+        }
+        showFeedbackMessage(`Saved ${objectName}`);
+        // --- End Feedback Message ---
+
     } else if (!result.canceled) {
         console.error('Failed to manually save progress:', result.error);
     }
@@ -286,6 +317,22 @@ window.addEventListener('api-ready', () => {
           await window.api.saveExerciseState(tab.filePath, loadedState); // Overwrite autosave with this state
           handleLoadContent(tab.id, tab.filePath); // Reload content to apply the new state
           console.log('Successfully loaded and applied state from', result.path);
+
+          // --- Show Feedback Message ---
+          let objectName;
+          const lessonMatch = tab.title.match(/^(L\d+)/);
+          if (tab.filePath.includes('student-verbs')) {
+              objectName = 'Verbs';
+          } else if (tab.filePath.includes('student-grammar')) {
+              objectName = 'Grammar';
+          } else if (lessonMatch) {
+              objectName = lessonMatch[1];
+          } else {
+              objectName = 'File'; // Fallback
+          }
+          showFeedbackMessage(`Loaded ${objectName}`);
+          // --- End Feedback Message ---
+
         } else if (!tab.filePath) {
           console.error('No active exercise tab to load the state into.');
         } else {

@@ -139,3 +139,18 @@ and 'Saved object' with the same logic
 
 consider that the horizontal width of the feedback area must be constant regardless of if it's empty or full with text
 for this purpose the default width must be more than the length of any of the feedback phrases
+
+---
+
+Addressed feedback on feedback area styling and implemented save/load messages.
+
+Here are the steps taken:
+
+1.  **Fixed Feedback Area Styling (`src/index.html`):**
+    *   Increased the width of the feedback area from `w-32` to `w-40` to make it larger as requested.
+    *   Added the `flex-shrink-0` utility class to the feedback `div`. This prevents the flex container from shrinking the element, ensuring its width remains fixed even when empty.
+
+2.  **Implemented Wider Feedback (`src/renderer.js`):**
+    *   Refactored the feedback display logic into a reusable `showFeedbackMessage` function to avoid code duplication and improve maintainability.
+    *   Integrated this function with the "Salva" (Save) and "Carica" (Load) buttons.
+    *   The feedback is dynamic, correctly identifying the content type (e.g., "L1", "Verbs", "Grammar") and displaying the appropriate message (e.g., "Saved L1", "Loaded Verbs").
