@@ -154,3 +154,13 @@ Here are the steps taken:
     *   Refactored the feedback display logic into a reusable `showFeedbackMessage` function to avoid code duplication and improve maintainability.
     *   Integrated this function with the "Salva" (Save) and "Carica" (Load) buttons.
     *   The feedback is dynamic, correctly identifying the content type (e.g., "L1", "Verbs", "Grammar") and displaying the appropriate message (e.g., "Saved L1", "Loaded Verbs").
+    
+---
+
+Corrected collapsing feedback area.
+
+Here are the steps taken:
+
+1.  **Forced Minimum Width (`src/index.html`):**
+    *   Added an inline style `style="min-width: 10rem;"` to the feedback `div`.
+    *   This provides a more robust fix against collapsing than the Tailwind utility classes alone, ensuring the feedback area maintains its width under all conditions.
