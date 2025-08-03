@@ -86,4 +86,6 @@ Here are the steps taken:
 ---
 
 the static area is not wide enough, increase it by just a few letters worth. 
-also when empty it vertically collapses to be incredibly small vertically instead of staying fixed at the correct size regardless of if text is there .
+also when empty it vertically collapses to be incredibly small vertically instead of staying fixed at the correct size regardless of if text is there.
+reset works as requested for the excercises pages, but not for the tests page for grammar and verbs.
+probably cause they are coded differently.
