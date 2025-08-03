@@ -1,4 +1,40 @@
 [
+    {
+    "body": "Implemented 'Return to N1' button for exercises, fixed save naming convention, implemented displaying active saves in settings and separating saves-state folder from saves folder.",
+    "name": "v1.3.7",
+    "publishedAt": "2025-08-03T19:40:00Z",
+    "tagName": "v1.3.7"
+  },
+  {
+    "body": "Simplified patch notes system. The application now generates patch notes directly from this file, which must be manually updated before each release.",
+    "name": "v1.3.6",
+    "publishedAt": "2025-08-02T14:00:00Z",
+    "tagName": "v1.3.6"
+  },
+  {
+    "body": "Verifying it works.",
+    "name": "v1.3.5",
+    "publishedAt": "2025-08-02T12:08:25Z",
+    "tagName": "v1.3.5"
+  },
+  {
+    "body": "Full implementation attempt. \r\nIt should work now, possibly needs another patch for testing.",
+    "name": "v1.3.4",
+    "publishedAt": "2025-08-02T12:04:17Z",
+    "tagName": "v1.3.4"
+  },
+  {
+    "body": "Testing full implementation.",
+    "name": "v1.3.3",
+    "publishedAt": "2025-08-02T11:33:44Z",
+    "tagName": "v1.3.3"
+  },
+  {
+    "body": "Attempt at patch notes generation-implementation.\r\nIf it works we can move to finalize the patch-notes implementation.",
+    "name": "v1.3.2",
+    "publishedAt": "2025-08-02T10:17:19Z",
+    "tagName": "v1.3.2"
+  },
   {
     "body": "Fixed tests buttons. minimal improvements.",
     "name": "v1.3.1",
@@ -12,9 +48,9 @@
     "tagName": "v1.3.0"
   },
   {
-    "body": "Fixed toolbar issues.\r\nMade progress with patchnotes page implementation, missing download on release-notes.\r\nMade progress with fixing of last small issues with tests pages.",
+    "body": "Mostly functional release. Quite buggy but can be used.",
     "name": "v1.2.9",
-    "publishedAt": "2025-07-30T09:01:47Z",
+    "publishedAt": "2025-07-30T10:59:10Z",
     "tagName": "v1.2.9"
   },
   {

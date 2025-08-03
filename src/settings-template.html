@@ -7,14 +7,27 @@
     <div>
       <h2 class="text-2xl font-semibold mb-4 border-b-2 border-slate-700 pb-2">File Paths</h2>
       <div class="space-y-4">
+        <!-- Auto-Saves Path -->
         <div>
-          <label for="save-path" class="block text-sm font-medium text-slate-300">Save States Folder (Auto-Saves)</label>
+          <label for="auto-save-path" class="block text-sm font-medium text-slate-300">Auto-Saves Folder</label>
           <div class="mt-1 flex rounded-md shadow-sm">
-            <input type="text" id="save-path" class="block w-full rounded-none rounded-l-md bg-slate-700 border-slate-600 text-slate-200 sm:text-sm" readonly>
-            <button id="browse-save-path" class="relative -ml-px inline-flex items-center space-x-2 rounded-r-md border border-slate-600 bg-slate-600 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-500">
+            <input type="text" id="auto-save-path" class="block w-full rounded-none rounded-l-md bg-slate-700 border-slate-600 text-slate-200 sm:text-sm" readonly>
+            <button id="browse-auto-save-path" class="relative -ml-px inline-flex items-center space-x-2 rounded-r-md border border-slate-600 bg-slate-600 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-500">
               <span>Browse</span>
             </button>
           </div>
+          <p class="mt-2 text-xs text-slate-400">Location for automatic exercise progress saves.</p>
+        </div>
+        <!-- Manual Saves Path -->
+        <div>
+          <label for="manual-save-path" class="block text-sm font-medium text-slate-300">Manual Saves Folder</label>
+          <div class="mt-1 flex rounded-md shadow-sm">
+            <input type="text" id="manual-save-path" class="block w-full rounded-none rounded-l-md bg-slate-700 border-slate-600 text-slate-200 sm:text-sm" readonly>
+            <button id="browse-manual-save-path" class="relative -ml-px inline-flex items-center space-x-2 rounded-r-md border border-slate-600 bg-slate-600 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-500">
+              <span>Browse</span>
+            </button>
+          </div>
+          <p class="mt-2 text-xs text-slate-400">Default location for manually saved files.</p>
         </div>
       </div>
     </div>
@@ -33,6 +46,55 @@
         </div>
       </div>
     </div>
+    
+    <!-- Sezione Loaded Save Display -->
+    <div>
+      <h2 class="text-2xl font-semibold mb-4 border-b-2 border-slate-700 pb-2">Loaded Save Display</h2>
+      <div class="space-y-6">
+        <div>
+          <h3 class="text-lg font-medium text-slate-300">Active Auto-Saves</h3>
+          <p class="text-sm text-slate-400 mt-1">These are the automatic save states for each lesson you've started.</p>
+          <ul id="active-saves-list" class="mt-2 list-disc list-inside bg-slate-800 p-3 rounded-md text-slate-300 max-h-48 overflow-y-auto">
+            <!-- Active saves will be populated here by renderer.js -->
+            <li class="italic">No active saves found.</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-medium text-slate-300">Most Recent Manual Load</h3>
+          <p class="text-sm text-slate-400 mt-1">This is the last file you loaded manually using the 'Load' button.</p>
+          <div id="recent-load-display" class="mt-2 bg-slate-800 p-3 rounded-md text-slate-300 break-words">
+            <!-- Recently loaded file path will be populated here -->
+            <span class="italic">No file loaded in this session.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Sezione Danger Zone -->
+    <div>
+      <h2 class="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2 text-red-400">Danger Zone</h2>
+      <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-medium text-slate-200">Reset All Auto-Saves</h3>
+            <p class="text-sm text-slate-400 mt-1">This will permanently delete all of your automatic lesson progress. This action cannot be undone.</p>
+          </div>
+          <button id="reset-all-saves-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+            Reset Progress
+          </button>
+        </div>
+      </div>
+    </div>
 
   </div>
+
+  <!-- Save Button -->
+  <div class="mt-8 pt-5">
+    <div class="flex justify-end">
+      <button type="button" id="save-settings-btn" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+        Save Settings
+      </button>
+    </div>
+  </div>
+
 </div>

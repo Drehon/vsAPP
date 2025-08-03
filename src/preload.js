@@ -26,6 +26,7 @@ window.api = {
   saveExerciseState: (filePath, state) => ipcRenderer.invoke('save-exercise-state', filePath, state),
   loadExerciseState: (filePath) => ipcRenderer.invoke('load-exercise-state', filePath),
   resetExerciseState: (filePath) => ipcRenderer.invoke('reset-exercise-state', filePath),
+  resetAllAutoSaves: () => ipcRenderer.invoke('reset-all-auto-saves'),
   showSaveDialogAndSaveFile: (options) => ipcRenderer.invoke('show-save-dialog-and-save-file', options),
   getConfig: () => ipcRenderer.invoke('get-config'),
   saveConfig: (config) => ipcRenderer.invoke('save-config', config),
@@ -33,7 +34,8 @@ window.api = {
   
   // ADDED: Expose the showOpenDialogAndLoadFile handler
   showOpenDialogAndLoadFile: () => ipcRenderer.invoke('show-open-dialog-and-load-file'),
-  getPatchNotes: () => ipcRenderer.invoke('get-patch-notes')
+  getPatchNotes: () => ipcRenderer.invoke('get-patch-notes'),
+  getActiveSaveStates: () => ipcRenderer.invoke('get-active-save-states')
 };
 
 // Signal that the preload script has finished and the API is ready

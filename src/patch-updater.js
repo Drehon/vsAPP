@@ -1,72 +1,49 @@
 const path = require('path');
 const fs = require('fs').promises;
 
-const updateAndGeneratePatchNotes = async (app, releaseInfo) => {
-  console.log('[PatchNotes] Starting update and generation process.');
+/**
+ * Generates the patch-notes.html file from a given set of patch notes data.
+ * This function is purely for rendering; it does not fetch or decide on the data source.
+ * @param {object} app - The Electron app instance.
+ * @param {Array<object>} patchNotesData - The array of patch note objects to render.
+ */
+const generatePatchHTML = async (app, patchNotesData) => {
+  console.log('[PatchNotes] Generating patch-notes.html from provided data.');
   const userDataPath = app.getPath('userData');
-  // In a packaged app, asset files are in the 'resources' directory, not the 'app.asar' archive.
-  // process.resourcesPath points there directly. In dev, app.getAppPath() is the project root.
+  
+  // The HTML template is always loaded from the application's bundled resources.
   const basePath = app.isPackaged ? process.resourcesPath : app.getAppPath();
-
-  const userPatchNotesPath = path.join(userDataPath, 'patchnotes.json');
-  const bundledPatchNotesPath = path.join(basePath, 'patchnotes.json');
   const templatePath = path.join(basePath, 'others', 'patch-notes-template.html');
+  const userOutputPath = path.join(userDataPath, 'patch-notes.html');
 
   try {
-      let patchNotes = [];
-      try {
-          const data = await fs.readFile(userPatchNotesPath, 'utf8');
-          patchNotes = JSON.parse(data);
-      } catch (error) {
-          if (error.code === 'ENOENT') {
-              console.log('[PatchNotes] No user patch notes found. Copying from bundle.');
-              const bundledData = await fs.readFile(bundledPatchNotesPath, 'utf8');
-              await fs.writeFile(userPatchNotesPath, bundledData);
-              patchNotes = JSON.parse(bundledData);
-          } else {
-              throw error;
-          }
-      }
+    const template = await fs.readFile(templatePath, 'utf8');
 
-      if (releaseInfo) {
-          const newTagName = `v${releaseInfo.version}`;
-          const alreadyExists = patchNotes.some(note => note.tagName === newTagName);
+    // Generate the HTML for each patch note entry.
+    const patchNotesHtml = patchNotesData.map(note => {
+      // Provide a fallback for the date if `publishedAt` is missing.
+      const dateStr = note.publishedAt ? new Date(note.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' }) : 'N/A';
+      const body = note.body ? note.body.replace(/\r\n/g, '<br>') : 'No details provided.';
+      const name = note.name || note.tagName || 'Unnamed Update';
 
-          if (!alreadyExists) {
-              console.log(`[PatchNotes] Adding new version ${newTagName}.`);
-              const newNote = {
-                  body: releaseInfo.notes || 'No release notes provided.',
-                  name: releaseInfo.releaseName || `Version ${releaseInfo.version}`,
-                  publishedAt: releaseInfo.releaseDate,
-                  tagName: newTagName,
-                  version: releaseInfo.version,
-              };
-              patchNotes.unshift(newNote);
-              await fs.writeFile(userPatchNotesPath, JSON.stringify(patchNotes, null, 2));
-              console.log('[PatchNotes] Successfully updated user patchnotes.json');
-          }
-      }
+      return `
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
+            <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4">${name} - ${dateStr}</h2>
+            <div class="prose max-w-none mt-4">
+                ${body}
+            </div>
+        </div>
+      `;
+    }).join('');
 
-      const userOutputPath = path.join(userDataPath, 'patch-notes.html');
-      const template = await fs.readFile(templatePath, 'utf8');
-      const patchNotesHtml = patchNotes.map(note => {
-          const date = new Date(note.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' });
-          const body = note.body ? note.body.replace(/\r\n/g, '<br>') : '';
-          return `
-              <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
-                  <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4">${note.name} - ${date}</h2>
-                  <div class="prose max-w-none mt-4">
-                      ${body}
-                  </div>
-              </div>
-          `;
-      }).join('');
-      const outputHtml = template.replace('<!-- PATCH_NOTES_CONTENT -->', patchNotesHtml);
-      await fs.writeFile(userOutputPath, outputHtml);
-      console.log('[PatchNotes] Successfully generated user patch-notes.html');
+    const outputHtml = template.replace('<!-- PATCH_NOTES_CONTENT -->', patchNotesHtml);
+    await fs.writeFile(userOutputPath, outputHtml);
+    console.log(`[PatchNotes] Successfully generated and saved patch-notes.html to ${userOutputPath}`);
   } catch (error) {
-      console.error('[PatchNotes] Failed to update and generate patch notes:', error);
+    console.error('[PatchNotes] Failed to generate patch-notes.html:', error);
+    // Propagate the error so the caller can handle it.
+    throw error;
   }
 };
 
-module.exports = { updateAndGeneratePatchNotes };
+module.exports = { generatePatchHTML };

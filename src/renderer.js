@@ -7,6 +7,7 @@ window.addEventListener('api-ready', () => {
   let tabs = [];
   let nextTabId = 1;
   let activeTab = null;
+  let mostRecentlyLoadedFile = null; // Variable to track the last loaded file
 
   // --- DOM ELEMENTS ---
   const tabBar = document.getElementById('tab-bar');
@@ -67,7 +68,7 @@ window.addEventListener('api-ready', () => {
   }
   
   function handleLoadSettings(tabId, ...args) {
-    loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalToolbar);
+    loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalToolbar, mostRecentlyLoadedFile);
   }
 
   // --- GLOBAL TOOLBAR LOGIC ---
@@ -202,11 +203,31 @@ window.addEventListener('api-ready', () => {
       return;
     }
     const dataStr = JSON.stringify(tab.exerciseState, null, 2);
-    const defaultFilename = `${tab.title}-manual-progress.json`;
+    
+    // --- New file naming logic ---
+    const today = new Date();
+    const dateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    
+    let defaultFilename;
+    const lessonMatch = tab.title.match(/^(L\d+)/);
+
+    if (tab.filePath.includes('student-verbs')) {
+        defaultFilename = `Verbs save ${dateString}.json`;
+    } else if (tab.filePath.includes('student-grammar')) {
+        defaultFilename = `Grammar save ${dateString}.json`;
+    } else if (lessonMatch) {
+        defaultFilename = `${lessonMatch[1]}es save ${dateString}.json`;
+    } else {
+        // Fallback to original naming scheme
+        defaultFilename = `${tab.title}-manual-progress.json`;
+    }
+    // --- End new file naming logic ---
+
     const result = await window.api.showSaveDialogAndSaveFile({
         defaultFilename: defaultFilename,
         data: dataStr
     });
+
     if (result.success) {
         console.log(`Manually saved progress to: ${result.path}`);
     } else if (!result.canceled) {
@@ -225,6 +246,7 @@ window.addEventListener('api-ready', () => {
         const isValidState = loadedState && typeof loadedState === 'object' && Object.keys(loadedState).length > 0;
 
         if (isValidState && tab.filePath) {
+          mostRecentlyLoadedFile = result.path; // Track the recently loaded file
           await window.api.saveExerciseState(tab.filePath, loadedState); // Overwrite autosave with this state
           handleLoadContent(tab.id, tab.filePath); // Reload content to apply the new state
           console.log('Successfully loaded and applied state from', result.path);

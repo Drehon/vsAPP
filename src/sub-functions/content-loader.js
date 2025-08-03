@@ -109,7 +109,7 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerc
     renderTabs();
 }
 
-export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalToolbar) {
+export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalToolbar, mostRecentlyLoadedFile) {
     const tab = tabs.find(t => t.id === tabId);
     if (!tab) return;
 
@@ -125,13 +125,117 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
     const pane = document.getElementById(`pane-${tab.id}`);
 
     if (pane && settingsContent) {
-      pane.innerHTML = ''; // Clear previous content
+        pane.innerHTML = ''; // Clear previous content
 
-      // Settings content is wrapped in a div that allows scrolling
-      const scrollableContent = document.createElement('div');
-      scrollableContent.className = 'h-full overflow-y-auto p-8';
-      scrollableContent.innerHTML = settingsContent;
-      pane.appendChild(scrollableContent);
+        const scrollableContent = document.createElement('div');
+        scrollableContent.className = 'h-full overflow-y-auto p-8';
+        scrollableContent.innerHTML = settingsContent;
+        pane.appendChild(scrollableContent);
+
+        // --- Get DOM elements ---
+        const autoSavePathInput = scrollableContent.querySelector('#auto-save-path');
+        const browseAutoSavePathBtn = scrollableContent.querySelector('#browse-auto-save-path');
+        const manualSavePathInput = scrollableContent.querySelector('#manual-save-path');
+        const browseManualSavePathBtn = scrollableContent.querySelector('#browse-manual-save-path');
+        const saveSettingsBtn = scrollableContent.querySelector('#save-settings-btn');
+        const activeSavesList = scrollableContent.querySelector('#active-saves-list');
+        const recentLoadDisplay = scrollableContent.querySelector('#recent-load-display');
+
+        // --- Load and Display Configurable Paths ---
+        const config = await window.api.getConfig();
+        if (config) {
+            if (autoSavePathInput) autoSavePathInput.value = config.autoSavePath || '';
+            if (manualSavePathInput) manualSavePathInput.value = config.manualSavePath || '';
+        }
+
+        // --- Add Event Listeners ---
+        if (browseAutoSavePathBtn && autoSavePathInput) {
+            browseAutoSavePathBtn.addEventListener('click', async () => {
+                const result = await window.api.openDirectoryDialog();
+                if (!result.canceled && result.path) {
+                    autoSavePathInput.value = result.path;
+                }
+            });
+        }
+
+        if (browseManualSavePathBtn && manualSavePathInput) {
+            browseManualSavePathBtn.addEventListener('click', async () => {
+                const result = await window.api.openDirectoryDialog();
+                if (!result.canceled && result.path) {
+                    manualSavePathInput.value = result.path;
+                }
+            });
+        }
+
+        if (saveSettingsBtn) {
+            saveSettingsBtn.addEventListener('click', async () => {
+                try {
+                    const currentConfig = await window.api.getConfig();
+                    const newConfig = {
+                        ...currentConfig,
+                        autoSavePath: autoSavePathInput.value,
+                        manualSavePath: manualSavePathInput.value
+                    };
+                    const result = await window.api.saveConfig(newConfig);
+                    if (result.success) {
+                        alert('Settings saved successfully!');
+                    } else {
+                        throw new Error(result.error);
+                    }
+                } catch (error) {
+                    console.error('Failed to save settings:', error);
+                    alert(`Failed to save settings: ${error.message}`);
+                }
+            });
+        }
+
+        // --- Populate Save Display Information ---
+        if (activeSavesList) {
+            const saveFiles = await window.api.getActiveSaveStates();
+            activeSavesList.innerHTML = ''; // Clear placeholder
+            if (saveFiles && saveFiles.length > 0) {
+                saveFiles.forEach(file => {
+                    const li = document.createElement('li');
+                    li.textContent = file;
+                    activeSavesList.appendChild(li);
+                });
+            } else {
+                activeSavesList.innerHTML = '<li class="italic">No active auto-saves found.</li>';
+            }
+        }
+
+        if (recentLoadDisplay) {
+            if (mostRecentlyLoadedFile) {
+                recentLoadDisplay.textContent = mostRecentlyLoadedFile;
+            } else {
+                recentLoadDisplay.innerHTML = '<span class="italic">No file loaded in this session.</span>';
+            }
+        }
+
+        // --- Add Reset All Saves Logic ---
+        const resetAllSavesBtn = scrollableContent.querySelector('#reset-all-saves-btn');
+        if (resetAllSavesBtn) {
+            resetAllSavesBtn.addEventListener('click', async () => {
+                const confirmed = confirm('Are you sure you want to delete all auto-saved progress? This action cannot be undone.');
+                if (confirmed) {
+                    try {
+                        const result = await window.api.resetAllAutoSaves();
+                        if (result.success) {
+                            alert(`Successfully deleted ${result.count} auto-save file(s). The list will now be updated.`);
+                            // Refresh the active saves list
+                            if (activeSavesList) {
+                                activeSavesList.innerHTML = '<li class="italic">No active auto-saves found.</li>';
+                            }
+                        } else {
+                            throw new Error(result.error);
+                        }
+                    } catch (error) {
+                        console.error('Failed to reset all auto-saves:', error);
+                        alert(`An error occurred: ${error.message}`);
+                    }
+                }
+            });
+        }
     }
     renderTabs();
 }

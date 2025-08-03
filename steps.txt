@@ -1,0 +1,151 @@
+I have implemented the 'Back to N1' button feature by following these steps:
+
+1.  **Codebase Exploration**: I began by listing the files in the `exercises/` directory to understand the scope of the task. I then read the contents of `exercises/L1 - congiuntivoES.html` to understand the structure of the exercise files.
+
+2.  **Dynamic UI Discovery**: I realized that the exercise UI is generated dynamically via JavaScript rather than being static HTML. My investigation then shifted to the `src/` directory.
+
+3.  **Identifying the Core Logic**: I identified `src/sub-functions/exercise-initializer.js` as the core script responsible for creating the exercise interface, including the scoreboard and navigation buttons.
+
+4.  **Implementing the Feature**:
+    *   I modified the `createScoreboard` function within `exercise-initializer.js` to add the HTML for the new 'Back to N1' button.
+    *   I modified the `addNavigationListeners` function in the same file to add a click event listener for the new button. This listener's logic resets the current question of the current phase to the beginning and re-renders the exercise view.
+
+5.  **Verification**: I read the modified `src/sub-functions/exercise-initializer.js` file to ensure that my changes were applied correctly and that the new feature would function as intended.
+
+I have updated the save functionality to use a more descriptive naming convention. Here are the steps I took:
+
+1.  **Codebase Exploration**: I started by exploring the codebase to understand how the save functionality was implemented. I used `grep` to search for "save" and identified that the manual save was likely handled by a function called `handleSaveButtonClick`. I then read `src/renderer.js` and `src/main.js` to confirm this.
+
+2.  **Identifying Key Files**: My exploration led me to `src/renderer.js` as the place where the save process is initiated and the default filename is created. I also looked at `src/sub-functions/content-loader.js` to understand how the tab titles (which were used for the old save names) are generated.
+
+3.  **Implementing the New Naming Convention**:
+    *   I modified the `handleSaveButtonClick` function in `src/renderer.js`.
+    *   I added logic to get the current date and format it as `YYYY-MM-DD`.
+    *   I used the `tab.filePath` and `tab.title` properties to determine the correct filename format based on the user's requirements:
+        *   `Verbs save [date].json` for verb tests.
+        *   `Grammar save [date].json` for grammar tests.
+        *   `LXes save [date].json` for standard exercises.
+    *   I included a fallback to the old naming scheme to prevent any unforeseen issues.
+
+4.  **Verification**: After applying the changes, I read the modified `src/renderer.js` file to ensure the new logic was implemented correctly.
+
+---
+
+I have implemented the 'Loaded Save Display' feature in the settings page. Here are the steps I took:
+
+1.  **Exposing Save Data**: I created a new IPC handler in `src/main.js` called `get-active-save-states`. This function reads the contents of the user's auto-save directory and returns a list of all the `.json` save files.
+
+2.  **Creating the UI**: I added a new "Loaded Save Display" section to `src/settings-template.html`. This section includes a list to show the active auto-saves and a designated area to display the path of the most recently manually loaded file.
+
+3.  **Tracking Loaded Files**: I modified `src/renderer.js` to keep track of the most recently loaded file. I added a new variable, `mostRecentlyLoadedFile`, which gets updated with the file path inside the `handleLoadButtonClick` function whenever a user successfully loads a save file.
+
+4.  **Displaying the Data**: I updated the `loadSettingsIntoTab` function in `src/sub-functions/content-loader.js`. This function now:
+    *   Accepts the `mostRecentlyLoadedFile` path from `renderer.js`.
+    *   Calls the new `get-active-save-states` IPC handler to get the list of auto-saves.
+    *   Populates the new UI elements in the settings page with both the list of auto-saves and the path of the recently loaded file.
+
+---
+
+I have fixed the settings UI bug.
+
+The issue was that the `getActiveSaveStates` function, while defined in the main process, was not exposed to the renderer process. This caused a `TypeError` when the settings page tried to call it.
+
+To fix this, I edited the `src/preload.js` file to include the function in the `window.api` object. I added the following line:
+
+`getActiveSaveStates: () => ipcRenderer.invoke('get-active-save-states')`
+
+This change makes the function available to the frontend, allowing it to fetch and display the active auto-save states. The logic for displaying the most recently loaded manual save was already implemented and should now work as intended.
+
+---
+
+currently, under auto saves ALL saves in the auto-saves folder are visible, how can multiple autosaves be active?
+Active Auto-Saves
+These are the automatic save states for each lesson you've started.
+
+exercises-l1 - congiuntivoes_state.json
+exercises-l2 - causativoes_state.json
+exercises-l3 - passivo avanzatoes_state.json
+exercises-student-grammar_state.json
+exercises-student-verbs_state.json
+grammar 2907-1.json
+Grammar save 2025-08-03.json
+grammar2907-1.json
+others-student-grammar_state.json
+others-student-verbs_state.json
+try.json
+verbs13.json
+
+the loaded saves only displays
+Most Recent Manual Load
+This is the last file you loaded manually using the 'Load' button.
+
+C:\Users\User\AppData\Roaming\vsAPP\saves\exercises-l2 - causativoes_state.json
+
+expand this to the last 5 most recent
+for the auto-saves
+only the auto-saves for the page where 'azzera tutto' hasn't been used should be displayed
+basically we are not interested in empty save-states
+and we want to see all ACTIVE saves
+
+by that i mean, for example
+L1 save state
+L2 save state
+> No L3 cause it was reset
+
+most recent loads
+L1es save 2025-08-03
+L2es save 2025-08-03
+verb save 2025-08-03
+
+these are purely examples
+
+>> also
+the save state folder
+and the save folder should be separate
+the save folder should contain a duplicate of the save state named
+'LXes recent' or 'verb recent' or 'grammar recent'
+
+save and load buttons should thus open the save folder
+and not the save-state folder
+finally undersettings - file path
+both should be selectable
+save-state path
+save path
+AND 
+under file, there is already open save-state folder
+we also need an open save folder
+---
+
+I have refactored `main.js` to support separate auto-save and manual save directories.
+- Added `autoSavePath` and `manualSavePath` to the config.
+- Created `getAutoSavesDir` and `getManualSavesDir` functions.
+- Updated file operations to use the new directory functions.
+- Updated the File menu with "Open Auto-Saves Folder" and "Open Manual Saves Folder".
+---
+
+I have updated the Settings page UI to support the new dual-path save system.
+- In `src/settings-template.html`, I replaced the single save path input with two distinct sections: one for the "Auto-Saves Folder" and one for the "Manual Saves Folder".
+- I assigned unique IDs to the new inputs and buttons to prepare for the logic implementation.
+- I also added a "Save Settings" button to the template, which will be used to persist the user's path choices.
+---
+
+I have implemented the client-side logic for the new settings UI.
+- In `src/sub-functions/content-loader.js`, I updated the `loadSettingsIntoTab` function.
+- The function now fetches the application config and populates the two new path input fields with the correct values.
+- I added event listeners to the "Browse" buttons, which allow a user to select a new directory via a native dialog.
+- I also added an event listener to the "Save Settings" button that gathers the new paths and calls the backend to save the updated configuration, providing feedback to the user on success or failure.
+
+---
+
+I have added a 'Reset All Saves' option to the settings page. Here are the steps I took:
+
+1.  **UI Implementation**: I added a new "Danger Zone" section to `src/settings-template.html`. This section contains the "Reset All Auto-Saves" button and a warning message to inform the user that the action is irreversible.
+
+2.  **Backend Logic**: I created a new IPC handler in `src/main.js` called `reset-all-auto-saves`. This function is responsible for finding the auto-saves directory and deleting all the `.json` files within it. It also handles cases where the directory might not exist.
+
+3.  **Exposing the Function**: I updated `src/preload.js` to expose the new `reset-all-auto-saves` function to the renderer process through the `window.api` object.
+
+4.  **Frontend Logic**: I modified the `loadSettingsIntoTab` function in `src/sub-functions/content-loader.js`. I added an event listener to the new reset button that:
+    *   Shows a confirmation dialog to the user before proceeding.
+    *   Calls the `reset-all-auto-saves` function from the backend.
+    *   Refreshes the "Active Auto-Saves" list in the UI to reflect the changes and alerts the user upon completion.
