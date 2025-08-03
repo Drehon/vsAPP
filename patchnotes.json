@@ -1,4 +1,10 @@
 [
+   {
+    "body": "Implemented better multi-choice question handling, added support for multiple incorrect answers, and improved the UI for question selection.",
+    "name": "v1.3.9",
+    "publishedAt": "2025-08-03T21:40:00Z",
+    "tagName": "v1.3.9"
+  }, 
   {
     "body": "Implemented visual feedback area for the reset button, for loading and for saving. Improved reloading on reset to reload SAME excercise block.",
     "name": "v1.3.8",

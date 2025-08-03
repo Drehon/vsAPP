@@ -28,11 +28,8 @@
 
 ### Numbered Task List
 
-1.  **Multiple-Choice Questions:** Modify so that after selecting an answer, other options remain clickable. Incorrect answers turn red and stay red. Correct answers turn green. A number (1-4) should appear next to each clicked answer to show the selection order.
+1.  **Multiple-Choice Questions:** Modify so that after selecting an answer (from multi-choice options), other options remain clickable. Incorrect answers turn red and stay red. Correct answers turn green. A number (1-4) should appear next to each clicked answer to show the selection order.
     (Complexity: 80)
-2.  **Azzera Button:** The reset button should clear the save-state (reset answers, empty notes) without reloading the page or changing the current phase (e.g., stay in phase 2).
-    It should however also give some kind of visual feedback, perhaps in the toolbar we can add besides the reset button a new area, where we can display text 'Reset Complete' to fade over 5 seconds or so. 
-    (Complexity: 40)
 
 ---
 
