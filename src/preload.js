@@ -33,7 +33,8 @@ window.api = {
   
   // ADDED: Expose the showOpenDialogAndLoadFile handler
   showOpenDialogAndLoadFile: () => ipcRenderer.invoke('show-open-dialog-and-load-file'),
-  getPatchNotes: () => ipcRenderer.invoke('get-patch-notes')
+  getPatchNotes: () => ipcRenderer.invoke('get-patch-notes'),
+  getActiveSaveStates: () => ipcRenderer.invoke('get-active-save-states')
 };
 
 // Signal that the preload script has finished and the API is ready
