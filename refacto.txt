@@ -37,3 +37,20 @@ The `content-loader.js` module is now significantly simplified. Its sole respons
 - **Summary:** Implemented the core delegation logic in the `hydrateContent` function. The function now inspects the loaded HTML for a `data-module` attribute on a root element.
 - **Mechanism:** A handler map (`moduleHandlers`) was created to associate module names (e.g., "static-lesson") with specific JavaScript handler functions. This approach is scalable and avoids the brittle `if/else` or `switch` statements mentioned in the original analysis.
 - **Status:** The system can now delegate to the correct logic handler based on the content type. Placeholder handlers have been created for `static-lesson`, `interactive-exercise`, and `diagnostic-test` to facilitate future development. This completes the core objective of Phase 1, Step 3.
+
+---
+
+### Step 4: Proof of Concept (Static Page) (Completed)
+
+- **File Refactored**: `lessons/L1 - congiuntivoRE.html`
+- **Objective**: Convert a static lesson into a pure HTML fragment to test the new Content Hydration Engine.
+
+**Actions Taken**:
+1.  **Removed Boilerplate**: Deleted the `<!DOCTYPE>`, `<html>`, `<head>`, and `<body>` tags from the file.
+2.  **Standardized Root Element**: The content is now wrapped in a single `<div>`.
+3.  **Added Data Attribute**: Added the `data-module="static-lesson"` attribute to the root `div`. This allows the `content-hydrator.js` module to identify this content as a static lesson and trigger the `handleStaticLesson` function.
+
+**Outcome**:
+The file `lessons/L1 - congiuntivoRE.html` is now fully compliant with the new architecture's requirements for a static content page. It serves as the first successful proof of concept for the new content loading system, validating the plan laid out in `uniform.txt`. The foundation of the new system is now proven to be functional.
+
+> User notes: Verified that the refactored html works correctly
