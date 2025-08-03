@@ -1,0 +1,16 @@
+I have implemented the 'Back to N1' button feature by following these steps:
+
+1.  **Codebase Exploration**: I began by listing the files in the `exercises/` directory to understand the scope of the task. I then read the contents of `exercises/L1 - congiuntivoES.html` to understand the structure of the exercise files.
+
+2.  **Dynamic UI Discovery**: I realized that the exercise UI is generated dynamically via JavaScript rather than being static HTML. My investigation then shifted to the `src/` directory.
+
+3.  **Identifying the Core Logic**: I identified `src/sub-functions/exercise-initializer.js` as the core script responsible for creating the exercise interface, including the scoreboard and navigation buttons.
+
+4.  **Implementing the Feature**:
+    *   I modified the `createScoreboard` function within `exercise-initializer.js` to add the HTML for the new 'Back to N1' button.
+    *   I modified the `addNavigationListeners` function in the same file to add a click event listener for the new button. This listener's logic resets the current question of the current phase to the beginning and re-renders the exercise view.
+
+5.  **Verification**: I read the modified `src/sub-functions/exercise-initializer.js` file to ensure that my changes were applied correctly and that the new feature would function as intended.
+
+---
+

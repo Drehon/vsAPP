@@ -33,8 +33,6 @@
 2.  **Azzera Button:** The reset button should clear the save-state (reset answers, empty notes) without reloading the page or changing the current phase (e.g., stay in phase 2).
     It should however also give some kind of visual feedback, perhaps in the toolbar we can add besides the reset button a new area, where we can display text 'Reset Complete' to fade over 5 seconds or so. 
     (Complexity: 40)
-3.  **Navigation:** Add a 'Back to N1' button to return to the start of each excercise block for the html in the (/excercises/ folder htmls), in addition to the 'vai' button.
-    (Complexity: 20)
 4.  **Save Naming Convention:** Fix the save functionality to use the format `LX save [date]` (e.g., `L3 save 2025-07-29`) instead of the generic 'exercise-save-state'.
     (Complexity: 40)
 5. **Settings UI:** Add a 'Loaded Save Display' to the settings page to show both ALL the currently active save-states and the most recently loaded file save.

@@ -52,6 +52,7 @@ export function initializeExercise(paneElement, tab, autoSaveExerciseState) {
             <div class="flex items-center gap-1">
                 <input type="number" id="jump-to-${fase}" class="w-16 text-center border border-slate-300 rounded-md text-sm p-1" min="1" max="${total}" value="${current > total ? total : current}">
                 <button id="jump-btn-${fase}" class="text-xs bg-slate-200 hover:bg-slate-300 font-bold py-1 px-2 rounded-lg">Vai</button>
+                <button id="back-to-start-${fase}" class="text-xs bg-slate-200 hover:bg-slate-300 font-bold py-1 px-2 rounded-lg">Back to N1</button>
             </div>
         </div>
         <span>Corrette: <strong>${correct}/${answered}</strong></span>
@@ -366,6 +367,15 @@ export function initializeExercise(paneElement, tab, autoSaveExerciseState) {
           if (e.key === 'Enter') {
             jumpBtn.click();
           }
+        };
+      }
+
+      const backToStartBtn = container.querySelector(`#back-to-start-${fase}`);
+      if (backToStartBtn) {
+        backToStartBtn.onclick = () => {
+          appState.currentQuestion[fase] = 0;
+          renderFase(fase);
+          autoSaveExerciseState(tab);
         };
       }
     }
