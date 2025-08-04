@@ -161,3 +161,62 @@ exercise-handler.js:575 Old 'fase' format detected. Converting to new fase-based
 
 in the console.
 is this an issue? it seems to at least indicate some lack of stability
+
+---
+
+# Test Guide for Converted L2 and L3 Exercises
+
+**Objective:** To verify that the newly converted exercise pages (`L2 - causativoES.html` and `L3 - passivo avanzatoES.html`) function correctly using the universal `exercise-handler.js`.
+
+**Instructions:** Please perform the following tests for **BOTH** `L2 - causativoES.html` and `L3 - passivo avanzatoES.html`.
+
+---
+
+### 1. Loading and Basic Interaction
+
+1.  **Navigate to the Exercise:** Open the application and click on the exercise link in the left-hand navigation pane.
+2.  **Verify Initial Load:**
+    *   **[PASS/FAIL]** The page loads correctly without errors.
+    *   **[PASS/FAIL]** The title and subtitle match the exercise content.
+    *   **[PASS/FAIL]** The view shows a tabbed interface for "Fase 1", "Fase 2", and "Fase 3".
+    *   **[PASS/FAIL]** "Fase 1" is active by default, showing the first question.
+
+### 2. Answering and Block Navigation
+
+1.  **Answer a Question:** Answer the first question in "Fase 1".
+2.  **Check Feedback:** Verify that correct/incorrect feedback is displayed as expected.
+3.  **Navigate Blocks:**
+    *   Click on the "Fase 2" tab.
+    *   **[PASS/FAIL]** The view switches to the first question of "Fase 2".
+    *   Answer a question in "Fase 2" and verify feedback.
+    *   Click on the "Fase 3" tab and do the same.
+4.  **Return to Previous Block:**
+    *   Click back on the "Fase 1" tab.
+    *   **[PASS/FAIL]** Your previous answer and feedback from step 2 should still be visible.
+
+### 3. State Management (Save, Load, Reset)
+
+1.  **Set State:** Answer a few questions across different "Fase" tabs but do not complete the exercise.
+2.  **Save State:** Click the global "Save" button in the toolbar.
+3.  **Reload Tab:** Close the exercise tab and reopen it from the navigation pane.
+4.  **Verify Auto-Load:**
+    *   **[PASS/FAIL]** The exercise should load with all your previous answers and feedback intact.
+5.  **Test Global Reset:**
+    *   Click the global "Azzera" (Reset) button in the toolbar.
+    *   **[PASS/FAIL]** The exercise should completely reset, clearing all answers and feedback across all "Fase" tabs.
+6.  **Test Manual Load:**
+    *   Close and reopen the tab again.
+    *   Answer one question.
+    *   Click the global "Load" button.
+    *   **[PASS/FAIL]** The exercise should revert to the state you saved in step 2, overwriting your most recent answer.
+
+### 4. Notes Functionality
+
+1.  **Test Block Notes:**
+    *   In any "Fase" tab, write a note in the "I tuoi appunti per questa fase" textarea.
+    *   Switch to a different "Fase" tab and then back.
+    *   **[PASS/FAIL]** The note should still be there.
+2.  **Test State Persistence:**
+    *   With a note written, click the global "Save" button.
+    *   Close and reopen the tab.
+    *   **[PASS/FAIL]** The note you wrote should be loaded along with your answers.

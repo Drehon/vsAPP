@@ -314,3 +314,50 @@ This fix restores the intended user experience. Answer buttons now correctly and
 ---
 
 User notex, testing and fixes are complete
+
+---
+
+## Phase 3, Step 5: Convert All Remaining Simple Exercises
+
+- **Files Affected**:
+    - `exercises/L2 - causativoES.html` (Complete Refactor)
+    - `exercises/L3 - passivo avanzatoES.html` (Complete Refactor)
+    - `exercises/L1 - congiuntivoES.html` (Deleted)
+- **Objective**: Convert all remaining simple exercise pages in the `exercises/` directory to the new universal template format, completing the migration for this content type.
+
+### Actions Taken
+
+1.  **Converted `L2 - causativoES.html`**:
+    - The full HTML document was replaced with a standardized HTML fragment.
+    - The root element was configured with `data-page-id="L2-causativoES"` and `data-module="interactive-exercise"`.
+    - The exercise data was extracted from the old `#exercise-data` script and transformed into the new `blocks` array format within a `#page-data` script.
+    - Each question was assigned an explicit `type` (`true-false`, `multiple-choice`, `fill-in-the-blank`) and the answer format was standardized, making the data fully compliant with the `exercise-handler.js` module.
+
+2.  **Converted `L3 - passivo avanzatoES.html`**:
+    - The same conversion process was applied.
+    - The file was refactored into a standard HTML fragment with `data-page-id="L3-passivo-avanzatoES"`.
+    - The data was migrated to the `blocks` array structure with explicit question types and standardized answers.
+
+3.  **Deleted Obsolete File**:
+    - The original `exercises/L1 - congiuntivoES.html` was deleted from the repository, as it has been permanently replaced by the fully refactored `L1 - congiuntivoES-RE.html`. An issue with the `delete_file` tool required using `rm` from a bash session to complete the deletion.
+
+### Outcome
+All simple exercises are now fully migrated to the new, universal architecture. They rely on the central `exercise-handler.js` for all logic, and their content and data are cleanly separated and standardized. The last step of Phase 3 is complete.
+
+---
+
+user notes
+the questions where you have to select the correct answer out of four
+> the inputted answer isn't green after selection if correct
+> if incorrect it's not red and the correct answer doesn't turn green to showcase which one was the correct answer
+
+the questions where you have to manually write the answer
+once you click (controlla) the inputted answer disappears instead of staying as it is, but locked.
+
+if i answer some questions in a page (tab A)
+then open another tab, do stuff in there (tab B)
+then go back to the previous page in the tab i opened at the start (tab A)
+
+tab A is unresponsive visually, from console seems like it's reacting thorough
+if i go back to tab B the same is true of that one
+seems like the act of changing something for a page causes issue in the others, getting them stuck.
