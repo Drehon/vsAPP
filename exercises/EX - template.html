@@ -1,0 +1,68 @@
+<div class="content-container p-6 md:p-10" 
+     data-page-id="EX-template-page" 
+     data-module="interactive-exercise">
+
+    <!-- 1. Header Section (Standardized) -->
+    <header class="content-header bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h1 id="page-title" class="text-3xl font-bold text-slate-900">[Page Title]</h1>
+        <p id="page-subtitle" class="text-lg text-slate-600 mt-2">[Page Subtitle]</p>
+        <div class="mt-4 pt-4 border-t border-slate-200 bg-slate-50 -m-6 p-6 pb-4 text-sm text-slate-600 space-y-3">
+            <h3 class="font-semibold text-slate-800">How to use this page:</h3>
+            <ul class="list-disc list-inside space-y-1">
+                <li><strong>Auto-Save:</strong> Your progress (answers and notes) is saved automatically.</li>
+                <li><strong>Navigation Buttons:</strong> Use the toolbar buttons to navigate tabs, save/load progress, or reset the exercise.</li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- 2. Main Content Area (to be populated by the hydrator) -->
+    <main id="content-body" class="content-body bg-white rounded-lg shadow-lg p-6 md:p-8">
+        <!-- The exercise-handler.js will populate this area -->
+    </main>
+
+    <!-- 3. Data Island (Standardized) -->
+    <script type="application/json" id="page-data">
+    {
+        "title": "[Exercise Title]",
+        "subtitle": "[Exercise Subtitle]",
+        "blocks": [
+            {
+                "name": "Block 1 Name",
+                "exercises": [
+                    { 
+                        "type": "true-false", 
+                        "question": "This is a sample 'true-false' question. The sky is blue.", 
+                        "answer": true, 
+                        "explanation": "This is the explanation for why the answer is true." 
+                    },
+                    { 
+                        "type": "multiple-choice", 
+                        "question": "This is a sample 'multiple-choice' question. What is the capital of France?", 
+                        "options": ["London", "Berlin", "Paris", "Madrid"], 
+                        "answer": "Paris", 
+                        "explanation": "This is the explanation for the multiple-choice question." 
+                    },
+                    { 
+                        "type": "fill-in-the-blank", 
+                        "prompt": "This is a prompt for a 'fill-in-the-blank' question. Complete the sentence.",
+                        "question": "The sun rises in the ______.", 
+                        "answer": "east", 
+                        "explanation": "This is the explanation for the fill-in-the-blank question." 
+                    }
+                ]
+            },
+            {
+                "name": "Block 2 Name (Optional)",
+                "exercises": [
+                    { 
+                        "type": "true-false", 
+                        "question": "This is another sample 'true-false' question.", 
+                        "answer": false, 
+                        "explanation": "Explanation for the second block." 
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</div>
