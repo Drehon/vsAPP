@@ -113,7 +113,7 @@ function createBlockTabs() {
     const resetButton = document.createElement('button');
     resetButton.id = 'reset-block-btn';
     resetButton.className = 'text-xs bg-red-100 hover:bg-red-200 text-red-700 font-bold py-1 px-3 rounded-lg mr-2';
-    resetButton.textContent = 'Reset Blocco';
+    resetButton.textContent = 'Reset Fase';
     blockTabsContainer.appendChild(resetButton);
 
     return blockTabsContainer;
@@ -143,12 +143,14 @@ function addBlockTabListeners(blockTabsEl) {
         const blockIndex = state.currentBlockIndex;
         const totalQuestionsInBlock = pageData.blocks[blockIndex].exercises.length;
         resetBlockBtn.onclick = () => {
-            if (confirm('Sei sicuro di voler resettare tutte le risposte per questo blocco?')) {
-                state.answers[blockIndex] = Array(totalQuestionsInBlock).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" }));
-                state.currentQuestionIndexes[blockIndex] = 0;
-                render();
-                autoSave(activeTab);
-            }
+            // Confirmation dialog removed as per user feedback.
+            // Reset answers for the current block.
+            state.answers[blockIndex] = Array(totalQuestionsInBlock).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" }));
+            // Also reset the notes for the current block.
+            state.blockNotes[blockIndex] = "";
+            state.currentQuestionIndexes[blockIndex] = 0;
+            render();
+            autoSave(activeTab);
         };
     }
 }
@@ -201,7 +203,7 @@ function renderCurrentQuestion() {
 
     // Check if the exercise block is complete
     if (questionIndex >= block.exercises.length) {
-        questionWrapper.innerHTML = `<div class="text-center p-8"><h3 class="text-xl font-bold">Blocco Completato!</h3><p>Puoi passare al blocco successivo o rivedere le tue risposte.</p></div>`;
+        questionWrapper.innerHTML = `<div class="text-center p-8"><h3 class="text-xl font-bold">Fase Completata!</h3><p>Puoi passare alla fase successiva o rivedere le tue risposte.</p></div>`;
         return questionWrapper;
     }
 
@@ -318,7 +320,7 @@ function createBlockNotesArea(blockIndex) {
     const blockNotesEl = document.createElement('div');
     blockNotesEl.className = 'mt-6 p-4 rounded-lg border border-slate-300 bg-slate-50';
     blockNotesEl.innerHTML = `
-        <label for="block-notes" class="block text-sm font-medium text-slate-600">Note per questo blocco:</label>
+        <label for="block-notes" class="block text-sm font-medium text-slate-600">Note per questa fase:</label>
         <textarea id="block-notes" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white" rows="4"></textarea>
     `;
     
@@ -570,7 +572,7 @@ export function handleInteractiveExercise(container, tab, saveFunc) {
         
         // Convert the old 'fase' format to a new block-based structure.
         if (pageData.fase1) {
-            console.warn("Old 'fase' format detected. Converting to new block format.");
+            console.warn("Old 'fase' format detected. Converting to new fase-based format.");
             pageData.blocks = [];
             const fase1Typed = pageData.fase1.map(q => ({ ...q, type: 'true-false' }));
             pageData.blocks.push({ name: "Fase 1", exercises: fase1Typed });
@@ -584,7 +586,7 @@ export function handleInteractiveExercise(container, tab, saveFunc) {
             const fase3Typed = pageData.fase3.map(q => ({ ...q, type: 'fill-in-the-blank' }));
             pageData.blocks.push({ name: "Fase 3", exercises: fase3Typed });
             
-            console.log("Data converted to new block format:", pageData.blocks);
+            console.log("Data converted to new fase-based format:", pageData.blocks);
             delete pageData.fase1;
             delete pageData.fase2;
             delete pageData.fase3;

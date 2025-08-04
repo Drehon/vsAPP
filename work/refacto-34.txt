@@ -124,3 +124,31 @@ A thorough review based on user feedback in `work/test-guide.txt` identified two
 **Outcome**:
 The `exercise-handler.js` module is now architecturally sound and fully integrated with the application's global state system. All reported bugs have been fixed. The handler correctly preserves the multi-block exercise format, persists all state changes automatically, and provides the user with the intended UI controls. The foundation for converting the remaining exercises is now robust and verified.
 ---
+
+## Phase 3: Post-Refinement Bug Fixing
+
+Following further testing, a set of recurring bugs related to state management and UI consistency were identified. This phase documents the definitive fixes for these issues.
+
+- **Files Affected**:
+    - `src/sub-functions/content-loader.js` (Critical Fix)
+    - `src/sub-functions/handlers/exercise-handler.js` (UI/UX Refinements)
+
+### Problem Analysis and Resolution
+
+A deep analysis confirmed that the primary source of failure was a logical flaw in the content loading process, which prevented saved states from ever being loaded. Several minor UI inconsistencies were also addressed.
+
+**Actions Taken**:
+
+1.  **Fixed the State Loading Lifecycle**:
+    - The `content-loader.js` module was critically refactored. It no longer attempts to load state using the file's title.
+    - The new, correct sequence is: 1) Load HTML content into memory, 2) Parse the content to find the `data-page-id`, 3) Use this `pageId` to correctly load the saved state file.
+    - This change ensures that when a tab is opened or reloaded, any existing progress is correctly retrieved and passed to the exercise handler, fixing the root cause of failures in the global Save, Load, and Reset buttons.
+
+2.  **Refined the Exercise Handler UI**:
+    - **Immediate Reset**: The `confirm()` dialog on the "Reset Fase" button was removed to make the action immediate, as requested.
+    - **Complete Reset**: The reset logic was enhanced to also clear the notes associated with the phase (`blockNotes`), ensuring a full and clean reset.
+    - **Consistent Terminology**: All user-facing labels and messages within the handler (e.g., "Reset Blocco", "Blocco Completato") were changed to use "Fase" for consistency with the exercise's data structure and user expectations.
+
+**Outcome**:
+The application's state management for interactive exercises is now robust and functions as designed. All identified UI/UX bugs in the `exercise-handler` have been resolved. The system is now fully prepared for the migration of the remaining exercise content as outlined in Phase 3 and 4 of the `uniform.txt` plan.
+---
