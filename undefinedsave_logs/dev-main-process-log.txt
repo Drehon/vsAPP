@@ -311,3 +311,20 @@
 [LOG][2025-08-04T16:03:52.793Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
 [LOG][2025-08-04T16:03:54.106Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
 [LOG][2025-08-04T16:03:55.499Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T16:17:31.142Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-04T16:17:31.145Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-04T16:17:31.146Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-04T16:17:31.310Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-04T16:17:31.318Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-04T16:17:31.831Z] Main Process: Checking for updates...
+[LOG][2025-08-04T16:17:31.838Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-04T16:17:33.092Z] Main Process: Update not available. {"tag":"v1.3.8","version":"1.3.8","files":[{"url":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","size":114395136}],"path":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","releaseDate":"2025-08-03T19:17:23.179Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.8","releaseNotes":"<p>Implemented visual feedback area for the reset button, for loading and for saving.<br>\nImproved reloading on reset to reload SAME excercise block.</p>"}
+[LOG][2025-08-04T16:18:11.315Z] [State] Loaded state for pageId 'L2-causativoES' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T16:18:13.679Z] [State] Reset state for pageId 'L2-causativoES' by deleting 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T16:18:13.683Z] [State] No save state found for pageId 'L2-causativoES'.
+[LOG][2025-08-04T16:18:15.769Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T16:18:16.765Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T16:18:17.775Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T16:18:18.409Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T16:24:25.943Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T16:24:34.838Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'

@@ -276,7 +276,7 @@ function renderTrueFalseQuestion(question, answerState) {
 
         if (buttonAnswer === userAnswer) {
             // This is the button the user clicked
-            classes += isCorrect ? ' feedback-correct' : ' feedback-incorrect';
+            classes += isCorrect ? ' btn-correct' : ' btn-incorrect';
         } else if (buttonAnswer === correctAnswer && !isCorrect) {
             // If the user's answer was wrong, this highlights the correct one
             classes += ' feedback-correct-outline';
@@ -375,25 +375,19 @@ function renderMultipleChoiceQuestion(question, answerState) {
             correctAnswer = String.fromCharCode(65 + correctIndex);
         }
     }
-    
-    console.log(`Rendering MC Q: Correct answer is ${correctAnswer}`);
 
     const getButtonClasses = (buttonAnswer) => {
         let classes = 'fase-btn border-2 font-bold py-3 px-6 rounded-lg transition-colors';
         if (!hasAnswered) {
             return classes;
         }
-        
-        console.log(`Checking button ${buttonAnswer}: userAnswer=${userAnswer}, isCorrect=${isCorrect}`);
 
         if (buttonAnswer === userAnswer) {
             // This is the button the user clicked.
-            classes += isCorrect ? ' feedback-correct' : ' feedback-incorrect';
-            console.log(`  -> User clicked this. Added ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`);
+            classes += isCorrect ? ' btn-correct' : ' btn-incorrect';
         } else if (buttonAnswer === correctAnswer && !isCorrect) {
             // If the user's answer was wrong, this highlights the correct one.
             classes += ' feedback-correct-outline';
-            console.log(`  -> This is the correct answer, user was wrong. Added feedback-correct-outline.`);
         }
         
         return classes;

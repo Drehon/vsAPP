@@ -39,6 +39,10 @@
       @apply bg-red-100 border-l-4 border-red-500 text-red-800 p-4 rounded-r-lg;
   }
 
+  .feedback-correct-outline {
+    @apply border-green-500 bg-green-50;
+  }
+
   .btn-correct {
       @apply bg-green-500 border-green-600 text-white;
   }
