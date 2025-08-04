@@ -292,3 +292,14 @@
 [LOG][2025-08-04T11:50:43.016Z] AutoUpdater configuration: [Unserializable Object]
 [LOG][2025-08-04T11:50:44.163Z] Main Process: Update not available. {"tag":"v1.3.8","version":"1.3.8","files":[{"url":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","size":114395136}],"path":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","releaseDate":"2025-08-03T19:17:23.179Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.8","releaseNotes":"<p>Implemented visual feedback area for the reset button, for loading and for saving.<br>\nImproved reloading on reset to reload SAME excercise block.</p>"}
 [LOG][2025-08-04T11:51:41.038Z] [State] No state file to reset for pageId 'L1-congiuntivoES'.
+[LOG][2025-08-04T12:00:50.483Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-04T12:00:50.486Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-04T12:00:50.487Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-04T12:00:50.595Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-04T12:00:50.602Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-04T12:00:52.155Z] Main Process: Checking for updates...
+[LOG][2025-08-04T12:00:52.162Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-04T12:00:54.449Z] Main Process: Update not available. {"tag":"v1.3.8","version":"1.3.8","files":[{"url":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","size":114395136}],"path":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","releaseDate":"2025-08-03T19:17:23.179Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.8","releaseNotes":"<p>Implemented visual feedback area for the reset button, for loading and for saving.<br>\nImproved reloading on reset to reload SAME excercise block.</p>"}
+[LOG][2025-08-04T12:01:12.106Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T12:01:19.865Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T12:01:23.154Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
