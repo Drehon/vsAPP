@@ -31,16 +31,26 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
             oldButtonContainer.remove();
         }
 
+        // --- State Loading Fix ---
+        // 1. Extract pageId from the content BEFORE hydrating.
+        const contentRoot = tempDiv.querySelector('[data-page-id]');
+        const pageId = contentRoot ? contentRoot.dataset.pageId : null;
+
+        // 2. Load state using the correct pageId.
+        // The tab's title is used as a fallback to maintain compatibility with legacy content.
+        const stateIdentifier = pageId || tab.title;
+        const loadedState = await window.api.loadExerciseState(stateIdentifier);
+        if (loadedState) {
+            tab.exerciseState = loadedState;
+            console.log(`State successfully loaded for identifier: ${stateIdentifier}`);
+        }
+        // --- End of Fix ---
+
         contentWrapper.innerHTML = tempDiv.innerHTML;
         pane.appendChild(contentWrapper);
 
-        // The new universal hydrator is called here.
-        // It's responsible for inspecting the content and attaching the correct logic.
-        const loadedState = await window.api.loadExerciseState(tab.title);
-        if(loadedState){
-            tab.exerciseState = loadedState;
-        }
-
+        // The universal hydrator is now called. If state was loaded, the tab object
+        // will already have it, and the handler will use it instead of creating a new one.
         hydrateContent(contentWrapper, tab, saveExerciseState);
         
         // After initialization, restore view state if options are provided

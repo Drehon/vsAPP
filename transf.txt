@@ -39,3 +39,12 @@ The script will then start transferring all the releases and their assets from t
 
 
 ---
+
+User notes, issue: 
+note that i'm replacing the actual token with TOKEN cause it's forbidden to load it into a commit 
+
+(.venv) PS C:\Users\User\Documents\TEFL Personal> python transfer_releases.py TOKEN https://github.com/Drehon/vsAPP-public https://github.com/Drehon/vsAPP
+Traceback (most recent call last):
+  File "C:\Users\User\Documents\TEFL Personal\transfer_releases.py", line 3, in <module>
+    from github import Github
+ModuleNotFoundError: No module named 'github'

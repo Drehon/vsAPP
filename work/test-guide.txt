@@ -128,12 +128,15 @@ user notes:
 go back to N1 is now in the right place
 the three phases are now once more in place
 
-1) reset blocco shouldn't have the popup asking if you are sure
-2) reset blocco doesn't reset the notes for the whole blocco/fase
-3) change blocco with fase
-4) the reset in the toolbar does nothing at all
+1) reset blocco shouldn't have the popup asking if you are sure > FIXED
+2) reset blocco doesn't reset the notes for the whole blocco/fase > FIXED
+3) change blocco with fase > FIXED
+4) the reset in the toolbar does nothing at all 
 5) save and load still don't work correctly
 6) save states still don't work correctly
 
 in console i see
 exercise-handler.js:573 Old 'fase' format detected. Converting to new block format.
+
+in console i still see
+exercise-handler.js:575 Old 'fase' format detected. Converting to new fase-based format.
