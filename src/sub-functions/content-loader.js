@@ -36,7 +36,12 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
 
         // The new universal hydrator is called here.
         // It's responsible for inspecting the content and attaching the correct logic.
-        hydrateContent(contentWrapper);
+        const loadedState = await window.api.loadExerciseState(tab.title);
+        if(loadedState){
+            tab.exerciseState = loadedState;
+        }
+
+        hydrateContent(contentWrapper, tab, saveExerciseState);
         
         // After initialization, restore view state if options are provided
         if (options) {

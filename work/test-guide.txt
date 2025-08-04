@@ -118,7 +118,22 @@ Generally it seems like you lost the distinction between save-states and saves
 
 ---
 
-after step 5 in refacto-34.txt
-excercise page now only loads the incipit to the page.
-no excercise block is displayed. impossible to test further.
-please restore the excercise block to how they were before (visually)
+be careful to not break the excercise blocks logic
+be careful to not break the 'visuals' of the current excercise page 
+visually the ONLY thing missing is the 'Go back to N1 button' which was lost somewhere along the way during our refactoring
+
+---
+
+user notes:
+go back to N1 is now in the right place
+the three phases are now once more in place
+
+1) reset blocco shouldn't have the popup asking if you are sure
+2) reset blocco doesn't reset the notes for the whole blocco/fase
+3) change blocco with fase
+4) the reset in the toolbar does nothing at all
+5) save and load still don't work correctly
+6) save states still don't work correctly
+
+in console i see
+exercise-handler.js:573 Old 'fase' format detected. Converting to new block format.

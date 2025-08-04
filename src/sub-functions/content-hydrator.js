@@ -3,12 +3,12 @@ import { handleInteractiveExercise } from './handlers/exercise-handler.js';
 // Placeholder handlers for different content modules.
 // These will be replaced with actual implementations in later phases.
 
-function handleStaticLesson(paneElement) {
+function handleStaticLesson(paneElement, tab, saveState) {
   console.log('Hydrating a static lesson.', paneElement);
   // Future logic for static lessons (e.g., initializing notes component) will go here.
 }
 
-function handleDiagnosticTest(paneElement) {
+function handleDiagnosticTest(paneElement, tab, saveState) {
   console.log('Hydrating a diagnostic test.', paneElement);
   // Future logic for complex diagnostic tests will go here.
 }
@@ -24,14 +24,16 @@ const moduleHandlers = {
  * Hydrates the content of a given pane element by inspecting its
  * data-module attribute and delegating to the appropriate handler.
  *
- * @param {HTMLElement} paneElement - The content pane containing the new content.
+ * @param {HTMLElement} contentWrapper - The wrapper element containing the new content.
+ * @param {object} tab - The active tab object from the renderer.
+ * @param {function} saveState - The function to call to auto-save the exercise state.
  */
-function hydrateContent(paneElement) {
-  // The element with the module information is expected to be the direct child of the pane.
-  const contentRoot = paneElement.firstElementChild;
+function hydrateContent(contentWrapper, tab, saveState) {
+  // The element with the module information is expected to be the direct child of the wrapper.
+  const contentRoot = contentWrapper.firstElementChild;
 
   if (!contentRoot || !contentRoot.hasAttribute('data-module')) {
-    console.warn('Content loaded without a "data-module" attribute on its root element. No hydration will occur.', paneElement);
+    console.warn('Content loaded without a "data-module" attribute on its root element. No hydration will occur.', contentWrapper);
     return;
   }
 
@@ -40,7 +42,8 @@ function hydrateContent(paneElement) {
 
   if (handler) {
     console.log(`Found module "${moduleName}", delegating to handler.`);
-    handler(paneElement);
+    // Pass the wrapper, tab, and save function to the appropriate handler.
+    handler(contentWrapper, tab, saveState);
   } else {
     console.warn(`No handler found for module: "${moduleName}".`);
   }

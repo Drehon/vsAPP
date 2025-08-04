@@ -7,39 +7,37 @@
  */
 
 // Module-level state variables
-let appState; // Holds the current state of the exercise (e.g., answers, current index)
 let pageData; // Holds the exercise definition (questions, config, etc.)
 let containerElement; // The root element of the content pane
+let activeTab; // Reference to the active tab object from renderer.js
+let autoSave; // Reference to the auto-save function from renderer.js
 
 /**
- * Initializes or re-initializes the exercise state.
+ * Initializes or re-initializes the exercise state directly on the tab object.
  * If state is loaded from the tab manager, it's used. Otherwise, a new default state is created.
- * This new state is generic and based on a single, flat array of exercises.
  */
 function initializeState() {
-  // A tab's state is now managed by the central tab manager.
-  // We check if the active tab already has a state for this exercise.
-  // This part will be fully integrated with renderer.js and main.js later.
-  // For now, we assume a simple structure.
-  const existingState = null; // Placeholder for tab.exerciseState
-
-  if (existingState) {
-    appState = existingState;
-    console.log("Using existing exercise state:", appState);
+  if (activeTab.exerciseState && activeTab.exerciseState.version === 2) {
+    console.log("Using existing block-aware exercise state:", activeTab.exerciseState);
   } else {
-    // Create a new, generic state object.
-    appState = {
-      currentQuestionIndex: 0,
-      // Create a default answer object for each exercise.
-      answers: Array(pageData.exercises.length).fill(null).map(() => ({
-        userAnswer: null,
-        isCorrect: null,
-        note: ""
-      })),
-      // A single notes area for the entire exercise.
-      exerciseNote: ""
+    // Create a new, block-aware state object.
+    activeTab.exerciseState = {
+      version: 2, // Mark the state structure version.
+      currentBlockIndex: 0,
+      // Create a nested answer array structure matching the blocks.
+      answers: pageData.blocks.map(block => 
+        Array(block.exercises.length).fill(null).map(() => ({
+          userAnswer: null,
+          isCorrect: null,
+          note: ""
+        }))
+      ),
+      // Each block will have its own note.
+      blockNotes: Array(pageData.blocks.length).fill(""),
+      // Keep track of the current question index *within each block*.
+      currentQuestionIndexes: Array(pageData.blocks.length).fill(0)
     };
-    console.log("Initialized new generic exercise state:", appState);
+    console.log("Initialized new block-aware exercise state:", activeTab.exerciseState);
   }
 }
 
@@ -48,10 +46,9 @@ function initializeState() {
  * It will be responsible for calling all the specific rendering components.
  */
 function render() {
-    console.log("Render triggered. Current state:", appState);
+    console.log("Render triggered. Current state:", activeTab.exerciseState);
     if (!containerElement) return;
 
-    // Clear the container for a full re-render (a more sophisticated DOM-diffing could be used later)
     const contentBody = containerElement.querySelector('#content-body');
     if (!contentBody) {
         console.error("Fatal: #content-body not found. Cannot render exercise.");
@@ -59,19 +56,28 @@ function render() {
     }
     contentBody.innerHTML = ''; // Clear previous content
 
-    // Stubbed functions to be implemented in the next steps
+    // Create and append the block tabs
+    const blockTabsEl = createBlockTabs();
+    contentBody.appendChild(blockTabsEl);
+    
+    // Create a container for the actual exercise content
+    const exerciseContainer = document.createElement('div');
+    exerciseContainer.id = 'exercise-container';
+    exerciseContainer.className = 'p-4 md:p-6 border border-t-0 rounded-b-lg border-slate-300';
+    contentBody.appendChild(exerciseContainer);
+
+    // Render components for the active block
     const scoreboardEl = createScoreboard();
     const questionEl = renderCurrentQuestion();
-    const navigationEl = createNavigation();
     
-    // Append elements to the content body
-    contentBody.appendChild(scoreboardEl);
-    contentBody.appendChild(questionEl);
-    contentBody.appendChild(navigationEl);
+    // Append elements to the exercise container
+    exerciseContainer.appendChild(scoreboardEl);
+    exerciseContainer.appendChild(questionEl);
 
     // Attach event listeners
-    addNavigationListeners(navigationEl);
+    addNavigationListeners(questionEl); // Pass questionEl now
     addAnswerListeners(questionEl);
+    addBlockTabListeners(blockTabsEl);
 }
 
 // --- Placeholder/Stub Functions for Future Implementation ---
@@ -80,11 +86,84 @@ function render() {
  * Creates or updates the scoreboard UI component.
  * @returns {HTMLElement} The scoreboard element.
  */
+/**
+ * Creates the tabbed interface for switching between exercise blocks.
+ * @returns {HTMLElement} The element containing the block tabs.
+ */
+function createBlockTabs() {
+    const blockTabsContainer = document.createElement('div');
+    blockTabsContainer.className = 'flex justify-between items-center border-b border-slate-300';
+
+    const tabs = document.createElement('div');
+    tabs.className = 'flex';
+    pageData.blocks.forEach((block, index) => {
+        const isActive = index === activeTab.exerciseState.currentBlockIndex;
+        const button = document.createElement('button');
+        button.dataset.blockIndex = index;
+        button.textContent = block.name;
+        button.className = `py-2 px-4 text-sm font-medium border-b-2 transition-colors ${
+            isActive 
+            ? 'border-indigo-500 text-indigo-600' 
+            : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+        }`;
+        tabs.appendChild(button);
+    });
+    blockTabsContainer.appendChild(tabs);
+
+    const resetButton = document.createElement('button');
+    resetButton.id = 'reset-block-btn';
+    resetButton.className = 'text-xs bg-red-100 hover:bg-red-200 text-red-700 font-bold py-1 px-3 rounded-lg mr-2';
+    resetButton.textContent = 'Reset Blocco';
+    blockTabsContainer.appendChild(resetButton);
+
+    return blockTabsContainer;
+}
+
+/**
+ * Adds event listeners to the block tabs.
+ * @param {HTMLElement} blockTabsEl - The element containing the block tabs.
+ */
+function addBlockTabListeners(blockTabsEl) {
+    // Listener for tab switching
+    blockTabsEl.querySelectorAll('div > button').forEach(button => {
+        button.onclick = (e) => {
+            const blockIndex = parseInt(e.target.dataset.blockIndex, 10);
+            if (activeTab.exerciseState.currentBlockIndex !== blockIndex) {
+                activeTab.exerciseState.currentBlockIndex = blockIndex;
+                autoSave(activeTab);
+                render();
+            }
+        };
+    });
+
+    // Listener for the reset button
+    const resetBlockBtn = blockTabsEl.querySelector('#reset-block-btn');
+    if (resetBlockBtn) {
+        const state = activeTab.exerciseState;
+        const blockIndex = state.currentBlockIndex;
+        const totalQuestionsInBlock = pageData.blocks[blockIndex].exercises.length;
+        resetBlockBtn.onclick = () => {
+            if (confirm('Sei sicuro di voler resettare tutte le risposte per questo blocco?')) {
+                state.answers[blockIndex] = Array(totalQuestionsInBlock).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" }));
+                state.currentQuestionIndexes[blockIndex] = 0;
+                render();
+                autoSave(activeTab);
+            }
+        };
+    }
+}
+
+
 function createScoreboard() {
-    const total = pageData.exercises.length;
-    const current = appState.currentQuestionIndex + 1;
-    const correct = appState.answers.filter(a => a && a.isCorrect).length;
-    const answered = appState.answers.filter(a => a && a.userAnswer !== null).length;
+    const state = activeTab.exerciseState;
+    const blockIndex = state.currentBlockIndex;
+    const block = pageData.blocks[blockIndex];
+    const total = block.exercises.length;
+    const current = state.currentQuestionIndexes[blockIndex] + 1;
+    
+    const blockAnswers = state.answers[blockIndex];
+    const correct = blockAnswers.filter(a => a && a.isCorrect).length;
+    const answered = blockAnswers.filter(a => a && a.userAnswer !== null).length;
 
     const scoreboard = document.createElement('div');
     scoreboard.id = 'scoreboard';
@@ -96,12 +175,11 @@ function createScoreboard() {
             <div class="flex items-center gap-1">
                 <input type="number" id="jump-to-input" class="w-16 text-center border border-slate-300 rounded-md text-sm p-1" min="1" max="${total}" value="${current > total ? total : current}">
                 <button id="jump-to-btn" class="text-xs bg-slate-200 hover:bg-slate-300 font-bold py-1 px-2 rounded-lg">Vai</button>
+                <button id="first-question-btn" class="text-xs bg-slate-200 hover:bg-slate-300 font-bold py-1 px-2 rounded-lg">Torna alla D.1</button>
             </div>
         </div>
         <span>Corrette: <strong>${correct}/${answered}</strong></span>
     `;
-
-    // TODO: Add event listeners for jump-to functionality in a later step.
 
     return scoreboard;
 }
@@ -111,20 +189,24 @@ function createScoreboard() {
  * @returns {HTMLElement} The DOM element for the current question.
  */
 function renderCurrentQuestion() {
-    const index = appState.currentQuestionIndex;
+    const state = activeTab.exerciseState;
+    const blockIndex = state.currentBlockIndex;
+    const questionIndex = state.currentQuestionIndexes[blockIndex];
+    
+    const block = pageData.blocks[blockIndex];
     
     const questionWrapper = document.createElement('div');
     questionWrapper.id = 'question-wrapper';
     questionWrapper.className = 'question-wrapper my-6';
 
-    // Check if the exercise is complete
-    if (index >= pageData.exercises.length) {
-        questionWrapper.innerHTML = `<div class="text-center p-8"><h3 class="text-xl font-bold">Esercizio Completato!</h3><p>Ottimo lavoro.</p></div>`;
+    // Check if the exercise block is complete
+    if (questionIndex >= block.exercises.length) {
+        questionWrapper.innerHTML = `<div class="text-center p-8"><h3 class="text-xl font-bold">Blocco Completato!</h3><p>Puoi passare al blocco successivo o rivedere le tue risposte.</p></div>`;
         return questionWrapper;
     }
 
-    const question = pageData.exercises[index];
-    const answerState = appState.answers[index];
+    const question = block.exercises[questionIndex];
+    const answerState = state.answers[blockIndex][questionIndex];
 
     // Main container for the question content
     const questionContent = document.createElement('div');
@@ -150,18 +232,22 @@ function renderCurrentQuestion() {
     questionContent.innerHTML = questionHTML;
     questionWrapper.appendChild(questionContent);
 
-    // If the question has been answered, show feedback and notes
+    // If the question has been answered, show feedback first.
     if (answerState && answerState.userAnswer !== null) {
         const feedbackEl = createFeedbackArea(answerState.isCorrect, question.explanation);
         questionWrapper.appendChild(feedbackEl);
     }
 
+    // Then, add the navigation buttons.
+    const navigationEl = createNavigation();
+    questionWrapper.appendChild(navigationEl);
+
     // Always show the notes areas
-    const notesEl = createNotesArea(index, answerState);
+    const notesEl = createNotesArea(blockIndex, questionIndex, answerState);
     questionWrapper.appendChild(notesEl);
     
-    const exerciseNotesEl = createExerciseNotesArea();
-    questionWrapper.appendChild(exerciseNotesEl);
+    const blockNotesEl = createBlockNotesArea(blockIndex);
+    questionWrapper.appendChild(blockNotesEl);
 
     return questionWrapper;
 }
@@ -208,40 +294,38 @@ function createFeedbackArea(isCorrect, explanation) {
  * @param {object} answerState - The answer state object for the current question.
  * @returns {HTMLElement} The notes area element.
  */
-function createNotesArea(index, answerState) {
+function createNotesArea(blockIndex, questionIndex, answerState) {
     const notesArea = document.createElement('div');
     notesArea.className = 'mt-4 p-4 rounded-lg border border-slate-300 bg-slate-50';
+    const noteId = `question-notes-${blockIndex}-${questionIndex}`;
     notesArea.innerHTML = `
-        <label for="question-notes-${index}" class="block text-sm font-medium text-slate-600">Note per la domanda:</label>
-        <textarea id="question-notes-${index}" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white" rows="3"></textarea>
+        <label for="${noteId}" class="block text-sm font-medium text-slate-600">Note per la domanda:</label>
+        <textarea id="${noteId}" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white" rows="3"></textarea>
     `;
 
     const textarea = notesArea.querySelector('textarea');
     textarea.value = answerState.note || '';
     
-    // TODO: Add event listener for saving notes in a later step.
-    
     return notesArea;
 }
 
 /**
- * Creates the notes area for the entire exercise.
- * @returns {HTMLElement} The exercise notes area element.
+ * Creates the notes area for the current block.
+ * @param {number} blockIndex - The index of the current block.
+ * @returns {HTMLElement} The block notes area element.
  */
-function createExerciseNotesArea() {
-    const phaseNotesEl = document.createElement('div');
-    phaseNotesEl.className = 'mt-6 p-4 rounded-lg border border-slate-300 bg-slate-50';
-    phaseNotesEl.innerHTML = `
-        <label for="exercise-notes" class="block text-sm font-medium text-slate-600">Note per l'esercizio:</label>
-        <textarea id="exercise-notes" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white" rows="4"></textarea>
+function createBlockNotesArea(blockIndex) {
+    const blockNotesEl = document.createElement('div');
+    blockNotesEl.className = 'mt-6 p-4 rounded-lg border border-slate-300 bg-slate-50';
+    blockNotesEl.innerHTML = `
+        <label for="block-notes" class="block text-sm font-medium text-slate-600">Note per questo blocco:</label>
+        <textarea id="block-notes" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white" rows="4"></textarea>
     `;
     
-    const textarea = phaseNotesEl.querySelector('textarea');
-    textarea.value = appState.exerciseNote || '';
+    const textarea = blockNotesEl.querySelector('textarea');
+    textarea.value = activeTab.exerciseState.blockNotes[blockIndex] || '';
 
-    // TODO: Add event listener for saving notes in a later step.
-
-    return phaseNotesEl;
+    return blockNotesEl;
 }
 
 /**
@@ -291,10 +375,10 @@ function renderFillInTheBlankQuestion(question, answerState) {
  * @returns {HTMLElement}
  */
 function createNavigation() {
-    console.log("Stub: createNavigation");
     const el = document.createElement('div');
     el.id = 'navigation-controls';
-    el.className = 'flex justify-center items-center gap-4 pt-4';
+    // This container will be placed after the question inputs and before the feedback.
+    el.className = 'flex justify-center items-center gap-4 pt-4 mt-4 border-t border-slate-200';
     el.innerHTML = `
         <button id="prev-btn" class="bg-slate-500 text-white font-bold py-2 px-6 rounded-lg">Precedente</button>
         <button id="next-btn" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg">Prossimo</button>
@@ -304,36 +388,48 @@ function createNavigation() {
 
 /**
  * Attaches event listeners for navigation (Prev/Next buttons, jump-to input).
- * @param {HTMLElement} navElement - The element containing navigation controls.
+ * @param {HTMLElement} questionEl - The element containing the current question and its navigation.
  */
-function addNavigationListeners(navElement) {
-    const prevBtn = navElement.querySelector('#prev-btn');
-    const nextBtn = navElement.querySelector('#next-btn');
-    
-    const index = appState.currentQuestionIndex;
-    const total = pageData.exercises.length;
+function addNavigationListeners(questionEl) {
+    const state = activeTab.exerciseState;
+    const blockIndex = state.currentBlockIndex;
+    const questionIndex = state.currentQuestionIndexes[blockIndex];
+    const totalQuestionsInBlock = pageData.blocks[blockIndex].exercises.length;
 
+    const prevBtn = questionEl.querySelector('#prev-btn');
+    const nextBtn = questionEl.querySelector('#next-btn');
+    const firstQuestionBtn = containerElement.querySelector('#first-question-btn');
+    
     if (prevBtn) {
-        prevBtn.disabled = index <= 0;
-        prevBtn.classList.toggle('opacity-50', index <= 0);
+        prevBtn.disabled = questionIndex <= 0;
+        prevBtn.classList.toggle('opacity-50', questionIndex <= 0);
         prevBtn.onclick = () => {
-            if (appState.currentQuestionIndex > 0) {
-                appState.currentQuestionIndex--;
+            if (questionIndex > 0) {
+                state.currentQuestionIndexes[blockIndex]--;
                 render();
-                // autoSaveState(); // Will be added later
+                autoSave(activeTab);
             }
         };
     }
 
     if (nextBtn) {
-        nextBtn.textContent = index >= total - 1 ? 'Fine' : 'Prossimo';
+        nextBtn.textContent = questionIndex >= totalQuestionsInBlock - 1 ? 'Fine Blocco' : 'Prossimo';
         nextBtn.onclick = () => {
-            // "Fine" button will just go to the completion screen
-            if (appState.currentQuestionIndex < total) {
-                appState.currentQuestionIndex++;
+            if (questionIndex < totalQuestionsInBlock) {
+                state.currentQuestionIndexes[blockIndex]++;
                 render();
-                // autoSaveState();
+                autoSave(activeTab);
             }
+        };
+    }
+
+    if (firstQuestionBtn) {
+        firstQuestionBtn.disabled = questionIndex === 0;
+        firstQuestionBtn.classList.toggle('opacity-50', questionIndex === 0);
+        firstQuestionBtn.onclick = () => {
+            state.currentQuestionIndexes[blockIndex] = 0;
+            render();
+            autoSave(activeTab);
         };
     }
 
@@ -344,16 +440,14 @@ function addNavigationListeners(navElement) {
     if (jumpInput && jumpBtn) {
         jumpBtn.onclick = () => {
             const questionNum = parseInt(jumpInput.value);
-            if (!isNaN(questionNum) && questionNum >= 1 && questionNum <= total) {
-                appState.currentQuestionIndex = questionNum - 1;
+            if (!isNaN(questionNum) && questionNum >= 1 && questionNum <= totalQuestionsInBlock) {
+                state.currentQuestionIndexes[blockIndex] = questionNum - 1;
                 render();
-                // autoSaveState();
+                autoSave(activeTab);
             }
         };
         jumpInput.onkeydown = (e) => {
-            if (e.key === 'Enter') {
-                jumpBtn.click();
-            }
+            if (e.key === 'Enter') jumpBtn.click();
         };
     }
 }
@@ -363,25 +457,26 @@ function addNavigationListeners(navElement) {
  * @param {HTMLElement} questionElement - The element containing the question inputs.
  */
 function addAnswerListeners(questionElement) {
-    const index = appState.currentQuestionIndex;
-    if (index >= pageData.exercises.length) return; // No listeners if exercise is complete
+    const state = activeTab.exerciseState;
+    const blockIndex = state.currentBlockIndex;
+    const questionIndex = state.currentQuestionIndexes[blockIndex];
+    const totalQuestionsInBlock = pageData.blocks[blockIndex].exercises.length;
 
-    const question = pageData.exercises[index];
-    const answerState = appState.answers[index];
+    if (questionIndex >= totalQuestionsInBlock) return;
 
-    // Do not add new listeners if the question is already answered
+    const question = pageData.blocks[blockIndex].exercises[questionIndex];
+    const answerState = state.answers[blockIndex][questionIndex];
+
     if (answerState.userAnswer !== null) {
-        // Still need to attach listener for the "Mark as Correct" button
         const markCorrectBtn = questionElement.querySelector('.mark-correct-btn');
         if (markCorrectBtn) {
             markCorrectBtn.onclick = () => {
-                appState.answers[index].isCorrect = true;
-                // autoSaveState();
-                render(); // Re-render to update scoreboard and feedback
+                state.answers[blockIndex][questionIndex].isCorrect = true;
+                autoSave(activeTab);
+                render();
             };
         }
     } else {
-        // Attach listeners for answering the question based on its type
         switch (question.type) {
             case 'true-false':
             case 'multiple-choice':
@@ -390,12 +485,10 @@ function addAnswerListeners(questionElement) {
                         const userAnswer = e.target.dataset.answer;
                         let correctAnswer = question.answer;
 
-                        // Normalize boolean answers to A/B format for comparison
                         if (typeof correctAnswer === 'boolean') {
                             correctAnswer = correctAnswer ? "A" : "B";
                         }
                         
-                        // Normalize word answers to their letter equivalent for multiple choice
                         if (question.type === 'multiple-choice' && !/^[A-D]$/.test(correctAnswer)) {
                              const correctIndex = question.options.indexOf(correctAnswer);
                              if (correctIndex !== -1) {
@@ -403,9 +496,9 @@ function addAnswerListeners(questionElement) {
                              }
                         }
 
-                        appState.answers[index].userAnswer = userAnswer;
-                        appState.answers[index].isCorrect = userAnswer === correctAnswer;
-                        // autoSaveState();
+                        state.answers[blockIndex][questionIndex].userAnswer = userAnswer;
+                        state.answers[blockIndex][questionIndex].isCorrect = userAnswer === correctAnswer;
+                        autoSave(activeTab);
                         render();
                     };
                 });
@@ -419,11 +512,10 @@ function addAnswerListeners(questionElement) {
                         const userAnswer = inputEl.value.trim();
                         const correctAnswer = question.answer.trim();
                         
-                        appState.answers[index].userAnswer = userAnswer;
-                        // Case-insensitive and punctuation-agnostic comparison
-                        appState.answers[index].isCorrect = userAnswer.toLowerCase().replace(/[.,]/g, '') === correctAnswer.toLowerCase().replace(/[.,]/g, '');
+                        state.answers[blockIndex][questionIndex].userAnswer = userAnswer;
+                        state.answers[blockIndex][questionIndex].isCorrect = userAnswer.toLowerCase().replace(/[.,]/g, '') === correctAnswer.toLowerCase().replace(/[.,]/g, '');
                         
-                        // autoSaveState();
+                        autoSave(activeTab);
                         render();
                     };
                     checkBtn.onclick = handleCheck;
@@ -436,19 +528,19 @@ function addAnswerListeners(questionElement) {
     }
 
     // Add listeners for notes
-    const notesTextarea = questionElement.querySelector(`#question-notes-${index}`);
+    const notesTextarea = questionElement.querySelector(`#question-notes-${blockIndex}-${questionIndex}`);
     if (notesTextarea) {
         notesTextarea.onkeyup = () => {
-            appState.answers[index].note = notesTextarea.value;
-            // autoSaveState();
+            state.answers[blockIndex][questionIndex].note = notesTextarea.value;
+            autoSave(activeTab);
         };
     }
 
-    const exerciseNotesTextarea = questionElement.querySelector('#exercise-notes');
-    if (exerciseNotesTextarea) {
-        exerciseNotesTextarea.onkeyup = () => {
-            appState.exerciseNote = exerciseNotesTextarea.value;
-            // autoSaveState();
+    const blockNotesTextarea = questionElement.querySelector('#block-notes');
+    if (blockNotesTextarea) {
+        blockNotesTextarea.onkeyup = () => {
+            state.blockNotes[blockIndex] = blockNotesTextarea.value;
+            autoSave(activeTab);
         };
     }
 }
@@ -457,10 +549,14 @@ function addAnswerListeners(questionElement) {
 /**
  * Initializes the interactive exercise based on the data provided in the DOM.
  * @param {HTMLElement} container - The root element of the exercise content.
+ * @param {object} tab - The active tab object from the renderer.
+ * @param {function} saveFunc - The function to call to auto-save the exercise state.
  */
-export function handleInteractiveExercise(container) {
+export function handleInteractiveExercise(container, tab, saveFunc) {
     console.log("Initializing generic interactive exercise...");
     containerElement = container;
+    activeTab = tab;
+    autoSave = saveFunc;
 
     const pageDataElement = container.querySelector('#page-data');
     if (!pageDataElement) {
@@ -472,28 +568,30 @@ export function handleInteractiveExercise(container) {
         pageData = JSON.parse(pageDataElement.textContent);
         console.log("Exercise data loaded:", pageData);
         
-        // This is where the old initializer's logic is replaced.
-        // The new JSON format will have a flat "exercises" array.
-        // We must convert the old format, inferring the question type along the way.
+        // Convert the old 'fase' format to a new block-based structure.
         if (pageData.fase1) {
-            console.warn("Old 'fase' format detected. Converting to generic format for compatibility.");
-            
+            console.warn("Old 'fase' format detected. Converting to new block format.");
+            pageData.blocks = [];
             const fase1Typed = pageData.fase1.map(q => ({ ...q, type: 'true-false' }));
-            
-            const fase2Typed = pageData.fase2.map(q => {
-                // If it has 'options', it's multiple choice. Otherwise, it's a text input fill-in-the-blank.
-                const type = q.options && q.options.length > 1 ? 'multiple-choice' : 'fill-in-the-blank';
-                return { ...q, type };
-            });
+            pageData.blocks.push({ name: "Fase 1", exercises: fase1Typed });
+
+            const fase2Typed = pageData.fase2.map(q => ({
+                ...q,
+                type: q.options && q.options.length > 1 ? 'multiple-choice' : 'fill-in-the-blank'
+            }));
+            pageData.blocks.push({ name: "Fase 2", exercises: fase2Typed });
             
             const fase3Typed = pageData.fase3.map(q => ({ ...q, type: 'fill-in-the-blank' }));
-
-            pageData.exercises = [...fase1Typed, ...fase2Typed, ...fase3Typed];
-            console.log("Data converted to new format with inferred types:", pageData.exercises);
+            pageData.blocks.push({ name: "Fase 3", exercises: fase3Typed });
+            
+            console.log("Data converted to new block format:", pageData.blocks);
+            delete pageData.fase1;
+            delete pageData.fase2;
+            delete pageData.fase3;
         }
 
-        if (!pageData.exercises) {
-            console.error("No 'exercises' array found in page data.");
+        if (!pageData.blocks) {
+            console.error("No 'blocks' array found in page data.");
             return;
         }
 

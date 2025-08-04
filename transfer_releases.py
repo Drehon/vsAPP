@@ -1,0 +1,61 @@
+import os
+import sys
+from github import Github
+
+def transfer_releases(token, source_repo_name, target_repo_name):
+    """
+    Transfers all releases from a source repository to a target repository.
+    """
+    try:
+        g = Github(token)
+        source_repo = g.get_repo(source_repo_name)
+        target_repo = g.get_repo(target_repo_name)
+
+        releases = source_repo.get_releases()
+
+        for release in releases:
+            print(f"Processing release: {release.title}")
+
+            # Create the release in the target repository
+            target_release = target_repo.create_git_release(
+                tag=release.tag_name,
+                name=release.title,
+                message=release.body,
+                draft=release.draft,
+                prerelease=release.prerelease
+            )
+
+            # Download and upload assets
+            for asset in release.get_assets():
+                print(f"  - Transferring asset: {asset.name}")
+                
+                # Download the asset
+                import requests
+                response = requests.get(asset.browser_download_url, headers={'Authorization': f'token {token}'})
+                response.raise_for_status()
+
+                # Create a temporary file to download the asset
+                with open(asset.name, "wb") as f:
+                    f.write(response.content)
+                
+                # Upload the asset to the new release
+                target_release.upload_asset(asset.name)
+                
+                # Remove the temporary file
+                os.remove(asset.name)
+
+            print(f"Successfully transferred release: {release.title}")
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    if len(sys.argv) != 4:
+        print("Usage: python transfer_releases.py <token> <source_repo> <target_repo>")
+        sys.exit(1)
+
+    token = sys.argv[1]
+    source_repo = sys.argv[2]
+    target_repo = sys.argv[3]
+
+    transfer_releases(token, source_repo, target_repo)

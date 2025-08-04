@@ -88,3 +88,39 @@ The first interactive exercise has been successfully migrated to the new archite
 The integration of the first interactive module is functionally complete and ready for quality assurance. By providing a detailed test plan, we ensure that the verification process is thorough and aligns with the goals of the refactoring plan. The project is now ready to proceed with converting the remaining simple exercises.
 
 ---
+## Phase 3: Bug Squashing and Refinement
+
+Following the initial integration and testing of the `exercise-handler.js` module, several critical bugs were identified that compromised functionality and user experience. This phase documents the successful resolution of those issues.
+
+- **Files Affected**:
+    - `src/sub-functions/handlers/exercise-handler.js` (Major Refactor)
+    - `src/sub-functions/content-loader.js` (Enhancement)
+    - `src/sub-functions/content-hydrator.js` (Enhancement)
+    - `exercises/L1 - congiuntivoES-RE.html` (Target Test File)
+
+### Problem Analysis and Resolution
+
+A thorough review based on user feedback in `work/test-guide.txt` identified two root causes for the reported bugs:
+1.  **Broken State Management:** The new `exercise-handler.js` was architecturally isolated from the main application's state management system in `renderer.js`. It had its own internal state but never communicated it back to the tab object, causing `tab.exerciseState` to be undefined and all global save/load/reset operations to fail.
+2.  **Incorrect Data Handling:** The handler's compatibility layer incorrectly flattened the multi-block structure (`fase1`, `fase2`, `fase3`) of the exercise into a single list, destroying the intended layout and progression.
+
+**Actions Taken**:
+
+1.  **Bridged the State Management Gap**:
+    - The call stack was modified (`content-loader.js` -> `content-hydrator.js` -> `exercise-handler.js`) to pass the `tab` object and the `autoSaveExerciseState` function down to the handler.
+    - The handler was refactored to eliminate its internal `appState`. It now directly reads from and writes to `activeTab.exerciseState`.
+    - All state-modifying actions (answering questions, navigating, writing notes) now correctly call the `autoSave` function, ensuring progress is constantly persisted. `content-loader.js` was also enhanced to proactively load any existing state when the tab is opened.
+
+2.  **Restored Multi-Block Architecture**:
+    - The logic for flattening the exercise data was removed. The handler now preserves the block structure within `pageData.blocks`.
+    - The entire handler was refactored to be **block-aware**. The state model now tracks the current block index, per-block question indexes, and per-block notes.
+    - A tabbed UI was implemented (`createBlockTabs`) to allow the user to switch between exercise blocks ("Fase 1", "Fase 2", "Fase 3").
+    - All UI components (`createScoreboard`, `renderCurrentQuestion`) and logic (`addNavigationListeners`, `addAnswerListeners`) were updated to operate within the context of the currently selected block.
+
+3.  **Restored Missing UI**:
+    - The "Back to Question 1" button was re-implemented and now correctly resets the view to the first question *of the current block*.
+    - A "Reset Block" button was also added to give the user more granular control over their progress.
+
+**Outcome**:
+The `exercise-handler.js` module is now architecturally sound and fully integrated with the application's global state system. All reported bugs have been fixed. The handler correctly preserves the multi-block exercise format, persists all state changes automatically, and provides the user with the intended UI controls. The foundation for converting the remaining exercises is now robust and verified.
+---
