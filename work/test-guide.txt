@@ -143,6 +143,12 @@ exercise-handler.js:575 Old 'fase' format detected. Converting to new fase-based
 
 user notes 2:
 
+these persist
+4) the reset in the toolbar does nothing at all 
+5) save and load still don't work correctly
+6) save states still don't work correctly
+
+
 in console i still see
 exercise-handler.js:575 Old 'fase' format detected. Converting to new fase-based format.
 save state and save/load and reset still don't work correctly
