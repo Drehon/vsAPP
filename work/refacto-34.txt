@@ -3,6 +3,35 @@
 This file tracks the execution of the refactoring plan outlined in uniform.txt, focusing on Phases 3 and beyond.
 
 ---
+
+## Phase 3: Fixing Core State Management
+
+After implementing the block-aware UI, the most critical bugs remained: the global Save, Load, and Reset buttons were non-functional for interactive exercises. This was the top priority to resolve.
+
+- **Files Affected**:
+    - `src/sub-functions/tab-manager.js` (Enhancement)
+    - `src/sub-functions/content-loader.js` (Enhancement)
+    - `src/renderer.js` (Major Refactor)
+
+### Problem Analysis and Resolution
+
+The root cause was identified as a fundamental architectural flaw in how the `pageId` was being accessed. The global toolbar functions in `renderer.js` relied on querying the live DOM to find the `pageId`, which was proving unreliable and failing silently, causing the corresponding console errors.
+
+The `content-loader.js` module correctly identified the `pageId` from the file content but failed to persist it in a way that was accessible to the rest of the application.
+
+**Actions Taken**:
+
+1.  **Made `pageId` a Core Tab Property**:
+    - The `tab-manager.js` module was updated to initialize all new tab objects with a `pageId: null` property. This ensures a consistent object shape for all tabs.
+    - The `content-loader.js` module was enhanced. After it extracts the `pageId` from the content, it now **stores this value directly on the tab object** (`tab.pageId = pageId`). This creates a single, reliable source of truth for the page's unique identifier.
+
+2.  **Refactored `renderer.js` for Reliability**:
+    - The unreliable, DOM-query-based `getActivePageId(tab)` function was completely replaced. The new function simply returns `tab.pageId`, removing the dependency on the DOM state.
+    - All functions that used it (`handleSaveButtonClick`, `handleLoadButtonClick`, `globalResetBtn.onclick`, `autoSaveExerciseState`) now benefit from this reliable, direct access to the correct `pageId`.
+
+**Outcome**:
+This change fundamentally stabilizes the application's state management. By making `pageId` a core, persistent property of the tab object, we have eliminated the race conditions and DOM-state dependencies that caused the save/load/reset functionality to fail. The system is now robust, reliable, and ready for further expansion.
+---
 ## Summary of Completed Work (Phases 1 & 2)
 
 Before starting Phase 3, a significant foundational refactoring was completed, as documented in `refacto-12.txt`. The key achievements are:

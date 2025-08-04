@@ -50,6 +50,7 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
       title: 'Home',
       view: 'home',
       filePath: null,
+      pageId: null, // Add pageId property
       active: true,
       exerciseState: null,
     };

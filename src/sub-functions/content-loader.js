@@ -36,6 +36,9 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
         const contentRoot = tempDiv.querySelector('[data-page-id]');
         const pageId = contentRoot ? contentRoot.dataset.pageId : null;
 
+        // Store the pageId on the tab object for universal access
+        tab.pageId = pageId;
+
         // 2. Load state using the correct pageId.
         // The tab's title is used as a fallback to maintain compatibility with legacy content.
         const stateIdentifier = pageId || tab.title;

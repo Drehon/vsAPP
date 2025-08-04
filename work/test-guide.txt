@@ -140,3 +140,9 @@ exercise-handler.js:573 Old 'fase' format detected. Converting to new block form
 
 in console i still see
 exercise-handler.js:575 Old 'fase' format detected. Converting to new fase-based format.
+
+user notes 2:
+
+in console i still see
+exercise-handler.js:575 Old 'fase' format detected. Converting to new fase-based format.
+save state and save/load and reset still don't work correctly

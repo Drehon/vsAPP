@@ -171,11 +171,8 @@ window.addEventListener('api-ready', () => {
   // --- UTILITY & SETUP FUNCTIONS ---
 
   function getActivePageId(tab) {
-    if (!tab) return null;
-    const pane = document.getElementById(`pane-${tab.id}`);
-    if (!pane) return null;
-    const contentRoot = pane.querySelector('[data-page-id]');
-    return contentRoot ? contentRoot.dataset.pageId : null;
+    // The pageId is now reliably stored on the tab object.
+    return tab ? tab.pageId : null;
   }
   
   function debounce(func, delay) {
@@ -366,13 +363,13 @@ window.addEventListener('api-ready', () => {
   // --- INITIALIZATION ---
 
   const autoSaveExerciseState = debounce(async (tab, force = false) => {
-    const pageId = getActivePageId(tab);
-    if (tab && pageId && tab.exerciseState) {
+    // Directly use the reliable pageId from the tab object.
+    if (tab && tab.pageId && tab.exerciseState) {
       try {
-        await window.api.saveExerciseState(pageId, tab.exerciseState);
-        console.log(`Autosaved progress for pageId: ${pageId}`);
+        await window.api.saveExerciseState(tab.pageId, tab.exerciseState);
+        console.log(`Autosaved progress for pageId: ${tab.pageId}`);
       } catch (error) {
-        console.error(`Failed to autosave progress for pageId ${pageId}:`, error);
+        console.error(`Failed to autosave progress for pageId ${tab.pageId}:`, error);
       }
     }
   }, 500);
