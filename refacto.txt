@@ -156,4 +156,42 @@ The lessons page have been updated and seem to work correctly
 We have to complete the update of all the .html though
 Please update all the .html in the /lessonsAN folder
 also, answer the following question at the end of your update of this txt:
-should we update the html in the /other folder too in our next steps? 
+should we update the html in the /other folder too in our next steps? ---
+---
+
+## Task: Migrate Static Lessons in /lessonsAN (Completed)
+
+- **Files Modified**:
+  - `lessonsAN/L1 - congiuntivoAN.html`
+  - `lessonsAN/L2 - causativoAN.html`
+  - `lessonsAN/L3 - passivo avanzatoAN.html`
+- **Objective**: Fulfill the user request to update all static lesson files in `/lessonsAN` to the new architecture.
+
+**Summary of Changes:**
+
+1.  **Migrated All `/lessonsAN` Lessons**:
+    - All HTML files in the `lessonsAN/` directory were converted from full HTML documents into HTML fragments.
+    - Boilerplate tags (`<!DOCTYPE>`, `<html>`, `<head>`, `<body>`), as well as extraneous `<style>` and `<script>` tags, were removed.
+    - Each file's content was wrapped in a single root `<div>`.
+    - The `data-module="static-lesson"` attribute was added to the root `div` of each file.
+    - A unique `data-page-id` was added to each lesson (e.g., `data-page-id="lesson-l1-congiuntivo-an"`) to ensure correct state management.
+
+**Outcome:**
+All static lessons in the `/lessonsAN` folder are now fully compliant with the new universal template system, continuing the progress laid out in `uniform.txt`.
+
+---
+
+**Answer to User Question:**
+
+Yes, the files in the `/other` folder (`student-grammar.html` and `student-verbs.html`) are the next major target for refactoring. According to the plan in `uniform.txt` (Phase 4), they are not static lessons but complex "diagnostic tests". They will be converted to the new universal template using `data-module="diagnostic-test"` and will be powered by a new, generic `diagnostic-test-handler.js`. This is a crucial step that will eliminate the largest source of code duplication in the project.
+
+---
+
+Good, one last thing.
+Please analyze all the html in the lessons and lessonsAN folder
+And verify they follow the same 'implicit rules' in terms of how they are constructed.
+Then, create two new files in the two folders, L - template.html and LAN - template.html
+These two files should not appear within the app
+They are to act as baseline for all future lessons
+Ideally they should be 'relatively autonomous' in the sense that once the content of a lesson is prepared (the text i mean)
+it can be easily implemented by creating a new html using the template as base and populating it with the prepared content.
