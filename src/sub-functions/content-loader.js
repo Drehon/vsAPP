@@ -8,10 +8,6 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
     tab.filePath = filePath;
     tab.title = filePath.split('/').pop().replace('.html', '');
 
-    if (updateGlobalToolbar) {
-        updateGlobalToolbar(tab);
-    }
-
     const content = await window.api.getFileContent(filePath);
     const pane = document.getElementById(`pane-${tab.id}`);
 
@@ -48,6 +44,14 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
             console.log(`State successfully loaded for identifier: ${stateIdentifier}`);
         }
         // --- End of Fix ---
+
+        // --- Toolbar Update ---
+        // The toolbar is updated *after* the pageId is known and state is loaded,
+        // ensuring all buttons are correctly configured.
+        if (updateGlobalToolbar) {
+            updateGlobalToolbar(tab);
+        }
+        // --- End of Update ---
 
         contentWrapper.innerHTML = tempDiv.innerHTML;
         pane.appendChild(contentWrapper);

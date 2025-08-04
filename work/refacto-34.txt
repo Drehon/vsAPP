@@ -181,3 +181,23 @@ A deep analysis confirmed that the primary source of failure was a logical flaw 
 **Outcome**:
 The application's state management for interactive exercises is now robust and functions as designed. All identified UI/UX bugs in the `exercise-handler` have been resolved. The system is now fully prepared for the migration of the remaining exercise content as outlined in Phase 3 and 4 of the `uniform.txt` plan.
 ---
+## Phase 3: Definitive State Management Fix
+
+Despite previous attempts, the core state management functionality (global Save, Load, Reset, and auto-save) remained broken due to a subtle but critical timing issue in the content loading pipeline.
+
+- **Files Affected**:
+    - `src/sub-functions/content-loader.js` (Critical Fix)
+
+### Problem Analysis and Resolution
+
+The root cause of the persistent `Could not find pageId` errors was an order of operations flaw in `content-loader.js`. The function was updating the global toolbar and assigning its button event handlers *before* it had parsed the file content to extract the `pageId`. This meant that the toolbar handlers were created with a reference to a `tab` object where `tab.pageId` was still `null`, causing all subsequent state operations to fail.
+
+**Action Taken**:
+
+1.  **Corrected the Content Loading Lifecycle**:
+    - The `loadContentIntoTab` function in `content-loader.js` was refactored.
+    - The call to `updateGlobalToolbar(tab)` was moved from the beginning of the function to the end. It now executes only *after* the file content has been read, the `pageId` has been extracted and assigned to `tab.pageId`, and any existing state has been loaded into `tab.exerciseState`.
+
+**Outcome**:
+This change definitively resolves the state management bugs. By ensuring the `tab` object is fully populated with its `pageId` and `exerciseState` *before* the global toolbar is configured, all Save, Load, Reset, and auto-save functions now receive the correct data and operate as intended. The application's state management is now considered stable and reliable.
+---

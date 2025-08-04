@@ -1,6 +1,18 @@
 import os
 import sys
+import argparse
+import re
+import requests
 from github import Github
+
+def get_repo_name_from_url(url):
+    """
+    Extracts the repository name (e.g., 'owner/repo') from a GitHub URL.
+    """
+    match = re.search(r"github\.com/([^/]+/[^/]+)", url)
+    if match:
+        return match.group(1).replace('.git', '')
+    return url # Assume it's already in owner/repo format if no match
 
 def transfer_releases(token, source_repo_name, target_repo_name):
     """
@@ -30,7 +42,6 @@ def transfer_releases(token, source_repo_name, target_repo_name):
                 print(f"  - Transferring asset: {asset.name}")
                 
                 # Download the asset
-                import requests
                 response = requests.get(asset.browser_download_url, headers={'Authorization': f'token {token}'})
                 response.raise_for_status()
 
@@ -50,12 +61,14 @@ def transfer_releases(token, source_repo_name, target_repo_name):
         print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print("Usage: python transfer_releases.py <token> <source_repo> <target_repo>")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description="Transfer GitHub releases from a source to a target repository.")
+    parser.add_argument("token", help="Your GitHub personal access token.")
+    parser.add_argument("source_repo", help="Source repository (e.g., 'owner/repo' or a full GitHub URL).")
+    parser.add_argument("target_repo", help="Target repository (e.g., 'owner/repo' or a full GitHub URL).")
 
-    token = sys.argv[1]
-    source_repo = sys.argv[2]
-    target_repo = sys.argv[3]
+    args = parser.parse_args()
 
-    transfer_releases(token, source_repo, target_repo)
+    source_repo_name = get_repo_name_from_url(args.source_repo)
+    target_repo_name = get_repo_name_from_url(args.target_repo)
+
+    transfer_releases(args.token, source_repo_name, target_repo_name)

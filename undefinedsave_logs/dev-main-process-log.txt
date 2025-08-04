@@ -50,3 +50,40 @@
 [LOG][2025-08-04T13:36:56.868Z] [State] No state file to reset for pageId 'L1-congiuntivoES'.
 [LOG][2025-08-04T13:36:56.873Z] [State] No save state found for pageId 'L1-congiuntivoES'.
 [LOG][2025-08-04T13:38:59.616Z] [State] No save state found for pageId 'L1-congiuntivoES'.
+[LOG][2025-08-04T13:51:34.278Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-04T13:51:34.281Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-04T13:51:34.283Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-04T13:51:34.381Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-04T13:51:34.390Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-04T13:51:35.909Z] Main Process: Checking for updates...
+[LOG][2025-08-04T13:51:35.915Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-04T13:51:37.022Z] Main Process: Update not available. {"tag":"v1.3.8","version":"1.3.8","files":[{"url":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","size":114395136}],"path":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","releaseDate":"2025-08-03T19:17:23.179Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.8","releaseNotes":"<p>Implemented visual feedback area for the reset button, for loading and for saving.<br>\nImproved reloading on reset to reload SAME excercise block.</p>"}
+[LOG][2025-08-04T13:51:37.996Z] [State] No save state found for pageId 'L1-congiuntivoES'.
+[LOG][2025-08-04T13:51:42.958Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T13:51:43.186Z] [State] Reset state for pageId 'L1-congiuntivoES' by deleting 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T13:51:43.191Z] [State] No save state found for pageId 'L1-congiuntivoES'.
+[LOG][2025-08-04T13:52:30.862Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-04T13:52:30.864Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-04T13:52:30.866Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-04T13:52:30.931Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-04T13:52:30.938Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-04T13:52:38.414Z] Main Process: Checking for updates...
+[LOG][2025-08-04T13:52:38.421Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-04T13:52:39.589Z] Main Process: Update not available. {"tag":"v1.3.8","version":"1.3.8","files":[{"url":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","size":114395136}],"path":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","releaseDate":"2025-08-03T19:17:23.179Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.8","releaseNotes":"<p>Implemented visual feedback area for the reset button, for loading and for saving.<br>\nImproved reloading on reset to reload SAME excercise block.</p>"}
+[LOG][2025-08-04T13:52:51.801Z] [State] No save state found for pageId 'lesson-l1-congiuntivo'.
+[LOG][2025-08-04T13:52:55.640Z] [State] No save state found for pageId 'L1-congiuntivoES'.
+[LOG][2025-08-04T13:52:59.890Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T13:53:02.383Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T13:53:08.615Z] [State] Loaded state for pageId 'L1-congiuntivoES' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T13:53:13.028Z] [State] Reset state for pageId 'L1-congiuntivoES' by deleting 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T13:53:13.032Z] [State] No save state found for pageId 'L1-congiuntivoES'.
+[LOG][2025-08-04T13:53:20.148Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T13:53:23.734Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T13:53:23.750Z] [State] Loaded state for pageId 'L1-congiuntivoES' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T13:53:26.690Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T13:53:28.703Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T13:53:29.502Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T13:53:30.831Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T13:53:32.942Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T13:53:34.467Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T13:53:35.091Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'

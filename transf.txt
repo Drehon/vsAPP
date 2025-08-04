@@ -3,9 +3,9 @@ This folder contains a Python script `transfer_releases.py` to transfer all rele
 **Prerequisites:**
 
 1.  **Python 3:** Make sure you have Python 3 installed on your system. You can download it from [https://www.python.org/downloads/](https://www.python.org/downloads/).
-2.  **`PyGithub` library:** This script requires the `PyGithub` library. You can install it using pip:
+2.  **Required libraries:** This script requires a few Python libraries. You can install them all at once by running this command in your terminal:
     ```
-    pip install PyGithub
+    pip install -r requirements.txt
     ```
 
 **How to use the script:**
@@ -19,10 +19,11 @@ This folder contains a Python script `transfer_releases.py` to transfer all rele
 
 2.  **Run the script from your terminal:**
     *   Open a terminal or command prompt in the same directory as the `transfer_releases.py` script.
-    *   Run the script with the following command, replacing the placeholders with your actual data:
+    *   Run the script with the following command, replacing the placeholders with your actual data. The script accepts both full GitHub URLs and the `owner/repository` format.
 
+    **Command format:**
     ```
-    python transfer_releases.py  https://github.com/Drehon/vsAPP-public https://github.com/Drehon/vsAPP
+    python transfer_releases.py <your_github_token> <source_repo> <target_repo>
     ```
 
     **Example:**
@@ -31,20 +32,8 @@ This folder contains a Python script `transfer_releases.py` to transfer all rele
     python transfer_releases.py ghp_xxxxxxxxxxxxxxxxxxxx Drehon/vsAPP Drehon/vsAPP-public
     ```
 
-    *   `<your_github_token>`: The personal access token you  generated.
-    *   `<source_repo_full_name>`: The full name of the source repository (e.g., `Drehon/vsAPP`).
-    *   `<target_repo_full_name>`: The full name of the target repository (e.g., `Drehon/vsAPP-public`).
+    *   `<your_github_token>`: The personal access token you generated.
+    *   `<source_repo>`: The source repository. For this project, it's the private `Drehon/vsAPP`.
+    *   `<target_repo>`: The target repository. For this project, it's the public `Drehon/vsAPP-public`.
 
 The script will then start transferring all the releases and their assets from the source repository to the target repository.
-
-
----
-
-User notes, issue: 
-note that i'm replacing the actual token with TOKEN cause it's forbidden to load it into a commit 
-
-(.venv) PS C:\Users\User\Documents\TEFL Personal> python transfer_releases.py TOKEN https://github.com/Drehon/vsAPP-public https://github.com/Drehon/vsAPP
-Traceback (most recent call last):
-  File "C:\Users\User\Documents\TEFL Personal\transfer_releases.py", line 3, in <module>
-    from github import Github
-ModuleNotFoundError: No module named 'github'
