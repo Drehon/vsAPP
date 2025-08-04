@@ -1,6 +1,7 @@
 import './style.css';
 import { initializeTabManager } from './sub-functions/tab-manager.js';
 import { loadContentIntoTab, loadHomeIntoTab, loadSettingsIntoTab } from './sub-functions/content-loader.js';
+import { handleInteractiveExercise } from './sub-functions/handlers/exercise-handler.js';
 
 window.addEventListener('api-ready', () => {
   // --- STATE MANAGEMENT ---
@@ -52,6 +53,22 @@ window.addEventListener('api-ready', () => {
   async function switchTab(tabId) {
     activeTab = await _switchTab(tabId);
     updateGlobalToolbar(activeTab);
+
+    // After switching tabs, if the new tab is an interactive exercise,
+    // its handler must be re-initialized. This is because the exercise
+    // handler is a singleton and its context (module-level variables)
+    // would otherwise be stale, pointing to the previously active exercise tab.
+    if (activeTab && activeTab.view === 'content' && activeTab.pageId) {
+      const pane = document.getElementById(`pane-${activeTab.id}`);
+      // The handler expects the pane as the container.
+      // We check if the pane contains a data-module for interactive exercises
+      // to ensure we only re-hydrate the correct content type.
+      if (pane && pane.querySelector('.content-container[data-module="interactive-exercise"]')) {
+        console.log(`Tab switched. Re-hydrating interactive exercise for tab ${activeTab.id}...`);
+        // Re-run the handler to reset its context and re-render the UI from the tab's state.
+        handleInteractiveExercise(pane, activeTab, autoSaveExerciseState);
+      }
+    }
   }
 
   async function closeTab(tabId) {

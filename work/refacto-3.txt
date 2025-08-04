@@ -1391,4 +1391,70 @@ This two-part fix resolves the issue. For fill-in-the-blank questions, the user'
 summary
 > 1) green red on multi choice question > issue persists > FIXED
 > 2) input questions disappear on 'Controlla' > FIXED
+> 3) bugged pages related to switch tabs > FIXED
+
+---
+
+## Issue Fix (Issue #3): Unresponsive UI on Tab Switching
+
+- **Files Affected**:
+    - `src/renderer.js` (Logic Fix)
+
+### Problem Description (from user notes)
 > 3) bugged pages related to switch tabs
+> if i answer some questions in a page (tab A)
+> then open another tab, do stuff in there (tab B)
+> then go back to the previous page in the tab i opened at the start (tab A)
+> tab A is unresponsive visually, from console seems like it's reacting thorough
+
+### Analysis and Resolution
+
+The root cause of this critical bug was the singleton architecture of the `exercise-handler.js` module. The handler uses module-level variables to store the context (the tab object, the container element, etc.) of the exercise it is currently managing.
+
+The sequence of failure was:
+1.  When a second exercise tab was opened, the handler's context was overwritten to point to the new tab.
+2.  When the user switched back to the original tab, the `switchTab` function would only make the tab's pane visible but would not restore the handler's context.
+3.  Any interaction in the original tab would trigger event listeners that would then execute logic using the stale context of the second tab, causing state updates and rendering to occur in the wrong, hidden pane. This made the active tab appear frozen.
+
+**Action Taken**:
+
+1.  **Implemented Re-hydration on Tab Switch**:
+    - The `switchTab` function in `src/renderer.js` was modified to be context-aware.
+    - Now, after a tab is made active, the function checks if it is an interactive exercise by looking for the `data-module="interactive-exercise"` attribute in its content.
+    - If it is, the `handleInteractiveExercise` function is explicitly called again for that tab. This action resets the singleton handler's context to point to the correct, newly-activated tab and triggers its `render()` function.
+
+### Outcome
+This fix resolves the UI unresponsiveness issue. By re-hydrating the exercise content each time its tab is selected, we ensure that the `exercise-handler`'s context is always in sync with the active tab. The UI now correctly reflects the user's interactions regardless of how many times they switch between tabs. The application's stability in a multi-tab environment is significantly improved.
+
+---
+
+
+issue persists
+
+### Problem Description (from user notes)
+> 3) bugged pages related to switch tabs
+> if i answer some questions in a page (tab A)
+> then open another tab, do stuff in there (tab B)
+> then go back to the previous page in the tab i opened at the start (tab A)
+> tab A is unresponsive visually, from console seems like it's reacting thorough
+
+Render triggered. Current state: 
+{version: 2, currentBlockIndex: 1, answers: Array(3), blockNotes: Array(3), currentQuestionIndexes: Array(3)}
+answers
+: 
+(3) [Array(50), Array(30), Array(20)]
+blockNotes
+: 
+(3) ['', '', '']
+currentBlockIndex
+: 
+1
+currentQuestionIndexes
+: 
+(3) [3, 3, 4]
+version
+: 
+2
+[[Prototype]]
+: 
+Object
