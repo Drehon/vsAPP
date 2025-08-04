@@ -261,12 +261,38 @@ function renderCurrentQuestion() {
  * @returns {string} The HTML string for the question.
  */
 function renderTrueFalseQuestion(question, answerState) {
+    const hasAnswered = answerState && answerState.userAnswer !== null;
+    const isCorrect = answerState && answerState.isCorrect;
+    const userAnswer = answerState && answerState.userAnswer;
+
+    // Determine correct answer mapping ('A' for true, 'B' for false)
+    const correctAnswer = question.answer ? 'A' : 'B';
+
+    const getButtonClasses = (buttonAnswer) => {
+        let classes = 'fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors';
+        if (!hasAnswered) {
+            return classes;
+        }
+
+        if (buttonAnswer === userAnswer) {
+            // This is the button the user clicked
+            classes += isCorrect ? ' feedback-correct' : ' feedback-incorrect';
+        } else if (buttonAnswer === correctAnswer && !isCorrect) {
+            // If the user's answer was wrong, this highlights the correct one
+            classes += ' feedback-correct-outline';
+        }
+        
+        return classes;
+    };
+
+    const disabled = hasAnswered ? 'disabled' : '';
+
     return `
         <p class="text-lg text-slate-600">La seguente frase è grammaticalmente corretta?</p>
         <div class="p-4 bg-slate-100 rounded-lg text-xl text-center font-semibold text-slate-800">${question.question}</div>
         <div class="flex justify-center space-x-4 pt-4">
-            <button class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors" data-answer="A">Vero</button>
-            <button class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors" data-answer="B">Falso</button>
+            <button class="${getButtonClasses('A')}" data-answer="A" ${disabled}>Vero</button>
+            <button class="${getButtonClasses('B')}" data-answer="B" ${disabled}>Falso</button>
         </div>
     `;
 }
@@ -570,28 +596,6 @@ export function handleInteractiveExercise(container, tab, saveFunc) {
         pageData = JSON.parse(pageDataElement.textContent);
         console.log("Exercise data loaded:", pageData);
         
-        // Convert the old 'fase' format to a new block-based structure.
-        if (pageData.fase1) {
-            console.warn("Old 'fase' format detected. Converting to new fase-based format.");
-            pageData.blocks = [];
-            const fase1Typed = pageData.fase1.map(q => ({ ...q, type: 'true-false' }));
-            pageData.blocks.push({ name: "Fase 1", exercises: fase1Typed });
-
-            const fase2Typed = pageData.fase2.map(q => ({
-                ...q,
-                type: q.options && q.options.length > 1 ? 'multiple-choice' : 'fill-in-the-blank'
-            }));
-            pageData.blocks.push({ name: "Fase 2", exercises: fase2Typed });
-            
-            const fase3Typed = pageData.fase3.map(q => ({ ...q, type: 'fill-in-the-blank' }));
-            pageData.blocks.push({ name: "Fase 3", exercises: fase3Typed });
-            
-            console.log("Data converted to new fase-based format:", pageData.blocks);
-            delete pageData.fase1;
-            delete pageData.fase2;
-            delete pageData.fase3;
-        }
-
         if (!pageData.blocks) {
             console.error("No 'blocks' array found in page data.");
             return;
