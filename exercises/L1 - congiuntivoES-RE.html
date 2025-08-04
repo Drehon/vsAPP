@@ -1,61 +1,30 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Esercizi Pratici: Il Congiuntivo</title>
-    <style>
-        .input-correct {
-            border-color: #10b981; /* green-500 */
-            background-color: #ecfdf5; /* green-50 */
-        }
-        .input-incorrect {
-            border-color: #ef4444; /* red-500 */
-            background-color: #fef2f2; /* red-50 */
-        }
-    </style>
-</head>
-<body class="text-slate-700">
+<div class="content-container p-6 md:p-10" 
+     data-page-id="L1-congiuntivoES" 
+     data-module="interactive-exercise">
 
-    <div class="container mx-auto p-6 md:p-10 max-w-7xl">
-
-        <!-- Header -->
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
-            <header class="p-6">
-                <h1 class="text-3xl font-bold text-slate-900">Esercizi Pratici: Il Congiuntivo</h1>
-                <p class="text-lg text-slate-600">Metti in pratica la teoria con esercizi mirati.</p>
-            </header>
-            <div class="p-6 border-t border-slate-200 bg-slate-50 text-sm text-slate-600 space-y-3">
-                <h3 class="font-semibold text-slate-800">Come usare questa pagina:</h3>
-                <ul class="list-disc list-inside space-y-1">
-                    <li><strong>Salvataggio Automatico:</strong> I tuoi progressi (risposte e note) vengono salvati costantemente.</li>
-                    <li><strong>Pulsanti di Navigazione:</strong> Utilizza i pulsanti sulla barra degli strumenti per navigare tra le schede, salvare e caricare i progressi o ripristinare l'esercizio.</li>
-                </ul>
-            </div>
+    <!-- 1. Header Section (Standardized) -->
+    <header class="content-header bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h1 id="page-title" class="text-3xl font-bold text-slate-900">Esercizi Pratici: Il Congiuntivo</h1>
+        <p id="page-subtitle" class="text-lg text-slate-600 mt-2">Metti in pratica la teoria con esercizi mirati.</p>
+        <div class="mt-4 pt-4 border-t border-slate-200 bg-slate-50 -m-6 p-6 pb-4 text-sm text-slate-600 space-y-3">
+            <h3 class="font-semibold text-slate-800">Come usare questa pagina:</h3>
+            <ul class="list-disc list-inside space-y-1">
+                <li><strong>Salvataggio Automatico:</strong> I tuoi progressi (risposte e note) vengono salvati costantemente.</li>
+                <li><strong>Pulsanti di Navigazione:</strong> Utilizza i pulsanti sulla barra degli strumenti per navigare tra le schede, salvare e caricare i progressi o ripristinare l'esercizio.</li>
+            </ul>
         </div>
+    </header>
 
-        <!-- Main Content -->
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-            <!-- Tabs -->
-            <div class="border-b border-slate-200">
-                <nav class="flex space-x-6 px-6" aria-label="Tabs">
-                    <button id="tab-btn-1" class="tab-btn py-4 px-1 text-sm font-medium tab-active">Fase 1: Comprensione</button>
-                    <button id="tab-btn-2" class="tab-btn py-4 px-1 text-sm font-medium tab-inactive">Fase 2: Riconoscimento</button>
-                    <button id="tab-btn-3" class="tab-btn py-4 px-1 text-sm font-medium tab-inactive">Fase 3: Produzione</button>
-                </nav>
-            </div>
+    <!-- 2. Main Content Area (to be populated by the hydrator) -->
+    <main id="content-body" class="content-body bg-white rounded-lg shadow-lg p-6 md:p-8">
+        <!-- The exercise-handler.js will populate this area -->
+    </main>
 
-            <!-- Tab Content -->
-            <div class="p-6 md:p-8">
-                <div id="tab-content-1" class="tab-content"></div>
-                <div id="tab-content-2" class="tab-content hidden"></div>
-                <div id="tab-content-3" class="tab-content hidden"></div>
-            </div>
-        </div>
-    </div>
-
-    <script id="exercise-data" type="application/json">
+    <!-- 3. Data Island (Standardized) -->
+    <script type="application/json" id="page-data">
         {
+            "title": "Esercizi Pratici: Il Congiuntivo",
+            "subtitle": "Metti in pratica la teoria con esercizi mirati.",
             "fase1": [
                 { "question": "The manager insisted that everyone <code>attends</code> the meeting.", "answer": false, "explanation": "Dopo 'insisted that', si usa la forma base. Corretta: <i>...<code>attend</code>...</i>" },
                 { "question": "It is essential that she <code>be</code> informed immediately.", "answer": true, "explanation": "Corretto. 'be informed' è il congiuntivo passivo." },
@@ -149,7 +118,7 @@
                 { "prompt": "The government should lower taxes.", "question": "The people are demanding...", "answer": "that the government lower taxes", "explanation": "La struttura è 'demanding that' + soggetto + forma base." },
                 { "prompt": "You shouldn't tell anyone this secret.", "question": "It is crucial...", "answer": "that you not tell anyone this secret", "explanation": "La struttura è 'it is crucial that' + soggetto + 'not' + forma base." },
                 { "prompt": "This document must be signed.", "question": "The lawyer requests...", "answer": "that this document be signed", "explanation": "La struttura è 'requests that' + soggetto + congiuntivo passivo." },
-                { "prompt": "He needs to see a doctor.", "question": "The doctor recommended...", "answer": "that he see a doctor", "explanation": "La struttura è 'recommended that' + soggetto + forma base." },
+                { "prompt": "He needs to see a a doctor.", "question": "The doctor recommended...", "answer": "that he see a doctor", "explanation": "La struttura è 'recommended that' + soggetto + forma base." },
                 { "prompt": "She has to be present at the hearing.", "question": "The judge ordered...", "answer": "that she be present at the hearing", "explanation": "La struttura è 'ordered that' + soggetto + forma base." },
                 { "prompt": "You should apply for the scholarship.", "question": "I advise...", "answer": "that you apply for the scholarship", "explanation": "La struttura è 'advise that' + soggetto + forma base." },
                 { "prompt": "The prisoners must not be mistreated.", "question": "Human rights laws require...", "answer": "that prisoners not be mistreated", "explanation": "La struttura è 'require that' + soggetto + congiuntivo passivo negativo." },
@@ -164,6 +133,4 @@
             ]
         }
     </script>
-
-</body>
-</html>
+</div>
