@@ -36,7 +36,8 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
 
         // The new universal hydrator is called here.
         // It's responsible for inspecting the content and attaching the correct logic.
-        hydrateContent(contentWrapper);
+        // We pass the tab and the save function to it so it can be wired up to the handler.
+        hydrateContent(contentWrapper, tab, saveExerciseState);
         
         // After initialization, restore view state if options are provided
         if (options) {

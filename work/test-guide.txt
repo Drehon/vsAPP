@@ -115,3 +115,9 @@ User notes from part 4 of the test:
 Notes area are displayed as before
 They appear correctly, can be written correctly, but are impacted by the same issues as part 3
 Generally it seems like you lost the distinction between save-states and saves 
+
+---
+
+after step 5 in refacto-34.txt
+excercise page now only loads the incipit to the page.
+no excercise block is displayed. impossible to test further.
