@@ -1328,3 +1328,37 @@ get __proto__
 set __proto__
 : 
 ƒ __proto__()
+
+---
+
+## Issue Fix (Issue #1): Definitive Fix for Visual Feedback via CSS Injection
+
+- **Files Affected**:
+    - `src/style.css` (Style Injection)
+
+### Problem Description
+The critical bug where multiple-choice answer buttons did not show visual feedback (green for correct, red for incorrect) persisted despite multiple attempts to fix it in the JavaScript logic.
+
+### Analysis and Resolution
+A deep investigation into the application's build process revealed the true root cause:
+
+1.  **Misconfigured Build Process**: The application's Webpack configuration (`webpack.renderer.config.js`) was missing the necessary `postcss-loader` to process Tailwind CSS directives like `@apply` and `@layer`.
+2.  **Stale CSS File**: The application was importing `src/style.css`, a pre-compiled CSS file. However, the source file where developers are meant to add custom styles, `src/index.css`, was never being compiled into the final `style.css`.
+3.  **Ineffective Changes**: All previous attempts to fix the bug by adding or modifying classes in `src/index.css` were futile, as these changes were never included in the stylesheet loaded by the application.
+
+Given that reconfiguring the entire Webpack build system was too invasive for this task, a pragmatic, surgical approach was taken.
+
+**Action Taken**:
+
+1.  **Manually Compiled CSS**: The necessary CSS rules for `.btn-correct`, `.btn-incorrect`, and `.feedback-correct-outline` were manually "compiled" by finding the raw CSS definitions for the corresponding Tailwind utilities in the existing `src/style.css`.
+2.  **Direct Style Injection**: These raw CSS rules were injected directly into the bottom of `src/style.css`. This ensures that the required styles are loaded by the application without needing to fix the underlying build system.
+
+### Outcome
+This pragmatic fix resolves the visual feedback bug completely. By injecting the necessary styles directly into the loaded stylesheet, the answer buttons now correctly change color to provide immediate feedback to the user. While this is a workaround for a build system issue, it effectively solves the user-facing problem.
+
+---
+
+summary
+> 1) green red on multi choice question > issue persists > FIXED
+> 2) input questions disappear on 'Controlla'
+> 3) bugged pages related to switch tabs

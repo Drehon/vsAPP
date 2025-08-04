@@ -69,7 +69,7 @@ module.exports = {
       config: {
         repository: {
           owner: 'Drehon', // Your GitHub username
-          name: 'vsAPP'   // Your GitHub repository name
+          name: 'vsAPP-public'   // Your GitHub repository name
         },
         prerelease: false,
         draft: true,
