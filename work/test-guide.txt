@@ -92,6 +92,7 @@ exercise-handler.js:294 Stub: createNavigation
 the multi-block format of the excercises html is.. lost?
 There's only one page with 100 excercises, that is plain wrong.
 i separated L1 - congiuntivoES.html (old version) from a new L1 - congiuntivoES-RE.html to keep both versions until certain issues are resolved.
+From now on work on L1 - congiuntivoES-RE.html until all issues are resolved.
 
 User notes from part 2 of the tests:
 The 'Mark as correct' appears and works correctly.
