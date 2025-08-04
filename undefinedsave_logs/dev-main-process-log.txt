@@ -269,3 +269,45 @@
 [LOG][2025-08-04T15:52:20.449Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
 [LOG][2025-08-04T15:52:21.469Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
 [LOG][2025-08-04T15:52:22.440Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T15:58:43.900Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-04T15:58:43.902Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-04T15:58:43.905Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-04T15:58:44.011Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-04T15:58:44.019Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-04T15:58:44.330Z] Main Process: Checking for updates...
+[LOG][2025-08-04T15:58:44.338Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-04T15:58:45.370Z] Main Process: Update not available. {"tag":"v1.3.8","version":"1.3.8","files":[{"url":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","size":114395136}],"path":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","releaseDate":"2025-08-03T19:17:23.179Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.8","releaseNotes":"<p>Implemented visual feedback area for the reset button, for loading and for saving.<br>\nImproved reloading on reset to reload SAME excercise block.</p>"}
+[LOG][2025-08-04T15:58:47.622Z] [State] Loaded state for pageId 'L1-congiuntivoES' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T15:58:51.873Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T15:58:53.006Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T15:59:42.431Z] [State] Reset state for pageId 'L1-congiuntivoES' by deleting 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T15:59:42.435Z] [State] No save state found for pageId 'L1-congiuntivoES'.
+[LOG][2025-08-04T16:01:04.981Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-04T16:01:04.983Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-04T16:01:04.985Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-04T16:01:05.083Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-04T16:01:05.092Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-04T16:01:05.405Z] Main Process: Checking for updates...
+[LOG][2025-08-04T16:01:05.412Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-04T16:01:06.545Z] Main Process: Update not available. {"tag":"v1.3.8","version":"1.3.8","files":[{"url":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","size":114395136}],"path":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","releaseDate":"2025-08-03T19:17:23.179Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.8","releaseNotes":"<p>Implemented visual feedback area for the reset button, for loading and for saving.<br>\nImproved reloading on reset to reload SAME excercise block.</p>"}
+[LOG][2025-08-04T16:01:07.146Z] [State] No save state found for pageId 'L1-congiuntivoES'.
+[LOG][2025-08-04T16:01:10.430Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T16:01:11.178Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T16:01:11.884Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T16:01:12.878Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T16:01:14.717Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T16:01:18.052Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T16:01:33.039Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T16:01:38.193Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T16:03:47.057Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-04T16:03:47.060Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-04T16:03:47.062Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-04T16:03:47.166Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-04T16:03:47.172Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-04T16:03:47.726Z] Main Process: Checking for updates...
+[LOG][2025-08-04T16:03:47.732Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-04T16:03:49.088Z] Main Process: Update not available. {"tag":"v1.3.8","version":"1.3.8","files":[{"url":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","size":114395136}],"path":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","releaseDate":"2025-08-03T19:17:23.179Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.8","releaseNotes":"<p>Implemented visual feedback area for the reset button, for loading and for saving.<br>\nImproved reloading on reset to reload SAME excercise block.</p>"}
+[LOG][2025-08-04T16:03:50.309Z] [State] Loaded state for pageId 'L2-causativoES' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T16:03:52.793Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T16:03:54.106Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T16:03:55.499Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'

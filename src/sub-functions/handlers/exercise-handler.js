@@ -363,13 +363,52 @@ function createBlockNotesArea(blockIndex) {
  * @returns {string} The HTML string for the question.
  */
 function renderMultipleChoiceQuestion(question, answerState) {
+    const hasAnswered = answerState && answerState.userAnswer !== null;
+    const isCorrect = answerState && answerState.isCorrect;
+    const userAnswer = answerState && answerState.userAnswer;
+
+    // This logic mirrors the answer checking logic to find the correct letter ('A', 'B', etc.)
+    let correctAnswer = question.answer;
+    if (!/^[A-D]$/.test(correctAnswer)) {
+        const correctIndex = question.options.indexOf(correctAnswer);
+        if (correctIndex !== -1) {
+            correctAnswer = String.fromCharCode(65 + correctIndex);
+        }
+    }
+    
+    console.log(`Rendering MC Q: Correct answer is ${correctAnswer}`);
+
+    const getButtonClasses = (buttonAnswer) => {
+        let classes = 'fase-btn border-2 font-bold py-3 px-6 rounded-lg transition-colors';
+        if (!hasAnswered) {
+            return classes;
+        }
+        
+        console.log(`Checking button ${buttonAnswer}: userAnswer=${userAnswer}, isCorrect=${isCorrect}`);
+
+        if (buttonAnswer === userAnswer) {
+            // This is the button the user clicked.
+            classes += isCorrect ? ' feedback-correct' : ' feedback-incorrect';
+            console.log(`  -> User clicked this. Added ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`);
+        } else if (buttonAnswer === correctAnswer && !isCorrect) {
+            // If the user's answer was wrong, this highlights the correct one.
+            classes += ' feedback-correct-outline';
+            console.log(`  -> This is the correct answer, user was wrong. Added feedback-correct-outline.`);
+        }
+        
+        return classes;
+    };
+
+    const disabled = hasAnswered ? 'disabled' : '';
+
     return `
         <p class="text-lg text-slate-600">Scegli l'opzione corretta per completare la frase.</p>
         <div class="p-4 bg-slate-100 rounded-lg text-xl text-center font-semibold text-slate-800">${question.question}</div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-            ${question.options.map((opt, i) => `
-                <button class="fase-btn border-2 font-bold py-3 px-6 rounded-lg transition-colors" data-answer="${String.fromCharCode(65 + i)}">${opt}</button>
-            `).join('')}
+            ${question.options.map((opt, i) => {
+                const buttonAnswer = String.fromCharCode(65 + i);
+                return `<button class="${getButtonClasses(buttonAnswer)}" data-answer="${buttonAnswer}" ${disabled}>${opt}</button>`;
+            }).join('')}
         </div>
     `;
 }
