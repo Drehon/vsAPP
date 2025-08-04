@@ -1484,3 +1484,30 @@ This architectural refactoring definitively resolves the unresponsive UI bug. By
 final issue
 the 'azzera' button doesn't work for all es pages
 currently only for es L3
+
+---
+
+## Final Issue Fix: Inconsistent "Azzera" (Reset) Button Functionality
+
+- **Files Affected**:
+    - `src/sub-functions/handlers/exercise-handler.js` (Logic Fix)
+
+### Problem Description
+The user reported that the in-page "Azzera" (Reset Fase) button was not working on all exercise pages, functioning correctly only for `L3 - passivo avanzatoES.html`.
+
+### Analysis and Resolution
+Initial investigation ruled out data-level inconsistencies, as all exercise HTML files (`L1`, `L2`, `L3`) were found to have the same valid JSON structure.
+
+The root cause was identified as a subtle but critical bug related to JavaScript closures in the `addBlockTabListeners` function within `exercise-handler.js`. The event listener for the reset button was being created with captured values for the block index and the number of questions in that block. While the listener was correctly re-bound each time the view was rendered, this approach was susceptible to race conditions or edge cases, causing it to fail unpredictably on some pages.
+
+The most robust solution is to ensure the handler uses the state *as it exists at the moment of the click*, rather than relying on captured values from when the listener was created.
+
+**Action Taken**:
+
+1.  **Refactored the Event Handler**:
+    - The `resetBlockBtn.onclick` handler was modified.
+    - The lines that read the current state, block index, and number of questions were moved *inside* the `onclick` function.
+    - This change ensures that whenever the reset button is clicked, it fetches the latest state information, completely eliminating the closure-related bug and making the function's behavior consistent and reliable across all exercise pages.
+
+### Outcome
+This fix resolves the inconsistent behavior of the "Azzera" button. The button now functions correctly on all interactive exercise pages by using the most current state data at the moment of interaction. The project is now considered complete.

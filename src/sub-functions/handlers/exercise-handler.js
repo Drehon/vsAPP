@@ -151,10 +151,11 @@ export class ExerciseHandler {
 
         const resetBlockBtn = blockTabsEl.querySelector('#reset-block-btn');
         if (resetBlockBtn) {
-            const state = this.activeTab.exerciseState;
-            const blockIndex = state.currentBlockIndex;
-            const totalQuestionsInBlock = this.pageData.blocks[blockIndex].exercises.length;
             resetBlockBtn.onclick = () => {
+                const state = this.activeTab.exerciseState;
+                const blockIndex = state.currentBlockIndex;
+                const totalQuestionsInBlock = this.pageData.blocks[blockIndex].exercises.length;
+                
                 state.answers[blockIndex] = Array(totalQuestionsInBlock).fill(null).map(() => ({ userAnswer: null, isCorrect: null, note: "" }));
                 state.blockNotes[blockIndex] = "";
                 state.currentQuestionIndexes[blockIndex] = 0;
