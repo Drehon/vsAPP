@@ -1,6 +1,6 @@
 [
    {
-    "body": "Implemented better multi-choice question handling, added support for multiple incorrect answers, and improved the UI for question selection.",
+    "body": "Heavily refactored the whole app structure, focusing on normalization of the html for lessons, lessonsAN, excercises and content under 'other'.",
     "name": "v1.3.9",
     "publishedAt": "2025-08-03T21:40:00Z",
     "tagName": "v1.3.9"

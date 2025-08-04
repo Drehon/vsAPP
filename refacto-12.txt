@@ -195,3 +195,41 @@ These two files should not appear within the app
 They are to act as baseline for all future lessons
 Ideally they should be 'relatively autonomous' in the sense that once the content of a lesson is prepared (the text i mean)
 it can be easily implemented by creating a new html using the template as base and populating it with the prepared content.
+
+---
+---
+
+## Task: Create Reusable Lesson Templates (Completed)
+
+- **Files Created**:
+  - `lessons/L - template.html`
+  - `lessonsAN/LAN - template.html`
+- **File Modified**:
+  - `src/main.js`
+- **Objective**: Fulfill the user request to create standardized, reusable, and non-visible templates for future lessons.
+
+**Summary of Changes:**
+
+1.  **Analyzed Existing Lessons**:
+    - A thorough analysis of all HTML files in `lessons/` and `lessonsAN/` was conducted to identify the "implicit rules" of their structure.
+    - Key patterns identified include the use of a single root `div`, `data-module` and `data-page-id` attributes, a standard `<header>`, and section-based content styled with TailwindCSS.
+
+2.  **Created Lesson Templates**:
+    - **`L - template.html`**: A template for detailed, long-form lessons was created in the `lessons/` folder. It includes a standard header, placeholder sections, and commented-out examples for complex components like "case studies," along with instructional comments.
+    - **`LAN - template.html`**: A template for "flashcard-style" summary notes was created in the `lessonsAN/` folder. It provides a clear "Fronte/Retro" (Front/Back) structure within each section, also with instructional comments.
+
+3.  **Hid Templates from UI (`main.js`)**:
+    - The `getContents` function in `src/main.js`, which is responsible for reading the file lists for the home page, was modified.
+    - A filter was added to explicitly exclude `L - template.html` and `LAN - template.html` from the lists returned to the renderer process, ensuring they do not appear in the application's navigation.
+
+**Outcome:**
+The project now has two robust, well-documented templates that will make creating new content faster and more consistent. The templates are invisible to the end-user, fulfilling all aspects of the user's request.
+
+---
+
+this document is getting quite long, i'm renaming it to refacto-12.txt
+to indicate it covers phases 1 and 2
+i have created a new refacto-34.txt
+inside we'll write down our work on the next phases
+please prepare refacto-34.txt by insertin a brief summary of refacto-12.txt with the information on our work on the two phases relevant for our next steps
+consider that refacto-34.txt will still be used together with uniform.txt
