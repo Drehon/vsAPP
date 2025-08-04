@@ -1,14 +1,11 @@
+import { handleInteractiveExercise } from './handlers/exercise-handler.js';
+
 // Placeholder handlers for different content modules.
 // These will be replaced with actual implementations in later phases.
 
 function handleStaticLesson(paneElement) {
   console.log('Hydrating a static lesson.', paneElement);
   // Future logic for static lessons (e.g., initializing notes component) will go here.
-}
-
-function handleInteractiveExercise(paneElement) {
-  console.log('Hydrating an interactive exercise.', paneElement);
-  // Future logic for standard exercises will go here.
 }
 
 function handleDiagnosticTest(paneElement) {

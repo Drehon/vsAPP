@@ -53,3 +53,21 @@ The foundational file for handling all standard exercises has been created, fulf
 
 **Outcome**:
 The `exercise-handler.js` module is now a complete, self-contained, and reusable engine for simple interactive exercises. It successfully replaces all the logic from the monolithic `exercise-initializer.js` with a modern, maintainable, and flexible data-driven design. The module is ready to be integrated into the application's content-loading flow and to power the first converted exercise page.
+
+---
+### Step 3: Convert a Simple Exercise Page (Completed)
+
+- **Files Modified**: 
+    - `exercises/L1 - congiuntivoES.html`
+    - `src/sub-functions/content-hydrator.js`
+- **Objective**: Refactor the first simple exercise page (`L1 - congiuntivoES.html`) to the new universal template format and integrate its handler into the main content hydration system.
+
+**Actions Taken**:
+1.  **Integrated the Handler**: The `content-hydrator.js` module was updated to import the real `handleInteractiveExercise` function from `exercise-handler.js`, replacing the temporary placeholder.
+2.  **Converted to HTML Fragment**: The file `exercises/L1 - congiuntivoES.html` was completely refactored. The full HTML document structure (`<html>`, `<head>`, etc.) was removed, converting it into a pure HTML fragment.
+3.  **Standardized Structure**: The fragment was given the standard root element (`<div class="content-container">`) with the required `data-page-id="L1-congiuntivoES"` and `data-module="interactive-exercise"` attributes.
+4.  **Modernized Layout**: The old, hardcoded tabbed layout was removed and replaced with a single, empty `<main id="content-body">` element, which the new handler is responsible for populating.
+5.  **Standardized Data Island**: The script containing the exercise data was renamed from `#exercise-data` to `#page-data` to conform to the new universal standard.
+
+**Outcome**:
+The first interactive exercise has been successfully migrated to the new architecture. The page's structure is now generic and its logic is fully delegated to the central `content-hydrator` and the specialized `exercise-handler`. This completes a critical proof-of-concept, demonstrating that the new system can successfully manage and render interactive content, paving the way for the migration of all other exercises.

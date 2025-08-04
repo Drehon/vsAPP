@@ -1,0 +1,104 @@
+Dictionary Feature: Theoretical Implementation
+1. Executive Summary
+
+This document outlines a strategy for implementing a robust, user-friendly offline dictionary feature within the application. The proposed approach prioritizes flexibility and performance by offering users optional, downloadable dictionary databases of varying sizes and complexities. The core functionality will be delivered via an intuitive search interface built on efficient search algorithms. The recommended implementation path is to start with a minimal viable product (MVP) and iterate with more advanced features.
+2. Data Sourcing and Strategy
+
+The dictionary feature will be designed as an offline-first utility. This avoids reliance on an active internet connection, providing a faster and more reliable user experience.
+2.1. Data Tiers
+
+To accommodate different user needs and device storage constraints, we will offer two tiers of dictionaries as optional, on-demand downloads:
+
+    Small Dictionary (< 20 MB): A lightweight option for users who need basic definitions without sacrificing significant storage space.
+
+    Medium Dictionary (20 - 200 MB): A more comprehensive option for users who require detailed definitions, parts of speech, and potentially synonyms.
+
+2.2. Data Sources & Licensing
+
+The dictionary data will be sourced from established, open-source projects available on platforms like GitHub. This approach is cost-effective and leverages well-structured, community-vetted data.
+
+    Recommended Sources:
+
+        Small Tier: manassharma07/English-Dictionary-CSV (CSV format, based on Webster's 1913 dictionary).
+
+        Medium Tier: CloudBytes-Academy/English-Dictionary-Open-Source (Provides data in multiple formats, including a highly recommended SQLite version).
+
+    License Compliance: It is imperative to review and adhere to the license of any chosen data source. Most recommended sources use permissive licenses (e.g., MIT, Public Domain), but verification is a required step before implementation.
+
+2.3. Data Format
+
+The choice of data format directly impacts performance and ease of implementation.
+
+    CSV/JSON: Suitable for smaller datasets. Requires parsing the entire file into memory or a temporary database structure upon first use.
+
+    SQLite: The recommended format, especially for the Medium tier. An SQLite database can be downloaded and queried directly without any initial parsing step, offering superior performance and lower memory overhead. The file itself is the database.
+
+3. System Architecture
+3.1. Download and Storage Mechanism
+
+    Hosting: Dictionary files (e.g., dictionary_small.sqlite) will be hosted on a reliable, accessible server. GitHub (using the "raw" file URL) is a feasible starting point.
+
+    In-App Download Manager: The application will include a manager to handle the download process. This manager will:
+
+        Present the available dictionary options to the user.
+
+        Fetch the selected dictionary file via an HTTP request.
+
+        Display download progress.
+
+        Store the completed file in the application's persistent local storage.
+
+    File Management: The app will check for the existence of a dictionary file upon startup to enable or disable the feature accordingly.
+
+3.2. User Interface (UI)
+
+The dictionary will be presented in a non-intrusive modal window or a dedicated view containing:
+
+    Search Input Field: A text box for users to enter their search query.
+
+    Results List: A scrollable list that updates in real-time as the user types, displaying matching terms.
+
+    Definition View: A space to display the full definition and details of a selected term.
+
+4. Search Functionality and Algorithms
+
+The search functionality is the core of the user experience. Your initial assumption that matching by letters is the easiest is correct and forms the basis of the most efficient search methods.
+Level 1: Basic Search (MVP Recommendation)
+
+This level provides essential functionality with optimal performance.
+
+    Exact Match: A direct lookup for the exact word typed. This is the fastest possible query.
+
+    Prefix Matching (Autocomplete): As the user types, the results list shows all words that begin with the input string (e.g., "app" matches "apple", "application"). This is highly efficient, especially when using an indexed word column in an SQLite database.
+
+        SQL Implementation: SELECT word FROM dictionary WHERE word LIKE 'query%';
+
+Level 2: Advanced Search (Future Enhancement)
+
+These methods improve user experience but come with a performance cost.
+
+    Substring Matching: Finds words containing the query string (e.g., "art" matches "start", "cart"). This is computationally more intensive as it cannot use a standard index as effectively.
+
+        SQL Implementation: SELECT word FROM dictionary WHERE word LIKE '%query%';
+
+    Fuzzy Search (Typo Tolerance): Finds words that are orthographically similar to the query, even with misspellings. This is the most complex method.
+
+        Algorithmic Basis: Typically implemented using the Levenshtein distance algorithm, which calculates the number of edits (insertions, deletions, substitutions) required to change one word into another. A lower distance indicates a closer match. This would likely require a dedicated client-side search library.
+
+5. Recommended Implementation Path
+
+    Phase 1 (MVP):
+
+        Integrate the Medium Tier SQLite dictionary from the recommended source.
+
+        Implement the download and storage mechanism.
+
+        Build the basic UI (search window, input field, results list).
+
+        Implement Level 1 Search (Prefix Matching) as the core search logic.
+
+    Phase 2 (Enhancements):
+
+        Add the Small Tier dictionary as a second downloadable option.
+
+        Investigate and potentially implement Level 2 Fuzzy Search using a suitable library to handle user typos gracefully.
