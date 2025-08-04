@@ -3,13 +3,12 @@ import { handleInteractiveExercise } from './handlers/exercise-handler.js';
 // Placeholder handlers for different content modules.
 // These will be replaced with actual implementations in later phases.
 
-// The handlers now accept the tab and save function for state management.
-function handleStaticLesson(paneElement, tab, saveExerciseState) {
+function handleStaticLesson(paneElement) {
   console.log('Hydrating a static lesson.', paneElement);
   // Future logic for static lessons (e.g., initializing notes component) will go here.
 }
 
-function handleDiagnosticTest(paneElement, tab, saveExerciseState) {
+function handleDiagnosticTest(paneElement) {
   console.log('Hydrating a diagnostic test.', paneElement);
   // Future logic for complex diagnostic tests will go here.
 }
@@ -26,10 +25,8 @@ const moduleHandlers = {
  * data-module attribute and delegating to the appropriate handler.
  *
  * @param {HTMLElement} paneElement - The content pane containing the new content.
- * @param {object} tab - The tab object from the main renderer.
- * @param {Function} saveExerciseState - The debounced save function from the renderer.
  */
-function hydrateContent(paneElement, tab, saveExerciseState) {
+function hydrateContent(paneElement) {
   // The element with the module information is expected to be the direct child of the pane.
   const contentRoot = paneElement.firstElementChild;
 
@@ -43,8 +40,7 @@ function hydrateContent(paneElement, tab, saveExerciseState) {
 
   if (handler) {
     console.log(`Found module "${moduleName}", delegating to handler.`);
-    // Pass the pane, tab, and save function to the designated handler.
-    handler(paneElement, tab, saveExerciseState);
+    handler(paneElement);
   } else {
     console.warn(`No handler found for module: "${moduleName}".`);
   }
