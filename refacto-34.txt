@@ -1,0 +1,36 @@
+# Refactoring Companion for uniform.txt (Phases 3 & 4)
+
+This file tracks the execution of the refactoring plan outlined in uniform.txt, focusing on Phases 3 and beyond.
+
+---
+## Summary of Completed Work (Phases 1 & 2)
+
+Before starting Phase 3, a significant foundational refactoring was completed, as documented in `refacto-12.txt`. The key achievements are:
+
+1.  **Content Hydration Engine (Phase 1)**:
+    *   A central `content-hydrator.js` was created to replace the old, brittle `if/else` logic in `content-loader.js`.
+    *   The new system uses a `data-module` attribute in the HTML to delegate initialization to the correct JavaScript handler (e.g., `static-lesson`).
+    *   All static content in `lessons/` and `lessonsAN/` was successfully migrated to this new system, becoming pure HTML fragments.
+
+2.  **Componentization & Universal State (Phase 2)**:
+    *   A reusable, state-agnostic `notes-component.js` was created.
+    *   The application's state management (saving/loading progress) was completely overhauled. It no longer relies on file paths. Instead, it uses a unique `data-page-id` attribute from the content's root element, making state management universal and decoupled from the file system.
+    *   Templates for future static lessons were created (`L - template.html`, `LAN - template.html`) and hidden from the UI.
+
+**Current Status**: The application's architecture for loading and managing static content is robust and scalable. The state management system is now universal. The next step is to apply these new patterns to interactive content, starting with simple exercises.
+---
+
+## Phase 3: Refactoring the First Interactive Module
+
+### Step 1: Create the Generic Exercise Handler (Completed)
+
+- **File Created**: `src/sub-functions/handlers/exercise-handler.js`
+- **Objective**: Create the new, generic handler for standard interactive exercises, as outlined in `uniform.txt`.
+
+**Actions Taken**:
+1.  **Created Directory**: A new directory, `src/sub-functions/handlers/`, was created to house the new generation of content-specific logic handlers.
+2.  **Created Handler File**: The file `exercise-handler.js` was created inside the new directory.
+3.  **Initialized with Placeholder**: The file was populated with a basic function structure (`handleInteractiveExercise`) and JSDoc comments explaining its purpose. It is ready for the detailed logic to be implemented in the next step.
+
+**Outcome**:
+The foundational file for handling all standard exercises has been created, fulfilling the first step of Phase 3. This paves the way for migrating the logic from the obsolete `exercise-initializer.js` into a modern, generic, and maintainable module.
