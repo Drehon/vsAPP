@@ -414,10 +414,34 @@ function renderMultipleChoiceQuestion(question, answerState) {
  * @returns {string} The HTML string for the question.
  */
 function renderFillInTheBlankQuestion(question, answerState) {
+    const hasAnswered = answerState && answerState.userAnswer !== null;
+    const isCorrect = answerState && answerState.isCorrect;
+    const userAnswer = answerState ? (answerState.userAnswer || '') : '';
+
+    let inputClasses = 'font-normal text-base border-b-2 focus:border-indigo-500 outline-none w-1/2 p-1 text-center';
+    if (hasAnswered) {
+        // These classes will need to be defined in CSS.
+        inputClasses += isCorrect ? ' input-correct' : ' input-incorrect';
+    } else {
+        inputClasses += ' border-slate-300 bg-slate-100';
+    }
+
+    const disabled = hasAnswered ? 'disabled' : '';
+    // Escape double quotes in the user's answer to avoid breaking the HTML attribute.
+    const inputValue = `value="${userAnswer.replace(/"/g, '&quot;')}"`;
+
     const promptHTML = question.prompt ? `<p class="text-slate-600"><strong>Frase di partenza:</strong> "${question.prompt}"</p>` : '';
+    
+    const inputElement = `<input type="text" id="fill-in-blank-input" class="${inputClasses}" ${inputValue} ${disabled}>`;
+
     const questionText = question.question.includes('______') 
-        ? question.question.replace('______', '<input type="text" id="fill-in-blank-input" class="font-normal text-base border-b-2 border-slate-300 focus:border-indigo-500 outline-none w-1/2 bg-slate-100 p-1 text-center">')
-        : `${question.question} <input type="text" id="fill-in-blank-input" class="font-normal text-base border-b-2 border-slate-300 focus:border-indigo-500 outline-none w-1/2 bg-slate-100">`;
+        ? question.question.replace('______', inputElement)
+        : `${question.question} ${inputElement}`;
+    
+    // Only show the 'Controlla' button if the question hasn't been answered.
+    const buttonHTML = hasAnswered 
+        ? ''
+        : '<button id="check-answer-btn" class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors">Controlla</button>';
 
     return `
         <p class="text-lg text-slate-600">Riscrivi o completa la frase.</p>
@@ -426,7 +450,7 @@ function renderFillInTheBlankQuestion(question, answerState) {
             <p class="text-xl font-semibold text-slate-800">${questionText}</p>
         </div>
         <div class="flex justify-center space-x-4 pt-4">
-            <button id="check-answer-btn" class="fase-btn border-2 font-bold py-2 px-8 rounded-lg transition-colors">Controlla</button>
+            ${buttonHTML}
         </div>
     `;
 }

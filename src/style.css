@@ -2780,3 +2780,17 @@ video {
     line-height: 1.75rem;
   }
 }
+
+.input-correct {
+    --tw-bg-opacity: 1;
+    background-color: rgb(220 252 231 / var(--tw-bg-opacity, 1)); /* bg-green-100 */
+    --tw-border-opacity: 1;
+    border-color: rgb(34 197 94 / var(--tw-border-opacity, 1)); /* border-green-500 */
+}
+
+.input-incorrect {
+    --tw-bg-opacity: 1;
+    background-color: rgb(254 226 226 / var(--tw-bg-opacity, 1)); /* bg-red-100 */
+    --tw-border-opacity: 1;
+    border-color: rgb(239 68 68 / var(--tw-border-opacity, 1)); /* border-red-500 */
+}

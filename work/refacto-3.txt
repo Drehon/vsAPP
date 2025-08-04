@@ -1358,7 +1358,37 @@ This pragmatic fix resolves the visual feedback bug completely. By injecting the
 
 ---
 
+## Issue Fix (Issue #2): Restoring State and Feedback for Input Questions
+
+- **Files Affected**:
+    - `src/sub-functions/handlers/exercise-handler.js` (Rendering Logic Fix)
+    - `src/style.css` (Style Definition Added)
+
+### Problem Description (from user notes)
+> 2) green red on input questions
+> the questions where you have to manually write the answer
+> once you click (controlla) the inputted answer disappears instead of staying as it is, but locked.
+
+### Analysis and Resolution
+The root cause of this bug was that the `renderFillInTheBlankQuestion` function in the exercise handler was completely stateless. After the user submitted an answer, the `render()` function was called, but the rendering function had no logic to check the `answerState`. It would simply draw a new, empty input field every time, erasing the user's input and providing no visual feedback.
+
+**Actions Taken**:
+
+1.  **Made Rendering State-Aware**:
+    - The `renderFillInTheBlankQuestion` function was refactored to inspect the `answerState` for the current question.
+    - If the question has been answered, the function now renders the input field with its `value` set to the user's submitted answer and adds the `disabled` attribute to lock it.
+    - The "Controlla" button is now hidden for answered questions.
+
+2.  **Added Visual Feedback**:
+    - The refactored function now adds CSS classes (`input-correct` or `input-incorrect`) to the input field based on whether the submitted answer was correct.
+    - New style rules for these classes were added to `src/style.css`, defining green and red border/background colors to match the application's existing feedback styles.
+
+### Outcome
+This two-part fix resolves the issue. For fill-in-the-blank questions, the user's answer now correctly persists on screen after being checked, the input field is locked, and it is colored green or red to provide immediate and clear feedback on their performance.
+
+---
+
 summary
 > 1) green red on multi choice question > issue persists > FIXED
-> 2) input questions disappear on 'Controlla'
+> 2) input questions disappear on 'Controlla' > FIXED
 > 3) bugged pages related to switch tabs
