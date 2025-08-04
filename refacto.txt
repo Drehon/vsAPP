@@ -76,3 +76,47 @@ The file `lessons/L1 - congiuntivoRE.html` is now fully compliant with the new a
 
 **Outcome**:
 The application now has a standardized, reusable component for handling notes. This completely removes the duplicated code from the old HTML files and establishes a clean pattern for UI components going forward: they receive state and emit updates, but do not manage state themselves. This successfully completes the first step of Phase 2.
+
+---
+
+### Step 2: Universalize State Management (Completed)
+
+- **Files Modified**:
+  - `src/main.js`
+  - `src/preload.js`
+  - `src/renderer.js`
+- **Objective**: Decouple the application's state management from the file system (`filePath`) and tie it to a logical, content-based identifier (`data-page-id`).
+
+**Summary of Changes:**
+
+1.  **Backend Refactoring (`main.js`)**:
+    - The old `getExerciseSavePath(filePath)` function was completely removed.
+    - A new function, `getExerciseSavePathFromPageId(pageId)`, was created to generate a safe and consistent file path for storing state based on the page's unique ID.
+    - The IPC handlers (`save-exercise-state`, `load-exercise-state`, `reset-exercise-state`) were updated to accept `pageId` instead of `filePath`, using the new path generation function.
+
+2.  **IPC Bridge Update (`preload.js`)**:
+    - The signatures of the state management functions on the `window.api` object were changed to match the new `pageId`-based backend, ensuring the renderer and main processes communicate correctly.
+
+3.  **Frontend Logic Update (`renderer.js`)**:
+    - A helper function, `getActivePageId(tab)`, was added to reliably retrieve the `data-page-id` from the active content pane's DOM.
+    - All functions related to state were updated to use this `pageId`:
+        - `autoSaveExerciseState` now saves progress against the `pageId`.
+        - `handleLoadButtonClick` now uses the `pageId` to overwrite the correct autosave file when loading a manual save.
+        - `handleSaveButtonClick` now uses the `pageId` to generate a more descriptive default filename for manual saves.
+        - The global "Reset" button's `onclick` handler now correctly resets progress for the active `pageId`.
+
+**Outcome:**
+The application's state management is now fully universal and decoupled from the file system structure. Progress is saved and loaded based on the unique `data-page-id` of the content, not its location on disk. This is a major architectural improvement that increases robustness, eliminates a key source of brittleness, and makes it possible to manage state for content that may not even have a corresponding file. This completes the objectives of Phase 2, Step 2.
+
+---
+
+User notes:
+At the moment L1 - congiuntivoRE.html is the only updated page
+Please update all the .html in the /lessons folder
+
+Do consider that, if I open L1 - congiuntivoRE.html in the development console i see the following:
+content-hydrator.js:36 Content loaded without a "data-module" attribute. No hydration will occur. <div class=​"lesson-content bg-white text-slate-800 h-full overflow-y-auto p-6 md:​p-10">​…​</div>​
+hydrateContent @ content-hydrator.js:36
+loadContentIntoTab @ content-loader.js:39
+await in loadContentIntoTab (async)
+eval @ content-loader.js:258

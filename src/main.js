@@ -531,41 +531,74 @@ app.on('activate', () => {
 
 // --- Save/Load Handlers ---
 
-const getExerciseSavePath = (exerciseFilePath) => {
-  const savesDir = getAutoSavesDir(); // Use the new function
-  const sanitizedFileName = exerciseFilePath.replace(/[\\/:]/g, '-').replace(/\.html$/, '').toLowerCase();
+/**
+ * Generates a file path for a given page ID.
+ * E.g., 'L1-diagnostic-verbs' -> 'l1-diagnostic-verbs_state.json'
+ * @param {string} pageId The unique ID of the page.
+ * @returns {string} The full path for the save file.
+ */
+const getExerciseSavePathFromPageId = (pageId) => {
+  const savesDir = getAutoSavesDir();
+  // Sanitize the pageId to make it a safe filename.
+  // This regex replaces any character that is not a letter, number, or hyphen with an underscore.
+  const sanitizedFileName = pageId.replace(/[^a-z0-9-]/gi, '_').toLowerCase();
   return path.join(savesDir, `${sanitizedFileName}_state.json`);
 };
 
-ipcMain.handle('save-exercise-state', async (event, filePath, state) => {
-  const savePath = getExerciseSavePath(filePath);
+ipcMain.handle('save-exercise-state', async (event, pageId, state) => {
+  if (!pageId) {
+    console.error('[State] Save failed: No pageId provided.');
+    return { success: false, error: 'No pageId provided for saving state.' };
+  }
+  const savePath = getExerciseSavePathFromPageId(pageId);
   try {
     await fs.writeFile(savePath, JSON.stringify(state, null, 2));
+    console.log(`[State] Saved state for pageId '${pageId}' to '${savePath}'`);
     return { success: true };
   } catch (err) {
+    console.error(`[State] Failed to save state for pageId '${pageId}':`, err);
     return { success: false, error: err.message };
   }
 });
 
-ipcMain.handle('load-exercise-state', async (event, filePath) => {
-  const savePath = getExerciseSavePath(filePath);
+ipcMain.handle('load-exercise-state', async (event, pageId) => {
+  if (!pageId) {
+    console.warn('[State] Load aborted: No pageId provided.');
+    return null;
+  }
+  const savePath = getExerciseSavePathFromPageId(pageId);
   try {
     const data = await fs.readFile(savePath, 'utf-8');
+    console.log(`[State] Loaded state for pageId '${pageId}' from '${savePath}'`);
     return JSON.parse(data);
   } catch (err) {
-    if (err.code === 'ENOENT') return null;
-    return null;
+    if (err.code === 'ENOENT') {
+      // This is a normal case (no save file exists), not an error.
+      console.log(`[State] No save state found for pageId '${pageId}'.`);
+      return null;
+    }
+    console.error(`[State] Failed to load state for pageId '${pageId}':`, err);
+    return null; // Return null on other errors to prevent crashing.
   }
 });
 
-ipcMain.handle('reset-exercise-state', async (event, filePath) => {
-  const savePath = getExerciseSavePath(filePath);
+ipcMain.handle('reset-exercise-state', async (event, pageId) => {
+  if (!pageId) {
+    console.error('[State] Reset failed: No pageId provided.');
+    return { success: false, error: 'No pageId provided for resetting state.' };
+  }
+  const savePath = getExerciseSavePathFromPageId(pageId);
   try {
     if (fsSync.existsSync(savePath)) {
       await fs.unlink(savePath);
+      console.log(`[State] Reset state for pageId '${pageId}' by deleting '${savePath}'`);
+    } else {
+      // This is not an error, just a no-op.
+      console.log(`[State] No state file to reset for pageId '${pageId}'.`);
     }
     return { success: true };
   } catch (err) {
+    console.error(`[State] Failed to reset state for pageId '${pageId}':`, err);
     return { success: false, error: err.message };
   }
 });

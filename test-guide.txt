@@ -1,0 +1,77 @@
+# Test Guide for Phase 2: Universal State Management
+
+This guide provides instructions to test the new state management system, which is a core part of the Phase 2 refactoring. The goal is to verify that the application's ability to save, load, and reset progress is fully functional and correctly uses the new `data-page-id` system instead of the old `filePath`-based system.
+
+**Prerequisites:**
+- You need at least one page that has been converted to the new universal template format and includes a `data-page-id` attribute. The test page `lessons/L1 - congiuntivoRE.html` should be suitable if it's been updated with a `data-page-id`. If not, any of the interactive exercises will work once they are converted. For this guide, we'll assume we're testing with a converted exercise page.
+
+---
+
+### Test 1: Autosave Functionality
+
+**Objective:** Verify that the application automatically saves your progress on an exercise page.
+
+1.  **Open an Interactive Page:** Navigate to an interactive exercise page (e.g., `exercises/L1 - congiuntivoES.html`, once it's converted).
+2.  **Perform an Action:** Answer a few questions or make some progress on the exercise.
+3.  **Wait for Autosave:** Wait for about 1-2 seconds. The autosave is debounced, so it triggers shortly after you stop making changes.
+4.  **Close the Tab:** Close the tab for the exercise page.
+5.  **Reopen the Page:** Navigate back to the *same* exercise page.
+6.  **Verification:**
+    - **Expected Result:** The page should load with your previous answers and progress intact. Your work should have been automatically restored.
+    - **How to Check:** Look at the developer console in the main process logs. You should see a log message like: `[State] Saved state for pageId 'your-page-id' to '...'`. When you reopen, you should see `[State] Loaded state for pageId 'your-page-id' from '...'`.
+
+---
+
+### Test 2: Manual Save Functionality
+
+**Objective:** Verify that you can manually save your progress to a file of your choice.
+
+1.  **Open an Interactive Page:** Navigate to an interactive exercise page.
+2.  **Make Progress:** Answer some questions.
+3.  **Click the Global Save Button:** Click the "Save" icon in the global toolbar at the top of the application.
+4.  **Save Dialog:** A "Save As" dialog should appear.
+5.  **Verification:**
+    - **Expected Result:** The default filename in the save dialog should be based on the `pageId`, not the file path. It should look something like `l1-congiuntivoes-save-YYYY-MM-DD.json`.
+    - **Action:** Save the file to a known location (e.g., your Desktop).
+
+---
+
+### Test 3: Manual Load Functionality
+
+**Objective:** Verify that you can load progress from a manually saved file.
+
+1.  **Reset the Page (Optional but Recommended):** To ensure you're loading fresh, either open a different exercise page or reset the current one (see Test 4).
+2.  **Open the Target Page:** Navigate to the *same* exercise page from which you saved the file in Test 2.
+3.  **Click the Global Load Button:** Click the "Load" icon in the global toolbar.
+4.  **Open Dialog:** An "Open" dialog will appear.
+5.  **Select the File:** Select the `.json` file you saved in Test 2.
+6.  **Verification:**
+    - **Expected Result:** The page should reload and display the exact progress you had when you manually saved it.
+    - **How to Check:** The answers you made in Test 2 should now be populated on the page. The developer console should show a log like: `Successfully loaded and applied state from ... to pageId 'your-page-id'`.
+
+---
+
+### Test 4: Reset Functionality
+
+**Objective:** Verify that you can reset all progress for a specific page.
+
+1.  **Open an Interactive Page with Progress:** Navigate to an exercise page where you have existing progress (either from autosave or a manual load).
+2.  **Click the Global Reset Button:** Click the "Reset" icon in the global toolbar.
+3.  **Verification:**
+    - **Expected Result:** The page should immediately reload to its original, empty state. All of your answers and progress should be gone.
+    - **How to Check:** The developer console should show a log message like: `[State] Reset state for pageId 'your-page-id' by deleting '...'`.
+
+---
+
+### Test 5: State Isolation
+
+**Objective:** Verify that the state for one page does not interfere with another.
+
+1.  **Open Page A:** Navigate to one exercise page (e.g., `L1-congiuntivoES.html`). Make some progress.
+2.  **Open Page B:** Open a *different* exercise page (e.g., `L2-verbs.html`, once converted) in a new tab. Make different progress.
+3.  **Switch Back and Forth:** Switch between the tabs for Page A and Page B.
+4.  **Verification:**
+    - **Expected Result:** Each tab should maintain its own independent state. The progress you made on Page A should only appear on Page A, and the same for Page B.
+    - **How to Check:** The `pageId` for each page should be different, and the logs should show that state is being saved and loaded for distinct page IDs.
+
+If all of these tests pass, the universal state management system is working correctly.
