@@ -361,3 +361,8 @@ then go back to the previous page in the tab i opened at the start (tab A)
 tab A is unresponsive visually, from console seems like it's reacting thorough
 if i go back to tab B the same is true of that one
 seems like the act of changing something for a page causes issue in the others, getting them stuck.
+
+summary
+> 1) green red on multi choice question
+> 2) green red on input questions
+> 3) bugged pages related to switch tabs
