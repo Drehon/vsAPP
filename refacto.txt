@@ -120,3 +120,38 @@ hydrateContent @ content-hydrator.js:36
 loadContentIntoTab @ content-loader.js:39
 await in loadContentIntoTab (async)
 eval @ content-loader.js:258
+
+---
+---
+
+## Task: Migrate Static Lessons (Completed)
+
+- **Files Modified**:
+  - `src/sub-functions/content-hydrator.js`
+  - `lessons/L1 - congiuntivo.html`
+  - `lessons/L2 - causativo.html`
+  - `lessons/L3 - passivo avanzato.html`
+- **Objective**: Address user feedback to update all static lesson files in `/lessons` to the new architecture and fix a bug in the hydration logic.
+
+**Summary of Changes:**
+
+1.  **Fixed Hydration Logic (`content-hydrator.js`)**:
+    - The `hydrateContent` function was made more robust. Instead of using a broad `querySelector`, it now specifically checks the `firstElementChild` of the content pane.
+    - This enforces a stricter and clearer architectural rule: every content fragment must have a single root element where the `data-module` attribute is declared. This resolved the console error reported by the user.
+
+2.  **Migrated All Static Lessons (`lessons/*.html`)**:
+    - All remaining lesson files in the `lessons/` directory were converted from full HTML documents into HTML fragments.
+    - Boilerplate tags (`<!DOCTYPE>`, `<html>`, `<head>`, `<body>`, `<style>`) were removed.
+    - Each file's content was wrapped in a single root `<div>`.
+    - The `data-module="static-lesson"` attribute was added to the root `div` of each file, making them compatible with the new hydration system.
+    - A unique `data-page-id` was added to each lesson (e.g., `data-page-id="lesson-l1-congiuntivo"`) to ensure correct state management (notes, etc.).
+
+**Outcome:**
+All static lessons are now fully compliant with the new universal template system. The hydration logic is more resilient and enforces a cleaner architectural pattern. The user's request has been fulfilled, and this block of work is complete.
+
+---
+
+User notes:
+The lessons page have been updated and seem to work correctly
+We have to complete the update of all the .html though
+Please update all the .html in the /lessonsAN folder

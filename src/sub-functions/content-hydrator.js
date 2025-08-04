@@ -30,10 +30,11 @@ const moduleHandlers = {
  * @param {HTMLElement} paneElement - The content pane containing the new content.
  */
 function hydrateContent(paneElement) {
-  const contentRoot = paneElement.querySelector('[data-module]');
+  // The element with the module information is expected to be the direct child of the pane.
+  const contentRoot = paneElement.firstElementChild;
 
-  if (!contentRoot) {
-    console.warn('Content loaded without a "data-module" attribute. No hydration will occur.', paneElement);
+  if (!contentRoot || !contentRoot.hasAttribute('data-module')) {
+    console.warn('Content loaded without a "data-module" attribute on its root element. No hydration will occur.', paneElement);
     return;
   }
 
