@@ -155,3 +155,5 @@ User notes:
 The lessons page have been updated and seem to work correctly
 We have to complete the update of all the .html though
 Please update all the .html in the /lessonsAN folder
+also, answer the following question at the end of your update of this txt:
+should we update the html in the /other folder too in our next steps? 
