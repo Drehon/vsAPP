@@ -117,6 +117,7 @@ This refactoring will be executed in phased sprints to manage complexity and all
 6.  **Analyze all the html in the excercises folder, verify they follow the same 'implicit rules' in terms of how they are constructed.
 Then, in the folders, generate an EX - template.html that. 
 This new file will act as base for new excercise pages, making it easy to create a new html using the template as base and populating it with the content (excercises) prepared separately.
+7. Populate refacto-4.txt with a brief summary of refacto-12.txt and refacto-3.txt, noting all the faced issues and how the actual stesp diverted from the simplistic original plan.
 ---
 
 #### **Phase 4: Full-Scale Migration & The Diagnostic Handler**
