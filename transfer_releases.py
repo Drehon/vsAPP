@@ -26,6 +26,10 @@ def transfer_latest_release(token, source_repo_name, target_repo_name):
 
         # Download and upload assets
         for asset in latest_release.get_assets():
+            if asset.name.startswith('Source code'):
+                print(f"  - Skipping source code asset: {asset.name}")
+                continue
+            
             print(f"  - Transferring asset: {asset.name}")
             
             response = requests.get(asset.browser_download_url, headers={'Authorization': f'token {token}'})

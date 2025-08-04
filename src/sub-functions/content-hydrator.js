@@ -1,4 +1,5 @@
 import { ExerciseHandler } from './handlers/exercise-handler.js';
+import { DiagnosticTestHandler } from './handlers/diagnostic-test-handler.js';
 
 // Placeholder handlers for different content modules.
 // These will be replaced with actual implementations in later phases.
@@ -18,9 +19,13 @@ function handleInteractiveExerciseWrapper(paneElement, tab, saveState) {
     tab.exerciseInstance = new ExerciseHandler(paneElement, tab, saveState);
 }
 
+/**
+ * A wrapper function to handle the instantiation of the DiagnosticTestHandler class.
+ * This creates a new instance and attaches it to the tab object.
+ */
 function handleDiagnosticTest(paneElement, tab, saveState) {
-  console.log('Hydrating a diagnostic test.', paneElement);
-  // Future logic for complex diagnostic tests will go here.
+    // Each diagnostic test tab gets its own isolated handler instance.
+    tab.exerciseInstance = new DiagnosticTestHandler(paneElement, tab, saveState);
 }
 
 // Map module names to their handler functions.

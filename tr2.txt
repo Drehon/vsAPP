@@ -1,0 +1,40 @@
+To use the transfer-release2.py script, follow these steps:
+
+1.  **Set your GitHub token**: 
+    You need a GitHub personal access token with permissions to read from the source repository and write to the target repository. Export it as an environment variable in your terminal.
+
+    On Linux/macOS:
+    ```bash
+    export GITHUB_TOKEN="your_github_token"
+    ```
+
+    On Windows (Command Prompt):
+    ```cmd
+    set GITHUB_TOKEN="your_github_token"
+    ```
+
+    On Windows (PowerShell):
+    ```powershell
+    $env:GITHUB_TOKEN="your_github_token"
+    ```
+
+USER Notes
+remember to active pip
+use this python -m pip install -r requirements.txt
+
+
+2.  **Run the script**:
+    Execute the script from your terminal with the following command structure:
+    ```bash
+    python transfer-release2.py Drehon/vsAPP Drehon/vsAPP-public v1.3.0 v1.3.8
+    ```
+
+    -   `<source_repo>`: The repository to copy the release from, in the format `owner/repository_name`.
+    -   `<target_repo>`: The repository to copy the release to, in the format `owner/repository_name`.
+    -   `<tag1> [tag2] ...`: One or more release tags you want to transfer.
+
+    **Example:**
+    ```bash
+    python transfer-release2.py jules-labs/project-a jules-labs/project-b v1.0.1 v1.0.2
+    ```
+    This command will transfer the releases tagged as `v1.0.1` and `v1.0.2` from the `jules-labs/project-a` repository to the `jules-labs/project-b` repository. The script will skip the source code archives (`.zip` and `.tar.gz` files) during the transfer.
