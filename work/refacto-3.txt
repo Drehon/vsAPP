@@ -1511,3 +1511,29 @@ The most robust solution is to ensure the handler uses the state *as it exists a
 
 ### Outcome
 This fix resolves the inconsistent behavior of the "Azzera" button. The button now functions correctly on all interactive exercise pages by using the most current state data at the moment of interaction. The project is now considered complete.
+
+---
+
+## Phase 3, Step 5: Standardize and Template Exercises
+
+- **Files Affected**:
+    - `exercises/L1 - congiuntivoES.html` (Analysis)
+    - `exercises/L2 - causativoES.html` (Analysis)
+    - `exercises/L3 - passivo avanzatoES.html` (Analysis)
+    - `exercises/EX - template.html` (Creation)
+- **Objective**: Analyze all simple exercise pages, verify they follow a consistent structure, and create a standardized template for future exercise creation.
+
+### Actions Taken
+
+1.  **Analyzed Existing Exercises**:
+    - A thorough review of all HTML files within the `exercises/` directory (`L1`, `L2`, and `L3`) was conducted.
+    - The analysis confirmed that all existing simple exercises consistently adhere to the "Universal HTML Fragment Structure" defined in `uniform.txt`.
+    - Key verified rules include: being a pure HTML fragment, having a root container with `data-page-id` and `data-module` attributes, and containing all exercise data within a structured `#page-data` JSON island.
+
+2.  **Created a Standard Exercise Template**:
+    - A new file, `exercises/EX - template.html`, was created to serve as a definitive boilerplate for new interactive exercises.
+    - This template was populated with the standard HTML structure and a well-commented `#page-data` block.
+    - The JSON data includes clear placeholder text and provides a sample for each of the three supported question types (`true-false`, `multiple-choice`, and `fill-in-the-blank`), ensuring that future content authors have a clear and easy-to-use guide.
+
+### Outcome
+The structure of simple exercises has been validated and standardized. The creation of `exercises/EX - template.html` streamlines the process of adding new content, ensuring that all future exercises will be compliant with the new, robust architecture. This completes a key goal of making the application more maintainable and scalable.

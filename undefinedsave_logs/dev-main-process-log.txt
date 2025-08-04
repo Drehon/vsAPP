@@ -520,3 +520,11 @@
 [LOG][2025-08-04T20:48:08.642Z] [State] Saved state for pageId 'L3-passivo-avanzatoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3-passivo-avanzatoes_state.json'
 [LOG][2025-08-04T20:48:09.691Z] [State] Saved state for pageId 'L3-passivo-avanzatoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3-passivo-avanzatoes_state.json'
 [LOG][2025-08-04T20:48:10.347Z] [State] Saved state for pageId 'L3-passivo-avanzatoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3-passivo-avanzatoes_state.json'
+[LOG][2025-08-04T21:04:45.039Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-04T21:04:45.041Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-04T21:04:45.043Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-04T21:04:45.135Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-04T21:04:45.140Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-04T21:04:46.611Z] Main Process: Checking for updates...
+[LOG][2025-08-04T21:04:46.616Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-04T21:04:47.736Z] Main Process: Update not available. {"tag":"v1.3.8","version":"1.3.8","files":[{"url":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","size":114395136}],"path":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","releaseDate":"2025-08-03T19:17:23.179Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.8","releaseNotes":"<p>Implemented visual feedback area for the reset button, for loading and for saving.<br>\nImproved reloading on reset to reload SAME excercise block.</p>"}

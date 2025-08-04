@@ -658,7 +658,8 @@ const getContents = async (dir) => {
         file.endsWith('.html') &&
         file !== 'patch-notes-template.html' &&
         file !== 'L - template.html' &&
-        file !== 'LAN - template.html'
+        file !== 'LAN - template.html' &&
+        file !== 'EX - template.html'
     );
   } catch (err) {
     console.error(`Error reading directory ${directoryPath}:`, err);
