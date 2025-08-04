@@ -1,77 +1,116 @@
-# Test Guide for Phase 2: Universal State Management
+# Manual Test Guide for Interactive Exercise Module
 
-This guide provides instructions to test the new state management system, which is a core part of the Phase 2 refactoring. The goal is to verify that the application's ability to save, load, and reset progress is fully functional and correctly uses the new `data-page-id` system instead of the old `filePath`-based system.
+This guide provides instructions for testing the first interactive exercise page (`L1 - congiuntivoES.html`) that was converted to the new, universal template system.
 
-**Prerequisites:**
-- You need at least one page that has been converted to the new universal template format and includes a `data-page-id` attribute. The test page `lessons/L1 - congiuntivoRE.html` should be suitable if it's been updated with a `data-page-id`. If not, any of the interactive exercises will work once they are converted. For this guide, we'll assume we're testing with a converted exercise page.
-
----
-
-### Test 1: Autosave Functionality
-
-**Objective:** Verify that the application automatically saves your progress on an exercise page.
-
-1.  **Open an Interactive Page:** Navigate to an interactive exercise page (e.g., `exercises/L1 - congiuntivoES.html`, once it's converted).
-2.  **Perform an Action:** Answer a few questions or make some progress on the exercise.
-3.  **Wait for Autosave:** Wait for about 1-2 seconds. The autosave is debounced, so it triggers shortly after you stop making changes.
-4.  **Close the Tab:** Close the tab for the exercise page.
-5.  **Reopen the Page:** Navigate back to the *same* exercise page.
-6.  **Verification:**
-    - **Expected Result:** The page should load with your previous answers and progress intact. Your work should have been automatically restored.
-    - **How to Check:** Look at the developer console in the main process logs. You should see a log message like: `[State] Saved state for pageId 'your-page-id' to '...'`. When you reopen, you should see `[State] Loaded state for pageId 'your-page-id' from '...'`.
+**Objective:** To verify that all core features—interaction, state management, notes, and feedback—are working correctly through the new `exercise-handler.js` module.
 
 ---
 
-### Test 2: Manual Save Functionality
+### Part 1: Loading the Exercise
 
-**Objective:** Verify that you can manually save your progress to a file of your choice.
-
-1.  **Open an Interactive Page:** Navigate to an interactive exercise page.
-2.  **Make Progress:** Answer some questions.
-3.  **Click the Global Save Button:** Click the "Save" icon in the global toolbar at the top of the application.
-4.  **Save Dialog:** A "Save As" dialog should appear.
-5.  **Verification:**
-    - **Expected Result:** The default filename in the save dialog should be based on the `pageId`, not the file path. It should look something like `l1-congiuntivoes-save-YYYY-MM-DD.json`.
-    - **Action:** Save the file to a known location (e.g., your Desktop).
+1.  **Start the Application:** Launch the application.
+2.  **Navigate to the Exercise:** In the application's navigation pane (on the left), find and click on the item for `L1 - congiuntivoES.html` under the "Exercises" section.
+3.  **Initial Verification:**
+    *   **[PASS/FAIL]** The page loads without any visible errors. > Pass
+    *   **[PASS/FAIL]** The main content area shows a question, navigation buttons ("Previous", "Next"), and a "Check Answer" button. > If by check answer you mean True/False then Pass
+    *   **[PASS/FAIL]** A "Jump to..." dropdown menu is visible, populated with question numbers. > Pass
 
 ---
 
-### Test 3: Manual Load Functionality
+### Part 2: Answering Questions and Feedback
 
-**Objective:** Verify that you can load progress from a manually saved file.
+1.  **Answer the First Question:** Interact with the first question presented. Answer it correctly.
+2.  **Check Answer:** Click the "Check Answer" button.
+    *   **[PASS/FAIL]** A feedback area should appear, indicating that the answer is correct. > Pass
+    *   **[PASS/FAIL]** An explanation for the answer should be displayed. > Pass
+    *   **[PASS/FAIL]** The input for the question should now be disabled. > Pass
+3.  **Proceed to Next Question:** Click the "Next" button.
+4.  **Answer Incorrectly:** Intentionally provide an incorrect answer to the second question.
+5.  **Check Answer:** Click the "Check Answer" button.
+    *   **[PASS/FAIL]** The feedback area should indicate that the answer is incorrect. > Pass
+    *   **[PASS/FAIL]** The correct answer and an explanation should be displayed. > Pass
+6.  **Navigate with "Jump to":** Use the "Jump to..." dropdown to navigate to a question further down the list (e.g., Question 5).
+    *   **[PASS/FAIL]** The view updates to show Question 5. > Pass
 
-1.  **Reset the Page (Optional but Recommended):** To ensure you're loading fresh, either open a different exercise page or reset the current one (see Test 4).
-2.  **Open the Target Page:** Navigate to the *same* exercise page from which you saved the file in Test 2.
-3.  **Click the Global Load Button:** Click the "Load" icon in the global toolbar.
-4.  **Open Dialog:** An "Open" dialog will appear.
-5.  **Select the File:** Select the `.json` file you saved in Test 2.
-6.  **Verification:**
-    - **Expected Result:** The page should reload and display the exact progress you had when you manually saved it.
-    - **How to Check:** The answers you made in Test 2 should now be populated on the page. The developer console should show a log like: `Successfully loaded and applied state from ... to pageId 'your-page-id'`.
-
----
-
-### Test 4: Reset Functionality
-
-**Objective:** Verify that you can reset all progress for a specific page.
-
-1.  **Open an Interactive Page with Progress:** Navigate to an exercise page where you have existing progress (either from autosave or a manual load).
-2.  **Click the Global Reset Button:** Click the "Reset" icon in the global toolbar.
-3.  **Verification:**
-    - **Expected Result:** The page should immediately reload to its original, empty state. All of your answers and progress should be gone.
-    - **How to Check:** The developer console should show a log message like: `[State] Reset state for pageId 'your-page-id' by deleting '...'`.
 
 ---
 
-### Test 5: State Isolation
+### Part 3: State Management (Save & Load)
 
-**Objective:** Verify that the state for one page does not interfere with another.
+1.  **Answer Several Questions:** Proceed through the exercise and answer 3-4 questions. Leave some unanswered.
+2.  **Save Progress:** Click the global "Save" button in the application's main toolbar.
+3.  **Reload the Page:**
+    *   Navigate to a different page (e.g., the "Home" screen).
+    *   Navigate back to the `L1 - congiuntivoES.html` exercise.
+4.  **Initial State After Reload:**
+    *   **[PASS/FAIL]** The page should load in the same state as when you left it. The answers you provided should still be there, and the feedback for checked questions should be visible. > Fail, save state doesn't seem to work as intended
+5.  **Load Progress Manually:** Click the global "Load" button in the main toolbar.
+    *   **[PASS/FAIL]** The page should reload and explicitly restore your saved progress, confirming the manual load works. Your previously answered questions (from step 1 of this section) should be visible. > FAIL
 
-1.  **Open Page A:** Navigate to one exercise page (e.g., `L1-congiuntivoES.html`). Make some progress.
-2.  **Open Page B:** Open a *different* exercise page (e.g., `L2-verbs.html`, once converted) in a new tab. Make different progress.
-3.  **Switch Back and Forth:** Switch between the tabs for Page A and Page B.
-4.  **Verification:**
-    - **Expected Result:** Each tab should maintain its own independent state. The progress you made on Page A should only appear on Page A, and the same for Page B.
-    - **How to Check:** The `pageId` for each page should be different, and the logs should show that state is being saved and loaded for distinct page IDs.
+---
 
-If all of these tests pass, the universal state management system is working correctly.
+### Part 4: Notes Component
+
+1.  **Open Page Notes:** Find the "Notes" button or icon for the overall page. Click it.
+2.  **Add a Page Note:** A textarea should appear. Type a test note, for example: "This is a page-level note for the congiuntivo exercise."
+3.  **Save and Reload:** Click "Save". Navigate away from the page and then back to it.
+    *   **[PASS/FAIL]** The note you wrote should still be present in the notes area. > FAIL - save button doesn't work
+4.  **Open Question Notes:** Navigate to a specific question (e.g., Question 3). Find the "Show Note" or similar button for that individual question.
+5.  **Add a Question Note:** A textarea should appear. Type a test note, for example: "Note for question 3."
+6.  **Save and Reload:** Click "Save". Navigate away and back again. Go to Question 3.
+    *   **[PASS/FAIL]** The note specific to Question 3 should be present. > FAIL - save button doesn't work
+    *   **[PASS/FAIL]** The general page note from step 2 should also still be present. > FAIL - save button doesn't work
+
+---
+
+### Part 5: Final Scoreboard > Not attempted
+
+1.  **Complete All Questions:** Answer all remaining questions in the exercise.
+2.  **Check Final Screen:** After the last question is answered and checked, a final scoreboard or results summary should be displayed.
+    *   **[PASS/FAIL]** The scoreboard correctly shows the number of correct and incorrect answers.
+    *   **[PASS/FAIL]** The scoreboard provides an option to review the answers.
+
+If all the above points pass, the integration of the interactive exercise module is considered successful.
+
+---
+
+User notes, on opening the page this is the log:
+Found module "interactive-exercise", delegating to handler.
+exercise-handler.js:462 Initializing generic interactive exercise...
+exercise-handler.js:473 Exercise data loaded: {title: 'Esercizi Pratici: Il Congiuntivo', subtitle: 'Metti in pratica la teoria con esercizi mirati.', fase1: Array(50), fase2: Array(30), fase3: Array(20)}
+exercise-handler.js:479 Old 'fase' format detected. Converting to generic format for compatibility.
+handleInteractiveExercise @ exercise-handler.js:479
+hydrateContent @ content-hydrator.js:43
+loadContentIntoTab @ content-loader.js:39
+await in loadContentIntoTab (async)
+eval @ content-loader.js:258
+exercise-handler.js:492 Data converted to new format with inferred types: (100) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+exercise-handler.js:42 Initialized new generic exercise state: {currentQuestionIndex: 0, answers: Array(100), exerciseNote: ''}
+exercise-handler.js:51 Render triggered. Current state: {currentQuestionIndex: 0, answers: Array(100), exerciseNote: ''}
+exercise-handler.js:294 Stub: createNavigation
+
+the multi-block format of the excercises html is.. lost?
+There's only one page with 100 excercises, that is plain wrong.
+i separated L1 - congiuntivoES.html (old version) from a new L1 - congiuntivoES-RE.html to keep both versions until certain issues are resolved.
+
+User notes from part 2 of the tests:
+The 'Mark as correct' appears and works correctly.
+The previously implemented 'Back to N1' to return to first question is absent 
+
+User notes from part 3 of the test:
+Save state doesn't seem to work. Page doesn't lose progress on tab change, but on closing tab and reopening page has reset.
+Save state for L1 ES doesn't show under Active Auto-Saves in settings page
+Save/Load/Reset buttons don't seem to work.
+
+From console, when clicking buttons
+renderer.js:111 Could not find pageId to reset.
+globalResetBtn.onclick @ renderer.js:111
+renderer.js:319 Could not find pageId to load state into.
+handleLoadButtonClick @ renderer.js:319
+globalLoadBtn.onclick @ renderer.js:107
+renderer.js:270 No active exercise tab, pageId, or state to save.
+
+User notes from part 4 of the test:
+Notes area are displayed as before
+They appear correctly, can be written correctly, but are impacted by the same issues as part 3
+Generally it seems like you lost the distinction between save-states and saves 

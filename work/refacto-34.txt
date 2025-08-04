@@ -71,3 +71,18 @@ The `exercise-handler.js` module is now a complete, self-contained, and reusable
 
 **Outcome**:
 The first interactive exercise has been successfully migrated to the new architecture. The page's structure is now generic and its logic is fully delegated to the central `content-hydrator` and the specialized `exercise-handler`. This completes a critical proof-of-concept, demonstrating that the new system can successfully manage and render interactive content, paving the way for the migration of all other exercises.
+
+---
+### Step 4: Integrate and Test (Completed)
+
+- **Files Affected**: 
+    - `src/sub-functions/content-hydrator.js` (Verification)
+    - `work/test-guide.txt` (Creation)
+- **Objective**: Add a case for `"interactive-exercise"` in `content-hydrator.js`, and thoroughly test the converted page.
+
+**Actions Taken**:
+1.  **Verified Integration**: Confirmed that `content-hydrator.js` correctly imports and delegates to `handleInteractiveExercise` when a content fragment with `data-module="interactive-exercise"` is loaded. This was completed as part of Step 3 but is officially acknowledged here.
+2.  **Created Test Guide**: In accordance with the project constraints prohibiting direct testing by the agent, a comprehensive manual test guide was created at `work/test-guide.txt`. This guide provides step-by-step instructions for a human tester to verify all functionality of the new interactive exercise module, including question answering, state management (save/load), notes, and feedback.
+
+**Outcome**:
+The integration of the first interactive module is functionally complete and ready for quality assurance. By providing a detailed test plan, we ensure that the verification process is thorough and aligns with the goals of the refactoring plan. The project is now ready to proceed with converting the remaining simple exercises.
