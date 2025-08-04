@@ -144,7 +144,7 @@ exercise-handler.js:575 Old 'fase' format detected. Converting to new fase-based
 user notes 2:
 
 these persist
-4) the reset in the toolbar does nothing at all, it should reset all 'fase' blocks. its purpose is to always clean all saves for a page.
+4) the 'Azzera' in the toolbar does nothing at all, it should reset all 'fase' blocks. its purpose is to always clean all saves for a page. > FIXED
 5) save and load still don't work correctly > FIXED
 6) save states still don't work correctly > FIXED
 
@@ -153,4 +153,11 @@ in console i still see
 exercise-handler.js:575 Old 'fase' format detected. Converting to new fase-based format.
 save state and save/load and reset still don't work correctly
 
-user notes 2 are still valid after Phase 3: Definitive State Management Fix
+
+after Final State Management Fix (The Actual Final One)
+all issues seem resolved
+the only problem (?) is
+exercise-handler.js:575 Old 'fase' format detected. Converting to new fase-based format.
+
+in the console.
+is this an issue? it seems to at least indicate some lack of stability

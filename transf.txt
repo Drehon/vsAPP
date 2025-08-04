@@ -1,14 +1,14 @@
-This folder contains a Python script `transfer_releases.py` to transfer all releases from one GitHub repository to another.
+This folder contains a Python script `transfer_releases.py` to transfer the latest release from the private `vsAPP` repository to the public `vsAPP-public` repository.
 
 **Prerequisites:**
 
 1.  **Python 3:** Make sure you have Python 3 installed on your system. You can download it from [https://www.python.org/downloads/](https://www.python.org/downloads/).
-2.  **Required libraries:** This script requires a few Python libraries. You can install them all at once by running this command in your terminal:
+2.  **Install Python dependencies:** Install the required libraries using pip and the provided `requirements.txt` file:
     ```
     pip install -r requirements.txt
     ```
 
-**How to use the script:**
+**How to publish to the public repository:**
 
 1.  **Generate a GitHub Personal Access Token:**
     *   Go to your GitHub settings: [https://github.com/settings/tokens](https://github.com/settings/tokens)
@@ -17,23 +17,18 @@ This folder contains a Python script `transfer_releases.py` to transfer all rele
     *   Under "Scopes", select the `repo` scope. This will grant the necessary permissions to read from your private repository and write to your public repository.
     *   Click "Generate token" and copy the token. **You will not be able to see it again.**
 
-2.  **Run the script from your terminal:**
-    *   Open a terminal or command prompt in the same directory as the `transfer_releases.py` script.
-    *   Run the script with the following command, replacing the placeholders with your actual data. The script accepts both full GitHub URLs and the `owner/repository` format.
+2.  **Create a `.env` file:**
+    *   In the root of the project, create a file named `.env`.
+    *   Add the following line to the `.env` file, replacing `<your_github_token>` with the token you generated:
+        ```
+        GITHUB_TOKEN=<your_github_token>
+        ```
 
-    **Command format:**
-    ```
-    python transfer_releases.py <your_github_token> <source_repo> <target_repo>
-    ```
+3.  **Run the `publish-public` script:**
+    *   Open a terminal in the project root.
+    *   Run the following command:
+        ```
+        npm run publish-public
+        ```
 
-    **Example:**
-
-    ```
-    python transfer_releases.py ghp_xxxxxxxxxxxxxxxxxxxx Drehon/vsAPP Drehon/vsAPP-public
-    ```
-
-    *   `<your_github_token>`: The personal access token you generated.
-    *   `<source_repo>`: The source repository. For this project, it's the private `Drehon/vsAPP`.
-    *   `<target_repo>`: The target repository. For this project, it's the public `Drehon/vsAPP-public`.
-
-The script will then start transferring all the releases and their assets from the source repository to the target repository.
+The script will then transfer the latest release and its assets from the `Drehon/vsAPP` repository to the `Drehon/vsAPP-public` repository.

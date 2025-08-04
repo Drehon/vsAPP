@@ -42,6 +42,11 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
         if (loadedState) {
             tab.exerciseState = loadedState;
             console.log(`State successfully loaded for identifier: ${stateIdentifier}`);
+        } else {
+            // CRITICAL: If no state is loaded, ensure any old in-memory state is cleared.
+            // This forces the handler to initialize a fresh state object.
+            tab.exerciseState = null;
+            console.log(`No state found for identifier: ${stateIdentifier}. Clearing in-memory state.`);
         }
         // --- End of Fix ---
 

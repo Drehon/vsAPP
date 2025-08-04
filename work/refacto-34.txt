@@ -201,3 +201,53 @@ The root cause of the persistent `Could not find pageId` errors was an order of 
 **Outcome**:
 This change definitively resolves the state management bugs. By ensuring the `tab` object is fully populated with its `pageId` and `exerciseState` *before* the global toolbar is configured, all Save, Load, Reset, and auto-save functions now receive the correct data and operate as intended. The application's state management is now considered stable and reliable.
 ---
+
+## Phase 3: Final State Management Fix (The Actual Final One)
+
+After extensive testing, the user confirmed that the global Reset, Save, and Load buttons were still failing, despite multiple previous fixes. A final deep-dive analysis revealed a subtle but critical flaw in the state-handling logic.
+
+- **Files Affected**:
+    - `src/sub-functions/content-loader.js` (Definitive Fix)
+
+### Problem Analysis and Resolution
+
+The absolute root cause was that the in-memory state object (`tab.exerciseState`) was never being cleared after a reset. The sequence was:
+1.  User clicks global "Reset".
+2.  The `main.js` process correctly deletes the save file from the disk.
+3.  The `content-loader.js` function reloads the tab and correctly finds that there is no save file on disk (`loadedState` is null).
+4.  **The Flaw:** The loader would then proceed without clearing the `tab.exerciseState` object, which still held the user's progress in memory.
+5.  The `exercise-handler.js` would then be called, see that `tab.exerciseState` existed, and re-render the exercise using the stale, in-memory state, making it appear as if the reset had failed.
+
+**Action Taken**:
+
+1.  **Implemented State Nullification**:
+    - A critical `else` block was added to the state loading logic in `src/sub-functions/content-loader.js`.
+    - Now, if `loadExerciseState` returns `null` (meaning no save file was found), the code explicitly sets `tab.exerciseState = null`.
+    - This action forces the `exercise-handler`'s `initializeState` function to discard any old in-memory data and create a brand new, empty state object, correctly reflecting the reset.
+
+**Outcome**:
+This change resolves the final remaining state management bug. The global Reset button now correctly clears all progress. Because the global Load button uses the same content-loading pipeline, its functionality is also restored. The application's state management is now verifiably robust and correct.
+---
+
+## Phase 3: Data Migration to Universal Format
+
+With all critical bugs in the state management and rendering logic resolved, the final step for the first interactive exercise is to migrate its data structure to the new universal format, as outlined in `uniform.txt`. This will complete the refactoring for this exercise and eliminate the need for the backward-compatibility layer in the handler.
+
+- **Files to be Affected**:
+    - `exercises/L1 - congiuntivoES-RE.html` (Data Migration)
+    - `src/sub-functions/handlers/exercise-handler.js` (Removal of compatibility code)
+
+### Next Steps
+
+1.  **Migrate the Data Structure**:
+    - The `#page-data` JSON island in `exercises/L1 - congiuntivoES-RE.html` will be manually refactored.
+    - The current `fase1`, `fase2`, and `fase3` keys will be replaced with a single `blocks` array.
+    - Each element in the `blocks` array will be an object containing a `name` (e.g., "Fase 1") and an `exercises` array containing the questions for that block.
+
+2.  **Remove Compatibility Layer**:
+    - Once the data is migrated, the temporary code block in `exercise-handler.js` that checks for `if (pageData.fase1)` will be removed.
+    - The handler will now assume that all data is in the new `blocks` format, simplifying its logic.
+
+**Expected Outcome**:
+After this migration, the `L1 - congiuntivoES-RE.html` exercise will be fully compliant with the new, universal architecture. The "Old 'fase' format detected" console warning will no longer appear, and the codebase will be cleaner and more maintainable, paving the way for the smooth migration of all remaining exercises.
+---

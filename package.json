@@ -11,7 +11,8 @@
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\"",
     "prepublishOnly": "node scripts/update-patch-notes.js",
-    "prepare:release": "node scripts/prepare-release.js"
+    "prepare:release": "node scripts/prepare-release.js",
+    "publish-public": "node -r dotenv/config transfer_releases.py Drehon/vsAPP Drehon/vsAPP-public"
   },
   "keywords": [],
   "author": {
