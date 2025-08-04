@@ -113,7 +113,10 @@ This refactoring will be executed in phased sprints to manage complexity and all
 2.  **Port and Generalize Logic:** Move the core concepts from the old `exercise-initializer.js` into the new handler. This logic must be made generic. It will read the `#page-data` JSON island, loop through a generic `exercises` array, and dynamically render questions based on the `type` specified for each exercise in the JSON (e.g., `multiple-choice`, `fill-in-the-blank`). The hardcoded "fase1, fase2, fase3" structure will be entirely removed.
 3.  **Convert a Simple Exercise Page:** Refactor `exercises/L1 - congiuntivoES.html` to the full universal template. It must have `data-module="interactive-exercise"`, a `data-page-id`, and all its questions and answers defined in the `#page-data` JSON block. All inline `<script>` logic must be removed.
 4.  **Integrate and Test:** Add a case for `"interactive-exercise"` in `content-hydrator.js` that calls the new `exercise-handler.js`. Thoroughly test the converted page, ensuring that answering questions, saving/loading state via the new `data-page-id` system, using notes, and getting feedback all work correctly.
-
+5.  **Conver all other excercise pages**
+6.  **Analyze all the html in the excercises folder, verify they follow the same 'implicit rules' in terms of how they are constructed.
+Then, in the folders, generate an EX - template.html that. 
+This new file will act as base for new excercise pages, making it easy to create a new html using the template as base and populating it with the content (excercises) prepared separately.
 ---
 
 #### **Phase 4: Full-Scale Migration & The Diagnostic Handler**
@@ -128,7 +131,7 @@ This refactoring will be executed in phased sprints to manage complexity and all
     *   **Charting:** Integration with `Chart.js` to display performance graphs. The chart data will be driven by a `category` property on each question in the JSON.
     *   **Custom Renderers:** A mechanism to handle special layouts (like the "email" format in `verb-exercise.js`), likely driven by a `renderer` property in the JSON.
 4.  **Migrate Diagnostic Tests:** Convert `others/student-grammar.html` and `others/student-verbs.html` to the universal template, using `data-module="diagnostic-test"`. All logic will be removed from the HTML, and the `#page-data` script will be updated to the new, standardized format.
-5.  **Migrate All Static Content:** Convert all remaining files in `lessons/` and `lessonsAN/` to the simple HTML fragment format with `data-module="static-lesson"`.
+5.  **Migrate All Static Content:** Convert all remaining files (if any) in `lessons/` and `lessonsAN/` to the new methodology.
 
 ---
 
