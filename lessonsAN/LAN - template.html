@@ -1,0 +1,58 @@
+<!-- 
+  TEMPLATE PER MAZZO APPUNTI (LESSONSAN)
+  
+  ISTRUZIONI:
+  1. Copia questo file e rinominalo (es. "L4 - nuovo argomentoAN.html").
+  2. Aggiorna il 'data-page-id': deve essere unico (es. "lesson-l4-nuovo-argomento-an").
+  3. Riempi il titolo <H1> e il sottotitolo <p>.
+  4. Struttura il contenuto come una serie di "flashcard". Ogni flashcard è una <section>.
+  5. Ogni card ha un "Fronte" (la domanda, nel titolo <h2>) e un "Retro" (la risposta, nel div sottostante).
+-->
+<div class="container mx-auto p-6 md:p-10 max-w-7xl" data-module="static-lesson" data-page-id="lesson-lxx-topic-an-template">
+
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
+        <header class="p-6">
+            <h1 class="text-3xl font-bold text-slate-900">Mazzo Appunti: [Titolo Argomento]</h1>
+            <p class="text-lg text-slate-600">[Topic Title]</p>
+        </header>
+    </div>
+
+    <main class="space-y-8 max-w-none">
+
+        <!-- Card 1: Esempio di Flashcard -->
+        <section class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="p-5 bg-slate-50 border-b border-slate-200">
+                <h2 class="text-lg font-semibold text-indigo-700">Fronte: [Inserisci qui la domanda o il concetto]</h2>
+            </div>
+            <div class="p-5">
+                <p class="text-slate-700 leading-relaxed">
+                    [Inserisci qui la risposta o la spiegazione.]
+                </p>
+                <!-- Esempio di lista -->
+                 <ul class="list-disc list-inside mt-2 space-y-1 text-slate-600">
+                    <li>Punto 1.</li>
+                    <li>Punto 2.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Card 2: Altro Esempio -->
+        <section class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="p-5 bg-slate-50 border-b border-slate-200">
+                <h2 class="text-lg font-semibold text-indigo-700">Fronte: [Un'altra domanda]</h2>
+            </div>
+            <div class="p-5">
+                <p class="text-slate-700 leading-relaxed">
+                    [Un'altra risposta.]
+                </p>
+                 <!-- Esempio di blocco di codice evidenziato -->
+                 <div class="mt-2 py-4 px-3 bg-slate-100 rounded-md text-center">
+                    <p class="font-mono text-slate-800"><code class="key-rule">Esempio di codice</code> + <strong>concetto</strong></p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+</div>
