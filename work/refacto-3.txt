@@ -1438,26 +1438,49 @@ issue persists
 > then go back to the previous page in the tab i opened at the start (tab A)
 > tab A is unresponsive visually, from console seems like it's reacting thorough
 
-Render triggered. Current state: 
-{version: 2, currentBlockIndex: 1, answers: Array(3), blockNotes: Array(3), currentQuestionIndexes: Array(3)}
-answers
-: 
-(3) [Array(50), Array(30), Array(20)]
-blockNotes
-: 
-(3) ['', '', '']
-currentBlockIndex
-: 
-1
-currentQuestionIndexes
-: 
-(3) [3, 3, 4]
-version
-: 
-2
-[[Prototype]]
-: 
-Object
+
+
+## Definitive Fix (Issue #3): Unresponsive UI on Tab Switching
+
+- **Files Affected**:
+    - `src/sub-functions/handlers/exercise-handler.js` (Complete Refactor)
+    - `src/sub-functions/content-hydrator.js` (Logic Update)
+    - `src/sub-functions/tab-manager.js` (Logic Update)
+    - `src/renderer.js` (Cleanup)
+
+### Problem Description
+The critical bug where interactive exercise tabs would become visually unresponsive after switching between them persisted. While console logs showed that state was being updated, the UI for the active tab would not reflect any changes.
+
+### Analysis and Resolution
+The previous attempt to fix this by "re-hydrating" the content on tab switch failed because it was implemented in the wrong place (`renderer.js`) and did not address the fundamental architectural flaw: the `exercise-handler.js` module was a stateful singleton. A single set of module-level variables was being shared across all interactive exercise tabs, leading to context-switching failures.
+
+A more robust, architectural solution was required.
+
+**Actions Taken**:
+
+1.  **Refactored `exercise-handler.js` into a Class**:
+    - The entire module was rewritten to export an `ExerciseHandler` class instead of a single function.
+    - All module-level state variables (`pageData`, `activeTab`, `containerElement`) were converted into instance properties (`this.pageData`, etc.).
+    - This change ensures that every interactive exercise tab can have its own completely isolated `ExerciseHandler` instance, preventing any state corruption between tabs.
+
+2.  **Updated `content-hydrator.js`**:
+    - The content hydrator was modified to import the new `ExerciseHandler` class.
+    - When an `interactive-exercise` module is loaded, the hydrator now creates a *new instance* of the handler (`new ExerciseHandler(...)`).
+    - Crucially, this new instance is stored directly on the tab object itself (e.g., `tab.exerciseInstance = ...`), making the handler for each tab directly accessible.
+
+3.  **Modified `tab-manager.js`**:
+    - The core tab-switching logic in the `switchTab` function was updated.
+    - It now checks if the newly activated tab has an `exerciseInstance` property.
+    - If it does, it calls the `render()` method on that specific instance (`newActiveTab.exerciseInstance.render()`). This is the key to the fix: it explicitly tells the correct handler instance to redraw the UI for its specific tab, ensuring the visible content is always in sync with its state.
+
+4.  **Cleaned Up `renderer.js`**:
+    - The old, ineffective re-hydration logic was removed from the `switchTab` wrapper function in `renderer.js`, along with its now-unused import.
+
+### Outcome
+This architectural refactoring definitively resolves the unresponsive UI bug. By replacing the problematic singleton pattern with isolated class instances and triggering a re-render from the correct location (`tab-manager.js`), the application can now handle multiple interactive exercise tabs robustly. The state and UI of each tab are now properly encapsulated, leading to a more stable and predictable user experience.
 
 ---
 
+final issue
+the 'azzera' button doesn't work for all es pages
+currently only for es L3

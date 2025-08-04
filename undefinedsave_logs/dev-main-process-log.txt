@@ -420,3 +420,61 @@
 [LOG][2025-08-04T18:50:22.567Z] Main Process: Checking for updates...
 [LOG][2025-08-04T18:50:22.572Z] AutoUpdater configuration: [Unserializable Object]
 [LOG][2025-08-04T18:50:23.792Z] Main Process: Update not available. {"tag":"v1.3.8","version":"1.3.8","files":[{"url":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","size":114395136}],"path":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","releaseDate":"2025-08-03T19:17:23.179Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.8","releaseNotes":"<p>Implemented visual feedback area for the reset button, for loading and for saving.<br>\nImproved reloading on reset to reload SAME excercise block.</p>"}
+[LOG][2025-08-04T20:40:53.790Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-04T20:40:53.795Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-04T20:40:53.797Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-04T20:40:53.897Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-04T20:40:53.913Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-04T20:40:57.964Z] Main Process: Checking for updates...
+[LOG][2025-08-04T20:40:57.974Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-04T20:40:59.396Z] Main Process: Update not available. {"tag":"v1.3.8","version":"1.3.8","files":[{"url":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","size":114395136}],"path":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","releaseDate":"2025-08-03T19:17:23.179Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.8","releaseNotes":"<p>Implemented visual feedback area for the reset button, for loading and for saving.<br>\nImproved reloading on reset to reload SAME excercise block.</p>"}
+[LOG][2025-08-04T20:41:00.163Z] [State] Loaded state for pageId 'L1-congiuntivoES' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T20:41:04.621Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T20:41:05.823Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T20:41:07.233Z] [State] No save state found for pageId 'lesson-l1-congiuntivo'.
+[LOG][2025-08-04T20:41:11.111Z] [State] No save state found for pageId 'lesson-l1-congiuntivo-an'.
+[LOG][2025-08-04T20:41:15.374Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T20:41:18.105Z] [State] Loaded state for pageId 'L2-causativoES' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T20:41:20.031Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T20:41:20.678Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T20:41:22.560Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T20:41:23.563Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T20:41:24.554Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T20:41:26.172Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T20:41:26.840Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T20:41:28.821Z] [State] Loaded state for pageId 'L3-passivo-avanzatoES' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3-passivo-avanzatoes_state.json'
+[LOG][2025-08-04T20:41:30.866Z] [State] Saved state for pageId 'L3-passivo-avanzatoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3-passivo-avanzatoes_state.json'
+[LOG][2025-08-04T20:41:32.453Z] [State] Saved state for pageId 'L3-passivo-avanzatoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3-passivo-avanzatoes_state.json'
+[LOG][2025-08-04T20:41:34.493Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T20:41:39.282Z] [State] Reset state for pageId 'L3-passivo-avanzatoES' by deleting 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3-passivo-avanzatoes_state.json'
+[LOG][2025-08-04T20:41:39.286Z] [State] No save state found for pageId 'L3-passivo-avanzatoES'.
+[LOG][2025-08-04T20:41:43.715Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T20:41:46.861Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T20:41:47.930Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T20:41:49.367Z] [State] No state file to reset for pageId 'L3-passivo-avanzatoES'.
+[LOG][2025-08-04T20:41:49.371Z] [State] No save state found for pageId 'L3-passivo-avanzatoES'.
+[LOG][2025-08-04T20:42:00.198Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T20:42:00.610Z] [State] No state file to reset for pageId 'L3-passivo-avanzatoES'.
+[LOG][2025-08-04T20:42:00.614Z] [State] No save state found for pageId 'L3-passivo-avanzatoES'.
+[LOG][2025-08-04T20:42:05.815Z] [State] Saved state for pageId 'L3-passivo-avanzatoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3-passivo-avanzatoes_state.json'
+[LOG][2025-08-04T20:42:06.097Z] [State] Reset state for pageId 'L3-passivo-avanzatoES' by deleting 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3-passivo-avanzatoes_state.json'
+[LOG][2025-08-04T20:42:06.103Z] [State] No save state found for pageId 'L3-passivo-avanzatoES'.
+[LOG][2025-08-04T20:42:09.370Z] [State] Saved state for pageId 'L3-passivo-avanzatoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3-passivo-avanzatoes_state.json'
+[LOG][2025-08-04T20:42:10.598Z] [State] Saved state for pageId 'L3-passivo-avanzatoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3-passivo-avanzatoes_state.json'
+[LOG][2025-08-04T20:42:10.663Z] [State] Reset state for pageId 'L3-passivo-avanzatoES' by deleting 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3-passivo-avanzatoes_state.json'
+[LOG][2025-08-04T20:42:10.667Z] [State] No save state found for pageId 'L3-passivo-avanzatoES'.
+[LOG][2025-08-04T20:42:12.711Z] [State] Saved state for pageId 'L3-passivo-avanzatoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3-passivo-avanzatoes_state.json'
+[LOG][2025-08-04T20:42:13.858Z] [State] Saved state for pageId 'L3-passivo-avanzatoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3-passivo-avanzatoes_state.json'
+[LOG][2025-08-04T20:42:14.628Z] [State] Reset state for pageId 'L3-passivo-avanzatoES' by deleting 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3-passivo-avanzatoes_state.json'
+[LOG][2025-08-04T20:42:14.633Z] [State] No save state found for pageId 'L3-passivo-avanzatoES'.
+[LOG][2025-08-04T20:42:17.768Z] [State] No state file to reset for pageId 'L3-passivo-avanzatoES'.
+[LOG][2025-08-04T20:42:17.772Z] [State] No save state found for pageId 'L3-passivo-avanzatoES'.
+[LOG][2025-08-04T20:42:20.728Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T20:42:23.360Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T20:42:24.531Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-04T20:42:24.994Z] [State] No state file to reset for pageId 'L3-passivo-avanzatoES'.
+[LOG][2025-08-04T20:42:24.997Z] [State] No save state found for pageId 'L3-passivo-avanzatoES'.
+[LOG][2025-08-04T20:42:30.100Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T20:42:30.731Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-04T20:42:31.210Z] [State] No state file to reset for pageId 'L3-passivo-avanzatoES'.
+[LOG][2025-08-04T20:42:31.213Z] [State] No save state found for pageId 'L3-passivo-avanzatoES'.

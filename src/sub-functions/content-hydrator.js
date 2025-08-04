@@ -1,4 +1,4 @@
-import { handleInteractiveExercise } from './handlers/exercise-handler.js';
+import { ExerciseHandler } from './handlers/exercise-handler.js';
 
 // Placeholder handlers for different content modules.
 // These will be replaced with actual implementations in later phases.
@@ -6,6 +6,16 @@ import { handleInteractiveExercise } from './handlers/exercise-handler.js';
 function handleStaticLesson(paneElement, tab, saveState) {
   console.log('Hydrating a static lesson.', paneElement);
   // Future logic for static lessons (e.g., initializing notes component) will go here.
+}
+
+/**
+ * A wrapper function to handle the instantiation of the ExerciseHandler class.
+ * This creates a new instance and attaches it to the tab object.
+ */
+function handleInteractiveExerciseWrapper(paneElement, tab, saveState) {
+    // Each interactive exercise tab gets its own isolated handler instance.
+    // The instance is stored on the tab object itself for later access.
+    tab.exerciseInstance = new ExerciseHandler(paneElement, tab, saveState);
 }
 
 function handleDiagnosticTest(paneElement, tab, saveState) {
@@ -16,7 +26,7 @@ function handleDiagnosticTest(paneElement, tab, saveState) {
 // Map module names to their handler functions.
 const moduleHandlers = {
   'static-lesson': handleStaticLesson,
-  'interactive-exercise': handleInteractiveExercise,
+  'interactive-exercise': handleInteractiveExerciseWrapper,
   'diagnostic-test': handleDiagnosticTest,
 };
 
