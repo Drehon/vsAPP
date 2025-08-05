@@ -382,7 +382,7 @@ Tone them down, but only a little
 Issue 10) 
 Fixing issue 6 has led to a situation where the start of each block has two 'lines' horizontally pressed to each other for every block except the one where the fix was intended
 Please add a short intro to each block, detailing the topics, to visually fix this.
-I imagine you have to modify the html themselves.
+I imagine you have to modify the html themselves. or the jsons? or wherever you get the text in the htmls from.
 
 FINAL TASK 
 once all issues are solved, generate a test-template.html
