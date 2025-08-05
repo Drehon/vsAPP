@@ -324,6 +324,14 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
+## Developer Notes (2025-08-05) - Issue 10 Fix
+
+- **Issue 10 Fix:** Addressed a visual layout issue where block titles appeared too close to the content below them.
+    - **Analysis:** The problem was caused by the inconsistent presence of the `blockPreamble` element. When a block lacked a preamble, the CSS margins would collapse, creating a visual glitch. The user requested adding introductory text to each block to solve this.
+    - **Solution:** A new `blockPreamble` property was added to the JSON data for every block in both `DG-student-grammar.html` and `DV-student-verbs.html`. This preamble provides a short, descriptive introduction to the topics and exercise types within each block, ensuring a consistent and visually stable layout across the entire diagnostic test.
+
+---
+
 User logs area
 Grammar and verbs seem to share the same issues
 REMINDER TO NOT DO ANY TESTING in your environment!! i'll do it
@@ -375,7 +383,7 @@ the 6% is completely white on white, everything has little contrast.
 open a new txt named carta.txt and inside analyze the issue, proposing alternative solutions, for example we might altogether change the chart
 do you feel the current chart is the best option for what we are doing?
 
-Issue 8)
+Issue 8) > FIXED
 As continuation of Issue 2) diagnostics should be a fourth 'tab' besides the three for the blocks
 Three buttons to revert the submit for each of the three blocks should be added 
 Similarly the three submit buttons should be placed in the same place
@@ -407,7 +415,7 @@ Issue 9) > FIXED
 The greens and reds for correct/incorrect across the whole app are slightly too bright/intense
 Tone them down, but only a little
 
-Issue 10) 
+Issue 10) > FIXED
 Fixing issue 6 has led to a situation where the start of each block has two 'lines' horizontally pressed to each other for every block except the one where the fix was intended
 Please add a short intro to each block, detailing the topics, types of excercises, to visually fix this.
 I imagine you have to modify the html themselves. or the jsons? or wherever you get the text in the htmls from.
