@@ -143,6 +143,14 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
+## Developer Notes (2025-08-05) - Issue 9 Fix
+
+- **Issue 9 Fix:** Toned down the intensity of the green and red feedback colors across the application.
+    - **Problem:** The existing colors for "correct" (green) and "incorrect" (red) feedback were perceived as too bright and intense.
+    - **Solution:** The global stylesheet (`src/style.css`) was updated to use slightly darker and less saturated shades for all feedback-related UI elements. This includes buttons, input field highlights, and feedback message boxes. The new colors maintain clarity while providing a more comfortable visual experience.
+
+---
+
 User logs area
 Grammar and verbs seem to share the same issues
 REMINDER TO NOT DO ANY TESTING in your environment!! i'll do it
@@ -199,7 +207,7 @@ Similarly the submit buttons would be helpful all together in the intro
 One row for the submits
 One row for the reverse-submit
 
-Issue 9)
+Issue 9) > FIXED
 The greens and reds for correct/incorrect across the whole app are slightly too bright/intense
 Tone them down, but only a little
 
