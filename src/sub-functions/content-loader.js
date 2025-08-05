@@ -232,26 +232,69 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
         // --- Add Reset All Saves Logic ---
         const resetAllSavesBtn = scrollableContent.querySelector('#reset-all-saves-btn');
         if (resetAllSavesBtn) {
-            resetAllSavesBtn.addEventListener('click', async () => {
-                const confirmed = confirm('Are you sure you want to delete all auto-saved progress? This action cannot be undone.');
-                if (confirmed) {
-                    try {
-                        const result = await window.api.resetAllAutoSaves();
-                        if (result.success) {
-                            alert(`Successfully deleted ${result.count} auto-save file(s). The list will now be updated.`);
-                            // Refresh the active saves list
-                            if (activeSavesList) {
-                                activeSavesList.innerHTML = '<li class="italic">No active auto-saves found.</li>';
-                            }
-                        } else {
-                            throw new Error(result.error);
-                        }
-                    } catch (error) {
-                        console.error('Failed to reset all auto-saves:', error);
-                        alert(`An error occurred: ${error.message}`);
-                    }
+            const originalButtonParent = resetAllSavesBtn.parentNode;
+            let confirmationContainer = null;
+
+            const showConfirmation = () => {
+                resetAllSavesBtn.style.display = 'none';
+
+                confirmationContainer = document.createElement('div');
+                confirmationContainer.className = 'flex items-center justify-end space-x-2';
+
+                const areYouSure = document.createElement('span');
+                areYouSure.textContent = 'Are you sure?';
+                areYouSure.className = 'text-white font-bold mr-4';
+
+                const yesBtn = document.createElement('button');
+                yesBtn.textContent = 'Yes';
+                yesBtn.className = 'bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors';
+
+                const noBtn = document.createElement('button');
+                noBtn.textContent = 'No';
+                noBtn.className = 'bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-colors';
+                
+                confirmationContainer.appendChild(areYouSure);
+                confirmationContainer.appendChild(yesBtn);
+                confirmationContainer.appendChild(noBtn);
+
+                originalButtonParent.appendChild(confirmationContainer);
+
+                yesBtn.addEventListener('click', handleYesClick);
+                noBtn.addEventListener('click', handleNoClick);
+            };
+
+            const hideConfirmation = () => {
+                if (confirmationContainer) {
+                    confirmationContainer.remove();
+                    confirmationContainer = null;
                 }
-            });
+                resetAllSavesBtn.style.display = 'inline-flex';
+            };
+
+            const handleYesClick = async () => {
+                try {
+                    const result = await window.api.resetAllAutoSaves();
+                    if (result.success) {
+                        window.dispatchEvent(new CustomEvent('show-feedback', { detail: { message: `Successfully deleted ${result.count} auto-save file(s).` } }));
+                        if (activeSavesList) {
+                            activeSavesList.innerHTML = '<li class="italic">No active auto-saves found.</li>';
+                        }
+                    } else {
+                        throw new Error(result.error);
+                    }
+                } catch (error) {
+                    console.error('Failed to reset all auto-saves:', error);
+                    window.dispatchEvent(new CustomEvent('show-feedback', { detail: { message: `An error occurred: ${error.message}` } }));
+                } finally {
+                    hideConfirmation();
+                }
+            };
+
+            const handleNoClick = () => {
+                hideConfirmation();
+            };
+
+            resetAllSavesBtn.addEventListener('click', showConfirmation);
         }
     }
     renderTabs();

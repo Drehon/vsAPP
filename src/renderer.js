@@ -392,6 +392,13 @@ window.addEventListener('api-ready', () => {
     window.api.onUpdateStatus(handleUpdateStatus);
     window.api.onDownloadProgress(handleDownloadProgress);
 
+    // Listen for custom feedback events from other parts of the renderer
+    window.addEventListener('show-feedback', (e) => {
+        if (e.detail && e.detail.message) {
+            showFeedbackMessage(e.detail.message);
+        }
+    });
+
     await addTab(true); // Add initial home tab
   }
 

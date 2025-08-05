@@ -371,6 +371,16 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
+## Developer Notes (2025-08-05) - Issue 5 Fix
+
+- **Issue 5 Fix:** Addressed the lack of visual separation between different exercise "areas" within the diagnostic test blocks.
+    - **Analysis:** The user noted that it was difficult to distinguish between groups of exercises (e.g., "Multi-Error Identification" vs. "Sentence Transformation") within a single block. The request was to create clear visual groupings.
+    - **Solution:**
+        1.  **Data Restructuring:** The `displayNum` for each exercise in both `DG-student-grammar.html` and `DV-student-verbs.html` was updated to reflect a new grouped structure. For example, exercises previously numbered `A2`, `A3`, `A4` under the same section were renumbered to `A2-1`, `A2-2`, `A2-3`. This provides a clearer, more organized data foundation.
+        2.  **Updated Rendering Logic:** The `renderTest` function in `diagnostic-test-handler.js` was modified. It now tracks the current exercise `section`. When the section changes, it dynamically injects a section header (including the title and explanation) and a horizontal rule (`<hr>`) into the DOM.
+    - **Outcome:** The diagnostic tests now display clear, visually distinct sections for each group of exercises, separated by titles and lines, resolving the ambiguity and improving the overall layout and user experience.
+
+---
 
 User logs area
 Grammar and verbs seem to share the same issues

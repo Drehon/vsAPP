@@ -606,15 +606,32 @@ ipcMain.handle('reset-exercise-state', async (event, pageId) => {
 ipcMain.handle('reset-all-auto-saves', async () => {
   const savesDir = getAutoSavesDir();
   try {
-    const files = await fs.readdir(savesDir);
-    await Promise.all(files.map(file => fs.unlink(path.join(savesDir, file))));
-    console.log(`Successfully deleted all files from ${savesDir}`);
-    return { success: true, count: files.length };
-  } catch (err) {
-    if (err.code === 'ENOENT') {
-      console.log(`Auto-saves directory ${savesDir} not found. Nothing to delete.`);
-      return { success: true, count: 0 }; // It's not an error if the folder doesn't exist
+    // First, read the directory to count the files for the feedback message.
+    const files = await fs.readdir(savesDir).catch(err => {
+      // If the directory doesn't exist, there are no files to delete.
+      if (err.code === 'ENOENT') {
+        return [];
+      }
+      // For other errors, re-throw to be caught by the outer catch block.
+      throw err;
+    });
+    const count = files.length;
+
+    if (count === 0) {
+      console.log(`Auto-saves directory ${savesDir} is empty or not found. Nothing to delete.`);
+      return { success: true, count: 0 };
     }
+
+    // Use fs.rm to recursively and forcefully delete the directory and its contents.
+    await fs.rm(savesDir, { recursive: true, force: true });
+    console.log(`Successfully deleted directory ${savesDir}`);
+
+    // Recreate the directory for future use.
+    await fs.mkdir(savesDir, { recursive: true });
+    console.log(`Successfully recreated directory ${savesDir}`);
+
+    return { success: true, count: count };
+  } catch (err) {
     console.error(`Failed to reset all auto-saves:`, err);
     return { success: false, error: err.message };
   }
