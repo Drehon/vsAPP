@@ -308,6 +308,14 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
+## Developer Notes (2025-08-05) - Issue EE Fix
+
+- **Issue EE Fix:** Addressed the readability of the 'Submit', 'Revert', and 'Azzera' labels in the global control panel.
+    - **Problem:** The text labels for the button groups were hard to read against their background. The previous approach of using `text-shadow` was ineffective.
+    - **Solution:** Based on user feedback, the approach was changed from text effects to background colors. The `<span>` elements for the labels in `diagnostic-test-handler.js` were updated to use solid background colors (blue for Submit, yellow for Revert, red for Azzera) with contrasting text. The 'Revert' label now uses black text for better readability on the yellow background, while the others use white text. This makes the labels clear and readable, appearing as distinct tags and resolving the issue.
+
+---
+
 User logs area
 Grammar and verbs seem to share the same issues
 REMINDER TO NOT DO ANY TESTING in your environment!! i'll do it
@@ -381,17 +389,8 @@ Issue DD) > FIXED
 After modifications for issue 8 and issue CC, the buttons for multi-choice questions are unresponsive
 
 Issue EE)
-The 'Submit', 'Revert' and 'Azzera' texts are a bit hard to read
-Can you give each of them an higlight similar in color to that of their sets of buttons 
-STILL NOT FIXED after multiple attemps
-
-at the moment
-submit has light-blue text on white background. 
-i was hoping for white or grey text on ligth blue background instead. 
-revert is black on white, i was hoping for a light yellow background. 
-and the same text color as submit for the text. 
-azzera is light red on white, i was hoping for same white/grey as the other two on a background with that red.
-
+to make things more uniform i'd like the revert text and the text for block 1, 2 and 3 for the revert are to be white
+but that cannot work on yellow background. replace the yellow with a more fitting color, maybe an orange that would give the white text good contrast and make the text white.
 
 Issue 9) > FIXED
 The greens and reds for correct/incorrect across the whole app are slightly too bright/intense

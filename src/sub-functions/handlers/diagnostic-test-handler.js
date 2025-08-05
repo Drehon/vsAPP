@@ -573,16 +573,16 @@ export class DiagnosticTestHandler {
         controlsContainer.className = 'p-4 bg-slate-800/80 backdrop-blur-sm rounded-lg shadow-lg border border-slate-700 mb-4';
 
         const buttonGroups = [
-            { title: 'Submit', action: 'submit', style: 'bg-indigo-600 text-white hover:bg-indigo-700', bgStyle: 'bg-indigo-900/30', titleClass: 'text-indigo-400', titleHighlightStyle: `[filter:drop-shadow(0_1px_0.5px_rgba(0,0,0,0.8))]` },
-            { title: 'Revert', action: 'unsubmit', style: 'bg-yellow-400 text-black hover:bg-yellow-500', bgStyle: 'bg-yellow-900/30', titleClass: 'text-yellow-400', titleHighlightStyle: `[filter:drop-shadow(0_1px_0.5px_rgba(0,0,0,0.8))]` },
-            { title: 'Azzera', action: 'reset', style: 'bg-red-500 text-white hover:bg-red-600', bgStyle: 'bg-red-900/30', titleClass: 'text-red-400', titleHighlightStyle: `[filter:drop-shadow(0_1px_0.5px_rgba(0,0,0,0.8))]` }
+            { title: 'Submit', action: 'submit', style: 'bg-indigo-600 text-white hover:bg-indigo-700', bgStyle: 'bg-indigo-900/30', titleClass: 'bg-blue-500 text-white px-2 py-1 rounded-md' },
+            { title: 'Revert', action: 'unsubmit', style: 'bg-yellow-400 text-black hover:bg-yellow-500', bgStyle: 'bg-yellow-900/30', titleClass: 'bg-yellow-400 text-black px-2 py-1 rounded-md' },
+            { title: 'Azzera', action: 'reset', style: 'bg-red-500 text-white hover:bg-red-600', bgStyle: 'bg-red-900/30', titleClass: 'bg-red-500 text-white px-2 py-1 rounded-md' }
         ];
 
         let content = '<div class="flex justify-center items-center gap-x-6 gap-y-4 flex-wrap">';
 
         buttonGroups.forEach(group => {
             content += `<div class="flex items-center gap-4 p-3 rounded-lg ${group.bgStyle}">`; // Increased gap and padding
-            content += `<span class="text-sm font-bold ${group.titleClass} ${group.titleHighlightStyle}">${group.title}:</span>`;
+            content += `<span class="text-sm font-bold ${group.titleClass}">${group.title}:</span>`;
             
             const buttonsHTML = this.pageData.blocks.map((block, index) => {
                 const blockLetter = String.fromCharCode(65 + index);
