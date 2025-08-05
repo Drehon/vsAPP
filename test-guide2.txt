@@ -323,6 +323,7 @@ Submit A   Submit B   Submit C
 Issue CC)
 Move the submit, revert and reset buttons to the intro from the diagnostic tab to the overall page's intro without reverting the diagnostics in tab!!!
 The buttons should be placed in the center of the area below the intro-text.
+Make sure the buttons render correctly
 They should be placed on three rows, so that they may be small and not OVERLY noticeable.
 
 Issue DD)
