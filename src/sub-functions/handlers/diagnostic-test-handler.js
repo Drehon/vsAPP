@@ -297,8 +297,15 @@ export class DiagnosticTestHandler {
             const blockContainer = document.createElement('div');
             blockContainer.className = 'p-6 bg-white rounded-lg shadow-lg';
             // This data attribute is crucial for event listeners to find the correct block.
-            blockContainer.dataset.blockIndex = blockIndex; 
-            blockContainer.innerHTML = `<h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4 mb-4">${block.name}</h2>`;
+            blockContainer.dataset.blockIndex = blockIndex;
+
+            let blockHTML = `<h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4 mb-4">${block.name}</h2>`;
+
+            // Render the block preamble if it exists.
+            if (block.blockPreamble) {
+                blockHTML += `<div class="prose max-w-none text-slate-700 mb-6">${block.blockPreamble}</div>`;
+            }
+            blockContainer.innerHTML = blockHTML;
 
             const questionsWrapper = document.createElement('div');
             questionsWrapper.className = 'space-y-6';

@@ -123,6 +123,18 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
+
+## Developer Notes (2025-08-05) - Issue 6 Final Fix
+
+- **Issue 6 Fix (Block C Preamble):** Implemented a robust fix to ensure the context-setting text for Block C of the grammar diagnostic test is always visible.
+    - **Problem:** The previous fix, which placed the text in a `sectionExplanation` property, failed because that property is only rendered for specific question types and was being ignored for the multiple-choice questions in Block C.
+    - **Solution:**
+        1.  A new property, `blockPreamble`, was introduced at the block level in the JSON data structure.
+        2.  The rendering logic in `diagnostic-test-handler.js` was updated to check for this `blockPreamble` property and render its content at the top of the block, after the title but before any questions.
+        3.  The data in `DG-student-grammar.html` was updated to use this new `blockPreamble` property for Block C, ensuring the introductory text now appears correctly and reliably.
+
+---
+
 User logs area
 Grammar and verbs seem to share the same issues
 REMINDER TO NOT DO ANY TESTING in your environment!! i'll do it
@@ -160,7 +172,7 @@ the 'areas' for different excercises types in block B and C are unclear, some se
 for example split them into A1-1 (which is actually composed of multiple answers that fit under A1-X). then A2-1 to A2-1 to A2-10, does that make sense?
 this is relevant for all blocks for both verb and grammar, evaluate and address
 
-Issue 6) > partially fixed
+Issue 6) > FIXED
 A significant amount of 'Rewrite the sentence according to the instructions.' is actually lacking the mentioned explanation.
 the test for verbs seems okay
 but for grammar questions B9 to B13 are unclear in their explanations of what is being asked
@@ -168,17 +180,14 @@ Questions C1 to C10 should also have, before C1, a view of the text as a whole f
 Seeing the parts of the text split into the 10 questions without the whole thing being visible before them makes things unclear.
 
 Issue 7)
-On submit block this happens: 
-diagnostic-test-handler.js:220 Uncaught ReferenceError: Chart is not defined
-    at DiagnosticTestHandler.renderOrUpdateChart (diagnostic-test-handler.js:220:1)
-    at DiagnosticTestHandler.renderDiagnostics (diagnostic-test-handler.js:146:1)
-    at DiagnosticTestHandler.render (diagnostic-test-handler.js:100:1)
-    at DiagnosticTestHandler.checkAnswers (diagnostic-test-handler.js:462:1)
-    at HTMLButtonElement.eval (diagnostic-test-handler.js:384:1)
+The text for the chart is really hard to read 
+the 6% is completely white on white, everything has little contrast.
 
 Issue 8)
-Once you click on diagnostics there is at the moment seemingly no way to go back to the tests aside from 'Azzera'
+Once you click on diagnostics there is at the moment seemingly no way to go back to reset only specific blocks and navigation is annoying
 For this purpose, as continuation Issue 2) diagnostics should be a fourth 'block-tab'
+And three buttons to reset the three blocks should be added to the intro to the page
+
 
 
 FINAL TASK 
