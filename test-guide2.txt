@@ -115,6 +115,14 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
+## Developer Notes (2025-08-05) - Issue 6 Fix
+
+- **Issue 6 Fix:** Addressed the concern that many "Rewrite the sentence" exercises were lacking instructions.
+    - **Analysis:** The issue was traced to several `input_rewrite` exercises in the `DV-student-verbs.html` file. While these exercises had post-answer explanations, they lacked explicit, up-front instructions within the question text, making the task unclear.
+    - **Solution:** The `question` field for nine exercises (A7-A11, B13-B15, and C1) in `DV-student-verbs.html` was updated to include a clear, italicized instruction (e.g., "<em>Complete the second sentence so that it has a similar meaning to the first.</em>"). This change makes the exercises more consistent with those in the grammar diagnostic and clarifies the user's task.
+
+---
+
 User logs area
 Grammar and verbs seem to share the same issues
 REMINDER TO NOT DO ANY TESTING in your environment!! i'll do it
@@ -150,6 +158,7 @@ Notes areas below each question is missing, that's important and was to be manta
 Issue 5)
 the 'areas' for different excercises types in block B and C are unclear, some separation is required for clarity.
 for example split them into A1-1 (which is actually composed of multiple answers that fit under A1-X). then A2-1 to A2-1 to A2-10, does that make sense?
+this is relevant for all blocks for both verb and grammar, evaluate and address
 
 Issue 6) 
 A significant amount of 'Rewrite the sentence according to the instructions.' is actually lacking the mentioned explanation.
@@ -166,3 +175,10 @@ diagnostic-test-handler.js:220 Uncaught ReferenceError: Chart is not defined
 Issue 8)
 Once you click on diagnostics there is at the moment seemingly no way to go back to the tests aside from 'Azzera'
 For this purpose, as continuation Issue 2) diagnostics should be a fourth 'block-tab'
+
+
+FINAL TASK 
+once all issues are solved, generate a test-template.html
+like you have done for lessons, lessonsAN and excercises
+this will serve as base for future tests
+make sure it doesn't show in the app though
