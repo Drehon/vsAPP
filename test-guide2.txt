@@ -284,6 +284,8 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
+
+
 ## Developer Notes (2025-08-05) - Final UI Refinements
 
 - **Change:** Refined the styling of the global control panel based on a final round of user feedback.
@@ -296,7 +298,14 @@ These tests should be run for **both** diagnostic test pages:
 - **Issue DD Fix:** Fixed an issue where multiple-choice buttons in diagnostic tests became unresponsive.
     - **Analysis:** The bug was introduced after refactoring the UI to include a global control panel. The function responsible for adding event listeners (`addQuestionBlockListeners`) was using a generic selector (`[data-block-index='...']`) to find the question container. This selector was mistakenly matching buttons in the new global control panel instead of the intended `div` that contains the questions.
     - **Solution:** The selector in `addQuestionBlockListeners` was made more specific by changing it from `[data-block-index='...']` to `div[data-block-index='...']`. This ensures that the event listeners are attached only to the correct question container `div`, restoring the functionality of the multiple-choice buttons.
+---
 
+## Developer Notes (2025-08-05) - Issue EE Follow-up
+
+- **Issue EE Status:** Unresolved.
+    - **Summary:** Multiple attempts were made to improve the readability of the 'Submit', 'Revert', and 'Azzera' labels by applying different text-shadow effects (`glow` and `offset/darker color`).
+    - **Outcome:** Neither attempt produced the desired visual change in the user's environment. The issue remains open. Further investigation will be handled in a new task.
+    
 ---
 
 User logs area
@@ -356,7 +365,7 @@ Like this
 Revert A   Revert B   Revert C
 Submit A   Submit B   Submit C
 
-Issue CC)
+Issue CC) > FIXED
 The diagnostics tab should only contain
 - text explaining the different english-areas of evaluation
 - the overall chart/scores
@@ -368,7 +377,7 @@ The buttons should be placed centrally and rendered correctly
 They should be placed on the same row, with submit group  of three > then revert group  of three> then reset group of three
 They should be small, not OVERLY noticeable and visually part of the intro 'foreground'.
 
-Issue DD)
+Issue DD) > FIXED
 After modifications for issue 8 and issue CC, the buttons for multi-choice questions are unresponsive
 
 Issue EE)

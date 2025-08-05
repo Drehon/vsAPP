@@ -573,16 +573,16 @@ export class DiagnosticTestHandler {
         controlsContainer.className = 'p-4 bg-slate-800/80 backdrop-blur-sm rounded-lg shadow-lg border border-slate-700 mb-4';
 
         const buttonGroups = [
-            { title: 'Submit', action: 'submit', style: 'bg-indigo-600 text-white hover:bg-indigo-700', bgStyle: 'bg-indigo-900/30' },
-            { title: 'Revert', action: 'unsubmit', style: 'bg-yellow-400 text-yellow-800 hover:bg-yellow-500', bgStyle: 'bg-yellow-900/30' },
-            { title: 'Reset', action: 'reset', style: 'bg-red-500 text-white hover:bg-red-600', bgStyle: 'bg-red-900/30' }
+            { title: 'Submit', action: 'submit', style: 'bg-indigo-600 text-white hover:bg-indigo-700', bgStyle: 'bg-indigo-900/30', titleHighlightStyle: '[text-shadow:1px_1px_2px_#3730a3]' },
+            { title: 'Revert', action: 'unsubmit', style: 'bg-yellow-400 text-yellow-800 hover:bg-yellow-500', bgStyle: 'bg-yellow-900/30', titleHighlightStyle: '[text-shadow:1px_1px_2px_#b45309]' },
+            { title: 'Reset', action: 'reset', style: 'bg-red-500 text-white hover:bg-red-600', bgStyle: 'bg-red-900/30', titleHighlightStyle: '[text-shadow:1px_1px_2px_#b91c1c]' }
         ];
 
         let content = '<div class="flex justify-center items-center gap-x-6 gap-y-4 flex-wrap">';
 
         buttonGroups.forEach(group => {
             content += `<div class="flex items-center gap-4 p-3 rounded-lg ${group.bgStyle}">`; // Increased gap and padding
-            content += `<span class="text-sm font-bold text-slate-300">${group.title}:</span>`;
+            content += `<span class="text-sm font-bold text-slate-200 ${group.titleHighlightStyle}">${group.title}:</span>`;
             
             const buttonsHTML = this.pageData.blocks.map((block, index) => {
                 const blockLetter = String.fromCharCode(65 + index);
