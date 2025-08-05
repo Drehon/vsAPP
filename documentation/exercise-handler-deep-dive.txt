@@ -1,0 +1,116 @@
+# Deep Dive: The ExerciseHandler
+
+The `ExerciseHandler` is a generic, reusable class that powers all standard, non-diagnostic interactive exercises in the application. It is designed to be configured entirely through the `#page-data` JSON island in an HTML file.
+
+---
+
+## 1. Core Responsibilities
+
+-   **State Management:** It initializes and manages the user's progress through an exercise. The state is stored on the `activeTab.exerciseState` object.
+-   **Dynamic Rendering:** It builds the entire user interface for the exercise—including block tabs, scoreboard, question content, and navigation—based on the data from the JSON island.
+-   **Event Handling:** It attaches all necessary event listeners for user interaction, such as answering questions, navigating between questions, and switching between blocks.
+-   **Auto-Saving:** It calls the `autoSave` function passed to its constructor whenever the state changes, ensuring user progress is continuously persisted.
+
+---
+
+## 2. The State Object (`exerciseState`)
+
+The handler maintains a detailed state object. A new state is created if `activeTab.exerciseState` is null upon initialization.
+
+### `exerciseState` Structure:
+
+```javascript
+{
+    "version": 2, // The version of the state structure
+    "currentBlockIndex": 0, // The index of the currently active block (or "Fase")
+    "answers": [ // An array of arrays, one for each block
+        [ // Answers for Block 0
+            { "userAnswer": "A", "isCorrect": true, "note": "User note here." },
+            { "userAnswer": "Some text", "isCorrect": false, "note": "" }
+        ],
+        // ... answers for Block 1, etc.
+    ],
+    "blockNotes": ["Note for block 0", "Note for block 1"], // A place for per-block notes
+    "currentQuestionIndexes": [0, 0] // The last viewed question index for each block
+}
+```
+
+---
+
+## 3. The Data Flow (`#page-data` JSON)
+
+The handler is configured by the `#page-data` JSON object. The key property is `blocks`.
+
+### `page-data` Structure:
+
+```javascript
+{
+    "title": "Exercise Title",
+    "subtitle": "Exercise Subtitle",
+    "blocks": [
+        {
+            "name": "Fase 1", // The name displayed on the block tab
+            "exercises": [
+                {
+                    "type": "true-false", // Determines which render method to use
+                    "question": "This statement is true.",
+                    "answer": true,
+                    "explanation": "Because it is."
+                },
+                {
+                    "type": "multiple-choice",
+                    "question": "1 + 1 = ?",
+                    "options": ["1", "2", "3"],
+                    "answer": "2",
+                    "explanation": "Because 1 + 1 equals 2."
+                },
+                {
+                    "type": "fill-in-the-blank",
+                    "prompt": "Complete the sentence.", // Optional prompt
+                    "question": "The quick brown fox jumps over the lazy ______.",
+                    "answer": "dog",
+                    "explanation": "The classic pangram."
+                }
+            ]
+        }
+        // ... more blocks
+    ]
+}
+```
+
+---
+
+## 4. Key Methods
+
+-   **`constructor(container, tab, saveFunc)`:** The entry point. It finds and parses the `#page-data` JSON, then calls `initializeState()` and `render()`.
+
+-   **`initializeState()`:** Checks if a valid state object already exists on the tab. If not, it creates a fresh one based on the structure of the `page-data`.
+
+-   **`render()`:** The main rendering engine. It completely clears and rebuilds the UI in `#content-body` every time it's called. This ensures the view is always perfectly in sync with the current state. It orchestrates calls to all the `create...` and `render...` methods.
+
+-   **`renderCurrentQuestion()`:** A `switch` statement that calls a specific rendering function (e.g., `renderTrueFalseQuestion`) based on the `type` property of the current question object.
+
+-   **`addAnswerListeners()` and `addNavigationListeners()`:** These methods attach all the necessary `onclick` and other event handlers to the newly rendered HTML elements. They are responsible for updating the state and calling `render()` to reflect the changes.
+
+---
+
+## 5. Extending with a New Question Type
+
+To add a new question type (e.g., "drag-and-drop"):
+
+1.  **Update `page-data`:** Define a new object structure for your question type in the JSON.
+    ```json
+    {
+      "type": "drag-and-drop",
+      "question": "Match the items.",
+      "items": ["A", "B"],
+      "targets": ["1", "2"],
+      "answer": {"A": "1", "B": "2"}
+    }
+    ```
+
+2.  **Create a Renderer:** In `exercise-handler.js`, add a new rendering function (e.g., `renderDragAndDropQuestion(question, answerState)`). This function will generate the specific HTML for your new question type.
+
+3.  **Update the `switch`:** Add a `case` for `"drag-and-drop"` in the `renderCurrentQuestion()` method's `switch` statement to call your new renderer.
+
+4.  **Add Logic:** In `addAnswerListeners()`, add the logic to handle interactions with your new question type. This logic will be responsible for checking the answer, updating the `answerState`, and triggering a re-render.

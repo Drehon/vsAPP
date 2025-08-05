@@ -1,0 +1,90 @@
+# Deep Dive: The DiagnosticTestHandler
+
+The `DiagnosticTestHandler` is a powerful, specialized class for creating multi-stage diagnostic tests. While it shares core architectural principles with the `ExerciseHandler`, it includes several advanced features tailored for assessment-style content.
+
+---
+
+## 1. Core Responsibilities
+
+-   **Block-Based Progression:** It manages tests that are divided into distinct "blocks" of questions. Users complete one block at a time and must "submit" it before seeing feedback.
+-   **Single-Page Rendering:** Unlike the `ExerciseHandler`'s tabbed view, the `DiagnosticTestHandler` renders all blocks and questions onto a single, scrollable page.
+-   **Immediate Feedback on Submission:** It provides instant feedback (correct/incorrect styling and explanations) for an entire block of questions at once when the user clicks "Submit Block".
+-   **Advanced Diagnostics:** It calculates and displays a running overall score and generates a `Chart.js` bar chart that visualizes performance broken down by question category.
+-   **Custom Renderers:** It supports unique question layouts and checking logic, as demonstrated by the "paragraph_error_correction" type used in the verb diagnostic test.
+
+---
+
+## 2. The State Object (`exerciseState`)
+
+The state object for a diagnostic test is similar to the one for a standard exercise but includes properties to manage block-level state.
+
+### `exerciseState` Structure:
+
+```javascript
+{
+    "version": "1.0", // State version
+    "answers": { // A map of question IDs to user answers
+        "q1": "user's answer",
+        "q2": "another answer"
+    },
+    "submittedBlocks": [true, false, false], // A boolean array tracking which blocks have been submitted
+    "notes": { // A map of question IDs to user notes
+        "q1": "A note about this question."
+    }
+}
+```
+
+---
+
+## 3. The Data Flow (`#page-data` JSON)
+
+The JSON data structure for a diagnostic test is more complex, including a `config` section and a flat `exercises` array where each question is linked to a block.
+
+### `page-data` Structure:
+
+```javascript
+{
+    "title": "Diagnostic Test Title",
+    "subtitle": "Test Subtitle",
+    "config": {
+        "type": "diagnostic",
+        "blocks": ["Block A", "Block B", "Block C"] // Defines the order and names of the blocks
+    },
+    "exercises": [
+        {
+            "id": "q1", // A unique ID for the question
+            "block": "Block A", // Assigns the question to a block
+            "category": "Tense", // Used for grouping in the results chart
+            "type": "multiple-choice",
+            "renderer": "standard_mc", // Specifies a custom renderer function if needed
+            "question": "...",
+            "options": [...],
+            "answer": "B",
+            "explanation": "..."
+        },
+        // ... more questions
+    ]
+}
+```
+
+Key differences from `ExerciseHandler`'s data:
+-   **`config.blocks`**: Defines the ordered list of blocks.
+-   **Flat `exercises` array**: Questions are in a single list.
+-   **`id`**: Each question needs a unique ID for state tracking.
+-   **`block`**: Each question must be associated with a block from the `config`.
+-   **`category`**: Essential for the diagnostic chart.
+-   **`renderer`**: An optional property to specify a non-standard rendering function for the question.
+
+---
+
+## 4. Key Features and Methods
+
+-   **`render()`:** The main render function. It iterates through the `config.blocks` array and renders each block sequentially. For each block, it filters the main `exercises` list to find the relevant questions.
+
+-   **`renderBlock(blockName, blockIndex)`:** Renders a single block, including its title, questions, and a "Submit Block" button. It disables inputs and shows feedback for blocks that have already been submitted.
+
+-   **`handleSubmitBlock(blockIndex)`:** The core logic for block submission. It iterates through the questions in the block, checks the user's answers against the correct answers, updates the `exerciseState`, and then triggers a re-render to display the feedback. It also calls `updateDiagnostics()` to refresh the score and chart.
+
+-   **`updateDiagnostics()`:** Recalculates the overall score and regenerates the Chart.js bar chart based on the current state of all *submitted* blocks.
+
+-   **Custom Renderers:** The handler uses a map of renderer functions. When rendering a question, it checks for a `renderer` property in the question's JSON data. If present, it uses the specified renderer function; otherwise, it falls back to a default renderer based on the question `type`. This makes the handler highly extensible for unique question formats.
