@@ -214,7 +214,20 @@ export class DiagnosticTestHandler {
             plugins: {
                 legend: { display: false },
                 datalabels: {
-                    color: '#FFFFFF', // Solid white for maximum contrast
+                    // --- Start of Issue 7 Fix ---
+                    // Style the labels as "pills" to guarantee contrast.
+                    backgroundColor: '#111827', // A very dark grey (gray-900)
+                    borderColor: '#374151',     // slate-700, for a subtle border
+                    borderWidth: 1,
+                    borderRadius: 6,           // Makes it pill-shaped
+                    color: '#FFFFFF',          // White text
+                    padding: {
+                        top: 4,
+                        bottom: 4,
+                        left: 8,
+                        right: 8
+                    },
+                    // --- End of Issue 7 Fix ---
                     anchor: 'end',
                     align: 'end',
                     offset: 8,
