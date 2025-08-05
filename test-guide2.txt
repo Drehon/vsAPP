@@ -316,6 +316,14 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
+## Developer Notes (2025-08-05) - Issue EE Fix v2
+
+- **Issue EE Fix:** Addressed the readability of the 'Revert' buttons in the global control panel.
+    - **Problem:** The Tailwind CSS classes for orange background were not being applied correctly in the user's environment, resulting in buttons with a white background.
+    - **Solution:** To bypass the CSS class issue, the `renderGlobalControls` function in `diagnostic-test-handler.js` was modified to apply inline styles directly to the 'Revert' button and its label. The background color is now set to a standard orange (`#F97316`) and the text color to white, ensuring the correct appearance regardless of the CSS build process.
+
+---
+
 User logs area
 Grammar and verbs seem to share the same issues
 REMINDER TO NOT DO ANY TESTING in your environment!! i'll do it
@@ -388,7 +396,7 @@ They should be small, not OVERLY noticeable and visually part of the intro 'fore
 Issue DD) > FIXED
 After modifications for issue 8 and issue CC, the buttons for multi-choice questions are unresponsive
 
-Issue EE)
+Issue EE) > FIXED
 to make things more uniform i'd like the revert text and the text for block 1, 2 and 3 for the revert are to be white
 but that cannot work on yellow background. replace the yellow with a more fitting color, maybe an orange that would give the white text good contrast and make the text white.
 attempts to get orange background were unsuccessfull, background is at the moment white. fix
@@ -399,7 +407,7 @@ Tone them down, but only a little
 
 Issue 10) 
 Fixing issue 6 has led to a situation where the start of each block has two 'lines' horizontally pressed to each other for every block except the one where the fix was intended
-Please add a short intro to each block, detailing the topics, to visually fix this.
+Please add a short intro to each block, detailing the topics, types of excercises, to visually fix this.
 I imagine you have to modify the html themselves. or the jsons? or wherever you get the text in the htmls from.
 
 FINAL TASK 

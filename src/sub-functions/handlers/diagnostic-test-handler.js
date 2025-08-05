@@ -574,7 +574,7 @@ export class DiagnosticTestHandler {
 
         const buttonGroups = [
             { title: 'Submit', action: 'submit', style: 'bg-indigo-600 text-white hover:bg-indigo-700', bgStyle: 'bg-indigo-900/30', titleClass: 'bg-blue-500 text-white px-2 py-1 rounded-md' },
-            { title: 'Revert', action: 'unsubmit', style: 'bg-orange-500 text-white hover:bg-orange-600', bgStyle: 'bg-orange-900/30', titleClass: 'bg-orange-500 text-white px-2 py-1 rounded-md' },
+            { title: 'Revert', action: 'unsubmit', style: 'text-white', bgStyle: 'bg-orange-900/30', titleClass: 'text-white px-2 py-1 rounded-md' },
             { title: 'Azzera', action: 'reset', style: 'bg-red-500 text-white hover:bg-red-600', bgStyle: 'bg-red-900/30', titleClass: 'bg-red-500 text-white px-2 py-1 rounded-md' }
         ];
 
@@ -582,7 +582,9 @@ export class DiagnosticTestHandler {
 
         buttonGroups.forEach(group => {
             content += `<div class="flex items-center gap-4 p-3 rounded-lg ${group.bgStyle}">`; // Increased gap and padding
-            content += `<span class="text-sm font-bold ${group.titleClass}">${group.title}:</span>`;
+            
+            let titleExtraStyle = (group.title === 'Revert') ? 'style="background-color: #F97316;"' : '';
+            content += `<span class="text-sm font-bold ${group.titleClass}" ${titleExtraStyle}>${group.title}:</span>`;
             
             const buttonsHTML = this.pageData.blocks.map((block, index) => {
                 const blockLetter = String.fromCharCode(65 + index);
@@ -592,12 +594,15 @@ export class DiagnosticTestHandler {
                 if (group.action === 'submit' && isSubmitted) disabled = 'disabled';
                 if (group.action === 'unsubmit' && !isSubmitted) disabled = 'disabled';
 
+                let buttonExtraStyle = (group.title === 'Revert') ? 'style="background-color: #F97316;"' : '';
+
                 return `
                     <button 
                         class="text-xs font-bold py-1 px-3 rounded-md transition-colors ${group.style}"
                         data-action="${group.action}" 
                         data-block-index="${index}" 
-                        ${disabled}>
+                        ${disabled}
+                        ${buttonExtraStyle}>
                         Block ${blockLetter}
                     </button>
                 `;
