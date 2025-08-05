@@ -372,6 +372,8 @@ Seeing the parts of the text split into the 10 questions without the whole thing
 Issue 7) > Unchanged after multiple attempts
 The text for the chart is really hard to read 
 the 6% is completely white on white, everything has little contrast.
+open a new txt named carta.txt and inside analyze the issue, proposing alternative solutions, for example we might altogether change the chart
+do you feel the current chart is the best option for what we are doing?
 
 Issue 8)
 As continuation of Issue 2) diagnostics should be a fourth 'tab' besides the three for the blocks
