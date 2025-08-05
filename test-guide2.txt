@@ -141,6 +141,87 @@ These tests should be run for **both** diagnostic test pages:
     - **Problem:** The default text color for the data labels on the chart had very low contrast against the bar background, making percentages (like "6%") nearly invisible.
     - **Solution:** The Chart.js configuration in `diagnostic-test-handler.js` was updated to include a `datalabels` plugin configuration. This change sets the label color to a high-contrast dark shade (`#111827`), making it clearly visible. The font size and weight were also adjusted for better readability, and labels for 0% values are now hidden to reduce clutter.
 
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <title>VSAPP - Home</title>
+    <!-- The CSS file is now imported directly in renderer.js -->
+    <!-- Removed Google Fonts link for Inter to self-host -->
+    <style>
+      /* Font family is now defined via @font-face in index.css */
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+    </style>
+    <!-- Added Chart.js from CDN for diagnostic charts -->
+    <script src="./lib/chart.umd.min.js"></script>
+    <!-- Added Chart.js Datalabels plugin for better chart readability -->
+    <script src="./lib/chartjs-plugin-datalabels.min.js"></script>
+  </head>
+  <body class="bg-slate-800 text-white flex flex-col h-screen">
+
+    <!-- Sticky Header Container -->
+    <div class="sticky top-0 z-20 flex-shrink-0">
+      <!-- Tab Bar -->
+      <div id="tab-bar" class="bg-slate-900 flex items-center pr-2">
+        <!-- Tabs will be added here dynamically -->
+        <button id="new-tab-btn" class="w-9 h-9 bg-slate-700 hover:bg-indigo-600 flex-shrink-0 flex items-center justify-center">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        </button>
+      </div>
+
+      <!-- Global Toolbar -->
+      <div id="global-toolbar" class="bg-slate-700 border-b border-t border-slate-600 px-4 py-1 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <button id="global-home-btn" title="Go Home" class="p-2 rounded-md hover:bg-slate-600">
+            <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          </button>
+          <button id="global-reload-btn" title="Reload Content" class="p-2 rounded-md hover:bg-slate-600">
+            <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 4l16 16"></path></svg>
+          </button>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="global-save-btn" class="text-sm bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-lg transition-colors">Salva</button>
+          <button id="global-load-btn" class="text-sm bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded-lg transition-colors">Carica</button>
+          <button id="global-reset-btn" class="text-sm bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-lg transition-colors">Azzera</button>
+          <div class="bg-slate-600 rounded-lg py-1 px-3 w-40 flex-shrink-0 flex items-center justify-center" style="min-width: 8rem;">
+            <span id="reset-feedback-message" class="text-sm text-green-400 font-bold transition-opacity duration-500 opacity-0">&nbsp;</span>
+          </div>
+          <button id="global-github-btn" title="Open on GitHub" class="p-2 rounded-md hover:bg-slate-600">
+            <svg class="w-6 h-6 text-slate-300" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+          </button>
+          <button id="global-settings-btn" title="Settings" class="p-2 rounded-md hover:bg-slate-600">
+            <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Panes -->
+    <div id="content-panes" class="relative flex-grow overflow-y-auto bg-slate-600"></div>
+
+    <!-- Footer -->
+    <footer class="flex-shrink-0 bg-slate-900 text-slate-400 text-xs p-2 flex justify-between items-center">
+      <div>App Version: <span id="app-version">Loading...</span></div>
+      <div class="flex items-center space-x-4"> <!-- Container for network and update status -->
+        <!-- Network Status -->
+        <div id="network-status" class="flex items-center">
+          <span class="w-3 h-3 rounded-full mr-2" id="network-indicator"></span>
+          <span id="network-label"></span>
+        </div>
+        <!-- Update Status -->
+        <div id="update-status" class="flex items-center">
+          <span class="w-3 h-3 rounded-full mr-2 bg-gray-400" id="update-indicator"></span> <!-- Initial grey dot -->
+          <span id="update-label">Checking for updates...</span> <!-- Initial text -->
+        </div>
+      </div>
+    </footer>
+    
+  </body>
+</html>
+
+
 ---
 
 ## Developer Notes (2025-08-05) - Issue 2 Fix
@@ -192,6 +273,7 @@ Issue 5)
 the 'areas' for different excercises types in block B and C are unclear, some separation is required for clarity.
 for example split them into A1-1 (which is actually composed of multiple answers that fit under A1-X). then A2-1 to A2-1 to A2-10, does that make sense?
 this is relevant for all blocks for both verb and grammar, evaluate and address
+i think the html have to be modifed to reflect this new structure, and then gaps visually added to separate the 'areas' in a block.
 
 Issue 6) > FIXED
 A significant amount of 'Rewrite the sentence according to the instructions.' is actually lacking the mentioned explanation.
@@ -200,7 +282,7 @@ but for grammar questions B9 to B13 are unclear in their explanations of what is
 Questions C1 to C10 should also have, before C1, a view of the text as a whole for clarity. with no ... anywhere in this single block.
 Seeing the parts of the text split into the 10 questions without the whole thing being visible before them makes things unclear.
 
-Issue 7) > Unchanged after 1 attempt
+Issue 7) > Unchanged after 2 attempts
 The text for the chart is really hard to read 
 the 6% is completely white on white, everything has little contrast.
 
@@ -212,7 +294,7 @@ Similarly the submit buttons would be helpful all together in the intro
 One row for the submits
 One row for the reverse-submit
 
-Issue 9)
+Issue 9) > FIXED
 The greens and reds for correct/incorrect across the whole app are slightly too bright/intense
 Tone them down, but only a little
 
