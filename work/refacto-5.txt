@@ -174,3 +174,30 @@ As the final step of the refactoring project, comprehensive developer documentat
 5.  **`docs/diagnostic-handler-deep-dive.txt`**
     -   **Purpose:** A detailed technical breakdown of the more complex `DiagnosticTestHandler` class. It highlights the advanced features like block-based progression, single-page rendering, and the use of custom renderers.
 
+---
+
+# Phase 5, Step 6: Unanswered Question Highlighting
+
+This step addresses a UI bug where no visual feedback was provided for unanswered multiple-choice questions.
+
+## Problem:
+When a user proceeded to the next question without selecting an answer in a multiple-choice quiz, the system did not indicate that the question was left unanswered.
+
+## Solution:
+
+1.  **CSS Class for Highlighting:**
+    -   A new CSS class, `unanswered-question`, was added to `src/index.css`. This class applies a red border to highlight the unanswered question.
+
+2.  **State Management:**
+    -   The exercise state object in `exercise-handler.js` was updated to include a `submittedUnanswered` boolean flag, initialized to `false`.
+
+3.  **Navigation Logic:**
+    -   The `addNavigationListeners` function was modified. When the "Prossimo" (Next) button is clicked, it now checks if the current question is a multiple-choice question and if it has been answered.
+    -   If the question is unanswered, the `submittedUnanswered` flag for that question is set to `true`, and the view is re-rendered without advancing to the next question.
+
+4.  **Rendering Logic:**
+    -   The `renderMultipleChoiceQuestion` function was updated to check the `submittedUnanswered` flag. If `true`, it adds the `unanswered-question` class to the question's container, visually highlighting it.
+
+## Outcome:
+This change provides clear visual feedback to the user when they attempt to skip a multiple-choice question, improving the user experience and preventing accidental omissions.
+
