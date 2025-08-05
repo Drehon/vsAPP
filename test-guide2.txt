@@ -248,7 +248,6 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
-
 ## Developer Notes (2025-08-05) - Issue 8 Fix
 
 - **Issue 8 Fix:** Implemented a "Diagnostics" tab and centralized controls for managing test progress.
@@ -315,15 +314,20 @@ the 6% is completely white on white, everything has little contrast.
 
 Issue 8)
 As continuation of Issue 2) diagnostics should be a fourth 'tab' besides the three for the blocks
-
-Issue 8b)
-Three buttons to revert the submit for each of the three blocks should be added to the intro to the page
+Three buttons to revert the submit for each of the three blocks should be added 
 Similarly the three submit buttons should be placed in the same place
 Like this
 Revert A   Revert B   Revert C
 Submit A   Submit B   Submit C
+
+Issue CC)
+Move the submit, revert and reset buttons to the intro from the diagnostic tab to the overall page's intro
 The buttons should be placed in the center of the area below the intro-text.
-They should be small buttons, not too offensive to the eye (not large or visually intense) and placed on two rows as illustrated
+They should be placed on three rows 
+
+Issue DD)
+On pressing the buttons the pages reload instead of remaining as they are and simply reloading the relevant parts of the page
+We already faced this issue elsewhere
 
 Issue 9) > FIXED
 The greens and reds for correct/incorrect across the whole app are slightly too bright/intense

@@ -52,21 +52,19 @@ export class DiagnosticTestHandler {
      * storing answers and tracking submitted blocks.
      */
     initializeState() {
-        if (this.activeTab.exerciseState && this.activeTab.exerciseState.version === 'diagnostic-1.0') {
+        if (this.activeTab.exerciseState && this.activeTab.exerciseState.version === 'diagnostic-1.1') {
             console.log("Using existing diagnostic test state:", this.activeTab.exerciseState);
-            // Future logic to handle state restoration can go here.
         } else {
             // Create a fresh state object for the diagnostic test.
             this.activeTab.exerciseState = {
-                version: 'diagnostic-1.0',
-                // A boolean array to track which blocks have been submitted and graded.
+                version: 'diagnostic-1.1', // Version update
+                currentBlockIndex: 0, // Start at "Block A"
                 submittedBlocks: Array(this.pageData.blocks.length).fill(false),
-                // A nested array to store answers for each question in each block.
                 answers: this.pageData.blocks.map(block =>
                     block.exercises.map(() => ({
-                        userAnswer: null, // User's raw answer
-                        isCorrect: null,  // Null until graded
-                        notes: ''         // User's private notes
+                        userAnswer: null,
+                        isCorrect: null,
+                        notes: ''
                     }))
                 )
             };
@@ -78,30 +76,47 @@ export class DiagnosticTestHandler {
      * Main rendering function that orchestrates the UI update.
      */
     render() {
-        console.log("Render triggered for Diagnostic Test.");
+        console.log("Render triggered for Diagnostic Test. Current state:", this.activeTab.exerciseState);
         if (!this.containerElement) return;
 
-        // Destroy the old chart instance before clearing the DOM to prevent memory leaks.
+        // Destroy old chart instance to prevent memory leaks
         if (this.activeTab.diagnosticsChart) {
-            console.log("Destroying old chart instance.");
             this.activeTab.diagnosticsChart.destroy();
             this.activeTab.diagnosticsChart = null;
         }
 
         const contentBody = this.containerElement.querySelector('#content-body');
         if (!contentBody) {
-            console.error("Fatal: #content-body not found. Cannot render diagnostic test.");
+            console.error("Fatal: #content-body not found. Cannot render.");
             return;
         }
         contentBody.innerHTML = ''; // Clear existing content
 
-        // Render diagnostics header if at least one block has been submitted
-        const hasSubmittedBlocks = this.activeTab.exerciseState.submittedBlocks.some(s => s);
-        if (hasSubmittedBlocks) {
+        // Render diagnostics header (score/chart) if any block is submitted.
+        if (this.activeTab.exerciseState.submittedBlocks.some(s => s)) {
             this.renderDiagnostics(contentBody);
         }
+        
+        // Render the tab buttons for navigation.
+        const blockTabsEl = this.createBlockTabs();
+        contentBody.appendChild(blockTabsEl);
 
-        this.renderTest(contentBody);
+        const exerciseContainer = document.createElement('div');
+        exerciseContainer.id = 'diagnostic-exercise-container';
+        contentBody.appendChild(exerciseContainer);
+
+        // Render content based on the active tab.
+        const activeIndex = this.activeTab.exerciseState.currentBlockIndex;
+        if (activeIndex >= 0 && activeIndex < this.pageData.blocks.length) {
+            // Render the questions for the selected block.
+            this.renderTest(exerciseContainer);
+        } else {
+            // Render the central diagnostics/control panel.
+            this.renderDiagnosticsTab(exerciseContainer);
+        }
+
+        // Add listeners for the newly rendered content.
+        this.addEventListeners();
     }
 
     /**
@@ -295,127 +310,126 @@ export class DiagnosticTestHandler {
     }
 
     /**
-     * Renders the full structure of the diagnostic test.
+     * Renders the structure of the currently active test block.
      * @param {HTMLElement} parentElement - The element to render the test into.
      */
     renderTest(parentElement) {
-        const testContainer = document.createElement('div');
-        testContainer.className = 'diagnostic-test-container p-4 md:p-6 space-y-8';
-        
-        const isComplete = this.activeTab.exerciseState.isComplete;
-        if (isComplete) {
-            testContainer.classList.add('diagnostic-test-complete');
+        const state = this.activeTab.exerciseState;
+        const blockIndex = state.currentBlockIndex;
+        const block = this.pageData.blocks[blockIndex];
+
+        const blockContainer = document.createElement('div');
+        blockContainer.className = 'p-6 bg-white rounded-lg shadow-lg border border-t-0 rounded-t-none border-slate-300';
+        blockContainer.dataset.blockIndex = blockIndex;
+
+        let blockHTML = `<h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4 mb-4">${block.name}</h2>`;
+        if (block.blockPreamble) {
+            blockHTML += `<div class="prose max-w-none text-slate-700 mb-6">${block.blockPreamble}</div>`;
+        }
+        blockContainer.innerHTML = blockHTML;
+
+        const questionsWrapper = document.createElement('div');
+        questionsWrapper.className = 'space-y-6';
+        block.exercises.forEach((exercise, exerciseIndex) => {
+            const questionElement = this.renderQuestion(exercise, blockIndex, exerciseIndex);
+            questionsWrapper.appendChild(questionElement);
+        });
+        blockContainer.appendChild(questionsWrapper);
+
+        const blockSubmitted = state.submittedBlocks[blockIndex];
+        if (!blockSubmitted && !state.isComplete) {
+            const submissionArea = document.createElement('div');
+            submissionArea.className = 'mt-8 text-center';
+            const submitButton = document.createElement('button');
+            submitButton.className = 'bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-colors';
+            submitButton.textContent = `Submit Block ${String.fromCharCode(65 + blockIndex)}`;
+            submitButton.dataset.blockIndex = blockIndex;
+            submissionArea.appendChild(submitButton);
+            blockContainer.appendChild(submissionArea);
         }
 
-        this.pageData.blocks.forEach((block, blockIndex) => {
-            const blockContainer = document.createElement('div');
-            blockContainer.className = 'p-6 bg-white rounded-lg shadow-lg';
-            // This data attribute is crucial for event listeners to find the correct block.
-            blockContainer.dataset.blockIndex = blockIndex;
-
-            let blockHTML = `<h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4 mb-4">${block.name}</h2>`;
-
-            // Render the block preamble if it exists.
-            if (block.blockPreamble) {
-                blockHTML += `<div class="prose max-w-none text-slate-700 mb-6">${block.blockPreamble}</div>`;
-            }
-            blockContainer.innerHTML = blockHTML;
-
-            const questionsWrapper = document.createElement('div');
-            questionsWrapper.className = 'space-y-6';
-            
-            block.exercises.forEach((exercise, exerciseIndex) => {
-                const questionElement = this.renderQuestion(exercise, blockIndex, exerciseIndex);
-                questionsWrapper.appendChild(questionElement);
-            });
-
-            blockContainer.appendChild(questionsWrapper);
-
-            const blockSubmitted = this.activeTab.exerciseState.submittedBlocks[blockIndex];
-
-            // Only show the submit button if the block isn't submitted and the test isn't complete.
-            if (!blockSubmitted && !isComplete) {
-                const submissionArea = document.createElement('div');
-                submissionArea.className = 'mt-8 text-center';
-                const submitButton = document.createElement('button');
-                submitButton.className = 'bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-colors';
-                submitButton.textContent = `Submit Block ${String.fromCharCode(65 + blockIndex)}`;
-                submitButton.dataset.blockIndex = blockIndex;
-                submissionArea.appendChild(submitButton);
-                blockContainer.appendChild(submissionArea);
-            }
-
-            testContainer.appendChild(blockContainer);
-        });
-
-        parentElement.appendChild(testContainer);
-
-        this.addEventListeners();
+        parentElement.appendChild(blockContainer);
     }
 
     /**
      * Adds all necessary event listeners for the diagnostic test.
-     * This includes listeners for user input and block submission.
      */
     addEventListeners() {
-        const blockContainers = this.containerElement.querySelectorAll('.p-6[data-block-index]');
+        // Listeners for block tabs
+        this.addBlockTabListeners();
+        
+        const state = this.activeTab.exerciseState;
+        const activeIndex = state.currentBlockIndex;
 
-        blockContainers.forEach(blockContainer => {
-            const blockIndex = parseInt(blockContainer.dataset.blockIndex, 10);
-            const isSubmitted = this.activeTab.exerciseState.submittedBlocks[blockIndex];
+        if (activeIndex >= 0 && activeIndex < this.pageData.blocks.length) {
+            // Add listeners for the active question block
+            this.addQuestionBlockListeners(activeIndex);
+        } else {
+            // Add listeners for the diagnostics control panel
+            this.addDiagnosticsTabListeners();
+        }
+    }
 
-            if (isSubmitted) return; // Don't add listeners to submitted blocks
+    /**
+     * Adds listeners for user input and submission within a single question block.
+     * @param {number} blockIndex The index of the block to add listeners for.
+     */
+    addQuestionBlockListeners(blockIndex) {
+        const blockContainer = this.containerElement.querySelector(`[data-block-index='${blockIndex}']`);
+        if (!blockContainer) return;
 
-            // Listeners for user input, updating state on the fly
-            blockContainer.querySelectorAll('.question-container').forEach((questionContainer, questionIndex) => {
-                const questionState = this.activeTab.exerciseState.answers[blockIndex][questionIndex];
+        const isSubmitted = this.activeTab.exerciseState.submittedBlocks[blockIndex];
+        if (isSubmitted) return;
 
-                // Multiple Choice Buttons
-                questionContainer.querySelectorAll('button[data-question-type="mc"]').forEach(button => {
-                    button.addEventListener('click', () => {
-                        questionState.userAnswer = button.dataset.answer;
-                        this.autoSave(this.activeTab);
-                        this.render(); // Re-render to show selection
-                    });
-                });
+        // Listeners for user input, updating state on the fly
+        blockContainer.querySelectorAll('.question-container').forEach((questionContainer, questionIndex) => {
+            const questionState = this.activeTab.exerciseState.answers[blockIndex][questionIndex];
 
-                // Textareas for answers
-                questionContainer.querySelectorAll('textarea[data-question-type]').forEach(textarea => {
-                    textarea.addEventListener('input', () => {
-                        questionState.userAnswer = textarea.value;
-                        this.autoSave(this.activeTab);
-                    });
-                });
-
-                // Textarea for notes
-                const notesTextarea = questionContainer.querySelector(`textarea[data-notes-for="${blockIndex}-${questionIndex}"]`);
-                if (notesTextarea) {
-                    notesTextarea.addEventListener('input', () => {
-                        questionState.notes = notesTextarea.value;
-                        this.autoSave(this.activeTab);
-                    });
-                }
-
-                // Paragraph input fields
-                questionContainer.querySelectorAll('input[data-blank-id]').forEach(input => {
-                    input.addEventListener('input', () => {
-                        if (!questionState.userAnswer || typeof questionState.userAnswer !== 'object') {
-                            questionState.userAnswer = {};
-                        }
-                        questionState.userAnswer[input.dataset.blankId] = input.value;
-                        this.autoSave(this.activeTab);
-                    });
+            // Multiple Choice Buttons
+            questionContainer.querySelectorAll('button[data-question-type="mc"]').forEach(button => {
+                button.addEventListener('click', () => {
+                    questionState.userAnswer = button.dataset.answer;
+                    this.autoSave(this.activeTab);
+                    this.render(); // Re-render to show selection
                 });
             });
 
-            // Listener for the Submit Block button
-            const submitButton = blockContainer.querySelector(`button[data-block-index]`);
-            if (submitButton) {
-                submitButton.addEventListener('click', () => {
-                    this.checkAnswers(blockIndex);
+            // Textareas for answers
+            questionContainer.querySelectorAll('textarea[data-question-type]').forEach(textarea => {
+                textarea.addEventListener('input', () => {
+                    questionState.userAnswer = textarea.value;
+                    this.autoSave(this.activeTab);
+                });
+            });
+
+            // Textarea for notes
+            const notesTextarea = questionContainer.querySelector(`textarea[data-notes-for="${blockIndex}-${questionIndex}"]`);
+            if (notesTextarea) {
+                notesTextarea.addEventListener('input', () => {
+                    questionState.notes = notesTextarea.value;
+                    this.autoSave(this.activeTab);
                 });
             }
+
+            // Paragraph input fields
+            questionContainer.querySelectorAll('input[data-blank-id]').forEach(input => {
+                input.addEventListener('input', () => {
+                    if (!questionState.userAnswer || typeof questionState.userAnswer !== 'object') {
+                        questionState.userAnswer = {};
+                    }
+                    questionState.userAnswer[input.dataset.blankId] = input.value;
+                    this.autoSave(this.activeTab);
+                });
+            });
         });
+
+        // Listener for the Submit Block button
+        const submitButton = blockContainer.querySelector(`button[data-block-index]`);
+        if (submitButton) {
+            submitButton.addEventListener('click', () => {
+                this.checkAnswers(blockIndex);
+            });
+        }
     }
 
     /**
@@ -459,7 +473,6 @@ export class DiagnosticTestHandler {
                         }
                     });
                     answerState.isCorrect = isCorrect;
-                    // You might want an overall correctness flag, but for now this per-blank feedback is good.
                     break;
                 }
                 case 'paragraph_error_correction': {
@@ -491,6 +504,139 @@ export class DiagnosticTestHandler {
 
         // Re-render to show feedback and updated state
         this.render();
+    }
+
+    /**
+     * Creates the tabbed interface for switching between exercise blocks and the diagnostics panel.
+     * @returns {HTMLElement} The element containing the block tabs.
+     */
+    createBlockTabs() {
+        const blockTabsContainer = document.createElement('div');
+        blockTabsContainer.className = 'flex border-b border-slate-300 bg-white/30 rounded-t-lg';
+
+        const tabs = ['Block A', 'Block B', 'Block C', 'Diagnostics'];
+        tabs.forEach((name, index) => {
+            const isActive = index === this.activeTab.exerciseState.currentBlockIndex;
+            const button = document.createElement('button');
+            // The last tab is the diagnostics panel, which gets a special index.
+            button.dataset.blockIndex = index;
+            button.textContent = name;
+            button.className = `py-2 px-4 text-sm font-bold transition-colors ${
+                isActive 
+                ? 'border-b-2 border-indigo-500 text-indigo-600' 
+                : 'border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+            }`;
+            if (name === 'Diagnostics') {
+                button.classList.add('ml-auto', 'mr-2'); // Push to the right
+            }
+            blockTabsContainer.appendChild(button);
+        });
+
+        return blockTabsContainer;
+    }
+
+    /**
+     * Adds event listeners to the block tabs.
+     */
+    addBlockTabListeners() {
+        this.containerElement.querySelectorAll('.flex.border-b button').forEach(button => {
+            button.onclick = (e) => {
+                const blockIndex = parseInt(e.target.dataset.blockIndex, 10);
+                if (this.activeTab.exerciseState.currentBlockIndex !== blockIndex) {
+                    this.activeTab.exerciseState.currentBlockIndex = blockIndex;
+                    this.autoSave(this.activeTab);
+                    this.render();
+                }
+            };
+        });
+    }
+
+    /**
+     * Renders the content of the "Diagnostics" tab, which contains controls for managing blocks.
+     * @param {HTMLElement} parentElement - The element to render the content into.
+     */
+    renderDiagnosticsTab(parentElement) {
+        const container = document.createElement('div');
+        container.className = 'p-6 bg-white rounded-lg shadow-lg border border-t-0 rounded-t-none border-slate-300';
+        
+        let content = `
+            <div class="text-center">
+                <h2 class="text-2xl font-bold text-slate-800">Test Diagnostics & Controls</h2>
+                <p class="text-slate-600 mt-2">Manage the submission state of each block from here.</p>
+            </div>
+            <div id="diagnostics-controls" class="mt-8 space-y-6">
+        `;
+
+        this.pageData.blocks.forEach((block, index) => {
+            const blockLetter = String.fromCharCode(65 + index);
+            const isSubmitted = this.activeTab.exerciseState.submittedBlocks[index];
+            content += `
+                <div class="p-4 border rounded-lg bg-slate-50 flex items-center justify-between">
+                    <h3 class="text-xl font-bold text-slate-700">${block.name}</h3>
+                    <div class="flex items-center gap-2">
+                        <button class="text-sm font-medium py-2 px-4 rounded-md transition-colors bg-indigo-600 text-white hover:bg-indigo-700" data-action="submit" data-block-index="${index}" ${isSubmitted ? 'disabled' : ''}>Submit</button>
+                        <button class="text-sm font-medium py-2 px-4 rounded-md transition-colors bg-yellow-400 text-yellow-800 hover:bg-yellow-500" data-action="unsubmit" data-block-index="${index}" ${!isSubmitted ? 'disabled' : ''}>Un-submit</button>
+                        <button class="text-sm font-medium py-2 px-4 rounded-md transition-colors bg-red-500 text-white hover:bg-red-600" data-action="reset" data-block-index="${index}">Reset</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        content += '</div>';
+        container.innerHTML = content;
+        parentElement.appendChild(container);
+    }
+    
+    /**
+     * Adds event listeners for the controls in the "Diagnostics" tab.
+     */
+    addDiagnosticsTabListeners() {
+        const controls = this.containerElement.querySelector('#diagnostics-controls');
+        if (!controls) return;
+
+        controls.querySelectorAll('button[data-action]').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const action = e.currentTarget.dataset.action;
+                const blockIndex = parseInt(e.currentTarget.dataset.blockIndex, 10);
+                
+                if (action === 'submit') {
+                    this.checkAnswers(blockIndex);
+                } else if (action === 'unsubmit') {
+                    this.unsubmitBlock(blockIndex);
+                } else if (action === 'reset') {
+                    this.resetBlock(blockIndex);
+                }
+            });
+        });
+    }
+
+    /**
+     * Reverts a block to its un-submitted state.
+     * @param {number} blockIndex - The index of the block to un-submit.
+     */
+    unsubmitBlock(blockIndex) {
+        console.log(`Un-submitting block ${blockIndex}`);
+        this.activeTab.exerciseState.submittedBlocks[blockIndex] = false;
+        this.activeTab.exerciseState.isComplete = false; // The test is no longer complete
+        this.autoSave(this.activeTab);
+        this.render();
+    }
+
+    /**
+     * Resets all answers for a specific block.
+     * @param {number} blockIndex - The index of the block to reset.
+     */
+    resetBlock(blockIndex) {
+        console.log(`Resetting block ${blockIndex}`);
+        const block = this.pageData.blocks[blockIndex];
+        // Reset answers for this block
+        this.activeTab.exerciseState.answers[blockIndex] = block.exercises.map(() => ({
+            userAnswer: null,
+            isCorrect: null,
+            notes: ''
+        }));
+        // Un-submit the block as well
+        this.unsubmitBlock(blockIndex);
     }
 
     /**
@@ -588,6 +734,8 @@ export class DiagnosticTestHandler {
             } else if (answerState.userAnswer === buttonAnswer) {
                 // Add a class to show selection before submission
                 classes += ' bg-slate-200 border-slate-400';
+            } else {
+                classes += ' bg-white border-slate-300 hover:bg-slate-100';
             }
 
             return classes;
