@@ -14,7 +14,7 @@ module.exports = {
   plugins: [
     new CopyPlugin({
       patterns: [
-        { from: 'src/lib', to: 'lib' },
+        { from: 'src/lib', to: 'main_window/lib' },
       ],
     }),
   ],

@@ -82,6 +82,15 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
+## Developer Notes (2025-08-05) - Addendum
+
+- **Issue 1 Root Cause Analysis:** The persistence of the "404 Not Found" error for `chart.umd.min.js` after the initial fix was due to a misconfiguration in the build process.
+    - **Cause:** The Electron Forge configuration (`forge.config.js`) defines a named entry point (`name: 'main_window'`), which instructs Webpack to place the application's `index.html` inside a `main_window` subdirectory in the final build.
+    - **Problem:** The previous Webpack fix copied the `lib` folder to the root of the build output, while the `index.html` file was looking for it at the relative path `./lib/chart.umd.min.js` *from within its subdirectory*. This resulted in a path mismatch.
+    - **Final Solution:** The `copy-webpack-plugin` configuration in `webpack.renderer.config.js` was updated. The destination path was changed from `'lib'` to `'main_window/lib'`. This ensures the library is copied into the correct subdirectory, aligning with where `index.html` expects to find it and resolving the 404 error.
+
+---
+
 User logs area
 Grammar and verbs seem to share the same issues
 REMINDER TO NOT DO ANY TESTING in your environment!! i'll do it
@@ -89,7 +98,7 @@ REMINDER TO NOT DO ANY TESTING in your environment!! i'll do it
 Log 1
 Lessons, LessonsAN and excercises seem undamaged
 
-Issue 1)
+Issue 1) > FIXED (console no longer shows those errors)
 On opening the app in console i see the following:
 Failed to load resource: the server responded with a status of 404 (Not Found)
 index.html:1 Refused to execute script from 'http://localhost:3000/main_window/lib/chart.umd.min.js' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.
