@@ -1,0 +1,31 @@
+# Lessons Learned: The Webpack File Copying Issue
+
+This document details a critical environmental issue discovered during the testing of Phase 4: a misconfigured Webpack build process that resulted in a 404 Not Found error for a key third-party library.
+
+## The Problem: Chart.js Fails to Load
+
+After localizing the Chart.js library to enable offline functionality, the performance charts in the diagnostic tests failed to render. The browser's developer console showed a "404 Not Found" error for `chart.umd.min.js`. The application was trying to load the library, but it wasn't present in the final build output.
+
+## Root Cause Analysis: A Tale of Two Paths
+
+The issue was caused by a misconfiguration of the `copy-webpack-plugin` in the `webpack.renderer.config.js` file, compounded by the project's Electron Forge setup.
+
+1.  **The Initial Problem:** The `copy-webpack-plugin` was not configured at all, so the `src/lib` directory containing the Chart.js file was never being copied to the build output directory (`out/...`).
+
+2.  **The Follow-up Problem:** The first attempt to fix this involved adding the plugin to copy the `src/lib` directory to the root of the build output. This also failed. The true root cause was more subtle:
+    *   The project's `forge.config.js` defines a named entry point (`name: 'main_window'`).
+    *   This configuration instructs Webpack to place the application's `index.html` file inside a `main_window` **subdirectory** in the final build.
+    *   The `index.html` file was trying to load the library from the relative path `./lib/chart.umd.min.js`.
+    *   This created a path mismatch: the HTML file at `out/main_window/index.html` was looking for a library at `out/main_window/lib/`, but the plugin had copied the library to `out/lib/`.
+
+## The Solution: Aligning the Paths
+
+The problem was definitively solved by updating the `copy-webpack-plugin` configuration in `webpack.renderer.config.js` to account for the subdirectory structure.
+
+*   **The Fix:** The destination path for the copied files was changed from `'lib'` to `'main_window/lib'`.
+
+This change ensures that the `lib` directory is copied into the correct subdirectory, aligning its location with the relative path used by the `index.html` file and resolving the 404 error.
+
+## Key Takeaway
+
+**Build tool configurations are part of your application's architecture.** When dealing with complex build tools like Webpack, especially when they are integrated with other systems like Electron Forge, you must have a clear understanding of the final output structure. A file's location in the source code does not guarantee its location in the build output. When encountering 404 errors for local assets, always inspect the final build directory to verify that the file exists and that its path matches what the application is requesting.

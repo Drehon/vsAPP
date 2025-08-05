@@ -1,0 +1,28 @@
+# Lessons Learned: The Broken CSS Build Process
+
+This document details a persistent environmental issue discovered during the Phase 3 refactoring: a misconfigured CSS build process that prevented style changes from being applied.
+
+## The Problem: CSS Changes Have No Effect
+
+A critical bug was identified where visual feedback on interactive exercises (e.g., green/red highlights on answer buttons) was not appearing. Multiple attempts to fix this by modifying the JavaScript logic to apply the correct CSS classes failed. Further investigation showed that even adding new, simple CSS rules to the source stylesheet (`src/index.css`) had no visual effect in the application.
+
+## Root Cause Analysis
+
+The root cause was not a logic error in the JavaScript, but a **misconfigured build process**.
+
+1.  **Stale CSS File:** The application was loading its styles from `src/style.css`, which was a pre-compiled, static CSS file checked into the repository.
+2.  **Unused Source File:** The source file where developers were intended to add custom styles, `src/index.css`, was **never being compiled**. The project's Webpack configuration was missing the necessary loaders (`postcss-loader`) to process Tailwind CSS directives like `@apply` and build the final stylesheet.
+3.  **Ineffective Changes:** All attempts to fix the bug by adding or modifying classes in `src/index.css` were futile because these changes were never being included in the `style.css` file that the application actually loaded.
+
+## The Solution: Pragmatic Style Injection
+
+Given that reconfiguring the entire Webpack build system was considered too invasive for the task at hand, a pragmatic workaround was implemented:
+
+1.  **Manual "Compilation":** The necessary CSS rules for the feedback classes (e.g., `.btn-correct`, `.btn-incorrect`) were manually created by finding the raw CSS definitions for the corresponding Tailwind utilities in the existing `src/style.css`.
+2.  **Direct Injection:** These raw CSS rules were injected directly into the bottom of the loaded `src/style.css` file.
+
+This approach ensured that the required styles were loaded by the application without needing to fix the underlying build system. This same workaround was planned as a contingency for Phase 4 and used to fix other styling issues.
+
+## Key Takeaway
+
+**Always verify the build pipeline.** When code or style changes appear to have no effect, the issue may not be in the code itself but in the build process that is supposed to be compiling and packaging it. Before spending significant time debugging application logic, confirm that your changes are actually making it into the final build artifact. A simple test is to make an obvious, dramatic change (e.g., `body { background-color: red !important; }`) and see if it appears in the running application. If it doesn't, the build process is the likely culprit.
