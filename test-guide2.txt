@@ -75,6 +75,13 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
+## Developer Notes (2025-08-05)
+
+- **Issue 1 Fix:** Addressed the "404 Not Found" error for `chart.umd.min.js`. The issue was caused by the file not being included in the application's final build.
+    - **Solution:** The Webpack configuration (`webpack.renderer.config.js`) was updated to use the `copy-webpack-plugin`. This plugin now correctly copies the `src/lib` directory (containing the Chart.js file) to the build output, making it available to the application at runtime. This resolves the loading error and allows the performance charts in the diagnostic tests to function correctly.
+
+---
+
 User logs area
 Grammar and verbs seem to share the same issues
 
@@ -84,6 +91,13 @@ Lessons, LessonsAN and excercises seem undamaged
 Issue 1)
 On opening the app in console i see the following:
 Failed to load resource: the server responded with a status of 404 (Not Found)
+index.html:1 Refused to execute script from 'http://localhost:3000/main_window/lib/chart.umd.min.js' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.
+
+post Issue 1 Fix, issue persists
+chart.umd.min.js:1 
+        
+        
+       Failed to load resource: the server responded with a status of 404 (Not Found)
 index.html:1 Refused to execute script from 'http://localhost:3000/main_window/lib/chart.umd.min.js' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.
 
 Issue 2)
@@ -111,3 +125,7 @@ diagnostic-test-handler.js:220 Uncaught ReferenceError: Chart is not defined
     at DiagnosticTestHandler.render (diagnostic-test-handler.js:100:1)
     at DiagnosticTestHandler.checkAnswers (diagnostic-test-handler.js:462:1)
     at HTMLButtonElement.eval (diagnostic-test-handler.js:384:1)
+
+Issue 7)
+Once you click on diagnostics there is at the moment seemingly no way to go back to the tests aside from 'Azzera'
+For this purpose, as continuation Issue 2) diagnostics should be a fourth 'block-tab'
