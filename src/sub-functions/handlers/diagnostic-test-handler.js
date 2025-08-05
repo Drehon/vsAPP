@@ -537,7 +537,7 @@ export class DiagnosticTestHandler {
                 }
             } else if (answerState.userAnswer === buttonAnswer) {
                 // Add a class to show selection before submission
-                classes += ' bg-indigo-100 border-indigo-400';
+                classes += ' bg-slate-200 border-slate-400';
             }
 
             return classes;

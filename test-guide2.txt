@@ -91,6 +91,13 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
+## Developer Notes (2025-08-05) - Issue 3 Fix
+
+- **Issue 3 Fix:** Addressed the missing feedback for selected answers in diagnostic tests.
+    - **Solution:** The `diagnostic-test-handler.js` was updated. When a user clicks a multiple-choice option, the button will now receive a grey background (`bg-slate-200`) to visually confirm the selection before the block is submitted. This replaces the previous, less noticeable indigo highlight.
+
+---
+
 User logs area
 Grammar and verbs seem to share the same issues
 REMINDER TO NOT DO ANY TESTING in your environment!! i'll do it
@@ -125,9 +132,12 @@ Notes areas below each question is missing, that's important and was to be manta
 
 Issue 5)
 the 'areas' for different excercises types in block B and C are unclear, some separation is required for clarity.
+for example split them into A1-1 (which is actually composed of multiple answers that fit under A1-X). then A2-1 to A2-1 to A2-10, does that make sense?
+
+Issue 6) 
 A significant amount of 'Rewrite the sentence according to the instructions.' is actually lacking the mentioned explanation.
 
-Issue 6)
+Issue 7)
 On submit block this happens: 
 diagnostic-test-handler.js:220 Uncaught ReferenceError: Chart is not defined
     at DiagnosticTestHandler.renderOrUpdateChart (diagnostic-test-handler.js:220:1)
@@ -136,6 +146,6 @@ diagnostic-test-handler.js:220 Uncaught ReferenceError: Chart is not defined
     at DiagnosticTestHandler.checkAnswers (diagnostic-test-handler.js:462:1)
     at HTMLButtonElement.eval (diagnostic-test-handler.js:384:1)
 
-Issue 7)
+Issue 8)
 Once you click on diagnostics there is at the moment seemingly no way to go back to the tests aside from 'Azzera'
 For this purpose, as continuation Issue 2) diagnostics should be a fourth 'block-tab'
