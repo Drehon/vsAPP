@@ -349,10 +349,35 @@ export class DiagnosticTestHandler {
 
         const questionsWrapper = document.createElement('div');
         questionsWrapper.className = 'space-y-6';
+
+        let currentSection = null;
+
         block.exercises.forEach((exercise, exerciseIndex) => {
+            // Check if this is a new section
+            if (exercise.section !== currentSection) {
+                currentSection = exercise.section;
+
+                // Add a separator, but not before the very first section
+                if (exerciseIndex > 0) {
+                    const separator = document.createElement('hr');
+                    separator.className = 'my-8 border-slate-300';
+                    questionsWrapper.appendChild(separator);
+                }
+
+                const sectionHeader = document.createElement('div');
+                sectionHeader.className = 'mt-6'; // Add some top margin to the new section
+                let sectionHTML = `<h3 class="text-xl font-semibold text-slate-700 mb-2">${currentSection}</h3>`;
+                if (exercise.sectionExplanation) {
+                    sectionHTML += `<p class="text-sm text-slate-600 mb-4">${exercise.sectionExplanation}</p>`;
+                }
+                sectionHeader.innerHTML = sectionHTML;
+                questionsWrapper.appendChild(sectionHeader);
+            }
+
             const questionElement = this.renderQuestion(exercise, blockIndex, exerciseIndex);
             questionsWrapper.appendChild(questionElement);
         });
+
         blockContainer.appendChild(questionsWrapper);
 
         const blockSubmitted = state.submittedBlocks[blockIndex];
