@@ -380,7 +380,9 @@ export class DiagnosticTestHandler {
      * @param {number} blockIndex The index of the block to add listeners for.
      */
     addQuestionBlockListeners(blockIndex) {
-        const blockContainer = this.containerElement.querySelector(`[data-block-index='${blockIndex}']`);
+        // Use a more specific selector ('div') to avoid selecting the global control buttons,
+        // which also have the `data-block-index` attribute.
+        const blockContainer = this.containerElement.querySelector(`div[data-block-index='${blockIndex}']`);
         if (!blockContainer) return;
 
         const isSubmitted = this.activeTab.exerciseState.submittedBlocks[blockIndex];
