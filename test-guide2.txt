@@ -72,3 +72,42 @@ These tests should be run for **both** diagnostic test pages:
 - **Test Case 2.1 (Verbs):**
 - **Test Case 2.2:**
 - **Test Case 3.1:**
+
+---
+
+User logs area
+Grammar and verbs seem to share the same issues
+
+Log 1
+Lessons, LessonsAN and excercises seem undamaged
+
+Issue 1)
+On opening the app in console i see the following:
+Failed to load resource: the server responded with a status of 404 (Not Found)
+index.html:1 Refused to execute script from 'http://localhost:3000/main_window/lib/chart.umd.min.js' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.
+
+Issue 2)
+Grammar test opens
+There was a misunderstanding, i wish to mantain the block A, block B, block C structure tab-like
+Same as with the 'Fase' in the excercises.
+
+Issue 3)
+Block B of the grammar area, given it's not supposed to immediately show the correct/incorrect answer
+Correctly doesn't go for green/red, but a feedback for selected answer is missing
+Opt for a greyer background for selected answer
+
+Issue 4)
+Notes areas below each question is missing, that's important and was to be mantained.
+
+Issue 5)
+the 'areas' for different excercises types in block B and C are unclear, some separation is required for clarity.
+A significant amount of 'Rewrite the sentence according to the instructions.' is actually lacking the mentioned explanation.
+
+Issue 6)
+On submit block this happens: 
+diagnostic-test-handler.js:220 Uncaught ReferenceError: Chart is not defined
+    at DiagnosticTestHandler.renderOrUpdateChart (diagnostic-test-handler.js:220:1)
+    at DiagnosticTestHandler.renderDiagnostics (diagnostic-test-handler.js:146:1)
+    at DiagnosticTestHandler.render (diagnostic-test-handler.js:100:1)
+    at DiagnosticTestHandler.checkAnswers (diagnostic-test-handler.js:462:1)
+    at HTMLButtonElement.eval (diagnostic-test-handler.js:384:1)

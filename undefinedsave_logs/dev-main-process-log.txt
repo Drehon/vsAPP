@@ -538,3 +538,58 @@
 [LOG][2025-08-05T11:19:38.635Z] Main Process: Update not available. {"tag":"v1.3.8","version":"1.3.8","files":[{"url":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","size":114395136}],"path":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","releaseDate":"2025-08-03T19:17:23.179Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.8","releaseNotes":"<p>Implemented visual feedback area for the reset button, for loading and for saving.<br>\nImproved reloading on reset to reload SAME excercise block.</p>"}
 [LOG][2025-08-05T11:19:39.820Z] [State] No save state found for pageId 'student-grammar'.
 [LOG][2025-08-05T11:19:46.969Z] [State] No save state found for pageId 'L2-causativoES'.
+[LOG][2025-08-05T12:55:42.045Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-05T12:55:42.047Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-05T12:55:42.051Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-05T12:55:42.165Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-05T12:55:42.174Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-05T12:55:42.510Z] Main Process: Checking for updates...
+[LOG][2025-08-05T12:55:42.518Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-05T12:55:43.819Z] Main Process: Update not available. {"tag":"v1.3.8","version":"1.3.8","files":[{"url":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","size":114395136}],"path":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","releaseDate":"2025-08-03T19:17:23.179Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.8","releaseNotes":"<p>Implemented visual feedback area for the reset button, for loading and for saving.<br>\nImproved reloading on reset to reload SAME excercise block.</p>"}
+[LOG][2025-08-05T12:56:30.288Z] [State] No save state found for pageId 'lesson-l1-congiuntivo'.
+[LOG][2025-08-05T12:56:32.916Z] [State] No save state found for pageId 'lesson-l2-causativo'.
+[LOG][2025-08-05T12:56:35.647Z] [State] No save state found for pageId 'lesson-l1-congiuntivo-an'.
+[LOG][2025-08-05T12:56:38.080Z] [State] Loaded state for pageId 'L1-congiuntivoES' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-05T12:56:40.320Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-05T12:56:40.878Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-05T12:56:41.551Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-05T12:56:41.900Z] [State] Reset state for pageId 'L1-congiuntivoES' by deleting 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-05T12:56:41.904Z] [State] No save state found for pageId 'L1-congiuntivoES'.
+[LOG][2025-08-05T12:56:56.967Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-05T12:56:56.970Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-05T12:56:56.973Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-05T12:56:57.054Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-05T12:56:57.060Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-05T12:56:57.491Z] Main Process: Checking for updates...
+[LOG][2025-08-05T12:56:57.499Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-05T12:56:58.542Z] Main Process: Update not available. {"tag":"v1.3.8","version":"1.3.8","files":[{"url":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","size":114395136}],"path":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","releaseDate":"2025-08-03T19:17:23.179Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.8","releaseNotes":"<p>Implemented visual feedback area for the reset button, for loading and for saving.<br>\nImproved reloading on reset to reload SAME excercise block.</p>"}
+[LOG][2025-08-05T12:57:14.429Z] [State] No save state found for pageId 'L2-causativoES'.
+[LOG][2025-08-05T12:57:16.100Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-05T12:57:16.883Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-05T12:57:17.691Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-05T12:57:18.562Z] [State] Saved state for pageId 'L2-causativoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoes_state.json'
+[LOG][2025-08-05T12:57:27.662Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-05T12:57:27.664Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-05T12:57:27.665Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-05T12:57:27.757Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-05T12:57:27.764Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-05T12:57:28.060Z] Main Process: Checking for updates...
+[LOG][2025-08-05T12:57:28.068Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-05T12:57:29.141Z] Main Process: Update not available. {"tag":"v1.3.8","version":"1.3.8","files":[{"url":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","size":114395136}],"path":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","releaseDate":"2025-08-03T19:17:23.179Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.8","releaseNotes":"<p>Implemented visual feedback area for the reset button, for loading and for saving.<br>\nImproved reloading on reset to reload SAME excercise block.</p>"}
+[LOG][2025-08-05T12:57:31.001Z] [PatchNotes] Loading content for: others/patch-notes.html
+[LOG][2025-08-05T12:57:31.028Z] [State] No save state found for pageId 'patch-notes'.
+[LOG][2025-08-05T12:57:39.767Z] [State] No save state found for pageId 'DG-student-grammar'.
+[LOG][2025-08-05T12:59:00.413Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T12:59:02.126Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T12:59:03.593Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T13:00:19.713Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T13:00:23.931Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T13:00:34.901Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T13:00:45.536Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T13:00:51.262Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T13:01:00.949Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T13:01:09.504Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T13:03:25.702Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T13:04:30.490Z] [State] No save state found for pageId 'DV-student-verbs'.
+[LOG][2025-08-05T13:04:34.337Z] [State] Saved state for pageId 'DV-student-verbs' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dv-student-verbs_state.json'
+[LOG][2025-08-05T13:04:46.555Z] [State] Saved state for pageId 'DV-student-verbs' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dv-student-verbs_state.json'
