@@ -1,26 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patch Notes</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f1f5f9; /* bg-slate-100 */
-        }
-    </style>
-</head>
-<body class="bg-slate-100">
-    <div id="app" class="container mx-auto p-4 md:p-10 max-w-7xl">
-        <header class="bg-white rounded-lg shadow-lg overflow-hidden mb-10 p-6">
-            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Patch Notes</h1>
-            <p class="text-lg md:text-xl text-slate-500 mt-2">Here you can find the latest updates and changes to the application.</p>
-        </header>
+<div class="content-container p-6 md:p-10" 
+     data-page-id="patch-notes" 
+     data-module="static-lesson">
+
+    <!-- 1. Header Section (Standardized) -->
+    <header class="content-header bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h1 id="page-title" class="text-3xl font-bold text-slate-900">Patch Notes</h1>
+        <p id="page-subtitle" class="text-lg text-slate-600 mt-2">Here you can find the latest updates and changes to the application.</p>
+    </header>
+
+    <!-- 2. Main Content Area -->
+    <main id="content-body" class="space-y-8">
         
-        <main id="patch-notes-container" class="space-y-8">
-            
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
+                <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4">v1.3.9 - 8/3/2025</h2>
+                <div class="prose max-w-none mt-4">
+                    Heavily refactored the whole app structure, focusing on normalization of the html for lessons, lessonsAN, excercises and content under 'other'.
+                </div>
+            </div>
+        
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
+                <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4">v1.3.8 - 8/3/2025</h2>
+                <div class="prose max-w-none mt-4">
+                    Implemented visual feedback area for the reset button, for loading and for saving. Improved reloading on reset to reload SAME excercise block.
+                </div>
+            </div>
+        
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
+                <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4">v1.3.7 - 8/3/2025</h2>
+                <div class="prose max-w-none mt-4">
+                    Implemented 'Return to N1' button for exercises, fixed save naming convention, implemented displaying active saves in settings and separating saves-state folder from saves folder.
+                </div>
+            </div>
+        
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
+                <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4">v1.3.6 - 8/2/2025</h2>
+                <div class="prose max-w-none mt-4">
+                    Simplified patch notes system. The application now generates patch notes directly from this file, which must be manually updated before each release.
+                </div>
+            </div>
+        
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
+                <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4">v1.3.5 - 8/2/2025</h2>
+                <div class="prose max-w-none mt-4">
+                    Verifying it works.
+                </div>
+            </div>
+        
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
+                <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4">v1.3.4 - 8/2/2025</h2>
+                <div class="prose max-w-none mt-4">
+                    Full implementation attempt. <br>It should work now, possibly needs another patch for testing.
+                </div>
+            </div>
+        
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
+                <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4">v1.3.3 - 8/2/2025</h2>
+                <div class="prose max-w-none mt-4">
+                    Testing full implementation.
+                </div>
+            </div>
+        
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
+                <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4">v1.3.2 - 8/2/2025</h2>
+                <div class="prose max-w-none mt-4">
+                    Attempt at patch notes generation-implementation.<br>If it works we can move to finalize the patch-notes implementation.
+                </div>
+            </div>
+        
             <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
                 <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4">v1.3.1 - 8/1/2025</h2>
                 <div class="prose max-w-none mt-4">
@@ -84,7 +130,5 @@
                 </div>
             </div>
         
-        </main>
-    </div>
-</body>
-</html>
+    </main>
+</div>
