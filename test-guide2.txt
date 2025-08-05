@@ -163,8 +163,9 @@ this is relevant for all blocks for both verb and grammar, evaluate and address
 Issue 6) > partially fixed
 A significant amount of 'Rewrite the sentence according to the instructions.' is actually lacking the mentioned explanation.
 the test for verbs seems okay
-but for grammar questions B9 to B13 are unclear
+but for grammar questions B9 to B13 are unclear in their explanations of what is being asked
 Questions C1 to C10 should also have, before C1, a view of the text as a whole for clarity. with no ... anywhere in this single block.
+Seeing the parts of the text split into the 10 questions without the whole thing being visible before them makes things unclear.
 
 Issue 7)
 On submit block this happens: 
