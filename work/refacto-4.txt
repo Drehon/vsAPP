@@ -85,11 +85,19 @@ This section outlines the revised, detailed plan for Phase 4. It is based on the
 - **Validation:** This step serves to validate the generic, data-driven nature of the `DiagnosticTestHandler`.
 - **Custom Renderers:** Pay special attention to unique formatting requirements (e.g., the "email" layout mentioned in `uniform.txt`) and implement support for them, likely via a `renderer` property in the JSON data, as originally envisioned.
 
-### Step 7: Final Cleanup
+### Step 7: Final verification
+- **Verification:** Perform a final code review to ensure no legacy logic remains and the refactoring is complete.
+ > in a plan, assess one by one each step, to verify the phase 4 (minus step 7b and 8, which we'll complete only after extensive testing) has been completed correctly.
+
+### Step 7b: Setup for testing
+- Generate a new refacto-5.txt, inside do a summary like we have done for the beginning of refacto-4.txt
+- Generate a new test-guide2.txt, inside briefly write how to test current stage of the application, we'll also log the testing in there later on.
+
+### Step 8: Final Cleanup
 - **Action:** Once both diagnostic tests are fully migrated and functional, the following obsolete files will be deleted:
     - `src/sub-functions/grammar-exercise.js`
     - `src/sub-functions/verb-exercise.js`
-- **Verification:** Perform a final code review to ensure no legacy logic remains and the refactoring is complete.
+
 
 Bonus step:
 Verify the app can still function entirely offline.
