@@ -84,6 +84,7 @@ These tests should be run for **both** diagnostic test pages:
 
 User logs area
 Grammar and verbs seem to share the same issues
+REMINDER TO NOT DO ANY TESTING in your environment!! i'll do it
 
 Log 1
 Lessons, LessonsAN and excercises seem undamaged
