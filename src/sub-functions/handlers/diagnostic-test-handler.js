@@ -80,6 +80,13 @@ export class DiagnosticTestHandler {
         console.log("Render triggered for Diagnostic Test.");
         if (!this.containerElement) return;
 
+        // Destroy the old chart instance before clearing the DOM to prevent memory leaks.
+        if (this.activeTab.diagnosticsChart) {
+            console.log("Destroying old chart instance.");
+            this.activeTab.diagnosticsChart.destroy();
+            this.activeTab.diagnosticsChart = null;
+        }
+
         const contentBody = this.containerElement.querySelector('#content-body');
         if (!contentBody) {
             console.error("Fatal: #content-body not found. Cannot render diagnostic test.");
@@ -87,7 +94,189 @@ export class DiagnosticTestHandler {
         }
         contentBody.innerHTML = ''; // Clear existing content
 
+        // Render diagnostics header if at least one block has been submitted
+        const hasSubmittedBlocks = this.activeTab.exerciseState.submittedBlocks.some(s => s);
+        if (hasSubmittedBlocks) {
+            this.renderDiagnostics(contentBody);
+        }
+
         this.renderTest(contentBody);
+    }
+
+    /**
+     * Renders the diagnostics header with scores and the chart canvas.
+     * @param {HTMLElement} parentElement - The element to render the diagnostics into.
+     */
+    renderDiagnostics(parentElement) {
+        const scores = this.calculateScores();
+        
+        const diagnosticsContainer = document.createElement('div');
+        diagnosticsContainer.id = 'diagnostic-header';
+        diagnosticsContainer.className = 'p-4 md:p-6 mb-8 bg-slate-900/50 rounded-lg shadow-xl border border-slate-700';
+
+        let headerHTML = `
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8">
+                <!-- Overall Score -->
+                <div class="text-center flex-shrink-0">
+                    <h2 class="text-base font-bold text-slate-300 uppercase tracking-wider">Overall Score</h2>
+                    <p class="text-4xl md:text-5xl font-bold text-white mt-1">${scores.overallPercentage}%</p>
+                    <p class="text-sm text-slate-400 mt-1">${scores.totalCorrect} / ${scores.totalQuestions} Correct</p>
+                </div>
+                <!-- Chart Container -->
+                <div class="relative w-full h-32 md:h-40">
+                    <canvas id="diagnostics-chart"></canvas>
+                </div>
+            </div>
+        `;
+
+        // Add a completion message if the test is finished.
+        if (this.activeTab.exerciseState.isComplete) {
+            headerHTML += `
+                <div class="mt-4 pt-4 border-t border-slate-700 text-center">
+                    <h3 class="text-lg font-bold text-green-400">Test Complete</h3>
+                    <p class="text-slate-300">You can now review your answers below.</p>
+                </div>
+            `;
+        }
+        
+        diagnosticsContainer.innerHTML = headerHTML;
+        parentElement.appendChild(diagnosticsContainer);
+
+        // Now render the chart into the newly created canvas.
+        this.renderOrUpdateChart(scores);
+    }
+
+    /**
+     * Renders or updates the diagnostics chart using Chart.js.
+     * This method is called after the canvas element has been rendered to the DOM.
+     * @param {object} scores - The scores object from calculateScores.
+     */
+    renderOrUpdateChart(scores) {
+        const ctx = this.containerElement.querySelector('#diagnostics-chart');
+        if (!ctx) {
+            console.error("Could not find canvas element for diagnostics chart.");
+            return;
+        }
+
+        const categoryData = scores.categoryScores;
+        const labels = Object.keys(categoryData);
+        const data = labels.map(label => {
+            const { correct, total } = categoryData[label];
+            return total > 0 ? Math.round((correct / total) * 100) : 0;
+        });
+
+        const chartData = {
+            labels: labels,
+            datasets: [{
+                label: '% Correct',
+                data: data,
+                backgroundColor: 'rgba(99, 102, 241, 0.6)', // bg-indigo-500 with opacity
+                borderColor: 'rgba(99, 102, 241, 1)',     // border-indigo-500
+                borderWidth: 1,
+                borderRadius: 4,
+            }]
+        };
+
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y', // Create a horizontal bar chart
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: { color: '#9ca3af' /* slate-400 */, font: { weight: 'bold' } },
+                    grid: { color: '#374151' /* slate-700 */ }
+                },
+                y: {
+                    ticks: { color: '#d1d5db' /* slate-300 */, font: { size: 14 } },
+                    grid: { display: false }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#1f2937', // slate-800
+                    titleFont: { size: 16 },
+                    bodyFont: { size: 14 },
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) { label += ': '; }
+                            if (context.parsed.x !== null) { label += context.parsed.x + '%'; }
+                            return label;
+                        },
+                        afterLabel: function(context) {
+                            const category = context.label;
+                            const { correct, total } = categoryData[category];
+                            return `(${correct} of ${total} correct)`;
+                        }
+                    }
+                }
+            }
+        };
+        
+        console.log("Creating new diagnostics chart.");
+        this.activeTab.diagnosticsChart = new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+            options: chartOptions
+        });
+    }
+
+    /**
+     * Calculates overall and per-category scores based on the current state.
+     * @returns {object} An object containing score information.
+     */
+    calculateScores() {
+        const state = this.activeTab.exerciseState;
+        let totalQuestions = 0;
+        let totalCorrect = 0;
+        const categoryScores = {}; // e.g., { 'Verb Tenses': { correct: 5, total: 10 }, ... }
+
+        this.pageData.blocks.forEach((block, blockIndex) => {
+            // Only include submitted blocks in the calculation
+            if (!state.submittedBlocks[blockIndex]) {
+                return;
+            }
+
+            block.exercises.forEach((question, questionIndex) => {
+                totalQuestions++;
+                const answerState = state.answers[blockIndex][questionIndex];
+                const category = question.category;
+
+                if (!categoryScores[category]) {
+                    categoryScores[category] = { correct: 0, total: 0 };
+                }
+                categoryScores[category].total++;
+
+                let isCorrect = false;
+                if (question.type === 'paragraph_input') {
+                    // For paragraph input, consider it correct only if all blanks are correct.
+                    if (answerState.isCorrect && typeof answerState.isCorrect === 'object') {
+                        const blanks = Object.values(answerState.isCorrect);
+                        // Ensure there's at least one blank and all are true
+                        isCorrect = blanks.length > 0 && blanks.every(c => c === true);
+                    }
+                } else {
+                    isCorrect = answerState.isCorrect === true;
+                }
+
+                if (isCorrect) {
+                    totalCorrect++;
+                    categoryScores[category].correct++;
+                }
+            });
+        });
+
+        const overallPercentage = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+
+        return {
+            totalQuestions,
+            totalCorrect,
+            overallPercentage,
+            categoryScores
+        };
     }
 
     /**
@@ -98,9 +287,16 @@ export class DiagnosticTestHandler {
         const testContainer = document.createElement('div');
         testContainer.className = 'diagnostic-test-container p-4 md:p-6 space-y-8';
         
+        const isComplete = this.activeTab.exerciseState.isComplete;
+        if (isComplete) {
+            testContainer.classList.add('diagnostic-test-complete');
+        }
+
         this.pageData.blocks.forEach((block, blockIndex) => {
             const blockContainer = document.createElement('div');
             blockContainer.className = 'p-6 bg-white rounded-lg shadow-lg';
+            // This data attribute is crucial for event listeners to find the correct block.
+            blockContainer.dataset.blockIndex = blockIndex; 
             blockContainer.innerHTML = `<h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4 mb-4">${block.name}</h2>`;
 
             const questionsWrapper = document.createElement('div');
@@ -113,14 +309,19 @@ export class DiagnosticTestHandler {
 
             blockContainer.appendChild(questionsWrapper);
 
-            const submissionArea = document.createElement('div');
-            submissionArea.className = 'mt-8 text-center';
-            const submitButton = document.createElement('button');
-            submitButton.className = 'bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-colors';
-            submitButton.textContent = `Submit Block ${String.fromCharCode(65 + blockIndex)}`;
-            submitButton.dataset.blockIndex = blockIndex;
-            submissionArea.appendChild(submitButton);
-            blockContainer.appendChild(submissionArea);
+            const blockSubmitted = this.activeTab.exerciseState.submittedBlocks[blockIndex];
+
+            // Only show the submit button if the block isn't submitted and the test isn't complete.
+            if (!blockSubmitted && !isComplete) {
+                const submissionArea = document.createElement('div');
+                submissionArea.className = 'mt-8 text-center';
+                const submitButton = document.createElement('button');
+                submitButton.className = 'bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-colors';
+                submitButton.textContent = `Submit Block ${String.fromCharCode(65 + blockIndex)}`;
+                submitButton.dataset.blockIndex = blockIndex;
+                submissionArea.appendChild(submitButton);
+                blockContainer.appendChild(submissionArea);
+            }
 
             testContainer.appendChild(blockContainer);
         });
@@ -236,10 +437,17 @@ export class DiagnosticTestHandler {
         // Mark block as submitted
         this.activeTab.exerciseState.submittedBlocks[blockIndex] = true;
 
+        // Check if all blocks are now submitted to enter "review mode"
+        const allBlocksSubmitted = this.activeTab.exerciseState.submittedBlocks.every(s => s);
+        if (allBlocksSubmitted) {
+            console.log("All blocks submitted. Finalizing test into review mode.");
+            this.activeTab.exerciseState.isComplete = true;
+        }
+
         // Save the updated state
         this.autoSave(this.activeTab);
 
-        // Re-render to show feedback
+        // Re-render to show feedback and updated state
         this.render();
     }
 
@@ -297,7 +505,8 @@ export class DiagnosticTestHandler {
      * Adapted from ExerciseHandler.
      */
     renderMultipleChoiceQuestion(question, answerState, blockSubmitted) {
-        const disabled = blockSubmitted ? 'disabled' : '';
+        const isComplete = this.activeTab.exerciseState.isComplete;
+        const disabled = (blockSubmitted || isComplete) ? 'disabled' : '';
 
         const getButtonClasses = (buttonAnswer) => {
             let classes = 'fase-btn border-2 font-bold py-3 px-6 rounded-lg transition-colors text-left';
@@ -337,7 +546,8 @@ export class DiagnosticTestHandler {
      * Generates the HTML for an input correction question.
      */
     renderInputCorrectionQuestion(question, answerState, blockSubmitted) {
-        const disabled = blockSubmitted ? 'disabled' : '';
+        const isComplete = this.activeTab.exerciseState.isComplete;
+        const disabled = (blockSubmitted || isComplete) ? 'disabled' : '';
         const userAnswer = answerState.userAnswer || '';
 
         let inputClasses = 'mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-lg p-2';
@@ -358,7 +568,8 @@ export class DiagnosticTestHandler {
      * Generates the HTML for a sentence rewrite question.
      */
     renderInputRewriteQuestion(question, answerState, blockSubmitted) {
-        const disabled = blockSubmitted ? 'disabled' : '';
+        const isComplete = this.activeTab.exerciseState.isComplete;
+        const disabled = (blockSubmitted || isComplete) ? 'disabled' : '';
         const userAnswer = answerState.userAnswer || '';
 
         let inputClasses = 'mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-lg p-2';
@@ -381,7 +592,8 @@ export class DiagnosticTestHandler {
      * Generates the HTML for a paragraph input question.
      */
     renderParagraphInputQuestion(question, answerState, blockSubmitted) {
-        const disabled = blockSubmitted ? 'disabled' : '';
+        const isComplete = this.activeTab.exerciseState.isComplete;
+        const disabled = (blockSubmitted || isComplete) ? 'disabled' : '';
 
         // Replace placeholders like {1}, {2} with input fields
         const questionHTML = question.question.replace(/\{(\d+)\}/g, (match, number) => {

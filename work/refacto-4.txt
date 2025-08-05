@@ -91,6 +91,11 @@ This section outlines the revised, detailed plan for Phase 4. It is based on the
     - `src/sub-functions/verb-exercise.js`
 - **Verification:** Perform a final code review to ensure no legacy logic remains and the refactoring is complete.
 
+Bonus step:
+Verify the app can still function entirely offline.
+If this means downloading the chart, direct the developer to download it and tell him where to place it.
+Then prepare the code accordingly.
+
 ---
 ## Phase 4 Progress Log
 
@@ -121,3 +126,13 @@ This section outlines the revised, detailed plan for Phase 4. It is based on the
     4.  **Visual Feedback Implementation:** The rendering methods were significantly updated. They now read from the state object to apply CSS classes (`.btn-correct`, `.input-incorrect`, etc.) after a block is submitted, providing immediate visual feedback. The inputs are also disabled post-submission to prevent changes.
     5.  **CSS Verification:** Verified that all necessary CSS classes were already present in `src/style.css`, confirming the contingency plan to manually add CSS was not required for these specific features.
 - **Outcome:** The diagnostic test is now a fully interactive component. Users can input answers, submit them block by block, and receive immediate, persistent feedback on their performance.
+
+
+### Step 4: Implement Advanced Diagnostic Features (Completed)
+- **Summary:** This step successfully added the final layer of functionality to the diagnostic test handler, making it a complete assessment tool. The handler now features a dynamic, data-driven diagnostics dashboard that updates in real-time as the user progresses through the test.
+- **Actions Taken:**
+    1.  **Added Chart.js Library:** The project was missing the Chart.js library. It was added via a CDN link in `src/index.html` as a pragmatic solution to avoid issues with the broken build system.
+    2.  **Implemented Diagnostics Header:** A new UI component was created at the top of the test view. This `renderDiagnostics` method calculates and displays the user's overall score percentage and raw score, which updates after each block is submitted.
+    3.  **Integrated Performance Chart:** A horizontal bar chart from Chart.js was integrated into the diagnostics header. A `renderOrUpdateChart` method was created to manage the chart's lifecycle, ensuring it is destroyed and redrawn correctly during UI updates. The chart visualizes the user's performance broken down by the `category` of each question.
+    4.  **Implemented Final Review Mode:** The handler now detects when the final block has been submitted. It sets an `isComplete` flag in the state, which triggers a "review mode." In this mode, all inputs and buttons are disabled, and a "Test Complete" message is displayed, effectively making the test read-only for final review.
+- **Outcome:** The `DiagnosticTestHandler` is now feature-complete as per the plan. It provides not only interactivity and basic feedback but also a sophisticated, real-time analysis of the user's performance, fulfilling the requirements for an advanced diagnostic tool.
