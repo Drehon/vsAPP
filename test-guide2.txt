@@ -263,6 +263,34 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
+## Developer Notes (2025-08-05) - Issue CC Fix
+
+- **Issue CC Fix:** Overhauled the diagnostic test UI to relocate block controls and redesign the "Diagnostics" tab.
+    - **Analysis:** The user requested that the Submit, Revert, and Reset buttons be moved out of the "Diagnostics" tab and placed in a global, page-level header. The "Diagnostics" tab itself was to be repurposed to show the chart, explanatory text, and a new teacher notes area.
+    - **Solution:**
+        1.  **Global Controls:** A new function, `renderGlobalControls`, was created in `diagnostic-test-handler.js`. This function generates a control panel at the top of the page, containing all Submit, Revert, and Reset buttons in a compact, centered, three-group layout as specified. An accompanying `addGlobalControlsListeners` function was created to handle their events.
+        2.  **Redesigned "Diagnostics" Tab:** The `renderDiagnosticsTab` function was completely refactored. It no longer renders any buttons. Instead, it now renders:
+            - The main performance chart and scores (if any block is submitted).
+            - A placeholder section for explanatory text regarding evaluation areas.
+            - A new, large `<textarea>` for the teacher's notes.
+        3.  **State Management:** The application's state object was updated to include a `teacherNotes` property. The `addDiagnosticsTabListeners` function was updated to save any input from the new textarea, ensuring teacher notes are persisted.
+
+---
+
+## Developer Notes (2025-08-05) - UI Tweak for Global Controls
+
+- **Change:** Adjusted the styling of the global control panel based on user feedback.
+    - **Solution:** In `diagnostic-test-handler.js`, the `renderGlobalControls` function was updated. Each button group (Submit, Revert, Reset) is now wrapped in a `div` with a semi-transparent background color (`bg-indigo-900/30`, etc.) and additional padding. The spacing between the groups was also increased to provide better visual separation.
+
+---
+
+## Developer Notes (2025-08-05) - Final UI Refinements
+
+- **Change:** Refined the styling of the global control panel based on a final round of user feedback.
+    - **Solution:** The `renderGlobalControls` function in `diagnostic-test-handler.js` was updated again. The padding and spacing for the button groups were increased to create more separation. Additionally, the individual buttons within each group were given a small gap to ensure they don't touch, improving the overall visual clarity of the control panel.
+
+---
+
 User logs area
 Grammar and verbs seem to share the same issues
 REMINDER TO NOT DO ANY TESTING in your environment!! i'll do it
@@ -333,8 +361,7 @@ They should be placed on the same row, with submit group  of three > then revert
 They should be small, not OVERLY noticeable and visually part of the intro 'foreground'.
 
 Issue DD)
-On pressing the buttons the pages reload, goes back to top of page, instead of remaining as they are / acting as the azzera from toolbar
-We already faced this issue elsewhere, please fix
+After modifications for issue 8 and issue CC, the buttons for multi-choice questions are unresponsive
 
 Issue 9) > FIXED
 The greens and reds for correct/incorrect across the whole app are slightly too bright/intense

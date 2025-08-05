@@ -52,12 +52,12 @@ export class DiagnosticTestHandler {
      * storing answers and tracking submitted blocks.
      */
     initializeState() {
-        if (this.activeTab.exerciseState && this.activeTab.exerciseState.version === 'diagnostic-1.1') {
+        if (this.activeTab.exerciseState && this.activeTab.exerciseState.version === 'diagnostic-1.2') {
             console.log("Using existing diagnostic test state:", this.activeTab.exerciseState);
         } else {
             // Create a fresh state object for the diagnostic test.
             this.activeTab.exerciseState = {
-                version: 'diagnostic-1.1', // Version update
+                version: 'diagnostic-1.2', // Version update: Teacher notes and new layout
                 currentBlockIndex: 0, // Start at "Block A"
                 submittedBlocks: Array(this.pageData.blocks.length).fill(false),
                 answers: this.pageData.blocks.map(block =>
@@ -66,7 +66,8 @@ export class DiagnosticTestHandler {
                         isCorrect: null,
                         notes: ''
                     }))
-                )
+                ),
+                teacherNotes: '' // New field for teacher's overall notes
             };
             console.log("Initialized new diagnostic test state:", this.activeTab.exerciseState);
         }
@@ -92,10 +93,11 @@ export class DiagnosticTestHandler {
         }
         contentBody.innerHTML = ''; // Clear existing content
 
-        // Render diagnostics header (score/chart) if any block is submitted.
-        if (this.activeTab.exerciseState.submittedBlocks.some(s => s)) {
-            this.renderDiagnostics(contentBody);
-        }
+        // Render the global control buttons (Submit, Revert, Reset)
+        this.renderGlobalControls(contentBody);
+
+        // Render diagnostics header (score/chart) which is now part of the Diagnostics tab.
+        // The check for submitted blocks will happen inside renderDiagnosticsTab.
         
         // Render the tab buttons for navigation.
         const blockTabsEl = this.createBlockTabs();
@@ -355,6 +357,9 @@ export class DiagnosticTestHandler {
      * Adds all necessary event listeners for the diagnostic test.
      */
     addEventListeners() {
+        // Listeners for the global control panel (Submit, Revert, Reset)
+        this.addGlobalControlsListeners();
+
         // Listeners for block tabs
         this.addBlockTabListeners();
         
@@ -365,7 +370,7 @@ export class DiagnosticTestHandler {
             // Add listeners for the active question block
             this.addQuestionBlockListeners(activeIndex);
         } else {
-            // Add listeners for the diagnostics control panel
+            // Add listeners for the diagnostics tab content (e.g., notes)
             this.addDiagnosticsTabListeners();
         }
     }
@@ -555,43 +560,116 @@ export class DiagnosticTestHandler {
      * Renders the content of the "Diagnostics" tab, which contains controls for managing blocks.
      * @param {HTMLElement} parentElement - The element to render the content into.
      */
-    renderDiagnosticsTab(parentElement) {
-        const container = document.createElement('div');
-        container.className = 'p-6 bg-white rounded-lg shadow-lg border border-t-0 rounded-t-none border-slate-300';
-        
-        let content = `
-            <div class="text-center">
-                <h2 class="text-2xl font-bold text-slate-800">Test Diagnostics & Controls</h2>
-                <p class="text-slate-600 mt-2">Manage the submission state of each block from here.</p>
-            </div>
-            <div id="diagnostics-controls" class="mt-8 space-y-6">
-        `;
+    /**
+     * Renders the global control panel with Submit, Revert, and Reset buttons.
+     * This is now separate from any tab and appears at the top of the page.
+     * @param {HTMLElement} parentElement - The element to render the controls into.
+     */
+    renderGlobalControls(parentElement) {
+        const controlsContainer = document.createElement('div');
+        controlsContainer.id = 'diagnostic-global-controls';
+        controlsContainer.className = 'p-4 bg-slate-800/80 backdrop-blur-sm rounded-lg shadow-lg border border-slate-700 mb-4';
 
-        this.pageData.blocks.forEach((block, index) => {
-            const blockLetter = String.fromCharCode(65 + index);
-            const isSubmitted = this.activeTab.exerciseState.submittedBlocks[index];
-            content += `
-                <div class="p-4 border rounded-lg bg-slate-50 flex items-center justify-between">
-                    <h3 class="text-xl font-bold text-slate-700">${block.name}</h3>
-                    <div class="flex items-center gap-2">
-                        <button class="text-sm font-medium py-2 px-4 rounded-md transition-colors bg-indigo-600 text-white hover:bg-indigo-700" data-action="submit" data-block-index="${index}" ${isSubmitted ? 'disabled' : ''}>Submit</button>
-                        <button class="text-sm font-medium py-2 px-4 rounded-md transition-colors bg-yellow-400 text-yellow-800 hover:bg-yellow-500" data-action="unsubmit" data-block-index="${index}" ${!isSubmitted ? 'disabled' : ''}>Un-submit</button>
-                        <button class="text-sm font-medium py-2 px-4 rounded-md transition-colors bg-red-500 text-white hover:bg-red-600" data-action="reset" data-block-index="${index}">Reset</button>
-                    </div>
-                </div>
-            `;
+        const buttonGroups = [
+            { title: 'Submit', action: 'submit', style: 'bg-indigo-600 text-white hover:bg-indigo-700', bgStyle: 'bg-indigo-900/30' },
+            { title: 'Revert', action: 'unsubmit', style: 'bg-yellow-400 text-yellow-800 hover:bg-yellow-500', bgStyle: 'bg-yellow-900/30' },
+            { title: 'Reset', action: 'reset', style: 'bg-red-500 text-white hover:bg-red-600', bgStyle: 'bg-red-900/30' }
+        ];
+
+        let content = '<div class="flex justify-center items-center gap-x-6 gap-y-4 flex-wrap">';
+
+        buttonGroups.forEach(group => {
+            content += `<div class="flex items-center gap-4 p-3 rounded-lg ${group.bgStyle}">`; // Increased gap and padding
+            content += `<span class="text-sm font-bold text-slate-300">${group.title}:</span>`;
+            
+            const buttonsHTML = this.pageData.blocks.map((block, index) => {
+                const blockLetter = String.fromCharCode(65 + index);
+                const isSubmitted = this.activeTab.exerciseState.submittedBlocks[index];
+                
+                let disabled = '';
+                if (group.action === 'submit' && isSubmitted) disabled = 'disabled';
+                if (group.action === 'unsubmit' && !isSubmitted) disabled = 'disabled';
+
+                return `
+                    <button 
+                        class="text-xs font-bold py-1 px-3 rounded-md transition-colors ${group.style}"
+                        data-action="${group.action}" 
+                        data-block-index="${index}" 
+                        ${disabled}>
+                        Block ${blockLetter}
+                    </button>
+                `;
+            }).join('');
+
+            content += `<div class="flex items-center gap-2">${buttonsHTML}</div>`;
+            content += '</div>';
         });
 
         content += '</div>';
+        controlsContainer.innerHTML = content;
+        parentElement.appendChild(controlsContainer);
+    }
+
+    /**
+     * Renders the content of the "Diagnostics" tab, which now includes the chart,
+     * explanation text, and a teacher notes area.
+     * @param {HTMLElement} parentElement - The element to render the content into.
+     */
+    renderDiagnosticsTab(parentElement) {
+        const container = document.createElement('div');
+        container.className = 'p-6 bg-white rounded-lg shadow-lg border border-t-0 rounded-t-none border-slate-300 text-slate-800';
+        
+        let content = '';
+
+        // Render diagnostics chart/scores only if at least one block is submitted.
+        if (this.activeTab.exerciseState.submittedBlocks.some(s => s)) {
+            // This will create the container and canvas for the chart.
+            // We'll call the chart rendering function after appending the HTML.
+            content += '<div id="diagnostics-chart-container"></div>';
+        } else {
+            content += `
+                <div class="text-center p-8 bg-slate-50 rounded-lg">
+                    <h2 class="text-xl font-bold text-slate-700">No Data Yet</h2>
+                    <p class="text-slate-500 mt-2">Submit at least one block to see the performance analysis chart.</p>
+                </div>
+            `;
+        }
+
+        // Add explanation area
+        content += `
+            <div class="mt-8">
+                <h3 class="text-xl font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Evaluation Areas</h3>
+                <p class="text-slate-600">
+                    This section will provide a detailed breakdown of the different grammatical and lexical areas evaluated in this diagnostic test. 
+                    The chart above provides a visual summary of performance in each key category.
+                </p>
+                <!-- NOTE: This text is a placeholder. For a full implementation, this content could be loaded from the pageData object. -->
+            </div>
+        `;
+
+        // Add Teacher Notes area
+        content += `
+            <div class="mt-8">
+                <h3 class="text-xl font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Teacher's Notes</h3>
+                <textarea id="teacher-notes-area" class="w-full h-48 p-3 bg-slate-50 border border-slate-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter overall feedback or notes for the student here...">${this.activeTab.exerciseState.teacherNotes || ''}</textarea>
+            </div>
+        `;
+
         container.innerHTML = content;
         parentElement.appendChild(container);
+
+        // If the chart container exists, render the chart inside it.
+        const chartContainer = container.querySelector('#diagnostics-chart-container');
+        if (chartContainer) {
+            this.renderDiagnostics(chartContainer); // Re-using the original chart rendering logic
+        }
     }
     
     /**
-     * Adds event listeners for the controls in the "Diagnostics" tab.
+     * Adds event listeners for the global controls and the "Diagnostics" tab content.
      */
-    addDiagnosticsTabListeners() {
-        const controls = this.containerElement.querySelector('#diagnostics-controls');
+    addGlobalControlsListeners() {
+        const controls = this.containerElement.querySelector('#diagnostic-global-controls');
         if (!controls) return;
 
         controls.querySelectorAll('button[data-action]').forEach(button => {
@@ -599,6 +677,9 @@ export class DiagnosticTestHandler {
                 const action = e.currentTarget.dataset.action;
                 const blockIndex = parseInt(e.currentTarget.dataset.blockIndex, 10);
                 
+                // Prevent default button behavior that might cause reloads
+                e.preventDefault();
+
                 if (action === 'submit') {
                     this.checkAnswers(blockIndex);
                 } else if (action === 'unsubmit') {
@@ -608,6 +689,16 @@ export class DiagnosticTestHandler {
                 }
             });
         });
+    }
+
+    addDiagnosticsTabListeners() {
+        const notesArea = this.containerElement.querySelector('#teacher-notes-area');
+        if (notesArea) {
+            notesArea.addEventListener('input', () => {
+                this.activeTab.exerciseState.teacherNotes = notesArea.value;
+                this.autoSave(this.activeTab);
+            });
+        }
     }
 
     /**
