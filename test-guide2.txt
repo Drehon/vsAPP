@@ -305,7 +305,7 @@ These tests should be run for **both** diagnostic test pages:
 - **Issue EE Status:** Unresolved.
     - **Summary:** Multiple attempts were made to improve the readability of the 'Submit', 'Revert', and 'Azzera' labels by applying different text-shadow effects (`glow` and `offset/darker color`).
     - **Outcome:** Neither attempt produced the desired visual change in the user's environment. The issue remains open. Further investigation will be handled in a new task.
-    
+
 ---
 
 User logs area
@@ -383,6 +383,8 @@ After modifications for issue 8 and issue CC, the buttons for multi-choice quest
 Issue EE)
 The 'Submit', 'Revert' and 'Azzera' texts are a bit hard to read
 Can you give each of them an higlight similar in color to that of their sets of buttons 
+STILL NOT FIXED after multiple attemps
+
 
 Issue 9) > FIXED
 The greens and reds for correct/incorrect across the whole app are slightly too bright/intense
