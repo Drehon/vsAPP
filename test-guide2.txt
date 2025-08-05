@@ -391,6 +391,7 @@ After modifications for issue 8 and issue CC, the buttons for multi-choice quest
 Issue EE)
 to make things more uniform i'd like the revert text and the text for block 1, 2 and 3 for the revert are to be white
 but that cannot work on yellow background. replace the yellow with a more fitting color, maybe an orange that would give the white text good contrast and make the text white.
+attempts to get orange background were unsuccessfull, background is at the moment white. fix
 
 Issue 9) > FIXED
 The greens and reds for correct/incorrect across the whole app are slightly too bright/intense

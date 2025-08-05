@@ -574,7 +574,7 @@ export class DiagnosticTestHandler {
 
         const buttonGroups = [
             { title: 'Submit', action: 'submit', style: 'bg-indigo-600 text-white hover:bg-indigo-700', bgStyle: 'bg-indigo-900/30', titleClass: 'bg-blue-500 text-white px-2 py-1 rounded-md' },
-            { title: 'Revert', action: 'unsubmit', style: 'bg-yellow-400 text-black hover:bg-yellow-500', bgStyle: 'bg-yellow-900/30', titleClass: 'bg-yellow-400 text-black px-2 py-1 rounded-md' },
+            { title: 'Revert', action: 'unsubmit', style: 'bg-orange-500 text-white hover:bg-orange-600', bgStyle: 'bg-orange-900/30', titleClass: 'bg-orange-500 text-white px-2 py-1 rounded-md' },
             { title: 'Azzera', action: 'reset', style: 'bg-red-500 text-white hover:bg-red-600', bgStyle: 'bg-red-900/30', titleClass: 'bg-red-500 text-white px-2 py-1 rounded-md' }
         ];
 
