@@ -143,9 +143,10 @@ This new file will act as base for new excercise pages, making it easy to create
     *   `src/sub-functions/exercise-initializer.js`
     *   `src/sub-functions/grammar-exercise.js`
     *   `src/sub-functions/verb-exercise.js`
-2.  **Refactor the Content Loader:** Ensure `content-loader.js` has been fully simplified and contains no legacy logic.
-3.  **Final Code Review:** Perform a repository-wide search for any remaining inline `<script>` or `<style>` tags within HTML content files. Ensure all content has been migrated and the old logic is fully excised.
-4. **Documentation:** Create multiple new txts as needed, and within write down everything explanatory regarding the new setup. This group of document will act as a crucial reference for future devolpement. It should explain the entirety of the code setup of the app.
+2.  **Others** Verify the pages under 'others' all work correctly/are compatible/have been updated to the new system.
+3.  **Refactor the Content Loader:** Ensure `content-loader.js` has been fully simplified and contains no legacy logic.
+4.  **Final Code Review:** Perform a repository-wide search for any remaining inline `<script>` or `<style>` tags within HTML content files. Ensure all content has been migrated and the old logic is fully excised.
+5. **Documentation:** Create multiple new txts as needed, and within write down everything explanatory regarding the new setup. This group of document will act as a crucial reference for future devolpement. It should explain the entirety of the code setup of the app.
 ---
 
 ### 4. Recommended Assessment Cadence

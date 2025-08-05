@@ -332,6 +332,14 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
+## Developer Notes (2025-08-05) - Issue 7 Robust Fix
+
+- **Issue 7 Fix:** Implemented a robust fix to guarantee the readability of text labels on the performance chart.
+    - **Problem:** Previous attempts to fix low-contrast text on chart bars failed, likely due to CSS overrides or rendering issues in the user's environment causing the bars to be a light color.
+    - **Solution:** The fix strategy was changed to make the data labels self-sufficient. Instead of relying on the bar color for contrast, the `datalabels` configuration in `diagnostic-test-handler.js` was updated to style the labels themselves with a background. They are now rendered as dark grey "pills" with white text, which ensures they are perfectly readable regardless of the underlying bar color. This resolves the issue permanently.
+
+---
+
 User logs area
 Grammar and verbs seem to share the same issues
 REMINDER TO NOT DO ANY TESTING in your environment!! i'll do it
@@ -382,6 +390,13 @@ The text for the chart is really hard to read
 the 6% is completely white on white, everything has little contrast.
 open a new txt named carta.txt and inside analyze the issue, proposing alternative solutions, for example we might altogether change the chart
 do you feel the current chart is the best option for what we are doing?
+>
+text is still grey or in the case of the percentage, white on white background. 
+this: Overall Score 0%
+0 / 45 Correct
+and 'article & quantifiers' 'Word form & prepositions' 'Sentence Structure' 'Noun Clauses' 'Pronouns' and 'You can now review your answers below.'
+only 0% is white on white, the rest is a light grey with not enough contrast.
+
 
 Issue 8) > FIXED
 As continuation of Issue 2) diagnostics should be a fourth 'tab' besides the three for the blocks

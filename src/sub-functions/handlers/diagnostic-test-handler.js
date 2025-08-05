@@ -28,6 +28,10 @@ export class DiagnosticTestHandler {
         }
 
         try {
+            // Explicitly register the datalabels plugin.
+            // This is a more robust approach than relying on automatic registration from the script tag.
+            Chart.register(ChartDataLabels);
+            
             this.pageData = JSON.parse(pageDataElement.textContent);
             console.log("Diagnostic test data loaded:", this.pageData);
 
