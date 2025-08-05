@@ -1,0 +1,74 @@
+# Test Guide for Phase 4: Diagnostic Modules
+
+This document provides instructions for testing the application after the completion of the Phase 4 refactoring. The focus is on verifying the functionality of the newly migrated diagnostic tests and ensuring the application's robustness.
+
+---
+
+## 1. Test Environment Setup
+
+- **Browser:** Use a modern web browser (e.g., Chrome, Firefox).
+- **Offline Simulation:** For offline testing, you must first ensure the local Chart.js library is present.
+  - **Verify File:** Check that the file `src/lib/chart.umd.min.js` exists. If not, follow the download instructions in `work/refacto-4.txt` (Bonus Step).
+  - **Disconnect:** After verifying the file, disconnect your computer from the internet or use your browser's developer tools to simulate an offline network condition.
+
+---
+
+## 2. Test Cases for Diagnostic Tests
+
+These tests should be run for **both** diagnostic test pages:
+- **"Student Grammar"** (loads from `others/DG-student-grammar.html`)
+- **"Student Verbs"** (loads from `others/DV-student-verbs.html`)
+
+### Test Case 2.1: Basic Functionality and State Persistence
+1.  **Launch** the application.
+2.  From the main menu, **open the "Student Grammar" test**.
+3.  **Verify Initial State:** The test should render completely, with the diagnostics header (Score: 0%, 0/XX) and an empty performance chart visible.
+4.  **Answer First Block:** Fill in some answers for the first block. Deliberately provide a mix of correct and incorrect answers.
+5.  **Reload the Tab:** Close the "Student Grammar" tab and then re-open it from the main menu.
+6.  **Verify Persistence:** Your answers from step 4 should be reloaded and visible in the input fields.
+7.  **Submit Block 1:** Click the "Submit Block" button for the first block.
+8.  **Verify Feedback:**
+    - Inputs in the first block should now be **disabled**.
+    - Correct/incorrect answers should be highlighted with the appropriate **green/red styling**.
+    - The **diagnostics header** should update with a new score and percentage.
+    - The **performance chart** should now display bars representing the categories from the first block.
+9.  **Repeat for All Blocks:** Continue answering and submitting the remaining blocks one by one. Verify that the score and chart update correctly after each submission.
+10. **Verify Final "Review Mode":** After submitting the final block, verify:
+    - A "Test Complete" message appears.
+    - All "Submit Block" buttons are hidden or disabled.
+    - The test is effectively read-only.
+
+### Test Case 2.2: Multi-Tab Isolation
+1.  **Launch** the application.
+2.  **Open both** the "Student Grammar" and "Student Verbs" tests in separate tabs.
+3.  **Interact with Tab 1:** In the "Student Grammar" tab, answer a few questions in the first block but **do not submit**.
+4.  **Switch to Tab 2:** Navigate to the "Student Verbs" tab.
+5.  **Verify State Isolation:** The "Student Verbs" test should be completely empty and unaffected by your actions in the other tab.
+6.  **Interact with Tab 2:** Answer and submit the first block of the "Student Verbs" test.
+7.  **Verify UI Update:** The score and chart in the "Student Verbs" tab should update correctly.
+8.  **Switch back to Tab 1:** Return to the "Student Grammar" tab.
+9.  **Verify State Persistence:** Your un-submitted answers from step 3 should still be present, and the UI should show no impact from the submission that occurred in the other tab.
+
+---
+
+## 3. Offline Functionality Test
+
+### Test Case 3.1: Verify Offline Operation
+1.  **Follow instructions** from section 1 to enter an offline state.
+2.  **Launch** the application.
+3.  **Open** one of the diagnostic tests (e.g., "Student Grammar").
+4.  **Verification:**
+    - The page should load without errors.
+    - **Crucially, the performance chart at the top of the test should render correctly** (it will be empty, but it should appear). If the chart is missing, the offline functionality is broken.
+5.  **(Optional) Full Test:** You can run through the test cases in section 2 while offline to ensure full functionality.
+
+---
+
+## 4. Test Log
+
+*(This section is for recording the results of the tests)*
+
+- **Test Case 2.1 (Grammar):**
+- **Test Case 2.1 (Verbs):**
+- **Test Case 2.2:**
+- **Test Case 3.1:**
