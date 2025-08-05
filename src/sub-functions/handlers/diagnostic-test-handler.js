@@ -196,6 +196,20 @@ export class DiagnosticTestHandler {
             },
             plugins: {
                 legend: { display: false },
+                datalabels: {
+                    color: '#111827', // slate-900, for high contrast
+                    anchor: 'end',
+                    align: 'end',
+                    offset: 8,
+                    font: {
+                        weight: 'bold',
+                        size: 14,
+                    },
+                    formatter: (value) => {
+                        // Only show a label if the value is greater than 0
+                        return value > 0 ? value + '%' : null;
+                    }
+                },
                 tooltip: {
                     backgroundColor: '#1f2937', // slate-800
                     titleFont: { size: 16 },

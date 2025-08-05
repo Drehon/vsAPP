@@ -135,6 +135,14 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
+## Developer Notes (2025-08-05) - Issue 7 Fix
+
+- **Issue 7 Fix:** Addressed the poor readability of the text labels on the performance chart bars.
+    - **Problem:** The default text color for the data labels on the chart had very low contrast against the bar background, making percentages (like "6%") nearly invisible.
+    - **Solution:** The Chart.js configuration in `diagnostic-test-handler.js` was updated to include a `datalabels` plugin configuration. This change sets the label color to a high-contrast dark shade (`#111827`), making it clearly visible. The font size and weight were also adjusted for better readability, and labels for 0% values are now hidden to reduce clutter.
+
+---
+
 User logs area
 Grammar and verbs seem to share the same issues
 REMINDER TO NOT DO ANY TESTING in your environment!! i'll do it
@@ -179,7 +187,7 @@ but for grammar questions B9 to B13 are unclear in their explanations of what is
 Questions C1 to C10 should also have, before C1, a view of the text as a whole for clarity. with no ... anywhere in this single block.
 Seeing the parts of the text split into the 10 questions without the whole thing being visible before them makes things unclear.
 
-Issue 7)
+Issue 7) > Unchanged after 1 attempt
 The text for the chart is really hard to read 
 the 6% is completely white on white, everything has little contrast.
 
@@ -187,7 +195,13 @@ Issue 8)
 Once you click on diagnostics there is at the moment seemingly no way to go back to reset only specific blocks and navigation is annoying
 For this purpose, as continuation Issue 2) diagnostics should be a fourth 'block-tab'
 And three buttons to reset the three blocks should be added to the intro to the page
+Similarly the submit buttons would be helpful all together in the intro
+One row for the submits
+One row for the reverse-submit
 
+Issue 9)
+The greens and reds for correct/incorrect across the whole app are slightly too bright/intense
+Tone them down, but only a little
 
 
 FINAL TASK 
