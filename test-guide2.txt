@@ -321,10 +321,16 @@ Revert A   Revert B   Revert C
 Submit A   Submit B   Submit C
 
 Issue CC)
-Move the submit, revert and reset buttons to the intro from the diagnostic tab to the overall page's intro without reverting the diagnostics in tab!!!
-The buttons should be placed in the center of the area below the intro-text.
-Make sure the buttons render correctly
-They should be placed on three rows, so that they may be small and not OVERLY noticeable.
+The diagnostics tab should only contain
+- text explaining the different english-areas of evaluation
+- the overall chart/scores
+- a teacher notes area, where the teacher can manually input text regarding the overall diagnostics
+
+Thus, add all these and move the submit, revert and reset buttons away from the diagnostic tab
+They should be part of the intro/explanation at the top of the overall page
+The buttons should be placed centrally and rendered correctly
+They should be placed on the same row, with submit group  of three > then revert group  of three> then reset group of three
+They should be small, not OVERLY noticeable and visually part of the intro 'foreground'.
 
 Issue DD)
 On pressing the buttons the pages reload, goes back to top of page, instead of remaining as they are / acting as the azzera from toolbar

@@ -883,3 +883,30 @@
 [LOG][2025-08-05T17:41:05.191Z] [State] No save state found for pageId 'DV-student-verbs'.
 [LOG][2025-08-05T17:41:09.883Z] [State] Saved state for pageId 'DV-student-verbs' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dv-student-verbs_state.json'
 [LOG][2025-08-05T17:41:13.134Z] [State] Saved state for pageId 'DV-student-verbs' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dv-student-verbs_state.json'
+[LOG][2025-08-05T18:49:34.477Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-05T18:49:34.480Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-05T18:49:34.482Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-05T18:49:34.580Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-05T18:49:34.586Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-05T18:49:35.144Z] Main Process: Checking for updates...
+[LOG][2025-08-05T18:49:35.151Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-05T18:49:36.468Z] Main Process: Update not available. {"tag":"v1.3.8","version":"1.3.8","files":[{"url":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","size":114395136}],"path":"vsAPP-1.3.8.Setup.exe","sha512":"dtuXcxDH/a2ETibJKcheeZWVTsE6KDMttcGVwb+d7s2qJymED6RgDEB2oncUSrSbItc1s29OmZttgbDdsuRE3Q==","releaseDate":"2025-08-03T19:17:23.179Z","provider":"github","url":"https://github.com/Drehon/vsAPP/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.3.8","releaseNotes":"<p>Implemented visual feedback area for the reset button, for loading and for saving.<br>\nImproved reloading on reset to reload SAME excercise block.</p>"}
+[LOG][2025-08-05T18:49:37.674Z] [State] Loaded state for pageId 'DG-student-grammar' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T18:49:41.138Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T18:49:44.461Z] [State] Reset state for pageId 'DG-student-grammar' by deleting 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T18:49:44.465Z] [State] No save state found for pageId 'DG-student-grammar'.
+[LOG][2025-08-05T18:49:46.644Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T18:49:48.463Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T18:49:53.513Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T18:54:13.442Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-05T18:54:13.445Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-05T18:54:13.446Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-05T18:54:13.547Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-05T18:54:13.553Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-05T18:54:14.534Z] Main Process: Checking for updates...
+[LOG][2025-08-05T18:54:14.541Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-05T18:54:15.741Z] [State] Loaded state for pageId 'DG-student-grammar' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T18:54:18.070Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T18:54:18.768Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T18:54:20.163Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-05T18:54:22.023Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
