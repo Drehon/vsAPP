@@ -143,11 +143,16 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
-## Developer Notes (2025-08-05) - Issue 9 Fix
+## Developer Notes (2025-08-05) - Issue 2 Fix
 
-- **Issue 9 Fix:** Toned down the intensity of the green and red feedback colors across the application.
-    - **Problem:** The existing colors for "correct" (green) and "incorrect" (red) feedback were perceived as too bright and intense.
-    - **Solution:** The global stylesheet (`src/style.css`) was updated to use slightly darker and less saturated shades for all feedback-related UI elements. This includes buttons, input field highlights, and feedback message boxes. The new colors maintain clarity while providing a more comfortable visual experience.
+- **Issue 2 Fix:** Refactored the diagnostic test UI to use a tabbed interface for different blocks, as requested.
+    - **Analysis:** The user expressed a desire for the "Block A," "Block B," etc., sections of the diagnostic tests to function as tabs, similar to the "Fase" system in the standard exercises, rather than as a single scrolling page.
+    - **Solution:**
+        1.  The `diagnostic-test-handler.js` was significantly updated, using `exercise-handler.js` as a model.
+        2.  A `currentBlockIndex` property was added to the state object to track the active tab.
+        3.  The `render` method was overhauled to first render a set of tab buttons (`createBlockTabs`) and then render only the content of the *active* block.
+        4.  Event listeners (`addBlockTabListeners`) were added to the tabs to update the state and trigger a re-render when a user switches between blocks.
+    - **Outcome:** The diagnostic tests now present each block in a separate, self-contained tab, matching the user's specified navigation preference.
 
 ---
 
@@ -170,7 +175,7 @@ chart.umd.min.js:1
        Failed to load resource: the server responded with a status of 404 (Not Found)
 index.html:1 Refused to execute script from 'http://localhost:3000/main_window/lib/chart.umd.min.js' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.
 
-Issue 2)
+Issue 2) > FIXED
 Grammar test opens
 There was a misunderstanding, i wish to mantain the block A, block B, block C structure tab-like
 Same as with the 'Fase' in the excercises.
@@ -207,7 +212,7 @@ Similarly the submit buttons would be helpful all together in the intro
 One row for the submits
 One row for the reverse-submit
 
-Issue 9) > FIXED
+Issue 9)
 The greens and reds for correct/incorrect across the whole app are slightly too bright/intense
 Tone them down, but only a little
 

@@ -52,13 +52,14 @@ export class DiagnosticTestHandler {
      * storing answers and tracking submitted blocks.
      */
     initializeState() {
-        if (this.activeTab.exerciseState && this.activeTab.exerciseState.version === 'diagnostic-1.0') {
+        if (this.activeTab.exerciseState && this.activeTab.exerciseState.version === 'diagnostic-1.1') {
             console.log("Using existing diagnostic test state:", this.activeTab.exerciseState);
             // Future logic to handle state restoration can go here.
         } else {
             // Create a fresh state object for the diagnostic test.
             this.activeTab.exerciseState = {
-                version: 'diagnostic-1.0',
+                version: 'diagnostic-1.1',
+                currentBlockIndex: 0, // 0-based index for the active block tab
                 // A boolean array to track which blocks have been submitted and graded.
                 submittedBlocks: Array(this.pageData.blocks.length).fill(false),
                 // A nested array to store answers for each question in each block.
@@ -81,9 +82,7 @@ export class DiagnosticTestHandler {
         console.log("Render triggered for Diagnostic Test.");
         if (!this.containerElement) return;
 
-        // Destroy the old chart instance before clearing the DOM to prevent memory leaks.
         if (this.activeTab.diagnosticsChart) {
-            console.log("Destroying old chart instance.");
             this.activeTab.diagnosticsChart.destroy();
             this.activeTab.diagnosticsChart = null;
         }
@@ -93,15 +92,71 @@ export class DiagnosticTestHandler {
             console.error("Fatal: #content-body not found. Cannot render diagnostic test.");
             return;
         }
-        contentBody.innerHTML = ''; // Clear existing content
+        contentBody.innerHTML = '';
 
-        // Render diagnostics header if at least one block has been submitted
         const hasSubmittedBlocks = this.activeTab.exerciseState.submittedBlocks.some(s => s);
         if (hasSubmittedBlocks) {
             this.renderDiagnostics(contentBody);
         }
 
-        this.renderTest(contentBody);
+        const blockTabsEl = this.createBlockTabs();
+        contentBody.appendChild(blockTabsEl);
+
+        const testContainer = document.createElement('div');
+        testContainer.className = 'diagnostic-test-container p-4 md:p-6 border border-t-0 rounded-b-lg border-slate-300';
+        contentBody.appendChild(testContainer);
+
+        this.renderTest(testContainer);
+        this.addBlockTabListeners();
+    }
+
+    /**
+     * Creates the tabbed interface for switching between exercise blocks.
+     * @returns {HTMLElement} The element containing the block tabs.
+     */
+    createBlockTabs() {
+        const blockTabsContainer = document.createElement('div');
+        blockTabsContainer.className = 'flex justify-between items-center border-b border-slate-300';
+
+        const tabs = document.createElement('div');
+        tabs.className = 'flex';
+        this.pageData.blocks.forEach((block, index) => {
+            const isActive = index === this.activeTab.exerciseState.currentBlockIndex;
+            const button = document.createElement('button');
+            button.dataset.blockIndex = index;
+            button.textContent = block.name;
+            button.className = `py-2 px-4 text-sm font-medium border-b-2 transition-colors ${
+                isActive 
+                ? 'border-indigo-500 text-indigo-600' 
+                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+            }`;
+            tabs.appendChild(button);
+        });
+        blockTabsContainer.appendChild(tabs);
+
+        // NOTE: No reset button for now, as per user request to keep things simple.
+        // It can be added later if needed.
+
+        return blockTabsContainer;
+    }
+
+    /**
+     * Adds event listeners to the block tabs for switching between them.
+     */
+    addBlockTabListeners() {
+        const blockTabsEl = this.containerElement.querySelector('.border-b.border-slate-300');
+        if (!blockTabsEl) return;
+
+        blockTabsEl.querySelectorAll('button[data-block-index]').forEach(button => {
+            button.onclick = (e) => {
+                const blockIndex = parseInt(e.target.dataset.blockIndex, 10);
+                if (this.activeTab.exerciseState.currentBlockIndex !== blockIndex) {
+                    this.activeTab.exerciseState.currentBlockIndex = blockIndex;
+                    this.autoSave(this.activeTab);
+                    this.render();
+                }
+            };
+        });
     }
 
     /**
@@ -299,123 +354,112 @@ export class DiagnosticTestHandler {
      * @param {HTMLElement} parentElement - The element to render the test into.
      */
     renderTest(parentElement) {
-        const testContainer = document.createElement('div');
-        testContainer.className = 'diagnostic-test-container p-4 md:p-6 space-y-8';
-        
-        const isComplete = this.activeTab.exerciseState.isComplete;
+        const state = this.activeTab.exerciseState;
+        const blockIndex = state.currentBlockIndex;
+        const block = this.pageData.blocks[blockIndex];
+
+        const isComplete = state.isComplete;
         if (isComplete) {
-            testContainer.classList.add('diagnostic-test-complete');
+            parentElement.classList.add('diagnostic-test-complete');
         }
 
-        this.pageData.blocks.forEach((block, blockIndex) => {
-            const blockContainer = document.createElement('div');
-            blockContainer.className = 'p-6 bg-white rounded-lg shadow-lg';
-            // This data attribute is crucial for event listeners to find the correct block.
-            blockContainer.dataset.blockIndex = blockIndex;
+        const blockContainer = document.createElement('div');
+        blockContainer.className = 'p-6 bg-white rounded-lg';
+        blockContainer.dataset.blockIndex = blockIndex;
 
-            let blockHTML = `<h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4 mb-4">${block.name}</h2>`;
+        let blockHTML = `<h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4 mb-4">${block.name}</h2>`;
 
-            // Render the block preamble if it exists.
-            if (block.blockPreamble) {
-                blockHTML += `<div class="prose max-w-none text-slate-700 mb-6">${block.blockPreamble}</div>`;
-            }
-            blockContainer.innerHTML = blockHTML;
+        if (block.blockPreamble) {
+            blockHTML += `<div class="prose max-w-none text-slate-700 mb-6">${block.blockPreamble}</div>`;
+        }
+        blockContainer.innerHTML = blockHTML;
 
-            const questionsWrapper = document.createElement('div');
-            questionsWrapper.className = 'space-y-6';
-            
-            block.exercises.forEach((exercise, exerciseIndex) => {
-                const questionElement = this.renderQuestion(exercise, blockIndex, exerciseIndex);
-                questionsWrapper.appendChild(questionElement);
-            });
+        const questionsWrapper = document.createElement('div');
+        questionsWrapper.className = 'space-y-6';
 
-            blockContainer.appendChild(questionsWrapper);
-
-            const blockSubmitted = this.activeTab.exerciseState.submittedBlocks[blockIndex];
-
-            // Only show the submit button if the block isn't submitted and the test isn't complete.
-            if (!blockSubmitted && !isComplete) {
-                const submissionArea = document.createElement('div');
-                submissionArea.className = 'mt-8 text-center';
-                const submitButton = document.createElement('button');
-                submitButton.className = 'bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-colors';
-                submitButton.textContent = `Submit Block ${String.fromCharCode(65 + blockIndex)}`;
-                submitButton.dataset.blockIndex = blockIndex;
-                submissionArea.appendChild(submitButton);
-                blockContainer.appendChild(submissionArea);
-            }
-
-            testContainer.appendChild(blockContainer);
+        block.exercises.forEach((exercise, exerciseIndex) => {
+            const questionElement = this.renderQuestion(exercise, blockIndex, exerciseIndex);
+            questionsWrapper.appendChild(questionElement);
         });
 
-        parentElement.appendChild(testContainer);
+        blockContainer.appendChild(questionsWrapper);
 
-        this.addEventListeners();
+        const blockSubmitted = state.submittedBlocks[blockIndex];
+        if (!blockSubmitted && !isComplete) {
+            const submissionArea = document.createElement('div');
+            submissionArea.className = 'mt-8 text-center';
+            const submitButton = document.createElement('button');
+            submitButton.className = 'bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-colors';
+            submitButton.textContent = `Submit ${block.name}`;
+            submitButton.dataset.blockIndex = blockIndex;
+            submissionArea.appendChild(submitButton);
+            blockContainer.appendChild(submissionArea);
+        }
+
+        parentElement.appendChild(blockContainer);
+        this.addEventListeners(blockContainer);
     }
 
     /**
      * Adds all necessary event listeners for the diagnostic test.
      * This includes listeners for user input and block submission.
+     * @param {HTMLElement} blockContainer - The specific block container to add listeners to.
      */
-    addEventListeners() {
-        const blockContainers = this.containerElement.querySelectorAll('.p-6[data-block-index]');
+    addEventListeners(blockContainer) {
+        const blockIndex = parseInt(blockContainer.dataset.blockIndex, 10);
+        const isSubmitted = this.activeTab.exerciseState.submittedBlocks[blockIndex];
 
-        blockContainers.forEach(blockContainer => {
-            const blockIndex = parseInt(blockContainer.dataset.blockIndex, 10);
-            const isSubmitted = this.activeTab.exerciseState.submittedBlocks[blockIndex];
+        if (isSubmitted) return; // Don't add listeners to submitted blocks
 
-            if (isSubmitted) return; // Don't add listeners to submitted blocks
+        // Listeners for user input, updating state on the fly
+        blockContainer.querySelectorAll('.question-container').forEach((questionContainer, questionIndex) => {
+            const questionState = this.activeTab.exerciseState.answers[blockIndex][questionIndex];
 
-            // Listeners for user input, updating state on the fly
-            blockContainer.querySelectorAll('.question-container').forEach((questionContainer, questionIndex) => {
-                const questionState = this.activeTab.exerciseState.answers[blockIndex][questionIndex];
-
-                // Multiple Choice Buttons
-                questionContainer.querySelectorAll('button[data-question-type="mc"]').forEach(button => {
-                    button.addEventListener('click', () => {
-                        questionState.userAnswer = button.dataset.answer;
-                        this.autoSave(this.activeTab);
-                        this.render(); // Re-render to show selection
-                    });
-                });
-
-                // Textareas for answers
-                questionContainer.querySelectorAll('textarea[data-question-type]').forEach(textarea => {
-                    textarea.addEventListener('input', () => {
-                        questionState.userAnswer = textarea.value;
-                        this.autoSave(this.activeTab);
-                    });
-                });
-
-                // Textarea for notes
-                const notesTextarea = questionContainer.querySelector(`textarea[data-notes-for="${blockIndex}-${questionIndex}"]`);
-                if (notesTextarea) {
-                    notesTextarea.addEventListener('input', () => {
-                        questionState.notes = notesTextarea.value;
-                        this.autoSave(this.activeTab);
-                    });
-                }
-
-                // Paragraph input fields
-                questionContainer.querySelectorAll('input[data-blank-id]').forEach(input => {
-                    input.addEventListener('input', () => {
-                        if (!questionState.userAnswer || typeof questionState.userAnswer !== 'object') {
-                            questionState.userAnswer = {};
-                        }
-                        questionState.userAnswer[input.dataset.blankId] = input.value;
-                        this.autoSave(this.activeTab);
-                    });
+            // Multiple Choice Buttons
+            questionContainer.querySelectorAll('button[data-question-type="mc"]').forEach(button => {
+                button.addEventListener('click', () => {
+                    questionState.userAnswer = button.dataset.answer;
+                    this.autoSave(this.activeTab);
+                    this.render(); // Re-render to show selection
                 });
             });
 
-            // Listener for the Submit Block button
-            const submitButton = blockContainer.querySelector(`button[data-block-index]`);
-            if (submitButton) {
-                submitButton.addEventListener('click', () => {
-                    this.checkAnswers(blockIndex);
+            // Textareas for answers
+            questionContainer.querySelectorAll('textarea[data-question-type]').forEach(textarea => {
+                textarea.addEventListener('input', () => {
+                    questionState.userAnswer = textarea.value;
+                    this.autoSave(this.activeTab);
+                });
+            });
+
+            // Textarea for notes
+            const notesTextarea = questionContainer.querySelector(`textarea[data-notes-for="${blockIndex}-${questionIndex}"]`);
+            if (notesTextarea) {
+                notesTextarea.addEventListener('input', () => {
+                    questionState.notes = notesTextarea.value;
+                    this.autoSave(this.activeTab);
                 });
             }
+
+            // Paragraph input fields
+            questionContainer.querySelectorAll('input[data-blank-id]').forEach(input => {
+                input.addEventListener('input', () => {
+                    if (!questionState.userAnswer || typeof questionState.userAnswer !== 'object') {
+                        questionState.userAnswer = {};
+                    }
+                    questionState.userAnswer[input.dataset.blankId] = input.value;
+                    this.autoSave(this.activeTab);
+                });
+            });
         });
+
+        // Listener for the Submit Block button
+        const submitButton = blockContainer.querySelector(`button[data-block-index]`);
+        if (submitButton) {
+            submitButton.addEventListener('click', () => {
+                this.checkAnswers(blockIndex);
+            });
+        }
     }
 
     /**
