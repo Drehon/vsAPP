@@ -385,6 +385,13 @@ The 'Submit', 'Revert' and 'Azzera' texts are a bit hard to read
 Can you give each of them an higlight similar in color to that of their sets of buttons 
 STILL NOT FIXED after multiple attemps
 
+at the moment
+submit has light-blue text on white background. 
+i was hoping for white or grey text on ligth blue background instead. 
+revert is black on white, i was hoping for a light yellow background. 
+and the same text color as submit for the text. 
+azzera is light red on white, i was hoping for same white/grey as the other two on a background with that red.
+
 
 Issue 9) > FIXED
 The greens and reds for correct/incorrect across the whole app are slightly too bright/intense
