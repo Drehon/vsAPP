@@ -221,6 +221,17 @@ These tests should be run for **both** diagnostic test pages:
   </body>
 </html>
 
+---
+
+## Developer Notes (2025-08-05) - Issue 7 Final Attempt
+
+- **Issue 7 Fix:** Final attempt to fix the unreadable text on the performance chart.
+    - **Problem Analysis:** After multiple failed attempts, the new hypothesis is that semi-transparent `rgba` colors are not rendering correctly in the user's environment, causing the chart bars to have a light background and making light-colored text unreadable.
+    - **Solution:** To eliminate all potential rendering issues with transparency, the chart colors have been changed to be completely solid.
+        1.  In `diagnostic-test-handler.js`, the `backgroundColor` for the chart dataset was changed to a solid dark indigo (`#4F46E5`).
+        2.  The `color` for the `datalabels` was set to solid white (`#FFFFFF`).
+    - This approach provides the maximum possible contrast and should resolve the readability issue regardless of the environment's rendering quirks.
+
 
 ---
 
@@ -273,7 +284,7 @@ Issue 5)
 the 'areas' for different excercises types in block B and C are unclear, some separation is required for clarity.
 for example split them into A1-1 (which is actually composed of multiple answers that fit under A1-X). then A2-1 to A2-1 to A2-10, does that make sense?
 this is relevant for all blocks for both verb and grammar, evaluate and address
-i think the html have to be modifed to reflect this new structure, and then gaps visually added to separate the 'areas' in a block.
+i think the html have to be modifed to reflect this new structure (renaming A1 etc with the new system), and then gaps visually added to separate the 'areas' in a block.
 
 Issue 6) > FIXED
 A significant amount of 'Rewrite the sentence according to the instructions.' is actually lacking the mentioned explanation.
@@ -282,7 +293,7 @@ but for grammar questions B9 to B13 are unclear in their explanations of what is
 Questions C1 to C10 should also have, before C1, a view of the text as a whole for clarity. with no ... anywhere in this single block.
 Seeing the parts of the text split into the 10 questions without the whole thing being visible before them makes things unclear.
 
-Issue 7) > Unchanged after 2 attempts
+Issue 7) > Unchanged after multiple attempts
 The text for the chart is really hard to read 
 the 6% is completely white on white, everything has little contrast.
 
@@ -298,6 +309,10 @@ Issue 9) > FIXED
 The greens and reds for correct/incorrect across the whole app are slightly too bright/intense
 Tone them down, but only a little
 
+Issue 10) 
+Fixing issue 6 has led to a situation where the start of each block has two 'lines' horizontally pressed to each other for every block except the one where the fix was intended
+Please add a short intro to each block, detailing the topics, to visually fix this.
+I imagine you have to modify the html themselves.
 
 FINAL TASK 
 once all issues are solved, generate a test-template.html
