@@ -1,0 +1,35 @@
+# Lesson Learned: The Dangers of a Stateful Singleton Handler
+
+## 1. Context
+
+During the Phase 3 refactoring of the interactive exercises, a critical, hard-to-reproduce bug was encountered. When a user opened multiple interactive exercise tabs, the UI of all but the most recently opened tab would become visually unresponsive. While console logs showed that state was being updated, the UI for the active tab would not reflect any changes, making it appear "frozen."
+
+## 2. Root Cause Analysis
+
+The root cause of this critical bug was the architecture of the `exercise-handler.js` module. It was designed as a **stateful singleton**.
+
+A "singleton" is a module that is only instantiated once. In this case, there was only one `exercise-handler` in the entire application. "Stateful" means that the module stored the context of the exercise it was managing in module-level variables (e.g., `activeTab`, `containerElement`).
+
+The sequence of failure was:
+1.  A user opens "Exercise A". The singleton `exercise-handler`'s internal state is set to point to Tab A.
+2.  The user then opens "Exercise B". The handler's internal state is **overwritten** to point to Tab B.
+3.  The user switches back to Tab A. The UI for Tab A is shown, but the `exercise-handler`'s internal state **still points to Tab B**.
+4.  When the user interacts with Tab A, the event listeners trigger functions in the handler. These functions then use the stale context of Tab B, causing state updates and rendering to occur in the wrong, hidden pane.
+
+This made the active tab (Tab A) appear frozen, as all its interactions were incorrectly affecting a hidden tab.
+
+## 3. The Solution: Class-Based, Encapsulated Handlers
+
+The problem was definitively solved by abandoning the singleton pattern and refactoring the handler into a **JavaScript Class**.
+
+1.  **Refactor to a Class:** `exercise-handler.js` was rewritten to export an `ExerciseHandler` class. All module-level state variables were converted into instance properties (e.g., `this.activeTab`).
+2.  **Instantiate on Demand:** The `content-hydrator.js` module was updated. Now, when it loads an interactive exercise, it creates a **new instance** of the `ExerciseHandler` class (`new ExerciseHandler(...)`).
+3.  **Store Instance on Tab:** This new, isolated instance is stored directly on the tab object itself (e.g., `tab.exerciseInstance = ...`).
+
+This ensures that every exercise tab gets its own completely isolated `ExerciseHandler` instance. There is no shared state, and therefore no possibility of state corruption between tabs.
+
+## 4. Key Takeaway
+
+For any UI component or module that can have multiple instances running simultaneously (e.g., tabs, windows, pop-ups), a stateful singleton pattern is extremely dangerous and should be avoided.
+
+The correct architectural pattern is to use a **class-based approach** where each component instance gets its own isolated handler instance. This encapsulates the component's state and logic, preventing cross-instance interference and leading to a more robust and predictable application. This lesson was so critical that it was proactively applied to the `DiagnosticTestHandler` in Phase 4, which was designed as a class from the very beginning.
