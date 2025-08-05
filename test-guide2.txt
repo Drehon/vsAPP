@@ -98,6 +98,23 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
+## Developer Notes (2025-08-05) - Issue 4 Fix
+
+- **Issue 4 Fix:** Re-implemented the missing "My Notes" area below each question in the diagnostic tests.
+    - **Solution:** The `diagnostic-test-handler.js` was updated to dynamically create and manage a collapsible notes section for every question.
+        - The state object for each question was modified to include a `notes: ''` property to store the user's input.
+        - The `renderQuestion` method now appends a `<details>` element containing a `<textarea>` to each question's HTML.
+        - An event listener was added to the notes `<textarea>` to auto-save its content to the state, ensuring persistence across reloads.
+
+---
+
+## Developer Notes (2025-08-05) - Visual Tweak
+
+- **Change:** Adjusted the styling of the "My Notes" label to be less visually prominent, per user feedback.
+    - **Solution:** The `className` for the notes `<summary>` element in `diagnostic-test-handler.js` was changed to use a lighter font weight (`font-normal`) and a more subtle text color (`text-slate-500`).
+
+---
+
 User logs area
 Grammar and verbs seem to share the same issues
 REMINDER TO NOT DO ANY TESTING in your environment!! i'll do it
@@ -122,12 +139,12 @@ Grammar test opens
 There was a misunderstanding, i wish to mantain the block A, block B, block C structure tab-like
 Same as with the 'Fase' in the excercises.
 
-Issue 3)
+Issue 3) > FIXED
 Block B of the grammar area, given it's not supposed to immediately show the correct/incorrect answer
 Correctly doesn't go for green/red, but a feedback for selected answer is missing
 Opt for a greyer background for selected answer
 
-Issue 4)
+Issue 4) > FIXED
 Notes areas below each question is missing, that's important and was to be mantained.
 
 Issue 5)

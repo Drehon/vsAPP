@@ -65,7 +65,8 @@ export class DiagnosticTestHandler {
                 answers: this.pageData.blocks.map(block =>
                     block.exercises.map(() => ({
                         userAnswer: null, // User's raw answer
-                        isCorrect: null   // Null until graded
+                        isCorrect: null,  // Null until graded
+                        notes: ''         // User's private notes
                     }))
                 )
             };
@@ -357,13 +358,22 @@ export class DiagnosticTestHandler {
                     });
                 });
 
-                // Textareas
-                questionContainer.querySelectorAll('textarea').forEach(textarea => {
+                // Textareas for answers
+                questionContainer.querySelectorAll('textarea[data-question-type]').forEach(textarea => {
                     textarea.addEventListener('input', () => {
                         questionState.userAnswer = textarea.value;
                         this.autoSave(this.activeTab);
                     });
                 });
+
+                // Textarea for notes
+                const notesTextarea = questionContainer.querySelector(`textarea[data-notes-for="${blockIndex}-${questionIndex}"]`);
+                if (notesTextarea) {
+                    notesTextarea.addEventListener('input', () => {
+                        questionState.notes = notesTextarea.value;
+                        this.autoSave(this.activeTab);
+                    });
+                }
 
                 // Paragraph input fields
                 questionContainer.querySelectorAll('input[data-blank-id]').forEach(input => {
@@ -510,6 +520,25 @@ export class DiagnosticTestHandler {
         
         questionContent.innerHTML = questionHTML;
         questionWrapper.appendChild(questionContent);
+
+        // Add collapsible notes area
+        const notesDetails = document.createElement('details');
+        notesDetails.className = 'mt-4';
+        
+        const notesSummary = document.createElement('summary');
+        notesSummary.className = 'text-sm font-normal text-slate-500 hover:text-slate-700 cursor-pointer';
+        notesSummary.textContent = 'My Notes';
+        notesDetails.appendChild(notesSummary);
+
+        const notesTextarea = document.createElement('textarea');
+        notesTextarea.className = 'mt-2 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 bg-slate-50';
+        notesTextarea.rows = 3;
+        notesTextarea.placeholder = 'Jot down your thoughts or reasoning here...';
+        notesTextarea.dataset.notesFor = `${blockIndex}-${questionIndex}`;
+        notesTextarea.value = answerState.notes || '';
+        notesDetails.appendChild(notesTextarea);
+
+        questionWrapper.appendChild(notesDetails);
         
         return questionWrapper;
     }
