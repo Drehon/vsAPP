@@ -327,8 +327,8 @@ Make sure the buttons render correctly
 They should be placed on three rows, so that they may be small and not OVERLY noticeable.
 
 Issue DD)
-On pressing the buttons the pages reload instead of remaining as they are and simply reloading the relevant parts of the page
-We already faced this issue elsewhere
+On pressing the buttons the pages reload, goes back to top of page, instead of remaining as they are / acting as the azzera from toolbar
+We already faced this issue elsewhere, please fix
 
 Issue 9) > FIXED
 The greens and reds for correct/incorrect across the whole app are slightly too bright/intense
