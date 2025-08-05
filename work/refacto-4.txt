@@ -150,3 +150,16 @@ Then prepare the code accordingly.
  i want to keep the two tests as separate, under others, from the excercises. 
  at the moment i prefer to keep the separation of folders and app display as it was
  >> this request led to `others/DG-student-grammar.html` placement.
+
+### Step 6: Migrate the Second Diagnostic Test (`student-verbs.html`) (Completed)
+- **Summary:** The second diagnostic test, `student-verbs.html`, has been successfully migrated. This step was crucial as it validated the extensibility of the new architecture by requiring and successfully implementing support for a new, unique question type.
+- **Actions Taken:**
+    1.  **Identified Need for Custom Renderer:** Analysis of `student-verbs.html` revealed a `paragraph_error_id` question type that was incompatible with the existing handler. This directly corresponded to the "Custom Renderers" requirement noted in the initial Phase 4 plan.
+    2.  **Extended `DiagnosticTestHandler`:** The handler was modified to support a new question type, `paragraph_error_correction`. This involved adding a new rendering method (`renderParagraphErrorCorrectionQuestion`) that replaces bolded text with input fields, and updating the `checkAnswers` logic to grade this new type.
+    3.  **Created New Fragment:** A new file, `others/DV-student-verbs.html`, was created with the standard universal fragment structure.
+    4.  **Performed Data Transformation:** The test data from the original file was completely restructured from a flat array into the nested `blocks` format. This included:
+        - Grouping questions into the correct blocks.
+        - Converting the `paragraph_error_id` question to the new `paragraph_error_correction` type and renaming its `parts` array to `blanks`.
+        - Standardizing all simple `input` questions to the more descriptive `input_rewrite` type.
+    5.  **Populated and Verified:** The new HTML fragment was populated with the fully transformed JSON.
+- **Outcome:** The `DiagnosticTestHandler` has proven to be robust and extensible, now capable of rendering both diagnostic tests. The migration of the application's core interactive content is now complete, with all legacy logic for these tests ready for removal.

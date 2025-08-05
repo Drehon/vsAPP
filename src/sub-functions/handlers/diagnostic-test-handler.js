@@ -431,6 +431,17 @@ export class DiagnosticTestHandler {
                     // You might want an overall correctness flag, but for now this per-blank feedback is good.
                     break;
                 }
+                case 'paragraph_error_correction': {
+                    const isCorrect = {};
+                    question.blanks.forEach((blank, index) => {
+                        const blankId = `blank_${index}`;
+                        const userBlankAnswer = (userAnswer && userAnswer[blankId] || '').trim().toLowerCase();
+                        const correctBlankAnswer = blank.answer.toLowerCase();
+                        isCorrect[blankId] = userBlankAnswer === correctBlankAnswer;
+                    });
+                    answerState.isCorrect = isCorrect;
+                    break;
+                }
             }
         });
 
@@ -489,6 +500,9 @@ export class DiagnosticTestHandler {
                 break;
             case 'paragraph_input':
                 questionHTML = this.renderParagraphInputQuestion(question, answerState, blockSubmitted);
+                break;
+            case 'paragraph_error_correction':
+                questionHTML = this.renderParagraphErrorCorrectionQuestion(question, answerState, blockSubmitted);
                 break;
             default:
                 questionHTML = `<p class="text-red-500">Error: Unknown question type "${question.type}"</p>`;
@@ -617,6 +631,38 @@ export class DiagnosticTestHandler {
                 ).join('')}
             </div>
             <div class="p-4 bg-white rounded-lg leading-relaxed" data-question-type="paragraph_input">${questionHTML}</div>
+        `;
+    }
+
+    /**
+     * Generates the HTML for a paragraph error correction question.
+     * This type finds bolded text in the question and replaces it with an input field.
+     */
+    renderParagraphErrorCorrectionQuestion(question, answerState, blockSubmitted) {
+        const isComplete = this.activeTab.exerciseState.isComplete;
+        const disabled = (blockSubmitted || isComplete) ? 'disabled' : '';
+        let questionHTML = question.question;
+
+        question.blanks.forEach((blank, index) => {
+            const blankId = `blank_${index}`;
+            const userAnswer = (answerState.userAnswer && answerState.userAnswer[blankId]) || '';
+            let inputClasses = 'inline-input w-32 mx-1 text-center border-b-2 border-slate-300 focus:border-indigo-500 outline-none';
+
+            if (blockSubmitted) {
+                // answerState.isCorrect is an object for this question type
+                const isCorrect = answerState.isCorrect && answerState.isCorrect[blankId];
+                inputClasses += isCorrect ? ' input-correct' : ' input-incorrect';
+            }
+
+            const inputHTML = `<input type="text" data-blank-id="${blankId}" class="${inputClasses}" value="${userAnswer}" ${disabled}>`;
+            // Use a regex to replace all occurrences of the bolded label
+            const searchString = new RegExp(`<b>${blank.label}</b>`, 'g');
+            questionHTML = questionHTML.replace(searchString, inputHTML);
+        });
+
+        return `
+            <p class="text-lg text-slate-700">${question.sectionExplanation || ''}</p>
+            <div class="p-4 bg-white rounded-lg leading-relaxed" data-question-type="paragraph_error_correction">${questionHTML}</div>
         `;
     }
 }
