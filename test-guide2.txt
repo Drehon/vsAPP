@@ -248,6 +248,22 @@ These tests should be run for **both** diagnostic test pages:
 
 ---
 
+
+## Developer Notes (2025-08-05) - Issue 8 Fix
+
+- **Issue 8 Fix:** Implemented a "Diagnostics" tab and centralized controls for managing test progress.
+    - **Analysis:** The user found it difficult to navigate and manage the diagnostic test blocks. The request was to add a fourth tab to act as a control panel, providing an overview and easy access to block-level actions.
+    - **Solution:**
+        1.  **Tabbed Interface:** The `diagnostic-test-handler.js` was refactored to use a tab-based navigation system, similar to the standard exercises. A `currentBlockIndex` was added to the state to manage the active tab.
+        2.  **New "Diagnostics" Tab:** A fourth tab, "Diagnostics," was added. This tab serves as a central hub for managing the test.
+        3.  **Centralized Controls:** The "Diagnostics" tab contains three sets of controls:
+            -   **Submit Buttons:** One button for each block to allow for easy submission.
+            -   **Un-submit Buttons:** Allows a user to revert a submitted block back to an editable state *without* clearing their answers.
+            -   **Reset Buttons:** Allows a user to completely clear all answers and progress for a specific block.
+        4.  **New State Logic:** New methods (`unsubmitBlock`, `resetBlock`) and event listeners (`addDiagnosticsTabListeners`) were added to `diagnostic-test-handler.js` to handle the logic for these new controls.
+
+---
+
 User logs area
 Grammar and verbs seem to share the same issues
 REMINDER TO NOT DO ANY TESTING in your environment!! i'll do it
@@ -298,12 +314,16 @@ The text for the chart is really hard to read
 the 6% is completely white on white, everything has little contrast.
 
 Issue 8)
-Once you click on diagnostics there is at the moment seemingly no way to go back to reset only specific blocks and navigation is annoying
-For this purpose, as continuation Issue 2) diagnostics should be a fourth 'block-tab'
-And three buttons to reset the three blocks should be added to the intro to the page
-Similarly the submit buttons would be helpful all together in the intro
-One row for the submits
-One row for the reverse-submit
+As continuation of Issue 2) diagnostics should be a fourth 'tab' besides the three for the blocks
+
+Issue 8b)
+Three buttons to revert the submit for each of the three blocks should be added to the intro to the page
+Similarly the three submit buttons should be placed in the same place
+Like this
+Revert A   Revert B   Revert C
+Submit A   Submit B   Submit C
+The buttons should be placed in the center of the area below the intro-text.
+They should be small buttons, not too offensive to the eye (not large or visually intense) and placed on two rows as illustrated
 
 Issue 9) > FIXED
 The greens and reds for correct/incorrect across the whole app are slightly too bright/intense
