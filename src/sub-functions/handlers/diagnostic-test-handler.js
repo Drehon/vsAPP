@@ -139,10 +139,10 @@ export class DiagnosticTestHandler {
         let headerHTML = `
             <div class="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8">
                 <!-- Overall Score -->
-                <div class="text-center flex-shrink-0">
-                    <h2 class="text-base font-bold text-slate-300 uppercase tracking-wider">Overall Score</h2>
-                    <p class="text-4xl md:text-5xl font-bold text-white mt-1">${scores.overallPercentage}%</p>
-                    <p class="text-sm text-slate-400 mt-1">${scores.totalCorrect} / ${scores.totalQuestions} Correct</p>
+                <div class="text-center flex-shrink-0" style="background-color: #1e293b; color: #f1f5f9; border-radius: 8px; padding: 10px;">
+                    <h2 class="text-base font-bold uppercase tracking-wider" style="color: #f1f5f9;">Overall Score</h2>
+                    <p class="text-4xl md:text-5xl font-bold mt-1">${scores.overallPercentage}%</p>
+                    <p class="text-sm mt-1">${scores.totalCorrect} / ${scores.totalQuestions} Correct</p>
                 </div>
                 <!-- Chart Container -->
                 <div class="relative w-full h-32 md:h-40">
@@ -156,7 +156,7 @@ export class DiagnosticTestHandler {
             headerHTML += `
                 <div class="mt-4 pt-4 border-t border-slate-700 text-center">
                     <h3 class="text-lg font-bold text-green-400">Test Complete</h3>
-                    <p class="text-slate-300">You can now review your answers below.</p>
+                    <p class="text-slate-300" style="color: #1e293b;">You can now review your answers below.</p>
                 </div>
             `;
         }
@@ -207,11 +207,11 @@ export class DiagnosticTestHandler {
                 x: {
                     beginAtZero: true,
                     max: 100,
-                    ticks: { color: '#9ca3af' /* slate-400 */, font: { weight: 'bold' } },
+                    ticks: { color: '#1e293b', font: { weight: 'bold' } },
                     grid: { color: '#374151' /* slate-700 */ }
                 },
                 y: {
-                    ticks: { color: '#d1d5db' /* slate-300 */, font: { size: 14 } },
+                    ticks: { color: '#1e293b', font: { size: 14 } },
                     grid: { display: false }
                 }
             },
@@ -220,8 +220,8 @@ export class DiagnosticTestHandler {
                 datalabels: {
                     // --- Start of Issue 7 Fix ---
                     // Style the labels as "pills" to guarantee contrast.
-                    backgroundColor: '#111827', // A very dark grey (gray-900)
-                    borderColor: '#374151',     // slate-700, for a subtle border
+                    backgroundColor: '#2d3748', // A very dark grey
+                    borderColor: '#4a5568',     // A slightly lighter grey for border
                     borderWidth: 1,
                     borderRadius: 6,           // Makes it pill-shaped
                     color: '#FFFFFF',          // White text
