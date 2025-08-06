@@ -52,4 +52,8 @@
   .btn-neutral {
       @apply bg-slate-200 border-slate-300 text-slate-700 hover:bg-slate-300;
   }
+
+  .unanswered-question {
+    @apply bg-red-100 border-l-4 border-r-4 border-red-500 p-4 rounded-lg;
+  }
 }

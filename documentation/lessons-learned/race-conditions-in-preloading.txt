@@ -1,0 +1,41 @@
+# Lesson Learned: Race Conditions in Preload Scripts
+
+## 1. Context
+
+During the development of the dynamic patch notes page (documented in `patchjson.txt`), a classic and tricky race condition was encountered. The page was designed to be dynamic, with a script that would fetch the patch notes data from the main process and render it. However, the page would often remain blank, with the loading script failing to execute.
+
+## 2. Root Cause Analysis: The `api-ready` Event
+
+The initial implementation used a custom event, `api-ready`, to signal that the `preload.js` script had finished setting up the `window.api` object. The script in `patch-notes.html` was set to listen for this event before calling `window.api.getPatchNotes()`.
+
+The sequence of events was intended to be:
+1.  `preload.js` executes.
+2.  `preload.js` finishes and dispatches the `api-ready` event.
+3.  `patch-notes.html`'s script, which is listening for `api-ready`, executes its loading logic.
+
+The problem was that there was no guarantee that the event listener in `patch-notes.html` would be attached *before* the `api-ready` event was dispatched.
+
+The race condition was:
+-   **Sometimes (the "slow" path):** The `patch-notes.html` script would run first, attach its listener, and then `preload.js` would dispatch the event, which would be correctly caught.
+-   **Other times (the "fast" path):** `preload.js` would run and finish so quickly that it would dispatch the `api-ready` event *before* the `patch-notes.html` script had a chance to attach its listener. The event would be missed, and the loading logic would never run, leaving the page blank.
+
+An attempt to fix this by removing the event listener and having the page script execute directly also failed, as it introduced other timing issues and broke the application.
+
+## 3. The Solution: Leveraging the Preload Guarantee
+
+The final, robust solution, implemented in the refactored patch notes system, avoids this race condition entirely by leveraging a core guarantee of Electron's `preload` scripts: **a preload script is guaranteed to execute in the renderer's context *before* any other scripts on the web page are loaded.**
+
+The final, successful implementation (which was later superseded by a static page for other reasons) worked by:
+1.  Ensuring `preload.js` correctly exposes the `window.api` object.
+2.  Having the script inside `patch-notes.html` call `window.api.getPatchNotes()` directly, without any event listeners.
+
+Because the preload script is guaranteed to have already run, the `window.api` object is guaranteed to exist when the page's own script is executed. This eliminates the need for any event-based communication and its associated race conditions.
+
+## 4. Key Takeaway
+
+When communicating between a preload script and a renderer page's script, be wary of custom events for initialization. They are a common source of race conditions.
+
+The key lessons are:
+-   **Understand the execution order:** Electron guarantees that the `preload` script will complete its execution before the web page's scripts begin.
+-   **Avoid event-based initialization:** There is no need to use an "api-ready" event. The `window.api` object exposed by the preload script will be available to the page's scripts from the moment they start running.
+-   **Keep it simple:** The simplest and most reliable way for a page to interact with the main process is to directly call the functions exposed on the `window.api` object by the preload script.

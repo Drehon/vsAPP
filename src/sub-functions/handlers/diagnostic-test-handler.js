@@ -68,7 +68,8 @@ export class DiagnosticTestHandler {
                     block.exercises.map(() => ({
                         userAnswer: null,
                         isCorrect: null,
-                        notes: ''
+                        notes: '',
+                        submittedUnanswered: false
                     }))
                 ),
                 teacherNotes: '' // New field for teacher's overall notes
@@ -493,8 +494,13 @@ export class DiagnosticTestHandler {
             const answerState = this.activeTab.exerciseState.answers[blockIndex][questionIndex];
             const userAnswer = answerState.userAnswer;
 
+            answerState.submittedUnanswered = false; // Reset before check
+
             if (userAnswer === null || userAnswer === undefined) {
                 answerState.isCorrect = false;
+                if (question.type === 'mc') {
+                    answerState.submittedUnanswered = true;
+                }
                 return; // Skip if no answer was provided
             }
 
