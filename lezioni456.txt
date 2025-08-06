@@ -30,12 +30,12 @@ L4 - Voce e Causalità.md
 L4 - Voce e CausalitàAN.md
 L4 - Voce e CausalitàES.md
 
-L5 - Modo e Irrealtà.md
-L5 - Modo e IrrealtàAN.md
-L5 - Modo e IrrealtàES.md
+L5 - Grammatica dell'Irrealtà.md
+L5 - Grammatica dell'IrrealtàAN.md
+L5 - Grammatica dell'IrrealtàES.md
 
-L6 - Forme Verbali Complesse.md
-L6 - Forme Verbali ComplesseAN.md
-L6 - Forme Verbali ComplesseES.md
+L6 - Tempi, Verbi e Accordo.md
+L6 - Tempi, Verbi e AccordoAN.md
+L6 - Tempi, Verbi e AccordoES.md
 
 Generate a txt named lezioni456.txt and inside write down what you have done.
