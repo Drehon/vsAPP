@@ -1381,3 +1381,4 @@
 [LOG][2025-08-06T00:29:37.144Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
 [LOG][2025-08-06T00:29:37.823Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
 [LOG][2025-08-06T00:32:33.878Z] [State] Saved state for pageId 'DG-student-grammar' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
+[LOG][2025-08-06T00:33:12.845Z] [State] Loaded state for pageId 'DG-student-grammar' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'

@@ -889,8 +889,7 @@ export class DiagnosticTestHandler {
 
         let questionHTML = question.question;
         if (blockSubmitted && answerState.submittedUnanswered) {
-            // This will wrap the question text in a span that can be styled.
-            questionHTML = `<span class="unanswered-question-text">${question.question}</span>`;
+            questionHTML = question.question.replace('______', `<span class="unanswered-blank">______</span>`);
         }
 
         return `

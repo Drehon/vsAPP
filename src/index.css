@@ -59,4 +59,7 @@
   .unanswered-question-text {
     @apply text-red-700 font-bold;
   }
+  .unanswered-blank {
+    @apply bg-red-200 text-red-700 font-bold px-2 rounded;
+  }
 }
