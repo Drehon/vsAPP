@@ -15,10 +15,12 @@ make sure the content of each canvas is up to par for our standards.
 
 ---
 
-Note in the following section useful documentation for this task
-
-
-
+Note in the following section that can be useful documentation for this task
+/documentation/project-tutoring
+/documentation/teaching/tutoring-base
+/documentation/teaching/lesson-structure-deep-dive
+/documentation/teaching/content-creation-principles
+/documentation/teaching/operational-manual
 
 -----
 
