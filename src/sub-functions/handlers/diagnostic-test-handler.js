@@ -868,10 +868,6 @@ export class DiagnosticTestHandler {
             let classes = 'fase-btn border-2 font-bold py-3 px-6 rounded-lg transition-colors text-left';
             
             if (blockSubmitted) {
-                if (answerState.submittedUnanswered) {
-                    return classes + ' btn-incorrect'; // Use the same style as incorrect
-                }
-
                 const isCorrect = answerState.isCorrect;
                 const userAnswer = answerState.userAnswer;
                 const correctAnswer = question.answer;
@@ -891,8 +887,14 @@ export class DiagnosticTestHandler {
             return classes;
         };
 
+        let questionHTML = question.question;
+        if (blockSubmitted && answerState.submittedUnanswered) {
+            // This will wrap the question text in a span that can be styled.
+            questionHTML = `<span class="unanswered-question-text">${question.question}</span>`;
+        }
+
         return `
-            <p class="text-lg text-slate-700">${question.question}</p>
+            <p class="text-lg text-slate-700">${questionHTML}</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                 ${question.choices.map((opt, i) => {
                     const buttonAnswer = String.fromCharCode(65 + i);
