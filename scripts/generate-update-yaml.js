@@ -36,7 +36,7 @@ console.log(`SHA512 checksum for ${installerFileName}: ${sha512}`);
 
 // Define owner and repo for GitHub URL construction
 const owner = 'Drehon'; // Replace with your GitHub username
-const repo = 'vsAPP'; // Replace with your GitHub repository name
+const repo = 'vsAPP-public'; // Replace with your GitHub repository name
 
 // Create the YAML content.
 const yamlContent = {
