@@ -1,7 +1,7 @@
 {
   "name": "tutoring-app",
   "productName": "vsAPP",
-  "version": "1.4.0",
+  "version": "1.3.9",
   "description": "My Electron application description",
   "main": ".webpack/main",
   "scripts": {
@@ -12,7 +12,9 @@
     "lint": "echo \"No linting configured\"",
     "prepublishOnly": "node scripts/update-patch-notes.js",
     "prepare:release": "node scripts/prepare-release.js",
-    "publish-public": "node -r dotenv/config transfer_releases.py Drehon/vsAPP Drehon/vsAPP-public"
+    "publish-public": "python transfer_releases.py Drehon/vsAPP Drehon/vsAPP-public",
+    "publish-public:win": ".venv\\Scripts\\activate && python transfer_releases.py Drehon/vsAPP Drehon/vsAPP-public",
+    "publish-public:unix": "source .venv/bin/activate && python transfer_releases.py Drehon/vsAPP Drehon/vsAPP-public"
   },
   "keywords": [],
   "author": {
