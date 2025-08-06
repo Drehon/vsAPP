@@ -1,10 +1,4 @@
 [
-  {
-    "body": "Small tweaks. Complete shift to public repository. Adjustements to the publish process needed.",
-    "name": "v1.4.0",
-    "publishedAt": "2025-08-05T23:40:00Z",
-    "tagName": "v1.4.0"
-  }, 
    {
     "body": "Heavily refactored the whole app structure, focusing on normalization of the html for lessons, lessonsAN, excercises and content under 'other'. Multiple visual improvements, including new buttons and a new header. The app now uses a more modular approach, with content being loaded dynamically based on the current tab. This should make future updates and maintenance much easier. Also, the app now has a more consistent look and feel across different sections. And a few functions have been further refined, such as the reset button and the content loader.",
     "name": "v1.3.9",
