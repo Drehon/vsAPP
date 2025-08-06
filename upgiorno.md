@@ -4,9 +4,11 @@ then publish 1.4.0 too
 test 1.3.9 update to 1.4.0 publishing only to public
 and start over if it fails
 
-  {
-    "body": "Small tweaks. Complete shift to public repository. Adjustements to the publish process needed.",
-    "name": "v1.4.0",
-    "publishedAt": "2025-08-05T23:40:00Z",
-    "tagName": "v1.4.0"
-  }, 
+furthermore
+npm run publish publishes directly to the public repo instead of the private one
+correct process should be
+npm run publish >>> to vsAPP
+npm run publish-public >>>> copy release from vsAPP to vsAPP-public
+
+
+
