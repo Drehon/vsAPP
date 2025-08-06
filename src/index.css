@@ -39,6 +39,10 @@
       @apply bg-red-100 border-l-4 border-red-500 text-red-800 p-4 rounded-r-lg;
   }
 
+  .feedback-correct-outline {
+    @apply border-green-500 bg-green-50;
+  }
+
   .btn-correct {
       @apply bg-green-500 border-green-600 text-white;
   }
@@ -47,5 +51,16 @@
   }
   .btn-neutral {
       @apply bg-slate-200 border-slate-300 text-slate-700 hover:bg-slate-300;
+  }
+
+  .unanswered-question {
+    @apply bg-red-100 border-l-4 border-r-4 border-red-500 p-4 rounded-lg;
+  }
+  .unanswered-question-text {
+    @apply text-red-700 font-bold;
+  }
+  .unanswered-blank {
+    /* Style for unanswered blanks in multiple-choice questions */
+    @apply bg-red-200 text-red-700 font-bold px-2 rounded;
   }
 }

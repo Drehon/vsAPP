@@ -1,0 +1,120 @@
+# Creating New Content: A Developer's Guide
+
+This guide explains how to create new content for the application, from a simple static page to a new type of interactive module.
+
+---
+
+## 1. The Universal HTML Fragment
+
+All content loaded by the application must be a well-formed **HTML fragment**, not a full HTML document. This means it should not contain `<html>`, `<head>`, or `<body>` tags.
+
+The fragment **must** have a single root element. This root element must have at least two `data-*` attributes:
+
+-   `data-page-id`: A unique string that identifies this piece of content for state-saving purposes. Good practice is to use the filename without the extension (e.g., `L1-congiuntivoES`).
+-   `data-module`: A string that tells the `content-hydrator` which JavaScript handler to use.
+
+### Example: A Static Lesson
+
+A simple static lesson needs no special logic, so it uses the `static-lesson` module.
+
+```html
+<!-- lessons/my-new-lesson.html -->
+<div class="content-container p-6 md:p-10"
+     data-page-id="my-new-lesson"
+     data-module="static-lesson">
+
+    <header class="content-header ...">
+        <h1 id="page-title">My New Lesson</h1>
+    </header>
+
+    <main id="content-body" class="content-body ...">
+        <p>This is the content of the lesson.</p>
+    </main>
+</div>
+```
+
+---
+
+## 2. Creating Interactive Content with a JSON Data Island
+
+For any content that requires interactivity, the logic should be driven by a **JSON data island**. This is a `<script>` tag with `type="application/json"` and `id="page-data"`. This cleanly separates the data and configuration from the HTML structure.
+
+### The Standard Structure
+
+An interactive HTML fragment follows this pattern:
+
+```html
+<!-- exercises/my-new-exercise.html -->
+<div class="content-container p-6 md:p-10"
+     data-page-id="my-new-exercise"
+     data-module="interactive-exercise">
+
+    <!-- 1. Header (Optional but Recommended) -->
+    <header id="content-header" class="content-header ...">
+        <h1 id="page-title">[Title from JSON]</h1>
+        <p id="page-subtitle">[Subtitle from JSON]</p>
+    </header>
+
+    <!-- 2. Main Content Area (to be populated by the handler) -->
+    <main id="content-body" class="content-body ...">
+        <!-- The JS handler will render content here -->
+    </main>
+
+    <!-- 3. Data Island -->
+    <script type="application/json" id="page-data">
+    {
+        "title": "My New Exercise",
+        "subtitle": "A practice session for something new.",
+        "blocks": [
+            {
+                "name": "Fase 1",
+                "exercises": [
+                    {
+                        "type": "multiple-choice",
+                        "question": "Which is the correct option?",
+                        "options": ["A", "B", "C", "D"],
+                        "answer": "C",
+                        "explanation": "C is correct because..."
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</div>
+```
+
+This HTML file uses the `interactive-exercise` module, which maps to the `ExerciseHandler` class. The `ExerciseHandler` will read the JSON from `#page-data` and dynamically build the exercise UI inside the `#content-body` element.
+
+---
+
+## 3. Creating a New Interactive Module
+
+If you need to create a new type of interactive content that is fundamentally different from the existing `ExerciseHandler` or `DiagnosticTestHandler`, you will need to create a new handler.
+
+### Steps:
+
+1.  **Create the Handler Class:** Create a new JavaScript class in the `src/sub-functions/handlers/` directory (e.g., `new-module-handler.js`).
+    -   It must have a `constructor(container, tab, saveFunc)` that receives the content pane, the tab object, and the auto-save function.
+    -   It should read its configuration from a `#page-data` element.
+    -   It should contain all the logic for rendering the UI and handling user interaction.
+
+2.  **Register the Handler:** In `src/sub-functions/content-hydrator.js`, import your new handler and add it to the `moduleHandlers` map.
+    ```javascript
+    // In content-hydrator.js
+    import { NewModuleHandler } from './handlers/new-module-handler.js';
+
+    function handleNewModule(pane, tab, saveFunc) {
+        tab.exerciseInstance = new NewModuleHandler(pane, tab, saveFunc);
+    }
+
+    const moduleHandlers = {
+      // ... other handlers
+      'new-interactive-module': handleNewModule,
+    };
+    ```
+
+3.  **Create the HTML:** Create your new HTML content fragment.
+    -   Give it a unique `data-page-id`.
+    -   Set the `data-module` attribute to the key you used in the map (e.g., `data-module="new-interactive-module"`).
+    -   Structure the `#page-data` JSON object in the way your new handler expects.

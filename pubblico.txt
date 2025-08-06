@@ -1,0 +1,15 @@
+The source code was being included in the GitHub releases because of the `transfer_releases.py` script. This script is used by the `npm run publish-public` command to transfer releases from a private repository to a public one.
+
+The script was fetching all assets from the latest release of the source repository and uploading them to the target repository. This included the "Source code (zip)" and "Source code (tar.gz)" archives that GitHub automatically adds to every release.
+
+To prevent this, I have modified the `transfer_releases.py` script. I added a check to identify and skip these source code assets during the transfer process. Now, only the application binaries and other intended assets will be included in the public releases.
+
+The change is in this part of the script:
+```python
+        # Download and upload assets
+        for asset in latest_release.get_assets():
+            if asset.name.startswith('Source code'):
+                print(f"  - Skipping source code asset: {asset.name}")
+                continue
+```
+This ensures that the source code remains in the private repository and is not published to the public one.

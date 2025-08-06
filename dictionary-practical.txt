@@ -1,0 +1,234 @@
+Dictionary Feature: Practical Implementation Guide
+
+This document provides a step-by-step guide for the practical implementation of the offline dictionary feature. It follows the MVP (Minimum Viable Product) approach recommended in the theoretical document, focusing on using an SQLite database for maximum efficiency.
+
+Assumptions: This guide assumes an Electron application environment, as indicated by the project file structure (main.js, preload.js, renderer.js).
+Step 1: Project Setup & Prerequisites
+
+Before writing any UI code, we need to prepare the data source and the necessary tools to interact with it.
+
+    Choose and Prepare the Database:
+
+        Source: We will use the Medium Tier dictionary from CloudBytes-Academy/English-Dictionary-Open-Source.
+
+        Action: Download the SQLite.sqlitedb file from their repository. For clarity, rename this file to dictionary-medium.sqlite.
+
+        Hosting: Upload this dictionary-medium.sqlite file to a location of your choice in your own GitHub repository.
+
+    Get the Raw Download URL:
+
+        Navigate to the dictionary-medium.sqlite file in your GitHub repository.
+
+        Click the "Download" button.
+
+        Copy the URL from your browser's address bar. This is the direct download link you will use in the app. It will look something like https://github.com/your-username/your-repo/raw/main/dictionary-medium.sqlite or https://media.githubusercontent.com/....
+
+    Install SQLite Library:
+
+        Since we are interacting with an SQLite database from JavaScript, we need a library to do so. The standard choice is sql.js.
+
+        Action: Add sql.js to your project's dependencies.
+
+        npm install sql.js
+
+        You will also need to copy the sql-wasm.wasm file from node_modules/sql.js/dist/ into your project's public/output directory so it can be loaded at runtime. Your bundler (Webpack) configuration may need to be adjusted to handle this.
+
+Step 2: UI Implementation (The Dictionary Sidebar)
+
+This component will be hidden by default and slide into view when the user clicks a "Dictionary" button.
+
+    HTML (index.html): Add the HTML for the sidebar and a button to toggle it.
+
+    <!-- Add this button somewhere in your main UI -->
+    <button id="toggle-dictionary-btn">Open Dictionary</button>
+
+    <!-- Add this sidebar at the end of your <body> tag -->
+    <div id="dictionary-sidebar" class="sidebar">
+        <a href="javascript:void(0)" class="close-btn" id="close-dictionary-btn">&times;</a>
+        <h3>Dictionary</h3>
+        <input type="text" id="dictionary-search-input" placeholder="Search for a word...">
+        <div id="dictionary-results-list"></div>
+        <div id="dictionary-definition-view">
+            <!-- Definition will be displayed here -->
+        </div>
+    </div>
+
+    CSS (style.css): Add the styles for a hidden sidebar.
+
+    .sidebar {
+      height: 100%;
+      width: 300px;
+      position: fixed;
+      z-index: 1000;
+      top: 0;
+      right: -300px; /* Hidden by default */
+      background-color: #f1f1f1;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.5);
+    }
+    /* ... other styles for input, results, etc. ... */
+
+    JavaScript (renderer.js): Add the logic to open and close the sidebar.
+
+    const toggleBtn = document.getElementById('toggle-dictionary-btn');
+    const closeBtn = document.getElementById('close-dictionary-btn');
+    const sidebar = document.getElementById('dictionary-sidebar');
+
+    toggleBtn.addEventListener('click', () => {
+      sidebar.style.right = '0';
+    });
+
+    closeBtn.addEventListener('click', () => {
+      sidebar.style.right = '-300px';
+    });
+
+Step 3: Download & Storage Management
+
+This logic will live in your Settings page script. It will communicate with the main process via the preload script to save the file.
+
+    Expose fs functionality (preload.js): Securely expose the necessary Node.js functions to the renderer process.
+
+    const { contextBridge, ipcRenderer } = require('electron');
+
+    contextBridge.exposeInMainWorld('electronAPI', {
+      getAppPath: () => ipcRenderer.invoke('get-app-path'),
+      saveFile: (fileName, data) => ipcRenderer.invoke('save-file', { fileName, data }),
+      loadFile: (fileName) => ipcRenderer.invoke('load-file', fileName)
+    });
+
+    Handle in Main Process (main.js): Implement the backend for the exposed functions.
+
+    const { app, ipcMain } = require('electron');
+    const fs = require('fs/promises');
+    const path = require('path');
+
+    ipcMain.handle('get-app-path', () => app.getPath('userData'));
+
+    ipcMain.handle('save-file', async (event, { fileName, data }) => {
+      const userDataPath = app.getPath('userData');
+      const filePath = path.join(userDataPath, fileName);
+      await fs.writeFile(filePath, data);
+      return filePath;
+    });
+
+    ipcMain.handle('load-file', async (event, fileName) => {
+        const userDataPath = app.getPath('userData');
+        const filePath = path.join(userDataPath, fileName);
+        try {
+            const data = await fs.readFile(filePath);
+            return data;
+        } catch (error) {
+            return null; // File not found
+        }
+    });
+
+    Download Logic (Settings page script):
+
+    const downloadBtn = document.getElementById('download-medium-dict-btn');
+    const statusEl = document.getElementById('download-status');
+
+    downloadBtn.addEventListener('click', async () => {
+      statusEl.textContent = 'Downloading...';
+      const url = 'YOUR_RAW_GITHUB_URL_HERE'; // Replace with your actual URL
+      const fileName = 'dictionary-medium.sqlite';
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        const arrayBuffer = await response.arrayBuffer();
+        const data = new Uint8Array(arrayBuffer);
+
+        // Use the exposed API to save the file
+        const savedPath = await window.electronAPI.saveFile(fileName, data);
+        statusEl.textContent = `Download Complete! Saved to ${savedPath}`;
+      } catch (error) {
+        statusEl.textContent = `Download Failed: ${error.message}`;
+      }
+    });
+
+Step 4: Database Search Implementation
+
+This will be the core logic of the dictionary feature itself.
+
+    Initialize the Database (dictionary.js):
+
+    let db = null;
+
+    async function initDictionary() {
+      try {
+        const SQL = await initSqlJs({
+          locateFile: file => `path/to/your/assets/${file}` // Point to sql-wasm.wasm
+        });
+
+        const fileBuffer = await window.electronAPI.loadFile('dictionary-medium.sqlite');
+
+        if (fileBuffer) {
+          db = new SQL.Database(fileBuffer);
+          console.log('Dictionary database loaded successfully.');
+          // Enable the dictionary button now
+          document.getElementById('toggle-dictionary-btn').disabled = false;
+        } else {
+          console.log('Dictionary not downloaded yet.');
+          document.getElementById('toggle-dictionary-btn').disabled = true;
+        }
+      } catch (err) {
+        console.error("Error loading database:", err);
+        document.getElementById('toggle-dictionary-btn').disabled = true;
+      }
+    }
+
+    Search Function (dictionary.js):
+
+    function searchWord(query) {
+      if (!db || !query) return [];
+      try {
+        const stmt = db.prepare(`
+          SELECT word, definition FROM entries WHERE word LIKE ? LIMIT 20
+        `);
+        // The '%' is added to the query string itself
+        stmt.bind([`${query}%`]);
+
+        const results = [];
+        while (stmt.step()) {
+          results.push(stmt.getAsObject());
+        }
+        stmt.free();
+        return results;
+      } catch (err) {
+        console.error("Search failed:", err);
+        return [];
+      }
+    }
+
+    Connect to UI (renderer.js or dictionary.js):
+
+    const searchInput = document.getElementById('dictionary-search-input');
+    const resultsList = document.getElementById('dictionary-results-list');
+    const definitionView = document.getElementById('dictionary-definition-view');
+
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value;
+      const results = searchWord(query);
+
+      // Clear previous results
+      resultsList.innerHTML = '';
+
+      // Display new results
+      results.forEach(result => {
+        const item = document.createElement('div');
+        item.textContent = result.word;
+        item.classList.add('result-item');
+        item.addEventListener('click', () => {
+          definitionView.innerHTML = `<h4>${result.word}</h4><p>${result.definition}</p>`;
+        });
+        resultsList.appendChild(item);
+      });
+    });
+
+    // Call init on app load
+    initDictionary();
+
+This detailed plan provides a complete, practical roadmap for building the dictionary feature, from downloading the data to performing efficient, real-time searches within a sidebar UI.

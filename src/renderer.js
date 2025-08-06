@@ -27,6 +27,7 @@ window.addEventListener('api-ready', () => {
   const globalResetBtn = document.getElementById('global-reset-btn');
   const globalGithubBtn = document.getElementById('global-github-btn');
   const globalSettingsBtn = document.getElementById('global-settings-btn');
+  const resetFeedbackMessage = document.getElementById('reset-feedback-message');
 
 
   // --- CORE FUNCTIONS ---
@@ -51,6 +52,9 @@ window.addEventListener('api-ready', () => {
   async function switchTab(tabId) {
     activeTab = await _switchTab(tabId);
     updateGlobalToolbar(activeTab);
+    // The re-hydration logic that was here has been moved to tab-manager.js,
+    // where the tab switch event is actually handled. This function is now
+    // just a wrapper to ensure the global state (activeTab) is updated.
   }
 
   async function closeTab(tabId) {
@@ -63,8 +67,8 @@ window.addEventListener('api-ready', () => {
     loadHomeIntoTab(tabId, tabs, renderTabs, addTab, autoSaveExerciseState, updateGlobalToolbar);
   }
 
-  function handleLoadContent(tabId, filePath, ...args) {
-    loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, autoSaveExerciseState, updateGlobalToolbar);
+  function handleLoadContent(tabId, filePath, options, ...args) {
+    loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, autoSaveExerciseState, updateGlobalToolbar, options);
   }
   
   function handleLoadSettings(tabId, ...args) {
@@ -105,12 +109,74 @@ window.addEventListener('api-ready', () => {
     globalSaveBtn.onclick = isContent ? () => handleSaveButtonClick(tab) : null;
     globalLoadBtn.onclick = isContent ? () => handleLoadButtonClick(tab) : null;
     globalResetBtn.onclick = isContent ? async () => {
-      await window.api.resetExerciseState(tab.filePath);
-      handleLoadContent(tab.id, tab.filePath);
+      const pageId = getActivePageId(tab);
+      if (!pageId) {
+        console.error('Could not find pageId to reset.');
+        return;
+      }
+
+      // --- Capture View State Before Reset ---
+      const pane = document.getElementById(`pane-${tab.id}`);
+      let activePhaseId = null;
+      let scrollTop = 0;
+
+      if (pane) {
+        // Find active phase
+        const activeButton = pane.querySelector('.tab-btn.tab-active');
+        if (activeButton) {
+          activePhaseId = activeButton.id; // Store the full ID
+        }
+        // Find scroll position
+        const scrollable = pane.querySelector('.lesson-content');
+        if (scrollable) {
+          scrollTop = scrollable.scrollTop;
+        }
+      }
+      
+      const result = await window.api.resetExerciseState(pageId);
+
+      // --- Reload content with view state ---
+      // We still need tab.filePath to reload the content source
+      handleLoadContent(tab.id, tab.filePath, { activePhaseId, scrollTop });
+
+      if (result.success) {
+        showFeedbackMessage('Reset Complete');
+      } else {
+        console.error('Failed to reset state:', result.error);
+      }
     } : null;
   }
 
+  // --- FEEDBACK MESSAGE LOGIC ---
+  // Store the timer ID in a closure to ensure only one feedback message runs at a time
+  let feedbackTimer = null;
+
+  function showFeedbackMessage(message, duration = 5000) {
+    if (!resetFeedbackMessage) return;
+
+    // Clear any existing feedback timeout
+    clearTimeout(feedbackTimer);
+
+    resetFeedbackMessage.textContent = message;
+    resetFeedbackMessage.classList.remove('opacity-0');
+
+    feedbackTimer = setTimeout(() => {
+      resetFeedbackMessage.classList.add('opacity-0');
+      
+      // Use another timeout to clear the content after the transition ends
+      feedbackTimer = setTimeout(() => {
+        resetFeedbackMessage.innerHTML = '&nbsp;';
+      }, 500); // This duration should match the CSS transition duration
+
+    }, duration);
+  }
+
   // --- UTILITY & SETUP FUNCTIONS ---
+
+  function getActivePageId(tab) {
+    // The pageId is now reliably stored on the tab object.
+    return tab ? tab.pageId : null;
+  }
   
   function debounce(func, delay) {
     let timeout;
@@ -198,8 +264,10 @@ window.addEventListener('api-ready', () => {
   }
 
   async function handleSaveButtonClick(tab) {
-    if (!tab || !tab.filePath || !tab.exerciseState) {
-      console.error('No active exercise tab or state to save.');
+    const pageId = getActivePageId(tab);
+
+    if (!tab || !pageId || !tab.exerciseState) {
+      console.error('No active exercise tab, pageId, or state to save.');
       return;
     }
     const dataStr = JSON.stringify(tab.exerciseState, null, 2);
@@ -208,19 +276,9 @@ window.addEventListener('api-ready', () => {
     const today = new Date();
     const dateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     
-    let defaultFilename;
-    const lessonMatch = tab.title.match(/^(L\d+)/);
-
-    if (tab.filePath.includes('student-verbs')) {
-        defaultFilename = `Verbs save ${dateString}.json`;
-    } else if (tab.filePath.includes('student-grammar')) {
-        defaultFilename = `Grammar save ${dateString}.json`;
-    } else if (lessonMatch) {
-        defaultFilename = `${lessonMatch[1]}es save ${dateString}.json`;
-    } else {
-        // Fallback to original naming scheme
-        defaultFilename = `${tab.title}-manual-progress.json`;
-    }
+    // Use pageId for a more reliable default filename
+    const defaultFilename = `${pageId}-save-${dateString}.json`;
+    
     // --- End new file naming logic ---
 
     const result = await window.api.showSaveDialogAndSaveFile({
@@ -230,6 +288,24 @@ window.addEventListener('api-ready', () => {
 
     if (result.success) {
         console.log(`Manually saved progress to: ${result.path}`);
+        
+        // --- Show Feedback Message ---
+        let objectName;
+        const lessonMatch = tab.title.match(/^(L\d+)/);
+
+        // Use pageId for more reliable feedback
+        if (pageId.includes('student-verbs')) {
+            objectName = 'Verbs';
+        } else if (pageId.includes('student-grammar')) {
+            objectName = 'Grammar';
+        } else if (lessonMatch) {
+            objectName = lessonMatch[1];
+        } else {
+            objectName = 'File'; // Fallback
+        }
+        showFeedbackMessage(`Saved ${objectName}`);
+        // --- End Feedback Message ---
+
     } else if (!result.canceled) {
         console.error('Failed to manually save progress:', result.error);
     }
@@ -237,6 +313,13 @@ window.addEventListener('api-ready', () => {
 
   async function handleLoadButtonClick(tab) {
     if (!tab) return;
+
+    const pageId = getActivePageId(tab);
+    if (!pageId) {
+      console.error('Could not find pageId to load state into.');
+      return;
+    }
+
     const result = await window.api.showOpenDialogAndLoadFile();
   
     if (result.success && !result.canceled) {
@@ -245,13 +328,27 @@ window.addEventListener('api-ready', () => {
         // Basic validation to ensure the loaded file is a valid state object
         const isValidState = loadedState && typeof loadedState === 'object' && Object.keys(loadedState).length > 0;
 
-        if (isValidState && tab.filePath) {
+        if (isValidState) {
           mostRecentlyLoadedFile = result.path; // Track the recently loaded file
-          await window.api.saveExerciseState(tab.filePath, loadedState); // Overwrite autosave with this state
+          await window.api.saveExerciseState(pageId, loadedState); // Overwrite autosave with this state
           handleLoadContent(tab.id, tab.filePath); // Reload content to apply the new state
-          console.log('Successfully loaded and applied state from', result.path);
-        } else if (!tab.filePath) {
-          console.error('No active exercise tab to load the state into.');
+          console.log(`Successfully loaded and applied state from ${result.path} to pageId ${pageId}`);
+
+          // --- Show Feedback Message ---
+          let objectName;
+          const lessonMatch = tab.title.match(/^(L\d+)/);
+          if (pageId.includes('student-verbs')) {
+              objectName = 'Verbs';
+          } else if (pageId.includes('student-grammar')) {
+              objectName = 'Grammar';
+          } else if (lessonMatch) {
+              objectName = lessonMatch[1];
+          } else {
+              objectName = 'File'; // Fallback
+          }
+          showFeedbackMessage(`Loaded ${objectName}`);
+          // --- End Feedback Message ---
+
         } else {
           console.error('Loaded file does not appear to be a valid progress file.');
           // Optionally, inform the user via a UI element
@@ -269,12 +366,13 @@ window.addEventListener('api-ready', () => {
   // --- INITIALIZATION ---
 
   const autoSaveExerciseState = debounce(async (tab, force = false) => {
-    if (tab && tab.filePath && tab.exerciseState) {
+    // Directly use the reliable pageId from the tab object.
+    if (tab && tab.pageId && tab.exerciseState) {
       try {
-        await window.api.saveExerciseState(tab.filePath, tab.exerciseState);
-        console.log(`Autosaved progress for ${tab.filePath}`);
+        await window.api.saveExerciseState(tab.pageId, tab.exerciseState);
+        console.log(`Autosaved progress for pageId: ${tab.pageId}`);
       } catch (error) {
-        console.error(`Failed to autosave progress for ${tab.filePath}:`, error);
+        console.error(`Failed to autosave progress for pageId ${tab.pageId}:`, error);
       }
     }
   }, 500);
@@ -293,6 +391,13 @@ window.addEventListener('api-ready', () => {
 
     window.api.onUpdateStatus(handleUpdateStatus);
     window.api.onDownloadProgress(handleDownloadProgress);
+
+    // Listen for custom feedback events from other parts of the renderer
+    window.addEventListener('show-feedback', (e) => {
+        if (e.detail && e.detail.message) {
+            showFeedbackMessage(e.detail.message);
+        }
+    });
 
     await addTab(true); // Add initial home tab
   }

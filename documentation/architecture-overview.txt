@@ -1,0 +1,31 @@
+# Application Architecture Overview
+
+This document provides a high-level overview of the application's content rendering architecture. The system has been refactored to a modern, data-driven, and component-based model.
+
+## Core Principles
+
+The new architecture is built on three core principles:
+
+1.  **HTML as a Blueprint:** Content files are simple HTML fragments that define the structure and data of a page, but not its logic. They use standard HTML tags and special `data-*` attributes to declare the required functionality.
+
+2.  **Centralized Logic:** All JavaScript logic is centralized in a few key modules. A single "content hydrator" is responsible for reading the data attributes in the HTML and delegating to the appropriate JavaScript handler to bring the page to life.
+
+3.  **Component-Based Functionality:** Interactive features are built as isolated, reusable components (or "handlers"). Each handler is a JavaScript class responsible for a specific type of content (e.g., a static lesson, an interactive exercise, a diagnostic test). This makes the system easy to maintain and extend.
+
+## The Content Rendering Pipeline
+
+The process of loading and displaying a new piece of content follows a clear, predictable pipeline:
+
+1.  **Load:** The `content-loader.js` module fetches the requested HTML fragment.
+
+2.  **Identify & Restore State:** It inspects the HTML for a `data-page-id` attribute. If found, it uses this ID to load any previously saved user progress (state) for that page.
+
+3.  **Inject:** The HTML fragment is injected into the main content area of the application.
+
+4.  **Hydrate:** The `content-hydrator.js` module is called. It inspects the injected HTML for a `data-module` attribute.
+
+5.  **Delegate:** Based on the value of the `data-module` attribute, the hydrator instantiates the appropriate handler class (e.g., `ExerciseHandler`, `DiagnosticTestHandler`).
+
+6.  **Initialize:** The newly created handler instance takes control. It reads its configuration and content from a `<script type="application/json" id="page-data">` element within the HTML and then builds the final, interactive UI.
+
+This architecture ensures a clean separation of concerns, making the codebase more modular, scalable, and easier for future developers to understand and contribute to.

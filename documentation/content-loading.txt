@@ -1,0 +1,52 @@
+# The Content Loading and Hydration Pipeline
+
+This document provides a detailed look at the two key modules responsible for loading and initializing all content within the application: `content-loader.js` and `content-hydrator.js`.
+
+---
+
+## 1. `content-loader.js`: The Loader
+
+The `content-loader.js` module is the entry point for displaying any new content in a tab. Its primary responsibility is to fetch the raw HTML content and prepare the environment for hydration.
+
+### Key Responsibilities:
+
+-   **Fetching Content:** It uses `window.api.getFileContent(filePath)` to asynchronously fetch the HTML for the selected lesson or exercise.
+
+-   **State Management Preparation:** This is its most critical role.
+    1.  **Extract `pageId`:** It parses the incoming HTML *before* injecting it into the DOM to find the root element and read its `data-page-id` attribute.
+    2.  **Store `pageId`:** The extracted `pageId` is stored directly on the `tab` object (e.g., `tab.pageId = 'L1-congiuntivo'`). This makes the ID universally accessible.
+    3.  **Load State:** It calls `window.api.loadExerciseState(pageId)` to get any saved progress. The returned state object is also stored on the `tab` object (`tab.exerciseState`).
+    4.  **Clear Stale State:** If no save file is found, it explicitly sets `tab.exerciseState = null`. This is crucial to prevent a new piece of content from inheriting the in-memory state of a previously closed tab.
+
+-   **DOM Injection:** It clears the content pane of the target tab and injects the new HTML fragment.
+
+-   **Calling the Hydrator:** Once the HTML is in the DOM and the state is loaded into the tab object, it makes a single, final call: `hydrateContent(pane, tab, saveFunction)`.
+
+---
+
+## 2. `content-hydrator.js`: The Hydrator
+
+The `content-hydrator.js` module is responsible for bringing the static HTML to life. It acts as a switchboard, delegating the content to the correct specialized handler.
+
+### Key Responsibilities:
+
+-   **Identify the Module Type:** Its first and only task is to find the root element of the newly injected content and read its `data-module` attribute (e.g., `data-module="interactive-exercise"`).
+
+-   **Delegate to a Handler:** It maintains a simple map (a JavaScript object) that associates module names with handler functions.
+    ```javascript
+    const moduleHandlers = {
+      'static-lesson': handleStaticLesson,
+      'interactive-exercise': handleInteractiveExerciseWrapper,
+      'diagnostic-test': handleDiagnosticTest,
+    };
+    ```
+
+-   **Instantiate the Handler:** It calls the corresponding function from the map. For interactive modules, this function is a wrapper that creates a **new instance** of the appropriate handler class (e.g., `new ExerciseHandler(pane, tab, saveFunction)`).
+
+### The Importance of Class-Based Handlers
+
+A key feature of the new architecture is that handlers for complex, stateful content are **JavaScript Classes**, not just functions. The `content-hydrator` creates a *new instance* of the handler for every tab.
+
+-   **State Encapsulation:** This ensures that each tab's state is completely isolated. The handler instance, and all its associated data, is stored on the `tab` object itself (`tab.exerciseInstance`). This prevents the "stateful singleton" problem where multiple tabs would interfere with each other.
+
+-   **Clean Lifecycle:** When a tab is closed, the `tab` object and the handler instance attached to it are destroyed, ensuring clean garbage collection and preventing memory leaks.

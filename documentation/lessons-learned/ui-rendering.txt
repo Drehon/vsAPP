@@ -1,0 +1,27 @@
+# Lessons Learned: The UI Readability Battle
+
+This document details a persistent and challenging UI bug encountered during the testing of Phase 4: the unreadable text on the performance chart. The iterative process to fix this issue provides a valuable lesson in building robust UI components that are resilient to environmental rendering differences.
+
+## The Problem: Low-Contrast, Unreadable Text
+
+The text labels on and around the diagnostic performance chart were often unreadable. The primary symptom was light-colored text appearing on a light or white background, offering almost no contrast. This issue was particularly difficult to debug because it seemed to behave differently in the developer's environment versus the user's testing environment.
+
+## Root Cause Analysis: A Flawed Assumption
+
+The root cause of the issue was a **flawed assumption about the rendering environment**. The developer's environment appeared to have a dark background for the chart container, against which light-colored text was perfectly readable. However, the user's environment rendered the same container with a white background, making the light text invisible.
+
+The many failed attempts to fix this were based on simply changing the text color. This approach was not robust because it still relied on an assumption about the background color, which was proving to be unreliable.
+
+## The Solution: Self-Contained, High-Contrast Components
+
+The issue was finally and definitively solved by abandoning the assumption about the background color and making the UI elements themselves responsible for their own contrast.
+
+1.  **The Chart Data Labels:** The initial approach was to just change the color of the text labels on the chart bars. The final, robust solution was to turn the labels into self-contained "pills." The `chartjs-plugin-datalabels` configuration was updated to give each label its own solid, dark grey background and white text. This ensures the label is perfectly readable no matter what color the bar behind it is.
+
+2.  **The Overall Score:** Similarly, the "Overall Score" text was initially just light-colored text placed on a container. The final fix gave the container its own solid, dark background color and explicitly set the text color to a light shade, guaranteeing a high-contrast display.
+
+3.  **The Axis and Other Labels:** All other text elements associated with the chart were explicitly given a high-contrast color (e.g., solid dark grey) to ensure they would be readable against the light background that was appearing in the user's environment.
+
+## Key Takeaway
+
+**Don't rely on implicit backgrounds for contrast.** When building a UI component, you should not assume it will be placed on a specific color background. To create a truly robust and reusable component, it should be responsible for its own readability. If a text element needs to be readable, it should either have an explicit, high-contrast color that works on both light and dark backgrounds, or it should be packaged with its own background (like a "pill" or a "card") to guarantee contrast. This approach makes the UI more resilient to changes in themes, parent containers, and unexpected rendering differences between environments.

@@ -1,0 +1,90 @@
+<!-- 
+  TEMPLATE PER LEZIONE APPROFONDITA (LESSONS)
+  
+  ISTRUZIONI:
+  1. Copia questo file e rinominalo (es. "L4 - nuovo argomento.html").
+  2. Aggiorna il 'data-page-id': deve essere unico per ogni lezione (es. "lesson-l4-nuovo-argomento").
+  3. Riempi il titolo <H1> e il sottotitolo <p>.
+  4. Struttura il contenuto in sezioni <section>. Ogni sezione dovrebbe avere un titolo <h2>.
+  5. Usa le classi Tailwind CSS per la formattazione, seguendo lo stile delle altre lezioni.
+-->
+<div class="container mx-auto p-6 md:p-10 max-w-7xl" data-module="static-lesson" data-page-id="lesson-lxx-topic-template">
+
+    <!-- Intestazione della Lezione -->
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-10">
+        <header class="p-6">
+            <h1 class="text-4xl font-bold text-slate-900">[Titolo della Lezione]</h1>
+            <p class="text-xl text-slate-500 mt-2">[Sottotitolo in Inglese]</p>
+        </header>
+    </div>
+
+    <main class="space-y-8 max-w-none">
+
+        <!-- Sezione 1: Inserisci il primo concetto qui -->
+        <section class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="p-6 bg-slate-50 border-b border-slate-200">
+                <h2 class="text-2xl font-bold text-slate-800">1. [Titolo della Sezione 1]</h2>
+            </div>
+            <div class="p-6">
+                <p>
+                    Inserisci qui il testo della tua lezione. Puoi usare paragrafi, liste, e altri elementi HTML.
+                </p>
+                <p class="mt-4">
+                    Usa classi come <code>font-semibold</code> o <code class="key-rule">key-rule</code> per evidenziare i concetti chiave.
+                </p>
+            </div>
+        </section>
+
+        <!-- Sezione 2: Un altro concetto -->
+        <section class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="p-6 bg-slate-50 border-b border-slate-200">
+                <h2 class="text-2xl font-bold text-slate-800">2. [Titolo della Sezione 2]</h2>
+            </div>
+            <div class="p-6">
+                <p>
+                    Continua a sviluppare la lezione qui.
+                </p>
+                <!-- Esempio di un blocco di codice o regola evidenziata -->
+                <div class="mt-4 p-4 border border-slate-200 rounded-lg bg-slate-50">
+                    <p><strong>Regola Chiave:</strong> Inserisci qui una regola importante.</p>
+                    <ul class="mt-3 text-base list-disc list-inside">
+                        <li>Esempio 1.</li>
+                        <li>Esempio 2.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Esempio di Sezione "Caso Studio" (puoi copiarla e adattarla) -->
+        <section class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="p-6 bg-slate-50 border-b border-slate-200">
+                <h2 class="text-2xl font-bold text-slate-800">3. Analisi Pratica</h2>
+            </div>
+            <div class="p-6">
+                 <div class="mt-6 p-5 border-l-4 rounded-r-lg bg-slate-50 shadow-inner case-study-card">
+                    <h4 class="text-lg font-bold text-amber-800">Caso Studio: [Nome del caso]</h4>
+                    <p class="mt-2">Descrizione del caso di studio o dell'errore comune.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sezione Conclusiva (Standard) -->
+        <section class="bg-white rounded-lg shadow-lg overflow-hidden">
+             <div class="p-6 bg-slate-50 border-b border-slate-200">
+                <h2 class="text-2xl font-bold text-slate-800">4. Conclusione e Prossimi Passi</h2>
+            </div>
+            <div class="p-6">
+                <p>Riepilogo finale della lezione.</p>
+                <div class="mt-6 p-6 bg-indigo-50 rounded-lg border-l-4 border-indigo-500">
+                    <h4 class="font-bold text-indigo-800">Piano d'Azione per lo Studente</h4>
+                    <ol class="mt-4 space-y-3 list-decimal list-inside text-indigo-900">
+                        <li>Azione 1.</li>
+                        <li>Azione 2.</li>
+                        <li>Azione 3.</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>

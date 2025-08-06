@@ -1,0 +1,7 @@
+{
+  "//": "This is a temporary user database. Do not use in a production environment.",
+  "user1": {
+    "password": "password123",
+    "email": "user1@example.com"
+  }
+}

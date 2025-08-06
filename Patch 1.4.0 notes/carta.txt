@@ -1,0 +1,40 @@
+# Analysis of Chart Readability Issue (Issue 7)
+
+This document analyzes the persistent problem of unreadable text on the diagnostic performance charts and proposes a definitive solution.
+
+## 1. Problem Description
+
+The core issue is that the text labels on the chart's bars (e.g., showing percentages) have extremely low contrast, making them impossible to read. The user describes this as a "white on white" problem, which strongly implies that the chart bars are rendering as a very light or white color in their environment.
+
+This issue has persisted despite previous attempts to fix it by setting specific colors in the code (e.g., dark indigo bars and white text).
+
+## 2. Root Cause Hypothesis
+
+The fact that explicit color settings in `diagnostic-test-handler.js` are not working suggests the problem is not in the chart configuration logic itself, but in how those colors are rendered. The most likely causes are:
+
+1.  **CSS Overrides:** A global CSS rule in the application might be targeting canvas elements or their containers, forcing a light background color that overrides the Chart.js settings.
+2.  **Environment-Specific Rendering Bug:** There could be a quirk in the specific version of Electron or Chromium the app is running on that prevents `rgba` or certain hex colors from being applied correctly to the canvas.
+
+Trying to debug the specific cause is difficult without access to the user's environment. Therefore, the best solution is one that is **resilient to the bar color**.
+
+## 3. Proposed Solution: Self-Contained Datalabels
+
+Instead of relying on the contrast between the text and the bar behind it, we should make the text labels self-sufficient.
+
+The `chartjs-plugin-datalabels` library allows for extensive styling of the labels. I propose we style the labels to look like small "tags" or "pills" with their own background color.
+
+**Implementation Plan:**
+
+-   **Label Background:** Give each label a solid, dark background color (e.g., a dark grey like `#27272A`).
+-   **Label Text Color:** Set the label's text color to white (`#FFFFFF`).
+-   **Padding & Radius:** Add some horizontal padding and a `borderRadius` to create the "pill" shape, which is visually appealing and clean.
+
+This approach **guarantees** that the label text will be perfectly readable, because its contrast is determined by its own background, not the chart bar's color. It will work even if the chart bars are rendered as white, black, or any other color.
+
+## 4. Alternative Solutions (and why they are not ideal)
+
+The user asked if a different chart type would be better.
+
+-   **Alternative Chart:** We could use a different chart (e.g., a radar chart, a donut chart). However, a horizontal bar chart is the **correct and most effective** way to visualize performance across a discrete set of categories. The problem is not the *type* of chart, but its *styling*. Changing the chart type would be a more complex change that doesn't address the root styling problem.
+
+**Conclusion:** I strongly recommend we proceed with the "Self-Contained Datalabels" solution. It is a targeted, robust fix that will solve the readability issue permanently.

@@ -1,18 +1,12 @@
-import { initializeExercise } from './exercise-initializer.js';
-import { initializeGrammarExercise } from './grammar-exercise.js';
-import { initializeVerbsExercise } from './verb-exercise.js';
+import { hydrateContent } from './content-hydrator.js';
 
-export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState, updateGlobalToolbar) {
+export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState, updateGlobalToolbar, options) {
     const tab = tabs.find(t => t.id === tabId);
     if (!tab) return;
 
     tab.view = 'content';
     tab.filePath = filePath;
     tab.title = filePath.split('/').pop().replace('.html', '');
-
-    if (updateGlobalToolbar) {
-        updateGlobalToolbar(tab);
-    }
 
     const content = await window.api.getFileContent(filePath);
     const pane = document.getElementById(`pane-${tab.id}`);
@@ -33,35 +27,58 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
             oldButtonContainer.remove();
         }
 
+        // --- State Loading Fix ---
+        // 1. Extract pageId from the content BEFORE hydrating.
+        const contentRoot = tempDiv.querySelector('[data-page-id]');
+        const pageId = contentRoot ? contentRoot.dataset.pageId : null;
+
+        // Store the pageId on the tab object for universal access
+        tab.pageId = pageId;
+
+        // 2. Load state using the correct pageId.
+        // The tab's title is used as a fallback to maintain compatibility with legacy content.
+        const stateIdentifier = pageId || tab.title;
+        const loadedState = await window.api.loadExerciseState(stateIdentifier);
+        if (loadedState) {
+            tab.exerciseState = loadedState;
+            console.log(`State successfully loaded for identifier: ${stateIdentifier}`);
+        } else {
+            // CRITICAL: If no state is loaded, ensure any old in-memory state is cleared.
+            // This forces the handler to initialize a fresh state object.
+            tab.exerciseState = null;
+            console.log(`No state found for identifier: ${stateIdentifier}. Clearing in-memory state.`);
+        }
+        // --- End of Fix ---
+
+        // --- Toolbar Update ---
+        // The toolbar is updated *after* the pageId is known and state is loaded,
+        // ensuring all buttons are correctly configured.
+        if (updateGlobalToolbar) {
+            updateGlobalToolbar(tab);
+        }
+        // --- End of Update ---
+
         contentWrapper.innerHTML = tempDiv.innerHTML;
         pane.appendChild(contentWrapper);
 
-        if (contentWrapper.querySelector('#exercise-data')) {
-            const savedState = await window.api.loadExerciseState(filePath);
+        // The universal hydrator is now called. If state was loaded, the tab object
+        // will already have it, and the handler will use it instead of creating a new one.
+        hydrateContent(contentWrapper, tab, saveExerciseState);
+        
+        // After initialization, restore view state if options are provided
+        if (options) {
+            // Restore active phase/tab by simulating a click
+            if (options.activePhaseId) {
+                const phaseButton = pane.querySelector(`#${options.activePhaseId}`);
+                if (phaseButton) {
+                    phaseButton.click(); // This will show the correct tab content
+                }
+            }
 
-            // Validation logic for test pages
-            let isValidState = false;
-            if (filePath.includes('student-grammar') || filePath.includes('student-verbs')) {
-                isValidState = savedState &&
-                    typeof savedState === 'object' &&
-                    savedState['1'] && savedState['2'] && savedState['3'] &&
-                    'completed' in savedState['1'] && 'answers' in savedState['1'] &&
-                    'completed' in savedState['2'] && 'answers' in savedState['2'] &&
-                    'completed' in savedState['3'] && 'answers' in savedState['3'];
-            } else {
-                // For now, assume other exercises are valid if they exist.
-                isValidState = savedState ? true : false;
-            }
-    
-            tab.exerciseState = isValidState ? savedState : null;
-            
-            if (filePath.includes('student-grammar')) {
-                initializeGrammarExercise(contentWrapper, tab, saveExerciseState);
-            } else if (filePath.includes('student-verbs')) {
-                initializeVerbsExercise(contentWrapper, tab, saveExerciseState);
-            }
-            else {
-                initializeExercise(contentWrapper, tab, saveExerciseState);
+            // Restore scroll position
+            if (options.scrollTop) {
+                // The scrollable element is the contentWrapper itself
+                contentWrapper.scrollTop = options.scrollTop;
             }
         }
     }
@@ -215,26 +232,69 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
         // --- Add Reset All Saves Logic ---
         const resetAllSavesBtn = scrollableContent.querySelector('#reset-all-saves-btn');
         if (resetAllSavesBtn) {
-            resetAllSavesBtn.addEventListener('click', async () => {
-                const confirmed = confirm('Are you sure you want to delete all auto-saved progress? This action cannot be undone.');
-                if (confirmed) {
-                    try {
-                        const result = await window.api.resetAllAutoSaves();
-                        if (result.success) {
-                            alert(`Successfully deleted ${result.count} auto-save file(s). The list will now be updated.`);
-                            // Refresh the active saves list
-                            if (activeSavesList) {
-                                activeSavesList.innerHTML = '<li class="italic">No active auto-saves found.</li>';
-                            }
-                        } else {
-                            throw new Error(result.error);
-                        }
-                    } catch (error) {
-                        console.error('Failed to reset all auto-saves:', error);
-                        alert(`An error occurred: ${error.message}`);
-                    }
+            const originalButtonParent = resetAllSavesBtn.parentNode;
+            let confirmationContainer = null;
+
+            const showConfirmation = () => {
+                resetAllSavesBtn.style.display = 'none';
+
+                confirmationContainer = document.createElement('div');
+                confirmationContainer.className = 'flex items-center justify-end space-x-2';
+
+                const areYouSure = document.createElement('span');
+                areYouSure.textContent = 'Are you sure?';
+                areYouSure.className = 'text-white font-bold mr-4';
+
+                const yesBtn = document.createElement('button');
+                yesBtn.textContent = 'Yes';
+                yesBtn.className = 'bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors';
+
+                const noBtn = document.createElement('button');
+                noBtn.textContent = 'No';
+                noBtn.className = 'bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-colors';
+                
+                confirmationContainer.appendChild(areYouSure);
+                confirmationContainer.appendChild(yesBtn);
+                confirmationContainer.appendChild(noBtn);
+
+                originalButtonParent.appendChild(confirmationContainer);
+
+                yesBtn.addEventListener('click', handleYesClick);
+                noBtn.addEventListener('click', handleNoClick);
+            };
+
+            const hideConfirmation = () => {
+                if (confirmationContainer) {
+                    confirmationContainer.remove();
+                    confirmationContainer = null;
                 }
-            });
+                resetAllSavesBtn.style.display = 'inline-flex';
+            };
+
+            const handleYesClick = async () => {
+                try {
+                    const result = await window.api.resetAllAutoSaves();
+                    if (result.success) {
+                        window.dispatchEvent(new CustomEvent('show-feedback', { detail: { message: `Successfully deleted ${result.count} auto-save file(s).` } }));
+                        if (activeSavesList) {
+                            activeSavesList.innerHTML = '<li class="italic">No active auto-saves found.</li>';
+                        }
+                    } else {
+                        throw new Error(result.error);
+                    }
+                } catch (error) {
+                    console.error('Failed to reset all auto-saves:', error);
+                    window.dispatchEvent(new CustomEvent('show-feedback', { detail: { message: `An error occurred: ${error.message}` } }));
+                } finally {
+                    hideConfirmation();
+                }
+            };
+
+            const handleNoClick = () => {
+                hideConfirmation();
+            };
+
+            resetAllSavesBtn.addEventListener('click', showConfirmation);
         }
     }
     renderTabs();

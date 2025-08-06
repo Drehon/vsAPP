@@ -531,41 +531,74 @@ app.on('activate', () => {
 
 // --- Save/Load Handlers ---
 
-const getExerciseSavePath = (exerciseFilePath) => {
-  const savesDir = getAutoSavesDir(); // Use the new function
-  const sanitizedFileName = exerciseFilePath.replace(/[\\/:]/g, '-').replace(/\.html$/, '').toLowerCase();
+/**
+ * Generates a file path for a given page ID.
+ * E.g., 'L1-diagnostic-verbs' -> 'l1-diagnostic-verbs_state.json'
+ * @param {string} pageId The unique ID of the page.
+ * @returns {string} The full path for the save file.
+ */
+const getExerciseSavePathFromPageId = (pageId) => {
+  const savesDir = getAutoSavesDir();
+  // Sanitize the pageId to make it a safe filename.
+  // This regex replaces any character that is not a letter, number, or hyphen with an underscore.
+  const sanitizedFileName = pageId.replace(/[^a-z0-9-]/gi, '_').toLowerCase();
   return path.join(savesDir, `${sanitizedFileName}_state.json`);
 };
 
-ipcMain.handle('save-exercise-state', async (event, filePath, state) => {
-  const savePath = getExerciseSavePath(filePath);
+ipcMain.handle('save-exercise-state', async (event, pageId, state) => {
+  if (!pageId) {
+    console.error('[State] Save failed: No pageId provided.');
+    return { success: false, error: 'No pageId provided for saving state.' };
+  }
+  const savePath = getExerciseSavePathFromPageId(pageId);
   try {
     await fs.writeFile(savePath, JSON.stringify(state, null, 2));
+    console.log(`[State] Saved state for pageId '${pageId}' to '${savePath}'`);
     return { success: true };
   } catch (err) {
+    console.error(`[State] Failed to save state for pageId '${pageId}':`, err);
     return { success: false, error: err.message };
   }
 });
 
-ipcMain.handle('load-exercise-state', async (event, filePath) => {
-  const savePath = getExerciseSavePath(filePath);
+ipcMain.handle('load-exercise-state', async (event, pageId) => {
+  if (!pageId) {
+    console.warn('[State] Load aborted: No pageId provided.');
+    return null;
+  }
+  const savePath = getExerciseSavePathFromPageId(pageId);
   try {
     const data = await fs.readFile(savePath, 'utf-8');
+    console.log(`[State] Loaded state for pageId '${pageId}' from '${savePath}'`);
     return JSON.parse(data);
   } catch (err) {
-    if (err.code === 'ENOENT') return null;
-    return null;
+    if (err.code === 'ENOENT') {
+      // This is a normal case (no save file exists), not an error.
+      console.log(`[State] No save state found for pageId '${pageId}'.`);
+      return null;
+    }
+    console.error(`[State] Failed to load state for pageId '${pageId}':`, err);
+    return null; // Return null on other errors to prevent crashing.
   }
 });
 
-ipcMain.handle('reset-exercise-state', async (event, filePath) => {
-  const savePath = getExerciseSavePath(filePath);
+ipcMain.handle('reset-exercise-state', async (event, pageId) => {
+  if (!pageId) {
+    console.error('[State] Reset failed: No pageId provided.');
+    return { success: false, error: 'No pageId provided for resetting state.' };
+  }
+  const savePath = getExerciseSavePathFromPageId(pageId);
   try {
     if (fsSync.existsSync(savePath)) {
       await fs.unlink(savePath);
+      console.log(`[State] Reset state for pageId '${pageId}' by deleting '${savePath}'`);
+    } else {
+      // This is not an error, just a no-op.
+      console.log(`[State] No state file to reset for pageId '${pageId}'.`);
     }
     return { success: true };
   } catch (err) {
+    console.error(`[State] Failed to reset state for pageId '${pageId}':`, err);
     return { success: false, error: err.message };
   }
 });
@@ -573,15 +606,32 @@ ipcMain.handle('reset-exercise-state', async (event, filePath) => {
 ipcMain.handle('reset-all-auto-saves', async () => {
   const savesDir = getAutoSavesDir();
   try {
-    const files = await fs.readdir(savesDir);
-    await Promise.all(files.map(file => fs.unlink(path.join(savesDir, file))));
-    console.log(`Successfully deleted all files from ${savesDir}`);
-    return { success: true, count: files.length };
-  } catch (err) {
-    if (err.code === 'ENOENT') {
-      console.log(`Auto-saves directory ${savesDir} not found. Nothing to delete.`);
-      return { success: true, count: 0 }; // It's not an error if the folder doesn't exist
+    // First, read the directory to count the files for the feedback message.
+    const files = await fs.readdir(savesDir).catch(err => {
+      // If the directory doesn't exist, there are no files to delete.
+      if (err.code === 'ENOENT') {
+        return [];
+      }
+      // For other errors, re-throw to be caught by the outer catch block.
+      throw err;
+    });
+    const count = files.length;
+
+    if (count === 0) {
+      console.log(`Auto-saves directory ${savesDir} is empty or not found. Nothing to delete.`);
+      return { success: true, count: 0 };
     }
+
+    // Use fs.rm to recursively and forcefully delete the directory and its contents.
+    await fs.rm(savesDir, { recursive: true, force: true });
+    console.log(`Successfully deleted directory ${savesDir}`);
+
+    // Recreate the directory for future use.
+    await fs.mkdir(savesDir, { recursive: true });
+    console.log(`Successfully recreated directory ${savesDir}`);
+
+    return { success: true, count: count };
+  } catch (err) {
     console.error(`Failed to reset all auto-saves:`, err);
     return { success: false, error: err.message };
   }
@@ -621,7 +671,13 @@ const getContents = async (dir) => {
   }
   try {
     const files = await fs.readdir(directoryPath);
-    return files.filter(file => file.endsWith('.html') && file !== 'patch-notes-template.html');
+    return files.filter(file =>
+        file.endsWith('.html') &&
+        file !== 'patch-notes-template.html' &&
+        file !== 'L - template.html' &&
+        file !== 'LAN - template.html' &&
+        file !== 'EX - template.html'
+    );
   } catch (err) {
     console.error(`Error reading directory ${directoryPath}:`, err);
     return [];
