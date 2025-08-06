@@ -320,7 +320,7 @@ export class ExerciseHandler {
 
         let questionHTML = question.question;
         if (submitted && !hasAnswered) {
-            questionHTML = question.question.replace('______', `<span class="unanswered-blank">______</span>`);
+            questionHTML = question.question.replace('______', `<span class="unanswered-blank" style="background-color: #FECACA;">______</span>`);
         }
 
         return `

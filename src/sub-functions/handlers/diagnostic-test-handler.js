@@ -890,7 +890,7 @@ export class DiagnosticTestHandler {
         let questionHTML = question.question;
         // If the block is submitted and the question was unanswered, highlight the blank.
         if (blockSubmitted && answerState.submittedUnanswered) {
-            questionHTML = question.question.replace('______', `<span class="unanswered-blank">______</span>`);
+            questionHTML = question.question.replace('______', `<span class="unanswered-blank" style="background-color: #FECACA;">______</span>`);
         }
 
         return `
