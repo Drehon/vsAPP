@@ -1,6 +1,0 @@
-  {
-    "body": "Small tweaks. Complete shift to public repository. Adjustements to the publish process needed.",
-    "name": "v1.4.0",
-    "publishedAt": "2025-08-05T23:40:00Z",
-    "tagName": "v1.4.0"
-  }, 

@@ -2,6 +2,8 @@ import os
 import sys
 import requests
 from github import Github
+from dotenv import load_dotenv
+load_dotenv()
 
 def transfer_latest_release(token, source_repo_name, target_repo_name):
     """
