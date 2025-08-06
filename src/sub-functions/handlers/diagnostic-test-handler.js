@@ -68,7 +68,8 @@ export class DiagnosticTestHandler {
                     block.exercises.map(() => ({
                         userAnswer: null,
                         isCorrect: null,
-                        notes: ''
+                        notes: '',
+                        submittedUnanswered: false
                     }))
                 ),
                 teacherNotes: '' // New field for teacher's overall notes
@@ -493,8 +494,13 @@ export class DiagnosticTestHandler {
             const answerState = this.activeTab.exerciseState.answers[blockIndex][questionIndex];
             const userAnswer = answerState.userAnswer;
 
+            answerState.submittedUnanswered = false; // Reset before check
+
             if (userAnswer === null || userAnswer === undefined) {
                 answerState.isCorrect = false;
+                if (question.type === 'mc') {
+                    answerState.submittedUnanswered = true;
+                }
                 return; // Skip if no answer was provided
             }
 
@@ -789,6 +795,7 @@ export class DiagnosticTestHandler {
     renderQuestion(question, blockIndex, questionIndex) {
         const questionWrapper = document.createElement('div');
         questionWrapper.className = 'question-container border-t border-slate-200 pt-6';
+        const answerState = this.activeTab.exerciseState.answers[blockIndex][questionIndex];
 
         const questionHeader = document.createElement('div');
         questionHeader.className = 'flex justify-between items-center mb-2';
@@ -802,7 +809,6 @@ export class DiagnosticTestHandler {
         questionContent.className = 'space-y-4';
 
         let questionHTML = '';
-        const answerState = this.activeTab.exerciseState.answers[blockIndex][questionIndex];
         const blockSubmitted = this.activeTab.exerciseState.submittedBlocks[blockIndex];
 
         switch (question.type) {
@@ -862,6 +868,10 @@ export class DiagnosticTestHandler {
             let classes = 'fase-btn border-2 font-bold py-3 px-6 rounded-lg transition-colors text-left';
             
             if (blockSubmitted) {
+                if (answerState.submittedUnanswered) {
+                    return classes + ' btn-incorrect'; // Use the same style as incorrect
+                }
+
                 const isCorrect = answerState.isCorrect;
                 const userAnswer = answerState.userAnswer;
                 const correctAnswer = question.answer;
