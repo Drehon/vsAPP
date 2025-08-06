@@ -1,4 +1,4 @@
-Esercizi Lezione 4: Voce e Causalità
+Esercizi Lezione 4: Voce e Causa
 
 Scenario: Project Phoenix - Lancio Nuovo Software
 Tutti gli esercizi seguenti si svolgono nel contesto della gestione di un progetto per il lancio di un nuovo software, chiamato "Phoenix".

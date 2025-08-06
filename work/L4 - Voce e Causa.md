@@ -1,4 +1,4 @@
-Lezione 4: Voce e Causalità
+Lezione 4: Voce e Causa
 Introduzione: Diventare un Comunicatore di Precisione
 
 Questa lezione non riguarda solo due regole grammaticali; riguarda l'acquisizione di due strumenti da professionista per controllare il focus delle frasi. Per il livello C1 e per il TOEIC, non basta farsi capire: bisogna comunicare con precisione, efficienza e stile.
