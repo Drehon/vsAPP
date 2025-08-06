@@ -58,7 +58,8 @@ export class ExerciseHandler {
                     Array(block.exercises.length).fill(null).map(() => ({
                         userAnswer: null,
                         isCorrect: null,
-                        note: ""
+                        note: "",
+                        submitted: false
                     }))
                 ),
                 blockNotes: Array(this.pageData.blocks.length).fill(""),
@@ -294,6 +295,7 @@ export class ExerciseHandler {
         const hasAnswered = answerState && answerState.userAnswer !== null;
         const isCorrect = answerState && answerState.isCorrect;
         const userAnswer = answerState && answerState.userAnswer;
+        const submitted = answerState && answerState.submitted;
 
         let correctAnswer = question.answer;
         if (!/^[A-D]$/.test(correctAnswer)) {
@@ -316,9 +318,14 @@ export class ExerciseHandler {
 
         const disabled = hasAnswered ? 'disabled' : '';
 
+        let questionHTML = question.question;
+        if (submitted && !hasAnswered) {
+            questionHTML = question.question.replace('______', `<span class="unanswered-blank">______</span>`);
+        }
+
         return `
             <p class="text-lg text-slate-600">Scegli l'opzione corretta per completare la frase.</p>
-            <div class="p-4 bg-slate-100 rounded-lg text-xl text-center font-semibold text-slate-800">${question.question}</div>
+            <div class="p-4 bg-slate-100 rounded-lg text-xl text-center font-semibold text-slate-800">${questionHTML}</div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
                 ${question.options.map((opt, i) => {
                     const buttonAnswer = String.fromCharCode(65 + i);
@@ -441,6 +448,7 @@ export class ExerciseHandler {
             prevBtn.classList.toggle('opacity-50', questionIndex <= 0);
             prevBtn.onclick = () => {
                 if (questionIndex > 0) {
+                    state.answers[blockIndex][questionIndex].submitted = true;
                     state.currentQuestionIndexes[blockIndex]--;
                     this.render();
                     this.autoSave(this.activeTab);
@@ -452,6 +460,7 @@ export class ExerciseHandler {
             nextBtn.textContent = questionIndex >= totalQuestionsInBlock - 1 ? 'Fine Blocco' : 'Prossimo';
             nextBtn.onclick = () => {
                 if (questionIndex < totalQuestionsInBlock) {
+                    state.answers[blockIndex][questionIndex].submitted = true;
                     state.currentQuestionIndexes[blockIndex]++;
                     this.render();
                     this.autoSave(this.activeTab);

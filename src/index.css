@@ -60,6 +60,7 @@
     @apply text-red-700 font-bold;
   }
   .unanswered-blank {
+    /* Style for unanswered blanks in multiple-choice questions */
     @apply bg-red-200 text-red-700 font-bold px-2 rounded;
   }
 }
