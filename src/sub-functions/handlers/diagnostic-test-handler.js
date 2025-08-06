@@ -621,7 +621,7 @@ export class DiagnosticTestHandler {
         controlsContainer.className = 'p-4 bg-slate-800/80 backdrop-blur-sm rounded-lg shadow-lg border border-slate-700 mb-4';
 
         const buttonGroups = [
-            { title: 'Submit', action: 'submit', style: 'bg-indigo-600 text-white hover:bg-indigo-700', bgStyle: 'bg-indigo-900/30', titleClass: 'bg-blue-500 text-white px-2 py-1 rounded-md' },
+            { title: 'Submit', action: 'submit', style: 'bg-indigo-600 text-white hover:bg-indigo-700', bgStyle: 'bg-indigo-900/30', titleClass: 'bg-indigo-600 text-white px-2 py-1 rounded-md' },
             { title: 'Revert', action: 'unsubmit', style: 'text-white', bgStyle: 'bg-orange-900/30', titleClass: 'text-white px-2 py-1 rounded-md' },
             { title: 'Azzera', action: 'reset', style: 'bg-red-500 text-white hover:bg-red-600', bgStyle: 'bg-red-900/30', titleClass: 'bg-red-500 text-white px-2 py-1 rounded-md' }
         ];
