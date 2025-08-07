@@ -1,4 +1,4 @@
-Lezione 6: Precisione Avanzata: Tempi, Verbi e Accordo
+Lezione 5: Precisione Avanzata: Tempi, Verbi e Accordo
 Introduzione: Il Dettaglio che Fa la Differenza
 
 Le lezioni precedenti hanno costruito le fondamenta e le strutture portanti della grammatica. Questa lezione finale si concentra sulla precisione: le rifiniture, le sfumature e i dettagli che distinguono un parlante di livello B2 da uno di livello C1. Per il TOEIC, la precisione non è un lusso, è un requisito.

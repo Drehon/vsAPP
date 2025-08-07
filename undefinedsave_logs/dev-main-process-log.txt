@@ -1448,3 +1448,84 @@
 [LOG][2025-08-06T09:26:58.550Z] AutoUpdater configuration: [Unserializable Object]
 [LOG][2025-08-06T09:26:59.570Z] [State] Loaded state for pageId 'DG-student-grammar' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\dg-student-grammar_state.json'
 [LOG][2025-08-06T09:26:59.596Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-06T21:11:19.597Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-06T21:11:19.601Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-06T21:11:19.613Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-06T21:11:19.725Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-06T21:11:19.734Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-06T21:11:20.273Z] Main Process: Checking for updates...
+[LOG][2025-08-06T21:11:20.281Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-06T21:11:21.452Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-06T21:11:34.797Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-06T21:11:34.800Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-06T21:11:34.802Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-06T21:11:34.907Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-06T21:11:34.916Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-06T21:11:35.248Z] Main Process: Checking for updates...
+[LOG][2025-08-06T21:11:35.256Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-06T21:11:36.307Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-06T21:11:37.929Z] [State] No save state found for pageId 'lesson-l4-voce-e-causa'.
+[LOG][2025-08-06T21:20:42.585Z] [State] No save state found for pageId 'lesson-l4-voce-e-causa'.
+[LOG][2025-08-06T21:24:23.446Z] [State] No save state found for pageId 'lesson-l4-voce-e-causa'.
+[LOG][2025-08-06T21:25:54.401Z] [State] No save state found for pageId 'lesson-l4-voce-e-causa'.
+[LOG][2025-08-06T21:29:54.465Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-06T21:29:54.468Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-06T21:29:54.470Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-06T21:29:54.555Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-06T21:29:54.564Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-06T21:29:55.857Z] Main Process: Checking for updates...
+[LOG][2025-08-06T21:29:55.865Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-06T21:29:56.879Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-06T21:29:57.048Z] [State] No save state found for pageId 'lesson-l4-voce-e-causa'.
+[LOG][2025-08-06T21:31:36.566Z] [State] No save state found for pageId 'lesson-l1-congiuntivo'.
+[LOG][2025-08-06T21:32:04.620Z] [State] No save state found for pageId 'lesson-l3-passivo-avanzato'.
+[LOG][2025-08-06T21:40:16.250Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-06T21:40:16.252Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-06T21:40:16.254Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-06T21:40:16.358Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-06T21:40:16.365Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-06T21:40:16.950Z] Main Process: Checking for updates...
+[LOG][2025-08-06T21:40:16.959Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-06T21:40:17.984Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-06T21:40:21.559Z] [State] No save state found for pageId 'L4-voce-causaES'.
+[LOG][2025-08-06T21:40:34.274Z] [State] Saved state for pageId 'L4-voce-causaES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l4-voce-causaes_state.json'
+[LOG][2025-08-06T21:40:35.839Z] [State] Saved state for pageId 'L4-voce-causaES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l4-voce-causaes_state.json'
+[LOG][2025-08-06T21:40:37.366Z] [State] Saved state for pageId 'L4-voce-causaES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l4-voce-causaes_state.json'
+[LOG][2025-08-06T21:40:37.959Z] [State] Saved state for pageId 'L4-voce-causaES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l4-voce-causaes_state.json'
+[LOG][2025-08-06T21:41:05.068Z] [State] No save state found for pageId 'L4 - Voce e Causa'.
+[LOG][2025-08-06T21:41:09.041Z] [State] No save state found for pageId 'L4 - Voce e Causa'.
+[LOG][2025-08-06T21:41:18.845Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-06T21:41:18.848Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-06T21:41:18.849Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-06T21:41:18.942Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-06T21:41:18.950Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-06T21:41:20.167Z] Main Process: Checking for updates...
+[LOG][2025-08-06T21:41:20.174Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-06T21:41:21.372Z] [State] No save state found for pageId 'L4 - Voce e Causa'.
+[LOG][2025-08-06T21:41:21.722Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-06T21:41:45.989Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-06T21:41:45.991Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-06T21:41:45.993Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-06T21:41:46.071Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-06T21:41:46.078Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-06T21:41:46.646Z] Main Process: Checking for updates...
+[LOG][2025-08-06T21:41:46.653Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-06T21:41:47.646Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-06T21:41:49.403Z] [State] No save state found for pageId 'lesson-l4-voce-causa'.
+[LOG][2025-08-06T21:43:19.027Z] [State] No save state found for pageId 'lesson-l4-voce-causa'.
+[LOG][2025-08-06T21:43:41.561Z] [State] No save state found for pageId 'lesson-l4-voce-causa'.
+[LOG][2025-08-06T21:43:53.706Z] [State] No save state found for pageId 'lesson-l4-voce-causa'.
+[LOG][2025-08-06T21:44:21.647Z] [State] No save state found for pageId 'lesson-l4-voce-causa'.
+[LOG][2025-08-06T21:44:38.280Z] [State] No save state found for pageId 'lesson-l4-voce-causa'.
+[LOG][2025-08-06T21:45:08.915Z] [State] No save state found for pageId 'lesson-l4-voce-causa'.
+[LOG][2025-08-06T21:47:33.674Z] [State] No save state found for pageId 'lesson-l2-causativo'.
+[LOG][2025-08-07T09:21:43.779Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-07T09:21:43.783Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-07T09:21:43.797Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-07T09:21:43.915Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-07T09:21:43.920Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-07T09:21:45.478Z] Main Process: Checking for updates...
+[LOG][2025-08-07T09:21:45.485Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-07T09:21:46.830Z] [State] No save state found for pageId 'lesson-l1-congiuntivo-v3'.
+[LOG][2025-08-07T09:21:46.908Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-07T09:22:14.846Z] [State] No save state found for pageId 'lesson-l1-congiuntivo'.

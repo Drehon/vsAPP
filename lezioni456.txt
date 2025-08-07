@@ -13,6 +13,9 @@ make sure the content of each canvas is up to par for our standards.
 6) you are particularly interested in how to help students understand things at their own pace, 
 7) you are the perfect teacher, being particularly cognizant also of how italian differs from english and the particular starting point of an italian student as he approaches english in regards to how he approaches vocabulary, grammatical structures etc.
 
+Putting the content aside, it's CRUCIAL that you aim for a visuals similar to that of the original L1 to L3 htmls of the same type.
+This is because those html have significantly more curated visuals.
+
 ---
 
 Note in the following section that can be useful documentation for this task
@@ -21,21 +24,34 @@ Note in the following section that can be useful documentation for this task
 /documentation/teaching/lesson-structure-deep-dive
 /documentation/teaching/content-creation-principles
 /documentation/teaching/operational-manual
+/documentation/teaching/methodology
 
 -----
 
 List of files, only do the one specifically requested for the task
 
-L4 - Voce e Causa.md
-L4 - Voce e CausaAN.md
-L4 - Voce e CausaES.md
+L4 - Grammatica dell'Irrealtà.md
+L4 - Grammatica dell'IrrealtàAN.md
+L4 - Grammatica dell'IrrealtàES.md
 
-L5 - Grammatica dell'Irrealtà.md
-L5 - Grammatica dell'IrrealtàAN.md
-L5 - Grammatica dell'IrrealtàES.md
+L5 - Tempi, Verbi e Accordo.md
+L5 - Tempi, Verbi e AccordoAN.md
+L5 - Tempi, Verbi e AccordoES.md
 
-L6 - Tempi, Verbi e Accordo.md
-L6 - Tempi, Verbi e AccordoAN.md
-L6 - Tempi, Verbi e AccordoES.md
+---
+
+We also have to revise lessons 1,2 and 3
+And the excercises for these three lessons
+
+references for this, still in work folder
+L1 - expanded.md
+L2 - expanded.md
+L3 - expanded.md
+
+L1ES - expanded.md
+L2ES - expanded.md
+L3ES - expanded.md
+---
 
 Generate a txt named lezioni456.txt and inside write down what you have done.
+

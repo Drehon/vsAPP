@@ -1,4 +1,4 @@
-Esercizi Lezione 6: Forme Verbali Complesse e Sfumature
+Esercizi Lezione 5: Forme Verbali Complesse e Sfumature
 Fase 1: Comprensione (Vero/Falso)
 
 Questa sezione conterrà frasi da valutare come grammaticalmente corrette o scorrette, focalizzandosi sulle sfumature di tempo, verbi confusi e accordo soggetto-verbo.

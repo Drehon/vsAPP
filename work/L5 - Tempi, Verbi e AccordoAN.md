@@ -1,4 +1,4 @@
-Appunti Anki Lezione 6: Forme Verbali Complesse e Sfumature
+Appunti Anki Lezione 5: Forme Verbali Complesse e Sfumature
 Nota Importante sull'Uso di Questo Mazzo Appunti
 
 A partire dalla Lezione 4, il nostro approccio didattico si è evoluto. Le lezioni sono più approfondite e, di conseguenza, questi mazzi di appunti contengono un numero maggiore di carte. Ogni carta è pensata per essere più “precisa”, isolando un singolo concetto.

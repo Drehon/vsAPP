@@ -1,4 +1,4 @@
-Esercizi Lezione 5: Modo e Irrealtà
+Esercizi Lezione 4: Modo e Irrealtà
 
 Scenario: Crisi al Progetto "Odyssey"
 Tutti gli esercizi seguenti si svolgono nel contesto di una crisi di progetto presso la "Innovate Corp". Il team sta affrontando ritardi e problemi imprevisti nel progetto "Odyssey".
