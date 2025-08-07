@@ -42,16 +42,21 @@ L5 - Tempi, Verbi e AccordoES.md
 
 We also have to revise lessons 1,2 and 3
 And the excercises for these three lessons
+generate new versions of each html, using the original as base to make the new ones
 
 references for this, still in work folder
-L1 - expanded.md
-L2 - expanded.md
-L3 - expanded.md
+L1 - expanded.md    to expand L1 - congiuntivo.html to make L1b.html
+L2 - expanded.md    to expand L2 - causativo.html   to make L2b.html
+L3 - expanded.md    to expand L3 - passivo avanzato.html    to make L3.html
 
-L1ES - expanded.md
-L2ES - expanded.md
-L3ES - expanded.md
+L1ES - expanded.md  to expand L1 - congiuntivoES.html    to make L1ESb.html
+L2ES - expanded.md  to expand L2 - causativoES.html      to make L2ESb.html
+L3ES - expanded.md  to expand L3 - passivo avanzatoES.html   to make L3ESb.html
+
 ---
 
-Generate a txt named lezioni456.txt and inside write down what you have done.
+Write down below what you have done.
 
+---
+
+>
