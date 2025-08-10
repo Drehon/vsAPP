@@ -12,7 +12,7 @@ const forgeExecutable = path.join(process.cwd(), 'node_modules', '.bin', 'electr
 const result = spawnSync(`"${forgeExecutable}"`, ['publish', '--skip-package'], {
   stdio: 'inherit',
   env: { ...process.env },
-  shell: true
+  shell: true,
 });
 
 if (result.status !== 0) {

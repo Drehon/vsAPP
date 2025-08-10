@@ -4,7 +4,7 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
       tabBar.removeChild(tabBar.firstChild);
     }
 
-    tabs.forEach(tab => {
+    tabs.forEach((tab) => {
       const tabEl = document.createElement('div');
       tabEl.id = `tab-${tab.id}`;
       tabEl.className = `flex items-center justify-between h-9 px-4 cursor-pointer border-r border-slate-700 ${tab.active ? 'bg-indigo-600' : 'bg-slate-800 hover:bg-slate-700'}`;
@@ -32,9 +32,9 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
       tabBar.insertBefore(tabEl, newTabBtn);
     });
 
-    const activeTab = tabs.find(t => t.active);
+    const activeTab = tabs.find((t) => t.active);
     if (activeTab) {
-      document.querySelectorAll('.content-pane').forEach(pane => {
+      document.querySelectorAll('.content-pane').forEach((pane) => {
         pane.style.display = pane.id === `pane-${activeTab.id}` ? 'block' : 'none';
       });
     }
@@ -42,7 +42,7 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
 
   async function addTab(setActive = true, filePath = null, type = 'home') {
     if (setActive) {
-      tabs.forEach(t => t.active = false);
+      tabs.forEach((t) => t.active = false);
     }
 
     const newTab = {
@@ -71,15 +71,14 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
 
     if (setActive) {
       return switchTab(newTab.id);
-    } else {
-      renderTabs();
-      return newTab;
     }
+    renderTabs();
+    return newTab;
   }
 
   async function switchTab(tabId) {
-    tabs.forEach(t => t.active = (t.id === tabId));
-    const newActiveTab = tabs.find(t => t.active);
+    tabs.forEach((t) => t.active = (t.id === tabId));
+    const newActiveTab = tabs.find((t) => t.active);
 
     if (newActiveTab) {
       // This is the critical fix for the unresponsive UI bug.
@@ -93,13 +92,13 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
         newActiveTab.exerciseInstance.render();
       }
     }
-    
+
     renderTabs();
     return newActiveTab;
   }
 
   function closeTab(tabId) {
-    const tabIndex = tabs.findIndex(t => t.id === tabId);
+    const tabIndex = tabs.findIndex((t) => t.id === tabId);
     if (tabIndex === -1) return null;
 
     const pane = document.getElementById(`pane-${tabId}`);
@@ -111,13 +110,15 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
     if (wasActive && tabs.length > 0) {
       const newActiveIndex = Math.max(0, tabIndex - 1);
       return switchTab(tabs[newActiveIndex].id);
-    } else if (tabs.length === 0) {
+    } if (tabs.length === 0) {
       return addTab();
     }
 
     renderTabs();
-    return tabs.find(t => t.active) || null;
+    return tabs.find((t) => t.active) || null;
   }
 
-  return { renderTabs, addTab, switchTab, closeTab };
+  return {
+    renderTabs, addTab, switchTab, closeTab,
+  };
 }

@@ -1,11 +1,14 @@
 require('dotenv').config(); // Load environment variables from .env file
 
-const { app, BrowserWindow, ipcMain, session, Menu, shell, dialog, net } = require('electron');
+const {
+  app, BrowserWindow, ipcMain, session, Menu, shell, dialog, net,
+} = require('electron');
 const path = require('path');
 const fs = require('fs').promises;
 const fsSync = require('fs');
 const { autoUpdater } = require('electron-updater');
-let updateInfo = null;
+
+const updateInfo = null;
 
 // --- Logging ---
 const setupLogging = () => {
@@ -17,7 +20,7 @@ const setupLogging = () => {
   if (!fsSync.existsSync(userDataDir)) {
     fsSync.mkdirSync(userDataDir, { recursive: true });
   }
-  
+
   // Create dev log file path if in development
   if (!app.isPackaged) {
     const devLogDir = path.join(app.getAppPath(), 'undefinedsave_logs');
@@ -33,20 +36,20 @@ const setupLogging = () => {
 
   const logToFile = (type, ...args) => {
     // Sanitize arguments to prevent circular reference errors in JSON.stringify or similar issues
-    const sanitizedArgs = args.map(arg => {
-        if (typeof arg === 'object' && arg !== null) {
-            try {
-                // A simple way to handle objects, might need to be more robust
-                return JSON.stringify(arg);
-            } catch (e) {
-                return '[Unserializable Object]';
-            }
+    const sanitizedArgs = args.map((arg) => {
+      if (typeof arg === 'object' && arg !== null) {
+        try {
+          // A simple way to handle objects, might need to be more robust
+          return JSON.stringify(arg);
+        } catch (e) {
+          return '[Unserializable Object]';
         }
-        return arg;
+      }
+      return arg;
     });
-  
+
     const message = `[${type}][${new Date().toISOString()}] ${sanitizedArgs.join(' ')}\n`;
-    
+
     try {
       fsSync.appendFileSync(logFilePath, message);
       if (devLogFilePath) {
@@ -72,11 +75,10 @@ const setupLogging = () => {
     originalWarn(...args);
     logToFile('WARN', ...args);
   };
-  
+
   console.log('--- Logging initialized using synchronous file append ---');
 };
 // --- End Logging ---
-
 
 // --- Configuration Management ---
 const configPath = path.join(app.getPath('userData'), 'config.json');
@@ -87,7 +89,7 @@ function loadConfig() {
     if (fsSync.existsSync(configPath)) {
       const rawData = fsSync.readFileSync(configPath);
       appConfig = JSON.parse(rawData);
-      
+
       // Migration for users with the old 'savePath'
       if (appConfig.savePath && !appConfig.autoSavePath && !appConfig.manualSavePath) {
         console.log('Migrating old savePath to new dual-path system.');
@@ -97,13 +99,12 @@ function loadConfig() {
         // Immediately save the migrated config
         fsSync.writeFileSync(configPath, JSON.stringify(appConfig, null, 2));
       }
-
     } else {
       // Create default config if it doesn't exist
       appConfig = {
         autoSavePath: path.join(app.getPath('userData'), 'save-states'),
         manualSavePath: path.join(app.getPath('userData'), 'saves'),
-        externalBrowser: 'Default Browser'
+        externalBrowser: 'Default Browser',
       };
       fsSync.writeFileSync(configPath, JSON.stringify(appConfig, null, 2));
     }
@@ -113,7 +114,7 @@ function loadConfig() {
     appConfig = {
       autoSavePath: path.join(app.getPath('userData'), 'save-states'),
       manualSavePath: path.join(app.getPath('userData'), 'saves'),
-      externalBrowser: 'Default Browser'
+      externalBrowser: 'Default Browser',
     };
   }
   // Ensure default paths are set if they are missing for any reason
@@ -126,19 +127,19 @@ function loadConfig() {
 }
 
 function getAutoSavesDir() {
-    const savesDir = appConfig.autoSavePath || path.join(app.getPath('userData'), 'save-states');
-    if (!fsSync.existsSync(savesDir)) {
-        fsSync.mkdirSync(savesDir, { recursive: true });
-    }
-    return savesDir;
+  const savesDir = appConfig.autoSavePath || path.join(app.getPath('userData'), 'save-states');
+  if (!fsSync.existsSync(savesDir)) {
+    fsSync.mkdirSync(savesDir, { recursive: true });
+  }
+  return savesDir;
 }
 
 function getManualSavesDir() {
-    const savesDir = appConfig.manualSavePath || path.join(app.getPath('userData'), 'saves');
-    if (!fsSync.existsSync(savesDir)) {
-        fsSync.mkdirSync(savesDir, { recursive: true });
-    }
-    return savesDir;
+  const savesDir = appConfig.manualSavePath || path.join(app.getPath('userData'), 'saves');
+  if (!fsSync.existsSync(savesDir)) {
+    fsSync.mkdirSync(savesDir, { recursive: true });
+  }
+  return savesDir;
 }
 
 const { generatePatchHTML } = require('./patch-updater.js');
@@ -207,7 +208,7 @@ ipcMain.handle('show-open-dialog-and-load-file', async (event) => {
   const { canceled, filePaths } = await dialog.showOpenDialog(window, {
     defaultPath: savesDir,
     filters: [{ name: 'JSON Files', extensions: ['json'] }, { name: 'All Files', extensions: ['*'] }],
-    properties: ['openFile']
+    properties: ['openFile'],
   });
 
   if (canceled) {
@@ -218,19 +219,18 @@ ipcMain.handle('show-open-dialog-and-load-file', async (event) => {
 
   try {
     const data = await fs.readFile(filePath, 'utf-8');
-    return { success: true, path: filePath, data: data };
+    return { success: true, path: filePath, data };
   } catch (err) {
     return { success: false, error: err.message };
   }
 });
 
 ipcMain.handle('open-directory-dialog', async () => {
-    const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openDirectory'] });
-    if (canceled) {
-        return { canceled: true };
-    } else {
-        return { canceled: false, path: filePaths[0] };
-    }
+  const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openDirectory'] });
+  if (canceled) {
+    return { canceled: true };
+  }
+  return { canceled: false, path: filePaths[0] };
 });
 
 ipcMain.on('navigate', (event, relativePath) => {
@@ -264,37 +264,36 @@ ipcMain.handle('get-settings-content', async () => {
   }
 });
 
-
 ipcMain.handle('get-file-content', async (event, relativePath) => {
-    // Special handling for patch notes
-    if (relativePath === 'others/patch-notes.html') {
-        console.log(`[PatchNotes] Loading content for: ${relativePath}`);
-        const userPatchNotesPath = path.join(app.getPath('userData'), 'patch-notes.html');
-        try {
-            // Always try to read the generated file from userData.
-            // The generation now happens on startup if an update occurred.
-            const content = await fs.readFile(userPatchNotesPath, 'utf-8');
-            return content; // Return full HTML
-        } catch (error) {
-            // If it doesn't exist, it means it's the first run or something went wrong.
-            // We'll let the post-update/first-run handler deal with creating it.
-            // For now, return a helpful message.
-            console.warn(`[PatchNotes] Could not find ${userPatchNotesPath}. It should be generated on startup.`);
-            return '<html><body>Patch notes are being generated. Please restart the application or check back shortly.</body></html>';
-        }
-    }
-
-    // Original logic for all other files
-    const basePath = app.isPackaged ? process.resourcesPath : process.cwd();
-    const filePath = path.join(basePath, relativePath);
+  // Special handling for patch notes
+  if (relativePath === 'others/patch-notes.html') {
+    console.log(`[PatchNotes] Loading content for: ${relativePath}`);
+    const userPatchNotesPath = path.join(app.getPath('userData'), 'patch-notes.html');
     try {
-        const content = await fs.readFile(filePath, 'utf-8');
-        const bodyContentMatch = content.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-        return bodyContentMatch ? bodyContentMatch[1] : content;
-    } catch (err) {
-        console.error(`Failed to read file content for ${relativePath}: ${err}`);
-        return null;
+      // Always try to read the generated file from userData.
+      // The generation now happens on startup if an update occurred.
+      const content = await fs.readFile(userPatchNotesPath, 'utf-8');
+      return content; // Return full HTML
+    } catch (error) {
+      // If it doesn't exist, it means it's the first run or something went wrong.
+      // We'll let the post-update/first-run handler deal with creating it.
+      // For now, return a helpful message.
+      console.warn(`[PatchNotes] Could not find ${userPatchNotesPath}. It should be generated on startup.`);
+      return '<html><body>Patch notes are being generated. Please restart the application or check back shortly.</body></html>';
     }
+  }
+
+  // Original logic for all other files
+  const basePath = app.isPackaged ? process.resourcesPath : process.cwd();
+  const filePath = path.join(basePath, relativePath);
+  try {
+    const content = await fs.readFile(filePath, 'utf-8');
+    const bodyContentMatch = content.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    return bodyContentMatch ? bodyContentMatch[1] : content;
+  } catch (err) {
+    console.error(`Failed to read file content for ${relativePath}: ${err}`);
+    return null;
+  }
 });
 
 ipcMain.on('navigate-home', (event) => {
@@ -319,14 +318,14 @@ app.on('ready', () => {
       responseHeaders: {
         ...details.responseHeaders,
         'Content-Security-Policy': [
-          `default-src 'self'; script-src 'self' 'unsafe-inline' ${process.env.NODE_ENV === 'development' ? "'unsafe-eval'" : ''}; style-src 'self' 'unsafe-inline'; font-src 'self';`
-        ]
-      }
+          `default-src 'self'; script-src 'self' 'unsafe-inline' ${process.env.NODE_ENV === 'development' ? "'unsafe-eval'" : ''}; style-src 'self' 'unsafe-inline'; font-src 'self';`,
+        ],
+      },
     });
   });
 
   // --- Auto-Updater Logic (User-Prompted Flow) ---
-  
+
   autoUpdater.autoDownload = false;
 
   if (process.env.GITHUB_TOKEN) {
@@ -344,7 +343,7 @@ app.on('ready', () => {
   mainWindow.once('ready-to-show', () => {
     console.log('Main Process: Checking for updates...');
     console.log('AutoUpdater configuration:', autoUpdater);
-    autoUpdater.checkForUpdates().catch(err => {
+    autoUpdater.checkForUpdates().catch((err) => {
       console.error('Main Process: Error during update check:', err.message);
       if (mainWindow) {
         mainWindow.webContents.send('update-status', 'error', { error: err.message });
@@ -359,7 +358,7 @@ app.on('ready', () => {
     const pendingUpdatePath = path.join(app.getPath('userData'), 'pending-update.json');
     fs.writeFile(pendingUpdatePath, JSON.stringify(info, null, 2))
       .then(() => console.log(`[Updater] Saved pending update info to ${pendingUpdatePath}`))
-      .catch(err => console.error('[Updater] Failed to save pending update info:', err));
+      .catch((err) => console.error('[Updater] Failed to save pending update info:', err));
 
     if (mainWindow) { // Ensure mainWindow exists before sending
       mainWindow.webContents.send('update-status', 'available', info);
@@ -379,11 +378,11 @@ app.on('ready', () => {
       mainWindow.webContents.send('update-status', 'downloaded', info);
     }
   });
-  
+
   autoUpdater.on('download-progress', (progressObj) => {
-    let log_message = "Download speed: " + progressObj.bytesPerSecond;
-    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
-    log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+    let log_message = `Download speed: ${progressObj.bytesPerSecond}`;
+    log_message = `${log_message} - Downloaded ${progressObj.percent}%`;
+    log_message = `${log_message} (${progressObj.transferred}/${progressObj.total})`;
     console.log(log_message);
     if (mainWindow) { // Ensure mainWindow exists before sending
       mainWindow.webContents.send('download-progress', progressObj);
@@ -398,7 +397,7 @@ app.on('ready', () => {
   });
 
   // --- IPC Listeners for UI Actions ---
-  
+
   ipcMain.on('start-download', () => {
     console.log('Main Process: Download initiated by user. Starting download directly.');
     // The patch notes generation will now happen after the app restarts.
@@ -418,8 +417,8 @@ app.on('ready', () => {
         { label: 'Open Manual Saves Folder', click: () => { shell.openPath(getManualSavesDir()); } },
         { label: 'Show Logs in Folder', click: () => { shell.openPath(app.getPath('userData')); } },
         { type: 'separator' },
-        { role: 'quit' }
-      ]
+        { role: 'quit' },
+      ],
     },
     {
       label: 'View',
@@ -432,9 +431,9 @@ app.on('ready', () => {
         { role: 'zoomIn' },
         { role: 'zoomOut' },
         { type: 'separator' },
-        { role: 'togglefullscreen' }
-      ]
-    }
+        { role: 'togglefullscreen' },
+      ],
+    },
   ];
 
   // Add Help menu only if not in production
@@ -442,8 +441,8 @@ app.on('ready', () => {
     menuTemplate.push({
       label: 'Help',
       submenu: [
-        { label: 'Learn More', click: async () => { await shell.openExternal('https://electronjs.org'); } }
-      ]
+        { label: 'Learn More', click: async () => { await shell.openExternal('https://electronjs.org'); } },
+      ],
     });
   }
 
@@ -471,14 +470,14 @@ const handlePostUpdateTasks = async () => {
     const basePath = app.isPackaged ? process.resourcesPath : app.getAppPath();
     const bundledPatchNotesPath = path.join(basePath, 'patchnotes.json');
     const userPatchNotesPath = path.join(userDataPath, 'patchnotes.json');
-    
+
     await fs.copyFile(bundledPatchNotesPath, userPatchNotesPath);
     console.log('[PostUpdate] Copied new patchnotes.json to userData.');
 
     // 2. Load the newly copied patchnotes.json.
     const patchNotes = JSON.parse(await fs.readFile(userPatchNotesPath, 'utf8'));
     console.log('[PostUpdate] Loaded new patchnotes.json.');
-    
+
     // 3. Generate the new HTML from the final data.
     await generatePatchHTML(app, patchNotes);
     console.log('[PostUpdate] Generated new patch-notes.html.');
@@ -486,7 +485,6 @@ const handlePostUpdateTasks = async () => {
     // 6. Clean up the pending update file.
     await fs.unlink(pendingUpdatePath);
     console.log('[PostUpdate] Post-update tasks complete. Removed pending update file.');
-
   } catch (error) {
     if (error.code === 'ENOENT') {
       // This is normal - no pending update.
@@ -511,9 +509,7 @@ const handlePostUpdateTasks = async () => {
   }
 };
 
-ipcMain.handle('get-app-version', () => {
-  return app.getVersion();
-});
+ipcMain.handle('get-app-version', () => app.getVersion());
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -607,7 +603,7 @@ ipcMain.handle('reset-all-auto-saves', async () => {
   const savesDir = getAutoSavesDir();
   try {
     // First, read the directory to count the files for the feedback message.
-    const files = await fs.readdir(savesDir).catch(err => {
+    const files = await fs.readdir(savesDir).catch((err) => {
       // If the directory doesn't exist, there are no files to delete.
       if (err.code === 'ENOENT') {
         return [];
@@ -630,9 +626,9 @@ ipcMain.handle('reset-all-auto-saves', async () => {
     await fs.mkdir(savesDir, { recursive: true });
     console.log(`Successfully recreated directory ${savesDir}`);
 
-    return { success: true, count: count };
+    return { success: true, count };
   } catch (err) {
-    console.error(`Failed to reset all auto-saves:`, err);
+    console.error('Failed to reset all auto-saves:', err);
     return { success: false, error: err.message };
   }
 });
@@ -640,25 +636,24 @@ ipcMain.handle('reset-all-auto-saves', async () => {
 ipcMain.handle('show-save-dialog-and-save-file', async (event, { defaultFilename, data } = {}) => {
   const window = BrowserWindow.fromWebContents(event.sender);
   const savesDir = getManualSavesDir();
-  
+
   // THE FIX IS HERE: The destructured argument now has a default value of an empty object.
   // This prevents a crash if the renderer calls the function with no arguments.
   const finalFilename = defaultFilename || 'exercise-save-state.json';
 
   const { canceled, filePath } = await dialog.showSaveDialog(window, {
     defaultPath: path.join(savesDir, finalFilename),
-    filters: [{ name: 'JSON Files', extensions: ['json'] }, { name: 'All Files', extensions: ['*'] }]
+    filters: [{ name: 'JSON Files', extensions: ['json'] }, { name: 'All Files', extensions: ['*'] }],
   });
 
   if (canceled) {
     return { success: false, canceled: true };
-  } else {
-    try {
-      await fs.writeFile(filePath, data || '');
-      return { success: true, path: filePath };
-    } catch (err) {
-      return { success: false, error: err.message };
-    }
+  }
+  try {
+    await fs.writeFile(filePath, data || '');
+    return { success: true, path: filePath };
+  } catch (err) {
+    return { success: false, error: err.message };
   }
 });
 
@@ -671,13 +666,11 @@ const getContents = async (dir) => {
   }
   try {
     const files = await fs.readdir(directoryPath);
-    return files.filter(file =>
-        file.endsWith('.html') &&
-        file !== 'patch-notes-template.html' &&
-        file !== 'L - template.html' &&
-        file !== 'LAN - template.html' &&
-        file !== 'EX - template.html'
-    );
+    return files.filter((file) => file.endsWith('.html')
+        && file !== 'patch-notes-template.html'
+        && file !== 'L - template.html'
+        && file !== 'LAN - template.html'
+        && file !== 'EX - template.html');
   } catch (err) {
     console.error(`Error reading directory ${directoryPath}:`, err);
     return [];
@@ -694,7 +687,7 @@ ipcMain.handle('get-active-save-states', async () => {
   try {
     const files = await fs.readdir(savesDir);
     // Optional: Filter for only .json files if other files might be present
-    return files.filter(file => file.endsWith('.json'));
+    return files.filter((file) => file.endsWith('.json'));
   } catch (err) {
     console.error(`Error reading save states directory ${savesDir}:`, err);
     return []; // Return empty array on error

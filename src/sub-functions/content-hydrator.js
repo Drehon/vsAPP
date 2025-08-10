@@ -14,9 +14,9 @@ function handleStaticLesson(paneElement, _tab, _saveState) {
  * This creates a new instance and attaches it to the tab object.
  */
 function handleInteractiveExerciseWrapper(paneElement, tab, saveState) {
-    // Each interactive exercise tab gets its own isolated handler instance.
-    // The instance is stored on the tab object itself for later access.
-    tab.exerciseInstance = new ExerciseHandler(paneElement, tab, saveState);
+  // Each interactive exercise tab gets its own isolated handler instance.
+  // The instance is stored on the tab object itself for later access.
+  tab.exerciseInstance = new ExerciseHandler(paneElement, tab, saveState);
 }
 
 /**
@@ -24,8 +24,8 @@ function handleInteractiveExerciseWrapper(paneElement, tab, saveState) {
  * This creates a new instance and attaches it to the tab object.
  */
 function handleDiagnosticTest(paneElement, tab, saveState) {
-    // Each diagnostic test tab gets its own isolated handler instance.
-    tab.exerciseInstance = new DiagnosticTestHandler(paneElement, tab, saveState);
+  // Each diagnostic test tab gets its own isolated handler instance.
+  tab.exerciseInstance = new DiagnosticTestHandler(paneElement, tab, saveState);
 }
 
 // Map module names to their handler functions.
@@ -65,5 +65,5 @@ function hydrateContent(contentWrapper, tab, saveState) {
 }
 
 export {
-  hydrateContent
+  hydrateContent,
 };

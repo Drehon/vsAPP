@@ -10,7 +10,7 @@ const fs = require('fs').promises;
 const generatePatchHTML = async (app, patchNotesData) => {
   console.log('[PatchNotes] Generating patch-notes.html from provided data.');
   const userDataPath = app.getPath('userData');
-  
+
   // The HTML template is always loaded from the application's bundled resources.
   const basePath = app.isPackaged ? process.resourcesPath : app.getAppPath();
   const templatePath = path.join(basePath, 'others', 'patch-notes-template.html');
@@ -20,7 +20,7 @@ const generatePatchHTML = async (app, patchNotesData) => {
     const template = await fs.readFile(templatePath, 'utf8');
 
     // Generate the HTML for each patch note entry.
-    const patchNotesHtml = patchNotesData.map(note => {
+    const patchNotesHtml = patchNotesData.map((note) => {
       // Provide a fallback for the date if `publishedAt` is missing.
       const dateStr = note.publishedAt ? new Date(note.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' }) : 'N/A';
       const body = note.body ? note.body.replace(/\r\n/g, '<br>') : 'No details provided.';

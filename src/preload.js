@@ -10,7 +10,7 @@ window.api = {
   // From renderer to main
   startDownload: () => ipcRenderer.send('start-download'),
   restartApp: () => ipcRenderer.send('restart-app'),
-  
+
   // Existing APIs
   getAppVersion: () => ipcRenderer.invoke('get-app-version'),
   navigate: (relativePath) => ipcRenderer.send('navigate', relativePath),
@@ -31,14 +31,14 @@ window.api = {
   getConfig: () => ipcRenderer.invoke('get-config'),
   saveConfig: (config) => ipcRenderer.invoke('save-config', config),
   openDirectoryDialog: () => ipcRenderer.invoke('open-directory-dialog'),
-  
+
   // ADDED: Expose the showOpenDialogAndLoadFile handler
   showOpenDialogAndLoadFile: () => ipcRenderer.invoke('show-open-dialog-and-load-file'),
   getPatchNotes: () => ipcRenderer.invoke('get-patch-notes'),
-  getActiveSaveStates: () => ipcRenderer.invoke('get-active-save-states')
+  getActiveSaveStates: () => ipcRenderer.invoke('get-active-save-states'),
 };
 
 // Signal that the preload script has finished and the API is ready
 window.addEventListener('DOMContentLoaded', () => {
-    window.dispatchEvent(new Event('api-ready'));
+  window.dispatchEvent(new Event('api-ready'));
 });

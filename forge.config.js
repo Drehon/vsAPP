@@ -15,8 +15,8 @@ module.exports = {
       './lessonsAN',
       './others',
       './app-update.yml',
-      './patchnotes.json'
-    ]
+      './patchnotes.json',
+    ],
   },
   rebuildConfig: {},
   plugins: [
@@ -61,26 +61,26 @@ module.exports = {
       config: {
         repository: {
           owner: 'Drehon', // Your GitHub username
-          name: 'vsAPP'   // Your GitHub repository name
+          name: 'vsAPP', // Your GitHub repository name
         },
         prerelease: false,
         draft: true,
-      }
-    }
+      },
+    },
   ],
   hooks: {
     postMake: async (forgeConfig, makeResults) => {
       console.log('Post-make hook: Triggered.');
-      
+
       const squirrelWindowsResult = makeResults.find(
-        (result) => result.artifacts.some((artifact) => artifact.endsWith('.exe'))
+        (result) => result.artifacts.some((artifact) => artifact.endsWith('.exe')),
       );
 
       if (!squirrelWindowsResult) {
-          console.warn('Post-make hook: Could not find squirrel.windows build artifacts. Skipping YAML generation.');
-          return;
+        console.warn('Post-make hook: Could not find squirrel.windows build artifacts. Skipping YAML generation.');
+        return;
       }
-      
+
       const exePath = squirrelWindowsResult.artifacts.find((artifact) => artifact.endsWith('.exe'));
 
       // *** ADDED LOG HERE ***
@@ -106,6 +106,6 @@ module.exports = {
         console.error(`Post-make hook: ERROR - Could not find latest.yml at ${yamlPath} after generation.`);
         throw new Error('latest.yml not found after generation');
       }
-    }
-  }
+    },
+  },
 };

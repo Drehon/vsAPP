@@ -12,7 +12,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2021,
   },
-  ignorePatterns: ["src/lib/**"],
+  ignorePatterns: ['src/lib/**'],
   rules: {
     // Add any specific rule overrides here
   },

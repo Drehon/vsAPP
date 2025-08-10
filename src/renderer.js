@@ -4,8 +4,8 @@ import { loadContentIntoTab, loadHomeIntoTab, loadSettingsIntoTab } from './sub-
 
 window.addEventListener('api-ready', () => {
   // --- STATE MANAGEMENT ---
-  let tabs = [];
-  let nextTabId = 1;
+  const tabs = [];
+  const nextTabId = 1;
   let activeTab = null;
   let mostRecentlyLoadedFile = null; // Variable to track the last loaded file
 
@@ -18,7 +18,7 @@ window.addEventListener('api-ready', () => {
   const networkLabel = document.getElementById('network-label');
   const updateIndicator = document.getElementById('update-indicator');
   const updateContainer = document.getElementById('update-label');
-  
+
   // Global Toolbar Buttons
   const globalHomeBtn = document.getElementById('global-home-btn');
   const globalReloadBtn = document.getElementById('global-reload-btn');
@@ -29,9 +29,10 @@ window.addEventListener('api-ready', () => {
   const globalSettingsBtn = document.getElementById('global-settings-btn');
   const resetFeedbackMessage = document.getElementById('reset-feedback-message');
 
-
   // --- CORE FUNCTIONS ---
-  const { renderTabs, addTab: _addTab, switchTab: _switchTab, closeTab: _closeTab } = initializeTabManager(
+  const {
+    renderTabs, addTab: _addTab, switchTab: _switchTab, closeTab: _closeTab,
+  } = initializeTabManager(
     tabs,
     nextTabId,
     tabBar,
@@ -39,7 +40,7 @@ window.addEventListener('api-ready', () => {
     contentPanes,
     handleLoadHome,
     handleLoadContent,
-    handleLoadSettings
+    handleLoadSettings,
   );
 
   // --- WRAPPER FUNCTIONS for Tab Manager ---
@@ -70,7 +71,7 @@ window.addEventListener('api-ready', () => {
   function handleLoadContent(tabId, filePath, options, ...args) {
     loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, autoSaveExerciseState, updateGlobalToolbar, options);
   }
-  
+
   function handleLoadSettings(tabId, ...args) {
     loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalToolbar, mostRecentlyLoadedFile);
   }
@@ -78,10 +79,10 @@ window.addEventListener('api-ready', () => {
   // --- GLOBAL TOOLBAR LOGIC ---
   function updateGlobalToolbar(tab) {
     if (!tab) { // No active tab, disable everything
-      [globalHomeBtn, globalReloadBtn, globalSaveBtn, globalLoadBtn, globalResetBtn, globalSettingsBtn].forEach(btn => btn.disabled = true);
+      [globalHomeBtn, globalReloadBtn, globalSaveBtn, globalLoadBtn, globalResetBtn, globalSettingsBtn].forEach((btn) => btn.disabled = true);
       return;
     }
-    
+
     const isHome = tab.view === 'home';
     const isContent = tab.view === 'content';
     const isSettings = tab.view === 'settings';
@@ -132,7 +133,7 @@ window.addEventListener('api-ready', () => {
           scrollTop = scrollable.scrollTop;
         }
       }
-      
+
       const result = await window.api.resetExerciseState(pageId);
 
       // --- Reload content with view state ---
@@ -162,12 +163,11 @@ window.addEventListener('api-ready', () => {
 
     feedbackTimer = setTimeout(() => {
       resetFeedbackMessage.classList.add('opacity-0');
-      
+
       // Use another timeout to clear the content after the transition ends
       feedbackTimer = setTimeout(() => {
         resetFeedbackMessage.innerHTML = '&nbsp;';
       }, 500); // This duration should match the CSS transition duration
-
     }, duration);
   }
 
@@ -177,10 +177,10 @@ window.addEventListener('api-ready', () => {
     // The pageId is now reliably stored on the tab object.
     return tab ? tab.pageId : null;
   }
-  
+
   function debounce(func, delay) {
     let timeout;
-    return function(...args) {
+    return function (...args) {
       const context = this;
       clearTimeout(timeout);
       timeout = setTimeout(() => func.apply(context, args), delay);
@@ -205,10 +205,10 @@ window.addEventListener('api-ready', () => {
 
   function setInitialUpdateStatus() {
     if (updateIndicator) {
-        updateIndicator.className = 'w-3 h-3 bg-gray-400 rounded-full mr-2 animate-pulse';
+      updateIndicator.className = 'w-3 h-3 bg-gray-400 rounded-full mr-2 animate-pulse';
     }
     if (updateContainer) {
-        updateContainer.innerText = 'Checking for updates...';
+      updateContainer.innerText = 'Checking for updates...';
     }
   }
 
@@ -256,11 +256,11 @@ window.addEventListener('api-ready', () => {
         break;
     }
   }
-  
+
   function handleDownloadProgress(event, progressObj) {
-      if (updateContainer) {
-          updateContainer.innerText = `Downloading... (${Math.round(progressObj.percent)}%)`;
-      }
+    if (updateContainer) {
+      updateContainer.innerText = `Downloading... (${Math.round(progressObj.percent)}%)`;
+    }
   }
 
   async function handleSaveButtonClick(tab) {
@@ -271,43 +271,42 @@ window.addEventListener('api-ready', () => {
       return;
     }
     const dataStr = JSON.stringify(tab.exerciseState, null, 2);
-    
+
     // --- New file naming logic ---
     const today = new Date();
     const dateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-    
+
     // Use pageId for a more reliable default filename
     const defaultFilename = `${pageId}-save-${dateString}.json`;
-    
+
     // --- End new file naming logic ---
 
     const result = await window.api.showSaveDialogAndSaveFile({
-        defaultFilename: defaultFilename,
-        data: dataStr
+      defaultFilename,
+      data: dataStr,
     });
 
     if (result.success) {
-        console.log(`Manually saved progress to: ${result.path}`);
-        
-        // --- Show Feedback Message ---
-        let objectName;
-        const lessonMatch = tab.title.match(/^(L\d+)/);
+      console.log(`Manually saved progress to: ${result.path}`);
 
-        // Use pageId for more reliable feedback
-        if (pageId.includes('student-verbs')) {
-            objectName = 'Verbs';
-        } else if (pageId.includes('student-grammar')) {
-            objectName = 'Grammar';
-        } else if (lessonMatch) {
-            objectName = lessonMatch[1];
-        } else {
-            objectName = 'File'; // Fallback
-        }
-        showFeedbackMessage(`Saved ${objectName}`);
-        // --- End Feedback Message ---
+      // --- Show Feedback Message ---
+      let objectName;
+      const lessonMatch = tab.title.match(/^(L\d+)/);
 
+      // Use pageId for more reliable feedback
+      if (pageId.includes('student-verbs')) {
+        objectName = 'Verbs';
+      } else if (pageId.includes('student-grammar')) {
+        objectName = 'Grammar';
+      } else if (lessonMatch) {
+        objectName = lessonMatch[1];
+      } else {
+        objectName = 'File'; // Fallback
+      }
+      showFeedbackMessage(`Saved ${objectName}`);
+      // --- End Feedback Message ---
     } else if (!result.canceled) {
-        console.error('Failed to manually save progress:', result.error);
+      console.error('Failed to manually save progress:', result.error);
     }
   }
 
@@ -321,7 +320,7 @@ window.addEventListener('api-ready', () => {
     }
 
     const result = await window.api.showOpenDialogAndLoadFile();
-  
+
     if (result.success && !result.canceled) {
       try {
         const loadedState = JSON.parse(result.data);
@@ -338,17 +337,16 @@ window.addEventListener('api-ready', () => {
           let objectName;
           const lessonMatch = tab.title.match(/^(L\d+)/);
           if (pageId.includes('student-verbs')) {
-              objectName = 'Verbs';
+            objectName = 'Verbs';
           } else if (pageId.includes('student-grammar')) {
-              objectName = 'Grammar';
+            objectName = 'Grammar';
           } else if (lessonMatch) {
-              objectName = lessonMatch[1];
+            objectName = lessonMatch[1];
           } else {
-              objectName = 'File'; // Fallback
+            objectName = 'File'; // Fallback
           }
           showFeedbackMessage(`Loaded ${objectName}`);
           // --- End Feedback Message ---
-
         } else {
           console.error('Loaded file does not appear to be a valid progress file.');
           // Optionally, inform the user via a UI element
@@ -383,9 +381,9 @@ window.addEventListener('api-ready', () => {
     setInitialUpdateStatus();
 
     if (newTabBtn) {
-        newTabBtn.addEventListener('click', () => addTab(true));
+      newTabBtn.addEventListener('click', () => addTab(true));
     }
-    
+
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
 
@@ -394,9 +392,9 @@ window.addEventListener('api-ready', () => {
 
     // Listen for custom feedback events from other parts of the renderer
     window.addEventListener('show-feedback', (e) => {
-        if (e.detail && e.detail.message) {
-            showFeedbackMessage(e.detail.message);
-        }
+      if (e.detail && e.detail.message) {
+        showFeedbackMessage(e.detail.message);
+      }
     });
 
     await addTab(true); // Add initial home tab

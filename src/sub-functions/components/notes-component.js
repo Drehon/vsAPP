@@ -11,8 +11,8 @@
 export function initializeNotes(container, notesState = {}, onUpdate = () => {}) {
   const notesComponents = container.querySelectorAll('.notes-component');
 
-  notesComponents.forEach(component => {
-    const noteId = component.dataset.noteId;
+  notesComponents.forEach((component) => {
+    const { noteId } = component.dataset;
     const toggleBtn = component.querySelector('.notes-toggle-btn');
     const content = component.querySelector('.notes-content');
     const textarea = component.querySelector('textarea');

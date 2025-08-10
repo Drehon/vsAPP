@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-const colors = require('tailwindcss/colors')
+const colors = require('tailwindcss/colors');
 
 module.exports = {
   content: [
@@ -36,10 +36,10 @@ module.exports = {
             '--tw-prose-th-borders': theme('colors.slate[300]'),
             '--tw-prose-td-borders': theme('colors.slate[200]'),
             // Customizations start here
-            'p': {
+            p: {
               'line-height': '1.5', // Fixes vertical spacing issue
             },
-            'strong': {
+            strong: {
               color: theme('colors.red.600'), // Fixes red highlight issue
             },
           },
@@ -49,11 +49,11 @@ module.exports = {
           css: {
             '--tw-prose-body': theme('colors.yellow.800'),
             'background-color': theme('colors.yellow.100'),
-            'padding': '0.2em 0.4em',
+            padding: '0.2em 0.4em',
             'border-radius': '0.25rem',
             'font-weight': '700',
-          }
-        }
+          },
+        },
       }),
     },
   },

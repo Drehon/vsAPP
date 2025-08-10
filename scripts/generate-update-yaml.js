@@ -44,12 +44,12 @@ const yamlContent = {
   files: [
     {
       url: installerFileName, // Use the transformed filename
-      sha512: sha512,
+      sha512,
       size: fs.statSync(installerPath).size,
     },
   ],
   path: installerFileName, // Use the transformed filename
-  sha512: sha512,
+  sha512,
   releaseDate: new Date().toISOString(),
   // electron-updater specific properties
   provider: 'github',

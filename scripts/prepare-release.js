@@ -20,7 +20,7 @@ const main = async () => {
     const patchNotes = JSON.parse(await fs.readFile(patchNotesPath, 'utf8'));
 
     // Check if a note for the current version already exists
-    const noteExists = patchNotes.some(note => note.tagName === newTagName);
+    const noteExists = patchNotes.some((note) => note.tagName === newTagName);
 
     if (noteExists) {
       console.log(`A patch note entry for version ${newTagName} already exists. No changes needed.`);
@@ -43,7 +43,6 @@ const main = async () => {
     // Write the updated file
     await fs.writeFile(patchNotesPath, JSON.stringify(updatedPatchNotes, null, 2));
     console.log(`Successfully added placeholder for ${newTagName} to patchnotes.json.`);
-
   } catch (error) {
     console.error('Error during pre-release script execution:', error);
     process.exit(1); // Exit with an error code
