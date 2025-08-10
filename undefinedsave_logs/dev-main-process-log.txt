@@ -1570,3 +1570,13 @@
 [LOG][2025-08-07T19:14:14.117Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
 [LOG][2025-08-07T19:14:16.355Z] [State] No save state found for pageId 'lesson-l2b-causativo'.
 [LOG][2025-08-07T19:14:20.790Z] [State] No save state found for pageId 'lesson-l2-causativo'.
+[LOG][2025-08-10T09:19:45.282Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-10T09:19:45.285Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-10T09:19:45.296Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-10T09:19:45.420Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-10T09:19:45.428Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-10T09:19:49.515Z] Main Process: Checking for updates...
+[LOG][2025-08-10T09:19:49.521Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-10T09:19:50.596Z] [State] No save state found for pageId 'lesson-l1b-congiuntivo'.
+[LOG][2025-08-10T09:19:50.784Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-10T09:19:54.828Z] [State] No save state found for pageId 'lesson-l3-passivo-avanzato'.
