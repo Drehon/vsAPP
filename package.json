@@ -1,7 +1,7 @@
 {
   "name": "tutoring-app",
   "productName": "vsAPP",
-  "version": "1.4.0",
+  "version": "1.4.3",
   "description": "My Electron application description",
   "main": ".webpack/main",
   "scripts": {
@@ -9,7 +9,9 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\"",
+    "lint": "cross-env ESLINT_USE_FLAT_CONFIG=false eslint .",
+    "lint:fix": "cross-env ESLINT_USE_FLAT_CONFIG=false eslint . --fix",
+    "test": "jest",
     "prepublishOnly": "node scripts/update-patch-notes.js",
     "prepare:release": "node scripts/prepare-release.js",
     "publish-public": "python transfer_releases.py Drehon/vsAPP Drehon/vsAPP-public",
@@ -23,9 +25,11 @@
   },
   "license": "MIT",
   "dependencies": {
+    "copy-webpack-plugin": "^12.0.2",
+    "dotenv": "^16.3.1",
     "electron-squirrel-startup": "^1.0.0",
-    "js-yaml": "^4.1.0",
-    "electron-updater": "^6.1.1"
+    "electron-updater": "^6.1.1",
+    "js-yaml": "^4.1.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.4.0",
@@ -36,12 +40,21 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
     "@electron-forge/plugin-webpack": "^7.4.0",
     "@electron-forge/publisher-github": "^7.4.0",
+    "@eslint/js": "^9.33.0",
+    "@eslint/json": "^0.13.1",
+    "@tailwindcss/typography": "^0.5.16",
     "@vercel/webpack-asset-relocator-loader": "^1.7.3",
-    "copy-webpack-plugin": "^12.0.2",
+    "cross-env": "^10.0.0",
     "css-loader": "^6.8.1",
-    "dotenv": "^16.3.1",
     "electron": "28.1.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jest": "^29.0.1",
+    "globals": "^16.3.0",
+    "jest": "^30.0.5",
     "node-loader": "^2.0.0",
-    "style-loader": "^3.3.3"
+    "style-loader": "^3.3.3",
+    "tailwindcss": "^4.1.11"
   }
 }

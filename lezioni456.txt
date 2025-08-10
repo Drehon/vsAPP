@@ -1,0 +1,51 @@
+Instructions for new html generations
+Use the content of the files in the list below to create the corresponding htmls
+
+---
+
+Instructions used in the writing of the MD
+make sure the content of each canvas is up to par for our standards. 
+1) remember who the student is, why he's studying (young italian male studying for TOEIC B2/C1) 
+2) make sure no terminology is used without appropriate explanation 
+3) make sure explanations are clear and well organized 
+4) be critical of the content of the canvases, repeatedly reassessing it as if it's done by a rival AI you HATE 
+5) you are a teacher with many years of experience, great knowledge in pedagology, how to help students learn
+6) you are particularly interested in how to help students understand things at their own pace, 
+7) you are the perfect teacher, being particularly cognizant also of how italian differs from english and the particular starting point of an italian student as he approaches english in regards to how he approaches vocabulary, grammatical structures etc.
+
+Putting the content aside, it's CRUCIAL that you aim for a visuals similar to that of the original L1 to L3 htmls of the same type.
+This is because those html have significantly more curated visuals.
+
+---
+
+Note in the following section that can be useful documentation for this task
+/documentation/project-tutoring
+/documentation/teaching/tutoring-base
+/documentation/teaching/lesson-structure-deep-dive
+/documentation/teaching/content-creation-principles
+/documentation/teaching/operational-manual
+/documentation/teaching/methodology
+
+-----
+
+List of files, only do the one specifically requested for the task
+Use the .md to create the html (same-name.html in correct folder) being careful to respect style, structure etc of previous lessons
+
+L4 - Grammatica dell'Irreale.md 
+L4 - Grammatica dell'IrrealeAN.md
+L4 - Grammatica dell'IrrealeES.md
+
+L5 - Tempi, Verbi e Accordo.md
+L5 - Tempi, Verbi e AccordoAN.md
+L5 - Tempi, Verbi e AccordoES.md
+
+REMEMBER to reference the files in lessons folder to understand how to write the html
+Use that as reference, code-wise and visually
+
+---
+
+Write down below what you have done.
+
+---
+
+>

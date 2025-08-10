@@ -1,0 +1,57 @@
+This tree shows the repository structure after the proposed changes in VILLA.TXT have been implemented.
+(+) denotes a new file or directory.
+(*) denotes a file modified during this planning iteration.
+
+.
+├── .gitignore
+├── .publish.lock
+├── LICENSE
+├── README.md
+├── accesso.txt
+├── app-update.yml
+├── casa.txt (*)
+├── dev-app-update.yml
+├── dictionary-practical.txt
+├── dictionary-theory.txt
+├── documentation/
+│   ├── ... (contents as before)
+│   └── refactoring-guide.md (*)
+├── ... (other root files)
+├── src/
+│   ├── components/ (+)
+│   │   └── shell/ (+)
+│   │       ├── js/ (+)
+│   │       │   ├── Footer.js (+)
+│   │       │   └── Toolbar.js (+)
+│   │       ├── footer.html (+)
+│   │       ├── tab-bar.html (+)
+│   │       └── toolbar.html (+)
+│   ├── fonts/
+│   │   └── ...
+│   ├── home-template.html
+│   ├── index.css
+│   ├── index.html (*)
+│   ├── lib/
+│   │   └── ...
+│   ├── main.js (*)
+│   ├── patch-updater.js
+│   ├── preload.js (*)
+│   ├── renderer.js (*)
+│   ├── settings-template.html
+│   ├── style.css
+│   ├── sub-functions/
+│   │   ├── components/
+│   │   │   └── notes-component.js
+│   │   ├── content-hydrator.js
+│   │   ├── content-loader.js
+│   │   ├── handlers/
+│   │   │   ├── diagnostic-test-handler.js (*)
+│   │   │   └── exercise-handler.js (*)
+│   │   └── tab-manager.js (*)
+│   └── users.json
+├── tailwind.config.js
+├── ... (other root files)
+├── villa.txt (+)
+├── webpack.main.config.js (*)
+├── webpack.renderer.config.js (*)
+└── webpack.rules.js (*)

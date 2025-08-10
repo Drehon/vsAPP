@@ -1,0 +1,134 @@
+This tree shows the repository structure, including the proposed new files/directories for the refactoring.
+(+) denotes a new file or directory.
+(*) denotes a file modified during this planning iteration.
+
+.
+├── .gitignore
+├── .publish.lock
+├── LICENSE
+├── README.md
+├── accesso.txt
+├── app-update.yml
+├── casa.txt (*)
+├── dev-app-update.yml
+├── dictionary-practical.txt
+├── dictionary-theory.txt
+├── documentation/
+│   ├── analysis_and_recommendations.txt
+│   ├── architecture-overview.txt
+│   ├── content-loading.txt
+│   ├── creating-content.txt
+│   ├── diagnostic-handler-deep-dive.txt
+│   ├── exercise-handler-deep-dive.txt
+│   ├── lessons-learned/
+│   │   ├── avoiding-stateful-singletons.txt
+│   │   ├── css-build-process.txt
+│   │   ├── css-layout-and-specificity.txt
+│   │   ├── data-consistency.txt
+│   │   ├── decoupling-content-data-logic.txt
+│   │   ├── electron-packaging-and-extra-resources.txt
+│   │   ├── impact-of-the-build-process.txt
+│   │   ├── ipc-and-main-renderer-interaction.txt
+│   │   ├── race-conditions-in-preloading.txt
+│   │   ├── reliable-logging.txt
+│   │   ├── robust-fallback-logic.txt
+│   │   ├── robust-state-management-lifecycle.txt
+│   │   ├── singleton-handlers.txt
+│   │   ├── state-management.txt
+│   │   ├── sticky-toolbar.txt
+│   │   ├── ui-rendering.txt
+│   │   └── webpack-file-copying.txt
+│   ├── project_tutoring.txt
+│   ├── publishing-and-updates.md
+│   └── refactoring-guide.md (*)
+├── exercises/
+│   ├── EX - template.html
+│   ├── L1 - congiuntivoES.html
+│   ├── L2 - causativoES.html
+│   └── L3 - passivo avanzatoES.html
+├── forge.config.js
+├── lessons/
+│   ├── L - template.html
+│   ├── L1 - congiuntivo.html
+│   ├── L2 - causativo.html
+│   └── L3 - passivo avanzato.html
+├── lessonsAN/
+│   ├── L1 - congiuntivoAN.html
+│   ├── L2 - causativoAN.html
+│   ├── L3 - passivo avanzatoAN.html
+│   └── LAN - template.html
+├── others/
+│   ├── patch-notes-template.html
+│   ├── patch-notes.html
+│   ├── student-grammar.html
+│   └── student-verbs.html
+├── package-lock.json
+├── package.json
+├── patchnotes.json
+├── postponed patches.txt
+├── references/
+│   └── HarmerC1.html
+├── repository-tree.txt (+)
+├── requirements.txt
+├── scripts/
+│   ├── generate-update-yaml.js
+│   ├── prepare-release.js
+│   ├── publisher-helper.js
+│   └── update-patch-notes.js
+├── security.txt
+├── src/
+│   ├── components/ (+)
+│   │   └── shell/ (+)
+│   │       ├── js/ (+)
+│   │       │   ├── Footer.js (+)
+│   │       │   └── Toolbar.js (+)
+│   │       ├── footer.html (+)
+│   │       ├── tab-bar.html (+)
+│   │       └── toolbar.html (+)
+│   ├── fonts/
+│   │   ├── Inter_28pt-Black.ttf
+│   │   ├── Inter_28pt-BlackItalic.ttf
+│   │   ├── Inter_28pt-ExtraBold.ttf
+│   │   ├── Inter_28pt-ExtraBoldItalic.ttf
+│   │   ├── Inter_28pt-ExtraLight.ttf
+│   │   ├── Inter_28pt-ExtraLightItalic.ttf
+│   │   ├── Inter_28pt-Italic.ttf
+│   │   ├── Inter_28pt-Light.ttf
+│   │   ├── Inter_28pt-LightItalic.ttf
+│   │   ├── Inter_28pt-Medium.ttf
+│   │   ├── Inter_28pt-MediumItalic.ttf
+│   │   ├── Inter_28pt-Regular.ttf
+│   │   ├── Inter_28pt-Thin.ttf
+│   │   └── Inter_28pt-ThinItalic.ttf
+│   ├── home-template.html
+│   ├── index.css
+│   ├── index.html
+│   ├── lib/
+│   │   ├── chart.umd.min.js
+│   │   └── chartjs-plugin-datalabels.min.js
+│   ├── main.js
+│   ├── patch-updater.js
+│   ├── preload.js
+│   ├── renderer.js
+│   ├── settings-template.html
+│   ├── style.css
+│   ├── sub-functions/
+│   │   ├── components/
+│   │   │   └── notes-component.js
+│   │   ├── content-hydrator.js
+│   │   ├── content-loader.js
+│   │   ├── handlers/
+│   │   │   ├── diagnostic-test-handler.js
+│   │   │   └── exercise-handler.js
+│   │   └── tab-manager.js
+│   └── users.json
+├── tailwind.config.js
+├── transfer-release2.py
+├── transfer_releases.py
+├── undefinedsave_logs/
+│   └── dev-main-process-log.txt
+├── updateP
+├── villa.txt (+)
+├── webpack.main.config.js
+├── webpack.renderer.config.js
+└── webpack.rules.js

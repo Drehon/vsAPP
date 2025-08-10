@@ -1,0 +1,96 @@
+# VILLA: Vision for an Integrated, Logical, and Lasting Architecture
+
+This document contains the detailed plan for Phase 4, the most significant part of the refactoring effort. It outlines the strategy for evolving the application from a collection of scripts into a modern, component-based, and event-driven piece of software.
+
+---
+
+### Phase 4.1: From Monolithic Script to True JavaScript Components
+
+**Goal:** Refactor the monolithic `src/renderer.js` into a set of independent, single-responsibility JavaScript modules that correspond to the HTML components created in Phase 1.
+
+1.  **Create JS Component Directory:**
+    *   **Action:** Create a new directory: `src/components/shell/js/`. This will house the new component logic modules.
+
+2.  **Create `Toolbar.js` Component:**
+    *   **Action:** Create `src/components/shell/js/Toolbar.js`.
+    *   **Responsibilities:**
+        *   Move all DOM element selections for toolbar buttons (`global-home-btn`, `global-save-btn`, etc.) from `renderer.js` into this module.
+        *   Move the event listener setup for these buttons (`globalHomeBtn.onclick = ...`) into an `init()` function within this module.
+        *   Move the `updateGlobalToolbar` function's logic here. However, instead of a giant `if/else` block, it should listen for application-wide events (see Phase 4.2) to update its own state.
+    *   **API:** It should expose an `init()` function and potentially methods like `showFeedbackMessage()` for its internal feedback element.
+
+3.  **Create `Footer.js` Component (with Updater Logic):**
+    *   **Action:** Create `src/components/shell/js/Footer.js`.
+    *   **Responsibilities:**
+        *   Move the DOM selections for footer elements (`app-version`, `network-status`, `update-status`) from `renderer.js`.
+        *   Move the logic for `displayAppVersion`, `updateNetworkStatus`, and the entire suite of update-related functions (`setInitialUpdateStatus`, `handleUpdateStatus`, `handleDownloadProgress`) into this module.
+    *   **API:** It should listen to `window.api` events for updates (`onUpdateStatus`) internally. It will be a self-contained unit that manages the footer UI.
+
+4.  **Refactor `TabManager.js`:**
+    *   **Action:** Refactor `src/sub-functions/tab-manager.js`.
+    *   **Responsibilities:** The Tab Manager should no longer call `updateGlobalToolbar` directly. Instead, it should become an "event emitter" (see Phase 4.2). When a tab is switched, added, or closed, it should dispatch a global event like `app:tabChanged`.
+    *   **Rationale:** This completely decouples the Tab Manager from the Toolbar. The Tab Manager's only job is to manage tabs, not to know about other UI components.
+
+5.  **Refactor `renderer.js` into an Application Orchestrator:**
+    *   **Action:** Strip `renderer.js` down to its bare essentials.
+    *   **Responsibilities:**
+        *   Its primary job is now to **initialize** the application.
+        *   It will import the new component modules (`Toolbar.js`, `Footer.js`, etc.).
+        *   It will call the `init()` function on each component to bring it to life.
+        *   It will set up the global event listeners that bridge communication between components.
+    *   **Result:** `renderer.js` will be transformed from a 250-line monolith into a clean, readable, ~30-line setup script.
+
+### Phase 4.2: Implementing an Event-Driven Communication Model
+
+**Goal:** Decouple components from each other, allowing them to communicate without direct dependencies. This is the key to a truly modular architecture.
+
+1.  **Adopt a Global Event Bus:**
+    *   **Action:** Use the browser's built-in `window.dispatchEvent` and `window.addEventListener` as a simple, effective event bus.
+    *   **Rationale:** This avoids adding external dependencies and uses a standard, well-understood browser feature.
+
+2.  **Define Application Events:**
+    *   **`app:tabChanged`**: Dispatched by `TabManager.js` when the active tab changes. The event `detail` should include the active tab object.
+    *   **`toolbar:saveClicked`**: Dispatched by `Toolbar.js` when the save button is clicked.
+    *   **`toolbar:loadClicked`**: Dispatched by `Toolbar.js` when the load button is clicked.
+    *   **`toolbar:resetClicked`**: Dispatched by `Toolbar.js` when the reset button is clicked.
+    *   **`content:stateLoaded`**: Dispatched by a content handler (like `ExerciseHandler.js`) when a new state has been loaded, to inform other components.
+
+3.  **Refactor Communication Flow (Example):**
+    *   **Old Way:** `TabManager` directly calls `updateGlobalToolbar(activeTab)` in `renderer.js`.
+    *   **New Way:**
+        1.  `TabManager.js` switches tabs, then dispatches an event: `window.dispatchEvent(new CustomEvent('app:tabChanged', { detail: { activeTab } }));`
+        2.  `Toolbar.js` has a listener: `window.addEventListener('app:tabChanged', (e) => { this.updateButtons(e.detail.activeTab); });`. It updates itself.
+        3.  The `ContentHandler` for the active tab also listens for `app:tabChanged` to know it has become active.
+
+### Phase 4.3: Modernize the Build Process
+
+**Goal:** Move from runtime file loading to a professional, build-time process that improves performance and reliability.
+
+1.  **Implement Build-Time HTML Assembly:**
+    *   **Action:** Use a Webpack plugin like `html-webpack-plugin` with a templating language (like EJS).
+    *   **Process:**
+        1.  `src/index.ejs` will be the main template, containing placeholders like `<%- require('html-loader!./components/shell/toolbar.html') %>`.
+        2.  During the build (`npm run make`), Webpack will read the component HTML files and inject them into the EJS template, producing a final, complete `index.html` in the output directory.
+    *   **Benefit:** This eliminates the `ShellManager.js` created in Phase 2. The application loads a single, complete HTML file, which is faster and removes a potential point of failure (runtime file I/O).
+
+2.  **Optimize JavaScript and CSS Bundling:**
+    *   **Action:** Configure Webpack to bundle all the new JS component modules (`Toolbar.js`, `Footer.js`, etc.) and the orchestrator (`renderer.js`) into a single, minified `renderer.bundle.js`.
+    *   **Action:** Use `mini-css-extract-plugin` to extract all CSS into a single `.css` file and link it in the final `index.html`. This is more efficient than injecting styles via JavaScript.
+
+### Phase 4.4: Establish a Professional Development Workflow
+
+**Goal:** Introduce tools and practices that improve code quality, consistency, and long-term maintainability.
+
+1.  **Implement Unit Testing:**
+    *   **Action:** Integrate a test runner like **Vitest** into the project.
+    *   **First Tests:** Write unit tests for the newly isolated components. For example, test the `Footer.js` component by mocking the `window.api` events and asserting that the correct HTML is rendered in the component's DOM element for each update status.
+    *   **Rationale:** Ensures that individual components work as expected and prevents regressions.
+
+2.  **Enforce Code Quality:**
+    *   **Action:** Add **ESLint** to the project with a standard configuration (like `eslint:recommended`). Integrate it into the build process to fail builds on linting errors.
+    *   **Action:** Add **Prettier** to enforce a consistent code style across the entire codebase.
+    *   **Rationale:** Catches common errors early and ensures the codebase remains clean and readable, which is critical for long-term collaboration and maintenance.
+
+3.  **Refine `preload.js` and IPC:**
+    *   **Action:** Review all `window.api` calls. Ensure that the `preload.js` script only exposes the minimal, necessary functions to the renderer process.
+    *   **Rationale:** This is a key security best practice in Electron. With a component-based architecture, it's easier to see which components need which main-process functions, allowing for a more secure and granular API surface.

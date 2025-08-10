@@ -1,4 +1,22 @@
 [
+    {
+    "body": "Lessons 4 and 5 were full of errors. Fixed. Manual revision of content still required. \r\nFirst and second lint run complete.",
+    "name": "v1.4.3",
+    "publishedAt": "2025-08-10T17:03:00Z",
+    "tagName": "v1.4.3"
+  }, 
+  {
+    "body": "Implemented lessons 4 and 5 fully. Manual revision of content still required. \r\nAlso begun work on testing environment. \r\ntest and lint ready with basic implementation.",
+    "name": "v1.4.2",
+    "publishedAt": "2025-08-10T17:03:00Z",
+    "tagName": "v1.4.2"
+  }, 
+  {
+    "body": "Implemented tutoring side documentation under /teaching. \r\n Significant expansion of the tutoring protocol for creating new materials. \r\nRefined lessons 1,2 and 3.",
+    "name": "v1.4.1",
+    "publishedAt": "2025-08-10T16:03:00Z",
+    "tagName": "v1.4.1"
+  }, 
   {
     "body": "Small tweaks. Complete shift to public repository. \r\nAdjustements to the publish process and the upload process complete. \r\nHeavily expanded documentation.",
     "name": "v1.4.0",
