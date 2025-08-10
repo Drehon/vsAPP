@@ -513,3 +513,26 @@ C:\Users\User\Documents\TEFL Personal\webpack.main.config.js
   12:12  error  Unexpected require()  global-require
 
 ✖ 150 problems (75 errors, 75 warnings)
+
+---
+
+after our last round of fixing, first the warnings increased, but then i ran lint:fix and now:
+✖ 142 problems (67 errors, 75 warnings)
+
+HOWEVER content-hydrator and content-loader are now flagged in red in visual studio code 
+content-hydrator
+'_tab' is defined but never used.
+'_saveState' is defined but never used.
+Assignment to property of function parameter 'tab'.
+Assignment to property of function parameter 'tab'.
+Prefer default export on a file with single export.
+
+content-loader
+This line has a length of 134. Maximum allowed is 100.
+This line has a length of 112. Maximum allowed is 100.
+This line has a length of 116. Maximum allowed is 100.
+'attachHomeEventListeners' was used before it was defined.
+This line has a length of 113. Maximum allowed is 100.
+'handleYesClick' was used before it was defined.
+'handleNoClick' was used before it was defined.
+This line has a length of 114. Maximum allowed is 100.
