@@ -69,6 +69,3 @@ Write down below what you have done.
 ---
 
 >
-Generated L1b.html by expanding L1 - congiuntivo.html with content from work/L1 - expanded.md.
-Same for L2b
-Same for L3b
