@@ -1753,3 +1753,12 @@
 [LOG][2025-08-10T15:27:03.152Z] [State] No save state found for pageId 'lesson-l5es-tempi-verbi-accordo'.
 [LOG][2025-08-10T15:27:28.931Z] [State] No save state found for pageId 'lesson-l4-grammatica-irreale-an'.
 [LOG][2025-08-10T15:27:32.768Z] [State] No save state found for pageId 'lesson-l5-tempi-verbi-accordo'.
+[LOG][2025-08-10T15:39:57.968Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-10T15:39:57.971Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-10T15:39:57.972Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-10T15:39:58.069Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-10T15:39:58.077Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-10T15:39:58.565Z] Main Process: Checking for updates...
+[LOG][2025-08-10T15:39:58.572Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-10T15:39:59.632Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-10T15:40:01.888Z] [State] No save state found for pageId 'lesson-l2-causativo-an'.
