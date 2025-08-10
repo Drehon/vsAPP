@@ -1624,3 +1624,15 @@
 [LOG][2025-08-10T09:30:12.720Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
 [LOG][2025-08-10T09:30:13.736Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
 [LOG][2025-08-10T09:30:14.511Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T09:39:42.885Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-10T09:39:42.887Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-10T09:39:42.890Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-10T09:39:43.019Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-10T09:39:43.024Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-10T09:39:44.581Z] Main Process: Checking for updates...
+[LOG][2025-08-10T09:39:44.588Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-10T09:39:45.576Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-10T09:39:45.971Z] [State] No save state found for pageId 'lesson-l1anb-congiuntivo-it'.
+[LOG][2025-08-10T09:40:05.976Z] [State] No save state found for pageId 'lesson-l2-causativo'.
+[LOG][2025-08-10T09:40:30.881Z] [State] Loaded state for pageId 'L3ESb-passivo-avanzato' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3esb-passivo-avanzato_state.json'
+[LOG][2025-08-10T09:40:35.383Z] [State] No save state found for pageId 'lesson-l3-passivo-avanzato'.
