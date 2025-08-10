@@ -1,6 +1,6 @@
 import './style.css';
-import { initializeTabManager } from './sub-functions/tab-manager.js';
-import { loadContentIntoTab, loadHomeIntoTab, loadSettingsIntoTab } from './sub-functions/content-loader.js';
+import { initializeTabManager } from './sub-functions/tab-manager';
+import { loadContentIntoTab, loadHomeIntoTab, loadSettingsIntoTab } from './sub-functions/content-loader';
 
 window.addEventListener('api-ready', () => {
   // --- STATE MANAGEMENT ---
@@ -29,57 +29,155 @@ window.addEventListener('api-ready', () => {
   const globalSettingsBtn = document.getElementById('global-settings-btn');
   const resetFeedbackMessage = document.getElementById('reset-feedback-message');
 
-  // --- CORE FUNCTIONS ---
-  const {
-    renderTabs, addTab: _addTab, switchTab: _switchTab, closeTab: _closeTab,
-  } = initializeTabManager(
-    tabs,
-    nextTabId,
-    tabBar,
-    newTabBtn,
-    contentPanes,
-    handleLoadHome,
-    handleLoadContent,
-    handleLoadSettings,
-  );
+  // --- UTILITY & SETUP FUNCTIONS ---
 
-  // --- WRAPPER FUNCTIONS for Tab Manager ---
-  // These wrappers ensure the activeTab and toolbar are always updated
-  async function addTab(setActive = true, filePath = null, type = 'home') {
-    activeTab = await _addTab(setActive, filePath, type);
-    updateGlobalToolbar(activeTab);
+  function getActivePageId(tab) {
+    // The pageId is now reliably stored on the tab object.
+    return tab ? tab.pageId : null;
   }
 
-  async function switchTab(tabId) {
-    activeTab = await _switchTab(tabId);
-    updateGlobalToolbar(activeTab);
-    // The re-hydration logic that was here has been moved to tab-manager.js,
-    // where the tab switch event is actually handled. This function is now
-    // just a wrapper to ensure the global state (activeTab) is updated.
+  function debounce(func, delay) {
+    let timeout;
+    return function debouncedFunction(...args) {
+      const context = this;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), delay);
+    };
   }
 
-  async function closeTab(tabId) {
-    activeTab = await _closeTab(tabId);
-    updateGlobalToolbar(activeTab);
+  const autoSaveExerciseState = debounce(async (tab) => {
+    // Directly use the reliable pageId from the tab object.
+    if (tab && tab.pageId && tab.exerciseState) {
+      try {
+        await window.api.saveExerciseState(tab.pageId, tab.exerciseState);
+      } catch (error) {
+        // error handling
+      }
+    }
+  }, 500);
+
+  // --- FEEDBACK MESSAGE LOGIC ---
+  // Store the timer ID in a closure to ensure only one feedback message runs at a time
+  let feedbackTimer = null;
+
+  function showFeedbackMessage(message, duration = 5000) {
+    if (!resetFeedbackMessage) return;
+
+    // Clear any existing feedback timeout
+    clearTimeout(feedbackTimer);
+
+    resetFeedbackMessage.textContent = message;
+    resetFeedbackMessage.classList.remove('opacity-0');
+
+    feedbackTimer = setTimeout(() => {
+      resetFeedbackMessage.classList.add('opacity-0');
+
+      // Use another timeout to clear the content after the transition ends
+      feedbackTimer = setTimeout(() => {
+        resetFeedbackMessage.innerHTML = '&nbsp;';
+      }, 500); // This duration should match the CSS transition duration
+    }, duration);
   }
 
-  // --- HANDLERS for Content Loading ---
-  function handleLoadHome(tabId, ...args) {
-    loadHomeIntoTab(tabId, tabs, renderTabs, addTab, autoSaveExerciseState, updateGlobalToolbar);
+  async function handleSaveButtonClick(tab) {
+    const pageId = getActivePageId(tab);
+
+    if (!tab || !pageId || !tab.exerciseState) {
+      return;
+    }
+    const dataStr = JSON.stringify(tab.exerciseState, null, 2);
+
+    // --- New file naming logic ---
+    const today = new Date();
+    const dateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+    // Use pageId for a more reliable default filename
+    const defaultFilename = `${pageId}-save-${dateString}.json`;
+
+    // --- End new file naming logic ---
+
+    const result = await window.api.showSaveDialogAndSaveFile({
+      defaultFilename,
+      data: dataStr,
+    });
+
+    if (result.success) {
+      // --- Show Feedback Message ---
+      let objectName;
+      const lessonMatch = tab.title.match(/^(L\d+)/);
+      const [pageIdPrefix] = pageId.split('-');
+
+      // Use pageId for more reliable feedback
+      if (pageId.includes('student-verbs')) {
+        objectName = 'Verbs';
+      } else if (pageId.includes('student-grammar')) {
+        objectName = 'Grammar';
+      } else if (lessonMatch) {
+        objectName = lessonMatch[1];
+      } else {
+        objectName = pageIdPrefix || 'File'; // Fallback
+      }
+      showFeedbackMessage(`Saved ${objectName}`);
+      // --- End Feedback Message ---
+    }
   }
 
-  function handleLoadContent(tabId, filePath, options, ...args) {
-    loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, autoSaveExerciseState, updateGlobalToolbar, options);
-  }
+  async function handleLoadButtonClick(tab) {
+    if (!tab) return;
 
-  function handleLoadSettings(tabId, ...args) {
-    loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalToolbar, mostRecentlyLoadedFile);
+    const pageId = getActivePageId(tab);
+    if (!pageId) {
+      return;
+    }
+
+    const result = await window.api.showOpenDialogAndLoadFile();
+
+    if (result.success && !result.canceled) {
+      try {
+        const loadedState = JSON.parse(result.data);
+        // Basic validation to ensure the loaded file is a valid state object
+        const isValidState = loadedState && typeof loadedState === 'object'
+        && Object.keys(loadedState).length > 0;
+
+        if (isValidState) {
+          mostRecentlyLoadedFile = result.path; // Track the recently loaded file
+          await window.api.saveExerciseState(pageId, loadedState); // Overwrite autosave
+          // eslint-disable-next-line no-use-before-define
+          handleLoadContent(tab.id, tab.filePath); // Reload content
+
+          // --- Show Feedback Message ---
+          let objectName;
+          const lessonMatch = tab.title.match(/^(L\d+)/);
+          const [pageIdPrefix] = pageId.split('-');
+
+          if (pageId.includes('student-verbs')) {
+            objectName = 'Verbs';
+          } else if (pageId.includes('student-grammar')) {
+            objectName = 'Grammar';
+          } else if (lessonMatch) {
+            objectName = lessonMatch[1];
+          } else {
+            objectName = pageIdPrefix || 'File'; // Fallback
+          }
+          showFeedbackMessage(`Loaded ${objectName}`);
+          // --- End Feedback Message ---
+        }
+      } catch (e) {
+        // error handling
+      }
+    }
   }
 
   // --- GLOBAL TOOLBAR LOGIC ---
   function updateGlobalToolbar(tab) {
     if (!tab) { // No active tab, disable everything
-      [globalHomeBtn, globalReloadBtn, globalSaveBtn, globalLoadBtn, globalResetBtn, globalSettingsBtn].forEach((btn) => btn.disabled = true);
+      [
+        globalHomeBtn, globalReloadBtn, globalSaveBtn,
+        globalLoadBtn, globalResetBtn, globalSettingsBtn,
+      ].forEach((btn) => {
+        const button = btn;
+        button.disabled = true;
+      });
       return;
     }
 
@@ -97,12 +195,17 @@ window.addEventListener('api-ready', () => {
     globalGithubBtn.disabled = false; // Always enabled
 
     // Update onclick listeners to point to the active tab's context
+    // eslint-disable-next-line no-use-before-define
     globalHomeBtn.onclick = () => !isHome && handleLoadHome(tab.id);
     globalReloadBtn.onclick = () => {
+      // eslint-disable-next-line no-use-before-define
       if (isHome) handleLoadHome(tab.id);
+      // eslint-disable-next-line no-use-before-define
       if (isContent) handleLoadContent(tab.id, tab.filePath);
+      // eslint-disable-next-line no-use-before-define
       if (isSettings) handleLoadSettings(tab.id);
     };
+    // eslint-disable-next-line no-use-before-define
     globalSettingsBtn.onclick = () => !isSettings && addTab(true, null, 'settings');
     globalGithubBtn.onclick = () => window.api.openExternalLink('https://github.com/Drehon/vsapp');
 
@@ -112,7 +215,6 @@ window.addEventListener('api-ready', () => {
     globalResetBtn.onclick = isContent ? async () => {
       const pageId = getActivePageId(tab);
       if (!pageId) {
-        console.error('Could not find pageId to reset.');
         return;
       }
 
@@ -138,54 +240,58 @@ window.addEventListener('api-ready', () => {
 
       // --- Reload content with view state ---
       // We still need tab.filePath to reload the content source
+      // eslint-disable-next-line no-use-before-define
       handleLoadContent(tab.id, tab.filePath, { activePhaseId, scrollTop });
 
       if (result.success) {
         showFeedbackMessage('Reset Complete');
-      } else {
-        console.error('Failed to reset state:', result.error);
       }
     } : null;
   }
 
-  // --- FEEDBACK MESSAGE LOGIC ---
-  // Store the timer ID in a closure to ensure only one feedback message runs at a time
-  let feedbackTimer = null;
-
-  function showFeedbackMessage(message, duration = 5000) {
-    if (!resetFeedbackMessage) return;
-
-    // Clear any existing feedback timeout
-    clearTimeout(feedbackTimer);
-
-    resetFeedbackMessage.textContent = message;
-    resetFeedbackMessage.classList.remove('opacity-0');
-
-    feedbackTimer = setTimeout(() => {
-      resetFeedbackMessage.classList.add('opacity-0');
-
-      // Use another timeout to clear the content after the transition ends
-      feedbackTimer = setTimeout(() => {
-        resetFeedbackMessage.innerHTML = '&nbsp;';
-      }, 500); // This duration should match the CSS transition duration
-    }, duration);
+  // --- WRAPPER FUNCTIONS for Tab Manager ---
+  // These wrappers ensure the activeTab and toolbar are always updated
+  async function addTab(setActive = true, filePath = null, type = 'home') {
+    // eslint-disable-next-line no-use-before-define
+    activeTab = await _addTab(setActive, filePath, type);
+    updateGlobalToolbar(activeTab);
   }
 
-  // --- UTILITY & SETUP FUNCTIONS ---
-
-  function getActivePageId(tab) {
-    // The pageId is now reliably stored on the tab object.
-    return tab ? tab.pageId : null;
+  // --- HANDLERS for Content Loading ---
+  function handleLoadHome(tabId) {
+    loadHomeIntoTab(tabId, tabs, renderTabs, addTab, autoSaveExerciseState, updateGlobalToolbar);
   }
 
-  function debounce(func, delay) {
-    let timeout;
-    return function (...args) {
-      const context = this;
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(context, args), delay);
-    };
+  function handleLoadContent(tabId, filePath, options) {
+    loadContentIntoTab(
+      tabId,
+      filePath,
+      tabs,
+      renderTabs,
+      addTab,
+      autoSaveExerciseState,
+      updateGlobalToolbar,
+      options,
+    );
   }
+
+  function handleLoadSettings(tabId) {
+    loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalToolbar, mostRecentlyLoadedFile);
+  }
+
+  // --- CORE FUNCTIONS ---
+  const {
+    renderTabs, addTab: _addTab,
+  } = initializeTabManager(
+    tabs,
+    nextTabId,
+    tabBar,
+    newTabBtn,
+    contentPanes,
+    handleLoadHome,
+    handleLoadContent,
+    handleLoadSettings,
+  );
 
   async function displayAppVersion() {
     const version = await window.api.getAppVersion();
@@ -254,6 +360,8 @@ window.addEventListener('api-ready', () => {
         updateIndicator.className = 'w-3 h-3 bg-red-500 rounded-full mr-2';
         updateContainer.innerText = 'Update failed';
         break;
+      default:
+        break;
     }
   }
 
@@ -263,117 +371,7 @@ window.addEventListener('api-ready', () => {
     }
   }
 
-  async function handleSaveButtonClick(tab) {
-    const pageId = getActivePageId(tab);
-
-    if (!tab || !pageId || !tab.exerciseState) {
-      console.error('No active exercise tab, pageId, or state to save.');
-      return;
-    }
-    const dataStr = JSON.stringify(tab.exerciseState, null, 2);
-
-    // --- New file naming logic ---
-    const today = new Date();
-    const dateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-
-    // Use pageId for a more reliable default filename
-    const defaultFilename = `${pageId}-save-${dateString}.json`;
-
-    // --- End new file naming logic ---
-
-    const result = await window.api.showSaveDialogAndSaveFile({
-      defaultFilename,
-      data: dataStr,
-    });
-
-    if (result.success) {
-      console.log(`Manually saved progress to: ${result.path}`);
-
-      // --- Show Feedback Message ---
-      let objectName;
-      const lessonMatch = tab.title.match(/^(L\d+)/);
-
-      // Use pageId for more reliable feedback
-      if (pageId.includes('student-verbs')) {
-        objectName = 'Verbs';
-      } else if (pageId.includes('student-grammar')) {
-        objectName = 'Grammar';
-      } else if (lessonMatch) {
-        objectName = lessonMatch[1];
-      } else {
-        objectName = 'File'; // Fallback
-      }
-      showFeedbackMessage(`Saved ${objectName}`);
-      // --- End Feedback Message ---
-    } else if (!result.canceled) {
-      console.error('Failed to manually save progress:', result.error);
-    }
-  }
-
-  async function handleLoadButtonClick(tab) {
-    if (!tab) return;
-
-    const pageId = getActivePageId(tab);
-    if (!pageId) {
-      console.error('Could not find pageId to load state into.');
-      return;
-    }
-
-    const result = await window.api.showOpenDialogAndLoadFile();
-
-    if (result.success && !result.canceled) {
-      try {
-        const loadedState = JSON.parse(result.data);
-        // Basic validation to ensure the loaded file is a valid state object
-        const isValidState = loadedState && typeof loadedState === 'object' && Object.keys(loadedState).length > 0;
-
-        if (isValidState) {
-          mostRecentlyLoadedFile = result.path; // Track the recently loaded file
-          await window.api.saveExerciseState(pageId, loadedState); // Overwrite autosave with this state
-          handleLoadContent(tab.id, tab.filePath); // Reload content to apply the new state
-          console.log(`Successfully loaded and applied state from ${result.path} to pageId ${pageId}`);
-
-          // --- Show Feedback Message ---
-          let objectName;
-          const lessonMatch = tab.title.match(/^(L\d+)/);
-          if (pageId.includes('student-verbs')) {
-            objectName = 'Verbs';
-          } else if (pageId.includes('student-grammar')) {
-            objectName = 'Grammar';
-          } else if (lessonMatch) {
-            objectName = lessonMatch[1];
-          } else {
-            objectName = 'File'; // Fallback
-          }
-          showFeedbackMessage(`Loaded ${objectName}`);
-          // --- End Feedback Message ---
-        } else {
-          console.error('Loaded file does not appear to be a valid progress file.');
-          // Optionally, inform the user via a UI element
-        }
-      } catch (e) {
-        console.error('Failed to parse or apply loaded file:', e);
-      }
-    } else if (result.canceled) {
-      console.log('File load canceled.');
-    } else if (result.error) {
-      console.error('Failed to load file:', result.error);
-    }
-  }
-
   // --- INITIALIZATION ---
-
-  const autoSaveExerciseState = debounce(async (tab, force = false) => {
-    // Directly use the reliable pageId from the tab object.
-    if (tab && tab.pageId && tab.exerciseState) {
-      try {
-        await window.api.saveExerciseState(tab.pageId, tab.exerciseState);
-        console.log(`Autosaved progress for pageId: ${tab.pageId}`);
-      } catch (error) {
-        console.error(`Failed to autosave progress for pageId ${tab.pageId}:`, error);
-      }
-    }
-  }, 500);
 
   async function initializeApp() {
     displayAppVersion();

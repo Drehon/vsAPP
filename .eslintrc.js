@@ -16,4 +16,8 @@ module.exports = {
   rules: {
     // Add any specific rule overrides here
   },
+  globals: {
+    MAIN_WINDOW_WEBPACK_ENTRY: 'readonly',
+    MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: 'readonly',
+  },
 };
