@@ -1580,3 +1580,30 @@
 [LOG][2025-08-10T09:19:50.596Z] [State] No save state found for pageId 'lesson-l1b-congiuntivo'.
 [LOG][2025-08-10T09:19:50.784Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
 [LOG][2025-08-10T09:19:54.828Z] [State] No save state found for pageId 'lesson-l3-passivo-avanzato'.
+[LOG][2025-08-10T09:23:05.122Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-10T09:23:05.124Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-10T09:23:05.127Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-10T09:23:05.228Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-10T09:23:05.237Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-10T09:23:06.822Z] Main Process: Checking for updates...
+[LOG][2025-08-10T09:23:06.830Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-10T09:23:07.870Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-10T09:23:10.077Z] [State] Loaded state for pageId 'L1-congiuntivoES' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-10T09:23:11.826Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-10T09:23:12.899Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-10T09:23:13.781Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-10T09:23:16.672Z] [State] Saved state for pageId 'L1-congiuntivoES' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1-congiuntivoes_state.json'
+[LOG][2025-08-10T09:23:31.247Z] [State] No save state found for pageId 'L2-causativoESb'.
+[LOG][2025-08-10T09:23:32.876Z] [State] Saved state for pageId 'L2-causativoESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoesb_state.json'
+[LOG][2025-08-10T09:23:33.901Z] [State] Saved state for pageId 'L2-causativoESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoesb_state.json'
+[LOG][2025-08-10T09:23:35.632Z] [State] Saved state for pageId 'L2-causativoESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoesb_state.json'
+[LOG][2025-08-10T09:23:36.254Z] [State] Saved state for pageId 'L2-causativoESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoesb_state.json'
+[LOG][2025-08-10T09:23:36.826Z] [State] Saved state for pageId 'L2-causativoESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoesb_state.json'
+[LOG][2025-08-10T09:23:37.530Z] [State] Saved state for pageId 'L2-causativoESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoesb_state.json'
+[LOG][2025-08-10T09:23:38.491Z] [State] Saved state for pageId 'L2-causativoESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoesb_state.json'
+[LOG][2025-08-10T09:23:39.928Z] [State] Saved state for pageId 'L2-causativoESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoesb_state.json'
+[LOG][2025-08-10T09:23:40.804Z] [State] Saved state for pageId 'L2-causativoESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoesb_state.json'
+[LOG][2025-08-10T09:23:41.491Z] [State] Saved state for pageId 'L2-causativoESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l2-causativoesb_state.json'
+[LOG][2025-08-10T09:23:43.840Z] [State] No save state found for pageId 'L3ESb-passivo-avanzato'.
+[LOG][2025-08-10T09:23:45.396Z] [State] Saved state for pageId 'L3ESb-passivo-avanzato' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3esb-passivo-avanzato_state.json'
+[LOG][2025-08-10T09:23:46.301Z] [State] Saved state for pageId 'L3ESb-passivo-avanzato' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3esb-passivo-avanzato_state.json'
