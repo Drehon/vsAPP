@@ -1,4 +1,10 @@
 [
+    {
+    "body": "Lessons 4 and 5 were full of errors. Manual revision of content still required. \r\nFirst lint run complete.",
+    "name": "v1.4.2",
+    "publishedAt": "2025-08-10T17:03:00Z",
+    "tagName": "v1.4.2"
+  }, 
   {
     "body": "Implemented lessons 4 and 5 fully. Manual revision of content still required. \r\nAlso begun work on testing environment. \r\ntest and lint ready with basic implementation.",
     "name": "v1.4.2",
