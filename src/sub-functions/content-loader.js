@@ -1,4 +1,4 @@
-import { hydrateContent } from './content-hydrator.js';
+import { hydrateContent } from './content-hydrator';
 
 export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState, updateGlobalToolbar, options) {
   const tab = tabs.find((t) => t.id === tabId);
