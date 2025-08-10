@@ -1,0 +1,25 @@
+JULES AREA:
+
+
+
+
+
+---
+
+USER AREA: 
+
+npm run test
+
+> tutoring-app@1.4.2 test
+> jest
+
+ PASS  tests/utils.test.js
+  add function
+    √ should correctly add two positive numbers (3 ms)                                                                                                                                                 
+    √ should correctly handle negative numbers (1 ms)                                                                                                                                                  
+                                                                                                                                                                                                       
+Test Suites: 1 passed, 1 total                                                                                                                                                                         
+Tests:       2 passed, 2 total                                                                                                                                                                         
+Snapshots:   0 total
+Time:        0.346 s, estimated 1 s
+Ran all test suites.
