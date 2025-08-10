@@ -4,7 +4,7 @@ import { DiagnosticTestHandler } from './handlers/diagnostic-test-handler.js';
 // Placeholder handlers for different content modules.
 // These will be replaced with actual implementations in later phases.
 
-function handleStaticLesson(paneElement, tab, saveState) {
+function handleStaticLesson(paneElement, _tab, _saveState) {
   console.log('Hydrating a static lesson.', paneElement);
   // Future logic for static lessons (e.g., initializing notes component) will go here.
 }
