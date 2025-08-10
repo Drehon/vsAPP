@@ -1713,3 +1713,43 @@
 [LOG][2025-08-10T12:38:23.020Z] AutoUpdater configuration: [Unserializable Object]
 [LOG][2025-08-10T12:38:24.446Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
 [LOG][2025-08-10T12:38:24.902Z] [State] No save state found for pageId 'lesson-l4-grammatica-irreale-an'.
+[LOG][2025-08-10T15:24:02.725Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-10T15:24:02.727Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-10T15:24:02.730Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-10T15:24:02.826Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-10T15:24:02.833Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-10T15:24:03.180Z] Main Process: Checking for updates...
+[LOG][2025-08-10T15:24:03.186Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-10T15:24:04.575Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-10T15:24:05.901Z] [State] No save state found for pageId 'lesson-l1b-congiuntivo'.
+[LOG][2025-08-10T15:24:08.310Z] [State] No save state found for pageId 'lesson-l2b-causativo'.
+[LOG][2025-08-10T15:24:10.937Z] [State] No save state found for pageId 'lesson-l4-grammatica-irreale'.
+[LOG][2025-08-10T15:24:14.668Z] [State] No save state found for pageId 'lesson-l1-congiuntivo-an'.
+[LOG][2025-08-10T15:24:17.962Z] [State] No save state found for pageId 'lesson-l2-causativo-an'.
+[LOG][2025-08-10T15:24:21.390Z] [State] No save state found for pageId 'lesson-l3-passivo-avanzato-an-b'.
+[LOG][2025-08-10T15:24:25.470Z] [State] No save state found for pageId 'lesson-l4-grammatica-irreale-an'.
+[LOG][2025-08-10T15:25:54.480Z] [State] No save state found for pageId 'lesson-l4-grammatica-irreale-an'.
+[LOG][2025-08-10T15:25:55.297Z] [State] No save state found for pageId 'lesson-l4-grammatica-irreale-an'.
+[LOG][2025-08-10T15:25:55.440Z] [State] No save state found for pageId 'lesson-l4-grammatica-irreale-an'.
+[LOG][2025-08-10T15:25:55.600Z] [State] No save state found for pageId 'lesson-l4-grammatica-irreale-an'.
+[LOG][2025-08-10T15:26:04.623Z] [State] No save state found for pageId 'lesson-l4-grammatica-irreale-an'.
+[LOG][2025-08-10T15:26:05.345Z] [State] No save state found for pageId 'lesson-l4-grammatica-irreale-an'.
+[LOG][2025-08-10T15:26:05.489Z] [State] No save state found for pageId 'lesson-l4-grammatica-irreale-an'.
+[LOG][2025-08-10T15:26:05.663Z] [State] No save state found for pageId 'lesson-l4-grammatica-irreale-an'.
+[LOG][2025-08-10T15:26:23.865Z] [State] Loaded state for pageId 'L1ESb' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T15:26:25.537Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T15:26:26.841Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T15:26:28.028Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T15:26:28.906Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T15:26:29.511Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T15:26:31.023Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T15:26:31.993Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T15:26:35.049Z] [State] Reset state for pageId 'L1ESb' by deleting 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T15:26:35.053Z] [State] No save state found for pageId 'L1ESb'.
+[LOG][2025-08-10T15:26:37.038Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T15:26:37.844Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T15:26:39.562Z] [State] No save state found for pageId 'lesson-l4-grammatica-irreale-es'.
+[LOG][2025-08-10T15:26:57.522Z] [State] No save state found for pageId 'lesson-l4-grammatica-irreale-es'.
+[LOG][2025-08-10T15:27:03.152Z] [State] No save state found for pageId 'lesson-l5es-tempi-verbi-accordo'.
+[LOG][2025-08-10T15:27:28.931Z] [State] No save state found for pageId 'lesson-l4-grammatica-irreale-an'.
+[LOG][2025-08-10T15:27:32.768Z] [State] No save state found for pageId 'lesson-l5-tempi-verbi-accordo'.
