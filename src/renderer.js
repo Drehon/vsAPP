@@ -1,5 +1,5 @@
 import './style.css';
-import { initializeTabManager } from './sub-functions/tab-manager';
+import initializeTabManager from './sub-functions/tab-manager';
 import { loadContentIntoTab, loadHomeIntoTab, loadSettingsIntoTab } from './sub-functions/content-loader';
 
 window.addEventListener('api-ready', () => {
@@ -19,6 +19,8 @@ window.addEventListener('api-ready', () => {
   const updateIndicator = document.getElementById('update-indicator');
   const updateContainer = document.getElementById('update-label');
 
+  const resetFeedbackMessage = document.getElementById('reset-feedback-message');
+
   // Global Toolbar Buttons
   const globalHomeBtn = document.getElementById('global-home-btn');
   const globalReloadBtn = document.getElementById('global-reload-btn');
@@ -27,7 +29,6 @@ window.addEventListener('api-ready', () => {
   const globalResetBtn = document.getElementById('global-reset-btn');
   const globalGithubBtn = document.getElementById('global-github-btn');
   const globalSettingsBtn = document.getElementById('global-settings-btn');
-  const resetFeedbackMessage = document.getElementById('reset-feedback-message');
 
   // --- UTILITY & SETUP FUNCTIONS ---
 
@@ -142,7 +143,6 @@ window.addEventListener('api-ready', () => {
         if (isValidState) {
           mostRecentlyLoadedFile = result.path; // Track the recently loaded file
           await window.api.saveExerciseState(pageId, loadedState); // Overwrite autosave
-          // eslint-disable-next-line no-use-before-define
           handleLoadContent(tab.id, tab.filePath); // Reload content
 
           // --- Show Feedback Message ---
@@ -168,12 +168,132 @@ window.addEventListener('api-ready', () => {
     }
   }
 
-  // --- GLOBAL TOOLBAR LOGIC ---
+  async function handleSaveButtonClick(tab) {
+    const pageId = getActivePageId(tab);
+
+    if (!tab || !pageId || !tab.exerciseState) {
+      return;
+    }
+    const dataStr = JSON.stringify(tab.exerciseState, null, 2);
+
+    // --- New file naming logic ---
+    const today = new Date();
+    const dateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+    // Use pageId for a more reliable default filename
+    const defaultFilename = `${pageId}-save-${dateString}.json`;
+
+    // --- End new file naming logic ---
+
+    const result = await window.api.showSaveDialogAndSaveFile({
+      defaultFilename,
+      data: dataStr,
+    });
+
+    if (result.success) {
+      // --- Show Feedback Message ---
+      let objectName;
+      const lessonMatch = tab.title.match(/^(L\d+)/);
+      const pageIdPrefix = pageId.split('-')[0];
+
+      // Use pageId for more reliable feedback
+      if (pageId.includes('student-verbs')) {
+        objectName = 'Verbs';
+      } else if (pageId.includes('student-grammar')) {
+        objectName = 'Grammar';
+      } else if (lessonMatch) {
+        objectName = lessonMatch[1];
+      } else {
+        objectName = pageIdPrefix || 'File'; // Fallback
+      }
+      showFeedbackMessage(`Saved ${objectName}`);
+      // --- End Feedback Message ---
+    }
+  }
+
+  async function handleLoadButtonClick(tab) {
+    if (!tab) return;
+
+    const pageId = getActivePageId(tab);
+    if (!pageId) {
+      return;
+    }
+
+    const result = await window.api.showOpenDialogAndLoadFile();
+
+    if (result.success && !result.canceled) {
+      try {
+        const loadedState = JSON.parse(result.data);
+        // Basic validation to ensure the loaded file is a valid state object
+        const isValidState = loadedState && typeof loadedState === 'object'
+        && Object.keys(loadedState).length > 0;
+
+        if (isValidState) {
+          mostRecentlyLoadedFile = result.path; // Track the recently loaded file
+          await window.api.saveExerciseState(pageId, loadedState); // Overwrite autosave
+          handleLoadContent(tab.id, tab.filePath); // Reload content
+
+          // --- Show Feedback Message ---
+          let objectName;
+          const lessonMatch = tab.title.match(/^(L\d+)/);
+          const pageIdPrefix = pageId.split('-')[0];
+
+          if (pageId.includes('student-verbs')) {
+            objectName = 'Verbs';
+          } else if (pageId.includes('student-grammar')) {
+            objectName = 'Grammar';
+          } else if (lessonMatch) {
+            objectName = lessonMatch[1];
+          } else {
+            objectName = pageIdPrefix || 'File'; // Fallback
+          }
+          showFeedbackMessage(`Loaded ${objectName}`);
+          // --- End Feedback Message ---
+        }
+      } catch (e) {
+        // error handling
+      }
+    }
+  }
+
+  // --- HANDLERS for Content Loading ---
+  function handleLoadHome(tabId) {
+    loadHomeIntoTab(tabId, tabs, renderTabs, addTab, autoSaveExerciseState, updateGlobalToolbar);
+  }
+
+  function handleLoadContent(tabId, filePath, options) {
+    loadContentIntoTab(
+      tabId,
+      filePath,
+      tabs,
+      renderTabs,
+      addTab,
+      autoSaveExerciseState,
+      updateGlobalToolbar,
+      options,
+    );
+  }
+
+  function handleLoadSettings(tabId) {
+    loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalToolbar, mostRecentlyLoadedFile);
+  }
+
+  // --- WRAPPER FUNCTIONS for Tab Manager ---
+  // These wrappers ensure the activeTab and toolbar are always updated
+  async function addTab(setActive = true, filePath = null, type = 'home') {
+    activeTab = await _addTab(setActive, filePath, type);
+    updateGlobalToolbar(activeTab);
+  }
+
   function updateGlobalToolbar(tab) {
     if (!tab) { // No active tab, disable everything
       [
-        globalHomeBtn, globalReloadBtn, globalSaveBtn,
-        globalLoadBtn, globalResetBtn, globalSettingsBtn,
+        document.getElementById('global-home-btn'),
+        document.getElementById('global-reload-btn'),
+        document.getElementById('global-save-btn'),
+        document.getElementById('global-load-btn'),
+        document.getElementById('global-reset-btn'),
+        document.getElementById('global-settings-btn'),
       ].forEach((btn) => {
         const button = btn;
         button.disabled = true;
@@ -186,33 +306,28 @@ window.addEventListener('api-ready', () => {
     const isSettings = tab.view === 'settings';
 
     // Enable/Disable buttons based on view
-    globalHomeBtn.disabled = isHome;
-    globalSettingsBtn.disabled = isSettings;
-    globalSaveBtn.disabled = !isContent;
-    globalLoadBtn.disabled = !isContent;
-    globalResetBtn.disabled = !isContent;
-    globalReloadBtn.disabled = false; // Always enabled
-    globalGithubBtn.disabled = false; // Always enabled
+    document.getElementById('global-home-btn').disabled = isHome;
+    document.getElementById('global-settings-btn').disabled = isSettings;
+    document.getElementById('global-save-btn').disabled = !isContent;
+    document.getElementById('global-load-btn').disabled = !isContent;
+    document.getElementById('global-reset-btn').disabled = !isContent;
+    document.getElementById('global-reload-btn').disabled = false; // Always enabled
+    document.getElementById('global-github-btn').disabled = false; // Always enabled
 
     // Update onclick listeners to point to the active tab's context
-    // eslint-disable-next-line no-use-before-define
-    globalHomeBtn.onclick = () => !isHome && handleLoadHome(tab.id);
-    globalReloadBtn.onclick = () => {
-      // eslint-disable-next-line no-use-before-define
+    document.getElementById('global-home-btn').onclick = () => !isHome && handleLoadHome(tab.id);
+    document.getElementById('global-reload-btn').onclick = () => {
       if (isHome) handleLoadHome(tab.id);
-      // eslint-disable-next-line no-use-before-define
       if (isContent) handleLoadContent(tab.id, tab.filePath);
-      // eslint-disable-next-line no-use-before-define
       if (isSettings) handleLoadSettings(tab.id);
     };
-    // eslint-disable-next-line no-use-before-define
-    globalSettingsBtn.onclick = () => !isSettings && addTab(true, null, 'settings');
-    globalGithubBtn.onclick = () => window.api.openExternalLink('https://github.com/Drehon/vsapp');
+    document.getElementById('global-settings-btn').onclick = () => !isSettings && addTab(true, null, 'settings');
+    document.getElementById('global-github-btn').onclick = () => window.api.openExternalLink('https://github.com/Drehon/vsapp');
 
     // Specific listeners for content-related buttons
-    globalSaveBtn.onclick = isContent ? () => handleSaveButtonClick(tab) : null;
-    globalLoadBtn.onclick = isContent ? () => handleLoadButtonClick(tab) : null;
-    globalResetBtn.onclick = isContent ? async () => {
+    document.getElementById('global-save-btn').onclick = isContent ? () => handleSaveButtonClick(tab) : null;
+    document.getElementById('global-load-btn').onclick = isContent ? () => handleLoadButtonClick(tab) : null;
+    document.getElementById('global-reset-btn').onclick = isContent ? async () => {
       const pageId = getActivePageId(tab);
       if (!pageId) {
         return;
@@ -240,43 +355,12 @@ window.addEventListener('api-ready', () => {
 
       // --- Reload content with view state ---
       // We still need tab.filePath to reload the content source
-      // eslint-disable-next-line no-use-before-define
       handleLoadContent(tab.id, tab.filePath, { activePhaseId, scrollTop });
 
       if (result.success) {
         showFeedbackMessage('Reset Complete');
       }
     } : null;
-  }
-
-  // --- WRAPPER FUNCTIONS for Tab Manager ---
-  // These wrappers ensure the activeTab and toolbar are always updated
-  async function addTab(setActive = true, filePath = null, type = 'home') {
-    // eslint-disable-next-line no-use-before-define
-    activeTab = await _addTab(setActive, filePath, type);
-    updateGlobalToolbar(activeTab);
-  }
-
-  // --- HANDLERS for Content Loading ---
-  function handleLoadHome(tabId) {
-    loadHomeIntoTab(tabId, tabs, renderTabs, addTab, autoSaveExerciseState, updateGlobalToolbar);
-  }
-
-  function handleLoadContent(tabId, filePath, options) {
-    loadContentIntoTab(
-      tabId,
-      filePath,
-      tabs,
-      renderTabs,
-      addTab,
-      autoSaveExerciseState,
-      updateGlobalToolbar,
-      options,
-    );
-  }
-
-  function handleLoadSettings(tabId) {
-    loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalToolbar, mostRecentlyLoadedFile);
   }
 
   // --- CORE FUNCTIONS ---

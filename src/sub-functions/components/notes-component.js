@@ -6,9 +6,10 @@
  *
  * @param {HTMLElement} container - The parent element to search for notes components.
  * @param {object} notesState - An object where keys are note IDs and values are the note content.
- * @param {function} onUpdate - A callback function invoked when a note is updated. It receives (noteId, newContent).
+ * @param {function} onUpdate - A callback function invoked when a note is updated.
+ * It receives (noteId, newContent).
  */
-export function initializeNotes(container, notesState = {}, onUpdate = () => {}) {
+export default function initializeNotes(container, notesState = {}, onUpdate = () => {}) {
   const notesComponents = container.querySelectorAll('.notes-component');
 
   notesComponents.forEach((component) => {
@@ -18,7 +19,7 @@ export function initializeNotes(container, notesState = {}, onUpdate = () => {})
     const textarea = component.querySelector('textarea');
 
     if (!noteId || !toggleBtn || !content || !textarea) {
-      console.warn('Skipping invalid notes component:', component);
+      // console.warn('Skipping invalid notes component:', component);
       return;
     }
 

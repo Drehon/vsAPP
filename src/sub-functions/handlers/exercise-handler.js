@@ -7,7 +7,7 @@
  * exercise tab has an isolated instance, preventing state conflicts.
  */
 
-export class ExerciseHandler {
+export default class ExerciseHandler {
   /**
      * Initializes the interactive exercise based on the data provided in the DOM.
      * @param {HTMLElement} container - The root element of the exercise content.
@@ -15,7 +15,7 @@ export class ExerciseHandler {
      * @param {function} saveFunc - The function to call to auto-save the exercise state.
      */
   constructor(container, tab, saveFunc) {
-    console.log('Initializing ExerciseHandler instance...');
+    // console.log('Initializing ExerciseHandler instance...');
     this.containerElement = container;
     this.activeTab = tab;
     this.autoSave = saveFunc;
@@ -23,23 +23,23 @@ export class ExerciseHandler {
 
     const pageDataElement = this.containerElement.querySelector('#page-data');
     if (!pageDataElement) {
-      console.error('Could not find #page-data element. Cannot initialize exercise.');
+      // console.error('Could not find #page-data element. Cannot initialize exercise.');
       return;
     }
 
     try {
       this.pageData = JSON.parse(pageDataElement.textContent);
-      console.log('Exercise data loaded:', this.pageData);
+      // console.log('Exercise data loaded:', this.pageData);
 
       if (!this.pageData.blocks) {
-        console.error("No 'blocks' array found in page data.");
+        // console.error("No 'blocks' array found in page data.");
         return;
       }
 
       this.initializeState();
       this.render();
     } catch (error) {
-      console.error('Failed to parse page data JSON or initialize exercise.', error);
+      // console.error('Failed to parse page data JSON or initialize exercise.', error);
     }
   }
 
@@ -48,21 +48,22 @@ export class ExerciseHandler {
      */
   initializeState() {
     if (this.activeTab.exerciseState && this.activeTab.exerciseState.version === 2) {
-      console.log('Using existing block-aware exercise state:', this.activeTab.exerciseState);
+      // console.log('Using existing block-aware exercise state:', this.activeTab.exerciseState);
     } else {
       this.activeTab.exerciseState = {
         version: 2,
         currentBlockIndex: 0,
-        answers: this.pageData.blocks.map((block) => Array(block.exercises.length).fill(null).map(() => ({
-          userAnswer: null,
-          isCorrect: null,
-          note: '',
-          submitted: false,
-        }))),
+        answers: this.pageData.blocks.map((block) => (
+          Array(block.exercises.length).fill(null).map(() => ({
+            userAnswer: null,
+            isCorrect: null,
+            note: '',
+            submitted: false,
+          })),
         blockNotes: Array(this.pageData.blocks.length).fill(''),
         currentQuestionIndexes: Array(this.pageData.blocks.length).fill(0),
       };
-      console.log('Initialized new block-aware exercise state:', this.activeTab.exerciseState);
+      // console.log('Initialized new block-aware exercise state:', this.activeTab.exerciseState);
     }
   }
 
@@ -70,12 +71,12 @@ export class ExerciseHandler {
      * Main rendering function that orchestrates the UI update.
      */
   render() {
-    console.log('Render triggered. Current state:', this.activeTab.exerciseState);
+    // console.log('Render triggered. Current state:', this.activeTab.exerciseState);
     if (!this.containerElement) return;
 
     const contentBody = this.containerElement.querySelector('#content-body');
     if (!contentBody) {
-      console.error('Fatal: #content-body not found. Cannot render exercise.');
+      // console.error('Fatal: #content-body not found. Cannot render exercise.');
       return;
     }
     contentBody.innerHTML = '';
@@ -137,19 +138,19 @@ export class ExerciseHandler {
      */
   addBlockTabListeners(blockTabsEl) {
     blockTabsEl.querySelectorAll('div > button').forEach((button) => {
-      button.onclick = (e) => {
+      button.addEventListener('click', (e) => {
         const blockIndex = parseInt(e.target.dataset.blockIndex, 10);
         if (this.activeTab.exerciseState.currentBlockIndex !== blockIndex) {
           this.activeTab.exerciseState.currentBlockIndex = blockIndex;
           this.autoSave(this.activeTab);
           this.render();
         }
-      };
+      });
     });
 
     const resetBlockBtn = blockTabsEl.querySelector('#reset-block-btn');
     if (resetBlockBtn) {
-      resetBlockBtn.onclick = () => {
+      resetBlockBtn.addEventListener('click', () => {
         const state = this.activeTab.exerciseState;
         const blockIndex = state.currentBlockIndex;
         const totalQuestionsInBlock = this.pageData.blocks[blockIndex].exercises.length;
@@ -159,7 +160,7 @@ export class ExerciseHandler {
         state.currentQuestionIndexes[blockIndex] = 0;
         this.render();
         this.autoSave(this.activeTab);
-      };
+      });
     }
   }
 
@@ -185,9 +186,17 @@ export class ExerciseHandler {
             <div class="flex items-center gap-4">
                 <span>Domanda: <strong>${current > total ? total : current}/${total}</strong></span>
                 <div class="flex items-center gap-1">
-                    <input type="number" id="jump-to-input" class="w-16 text-center border border-slate-300 rounded-md text-sm p-1" min="1" max="${total}" value="${current > total ? total : current}">
-                    <button id="jump-to-btn" class="text-xs bg-slate-200 hover:bg-slate-300 font-bold py-1 px-2 rounded-lg">Vai</button>
-                    <button id="first-question-btn" class="text-xs bg-slate-200 hover:bg-slate-300 font-bold py-1 px-2 rounded-lg">Torna alla D.1</button>
+                    <input type="number" id="jump-to-input"
+                    class="w-16 text-center border border-slate-300 rounded-md text-sm p-1"
+                    min="1" max="${total}" value="${current > total ? total : current}">
+                    <button id="jump-to-btn"
+                    class="text-xs bg-slate-200 hover:bg-slate-300 font-bold py-1 px-2 rounded-lg">
+                    Vai
+                    </button>
+                    <button id="first-question-btn"
+                    class="text-xs bg-slate-200 hover:bg-slate-300 font-bold py-1 px-2 rounded-lg">
+                    Torna alla D.1
+                    </button>
                 </div>
             </div>
             <span>Corrette: <strong>${correct}/${answered}</strong></span>
@@ -256,6 +265,7 @@ export class ExerciseHandler {
   /**
      * Generates the HTML for a true/false question.
      */
+  // eslint-disable-next-line class-methods-use-this
   renderTrueFalseQuestion(question, answerState) {
     const hasAnswered = answerState && answerState.userAnswer !== null;
     const isCorrect = answerState && answerState.isCorrect;
@@ -288,6 +298,7 @@ export class ExerciseHandler {
   /**
      * Generates the HTML for a multiple-choice question.
      */
+  // eslint-disable-next-line class-methods-use-this
   renderMultipleChoiceQuestion(question, answerState) {
     const hasAnswered = answerState && answerState.userAnswer !== null;
     const isCorrect = answerState && answerState.isCorrect;
@@ -335,6 +346,7 @@ export class ExerciseHandler {
   /**
      * Generates the HTML for a fill-in-the-blank question.
      */
+  // eslint-disable-next-line class-methods-use-this
   renderFillInTheBlankQuestion(question, answerState) {
     const hasAnswered = answerState && answerState.userAnswer !== null;
     const isCorrect = answerState && answerState.isCorrect;
@@ -374,6 +386,7 @@ export class ExerciseHandler {
   /**
      * Creates the feedback area for an answered question.
      */
+  // eslint-disable-next-line class-methods-use-this
   createFeedbackArea(isCorrect, explanation) {
     const feedbackEl = document.createElement('div');
     feedbackEl.className = `feedback-container mt-4 p-4 border-l-4 rounded-r-lg ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
@@ -385,6 +398,7 @@ export class ExerciseHandler {
   /**
      * Creates the notes area for the current question.
      */
+  // eslint-disable-next-line class-methods-use-this
   createNotesArea(blockIndex, questionIndex, answerState) {
     const notesArea = document.createElement('div');
     notesArea.className = 'mt-4 p-4 rounded-lg border border-slate-300 bg-slate-50';
@@ -416,6 +430,7 @@ export class ExerciseHandler {
   /**
      * Creates the navigation controls (previous/next).
      */
+  // eslint-disable-next-line class-methods-use-this
   createNavigation() {
     const el = document.createElement('div');
     el.id = 'navigation-controls';
@@ -446,7 +461,7 @@ export class ExerciseHandler {
       prevBtn.onclick = () => {
         if (questionIndex > 0) {
           state.answers[blockIndex][questionIndex].submitted = true;
-          state.currentQuestionIndexes[blockIndex]--;
+          state.currentQuestionIndexes[blockIndex] -= 1;
           this.render();
           this.autoSave(this.activeTab);
         }
@@ -458,7 +473,7 @@ export class ExerciseHandler {
       nextBtn.onclick = () => {
         if (questionIndex < totalQuestionsInBlock) {
           state.answers[blockIndex][questionIndex].submitted = true;
-          state.currentQuestionIndexes[blockIndex]++;
+          state.currentQuestionIndexes[blockIndex] += 1;
           this.render();
           this.autoSave(this.activeTab);
         }
@@ -480,8 +495,8 @@ export class ExerciseHandler {
 
     if (jumpInput && jumpBtn) {
       jumpBtn.onclick = () => {
-        const questionNum = parseInt(jumpInput.value);
-        if (!isNaN(questionNum) && questionNum >= 1 && questionNum <= totalQuestionsInBlock) {
+        const questionNum = parseInt(jumpInput.value, 10);
+        if (!Number.isNaN(questionNum) && questionNum >= 1 && questionNum <= totalQuestionsInBlock) {
           state.currentQuestionIndexes[blockIndex] = questionNum - 1;
           this.render();
           this.autoSave(this.activeTab);
@@ -518,8 +533,9 @@ export class ExerciseHandler {
       switch (question.type) {
         case 'true-false':
         case 'multiple-choice':
+        {
           questionElement.querySelectorAll('.fase-btn').forEach((btn) => {
-            btn.onclick = (e) => {
+            btn.addEventListener('click', (e) => {
               const userAnswer = e.target.dataset.answer;
               let correctAnswer = question.answer;
 
@@ -536,11 +552,12 @@ export class ExerciseHandler {
               state.answers[blockIndex][questionIndex].isCorrect = userAnswer === correctAnswer;
               this.autoSave(this.activeTab);
               this.render();
-            };
+            });
           });
           break;
-
+        }
         case 'fill-in-the-blank':
+        {
           const checkBtn = questionElement.querySelector('#check-answer-btn');
           const inputEl = questionElement.querySelector('#fill-in-blank-input');
           if (checkBtn && inputEl) {
@@ -552,9 +569,12 @@ export class ExerciseHandler {
               this.autoSave(this.activeTab);
               this.render();
             };
-            checkBtn.onclick = handleCheck;
-            inputEl.onkeydown = (e) => { if (e.key === 'Enter') handleCheck(); };
+            checkBtn.addEventListener('click', handleCheck);
+            inputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleCheck(); });
           }
+          break;
+        }
+        default:
           break;
       }
     }

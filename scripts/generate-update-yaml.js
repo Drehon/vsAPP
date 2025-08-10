@@ -7,18 +7,21 @@ const crypto = require('crypto');
 const installerPath = process.argv[2];
 
 if (!installerPath || !fs.existsSync(installerPath)) {
-  console.error(`Error: Installer file path not provided or file does not exist. Path: "${installerPath}"`);
+  // console.error('Error: Installer file path not provided or file does not exist. '
+  //   + `Path: "${installerPath}"`);
   process.exit(1);
 }
 
 // Extract the filename from the provided path.
 let installerFileName = path.basename(installerPath);
-console.log(`DEBUG: Original extracted installer filename: ${installerFileName}`); // Added log for verification
+// console.log('DEBUG: Original extracted installer filename: '
+//   + `${installerFileName}`); // Added log for verification
 
 // IMPORTANT FIX: Replace spaces with dots to match GitHub's filename transformation
 // This ensures the filename in latest.yml matches the actual file on GitHub.
 installerFileName = installerFileName.replace(/ /g, '.');
-console.log(`DEBUG: Transformed installer filename for YAML: ${installerFileName}`); // Log transformed name
+// console.log('DEBUG: Transformed installer filename for YAML: '
+//   + `${installerFileName}`); // Log transformed name
 
 // Get the output directory from the installer path.
 const outputDir = path.dirname(installerPath);
@@ -27,12 +30,12 @@ const outputDir = path.dirname(installerPath);
 const packageJsonPath = path.join(__dirname, '..', 'package.json');
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 const appVersion = packageJson.version;
-console.log(`Detected app version: v${appVersion}`);
+// console.log(`Detected app version: v${appVersion}`);
 
 // Calculate the SHA512 checksum of the setup file.
 const fileBuffer = fs.readFileSync(installerPath);
 const sha512 = crypto.createHash('sha512').update(fileBuffer).digest('base64');
-console.log(`SHA512 checksum for ${installerFileName}: ${sha512}`);
+// console.log(`SHA512 checksum for ${installerFileName}: ${sha512}`);
 
 // Define owner and repo for GitHub URL construction
 const owner = 'Drehon'; // Replace with your GitHub username
@@ -65,4 +68,4 @@ const yamlStr = yaml.dump(yamlContent);
 const yamlPath = path.join(outputDir, 'latest.yml');
 fs.writeFileSync(yamlPath, yamlStr);
 
-console.log(`Successfully generated latest.yml at: ${yamlPath}`);
+// console.log(`Successfully generated latest.yml at: ${yamlPath}`);

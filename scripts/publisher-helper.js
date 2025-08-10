@@ -4,7 +4,7 @@ require('dotenv').config();
 
 // This script is now only called by the `npm run publish` command.
 // The recursion guards are no longer needed.
-console.log('Executing electron-forge publish...');
+// console.log('Executing electron-forge publish...');
 
 const forgeExecutable = path.join(process.cwd(), 'node_modules', '.bin', 'electron-forge.cmd');
 
@@ -16,8 +16,8 @@ const result = spawnSync(`"${forgeExecutable}"`, ['publish', '--skip-package'], 
 });
 
 if (result.status !== 0) {
-  console.error(`Publish process failed with code ${result.status}`);
+  // console.error(`Publish process failed with code ${result.status}`);
   process.exit(result.status);
 }
 
-console.log('Publish process completed.');
+// console.log('Publish process completed.');

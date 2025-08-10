@@ -1,5 +1,5 @@
-import { ExerciseHandler } from './handlers/exercise-handler';
-import { DiagnosticTestHandler } from './handlers/diagnostic-test-handler';
+import ExerciseHandler from './handlers/exercise-handler';
+import DiagnosticTestHandler from './handlers/diagnostic-test-handler';
 
 // Placeholder handlers for different content modules.
 // These will be replaced with actual implementations in later phases.

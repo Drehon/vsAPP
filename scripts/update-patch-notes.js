@@ -26,8 +26,8 @@ try {
 
   fs.writeFileSync(outputPath, outputHtml);
 
-  console.log('Successfully updated patch-notes.html');
+  // console.log('Successfully updated patch-notes.html');
 } catch (error) {
-  console.error('Error updating patch-notes.html:', error);
+  // console.error('Error updating patch-notes.html:', error);
   process.exit(1);
 }
