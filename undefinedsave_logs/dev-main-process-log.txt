@@ -1651,3 +1651,28 @@
 [LOG][2025-08-10T10:42:02.328Z] [State] No save state found for pageId 'lesson-l1-congiuntivo-an'.
 [LOG][2025-08-10T10:42:08.439Z] [State] No save state found for pageId 'lesson-l2-causativo-an'.
 [LOG][2025-08-10T10:42:22.118Z] [State] No save state found for pageId 'lesson-l3-passivo-avanzato-an-b'.
+[LOG][2025-08-10T11:06:36.284Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-10T11:06:36.287Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-10T11:06:36.288Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-10T11:06:36.383Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-10T11:06:36.389Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-10T11:06:36.704Z] Main Process: Checking for updates...
+[LOG][2025-08-10T11:06:36.710Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-10T11:06:37.932Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-10T11:06:38.461Z] [State] No save state found for pageId 'lesson-l3-passivo-avanzato'.
+[LOG][2025-08-10T11:07:02.333Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-10T11:07:02.335Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-10T11:07:02.336Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-10T11:07:02.435Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-10T11:07:02.445Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-10T11:07:02.782Z] Main Process: Checking for updates...
+[LOG][2025-08-10T11:07:02.788Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-10T11:07:03.766Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-10T11:07:06.575Z] [State] No save state found for pageId 'lesson-l3-passivo-avanzato'.
+[LOG][2025-08-10T11:07:08.529Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
+[LOG][2025-08-10T11:07:15.598Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
+[LOG][2025-08-10T11:09:00.338Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
+[LOG][2025-08-10T11:09:32.952Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
+[LOG][2025-08-10T11:09:47.655Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
+[LOG][2025-08-10T11:10:40.960Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
+[LOG][2025-08-10T11:12:00.899Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
