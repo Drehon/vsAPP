@@ -1676,3 +1676,23 @@
 [LOG][2025-08-10T11:09:47.655Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
 [LOG][2025-08-10T11:10:40.960Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
 [LOG][2025-08-10T11:12:00.899Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
+[LOG][2025-08-10T11:14:15.587Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-10T11:14:15.589Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-10T11:14:15.591Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-10T11:14:15.683Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-10T11:14:15.689Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-10T11:14:16.014Z] Main Process: Checking for updates...
+[LOG][2025-08-10T11:14:16.020Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-10T11:14:17.013Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-10T11:14:19.304Z] [State] No save state found for pageId 'lesson-l2b-causativo'.
+[LOG][2025-08-10T11:14:35.621Z] [State] No save state found for pageId 'lesson-l1b-congiuntivo'.
+[LOG][2025-08-10T11:14:50.494Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
+[LOG][2025-08-10T11:25:02.666Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
+[LOG][2025-08-10T11:25:03.363Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
+[LOG][2025-08-10T11:25:03.506Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
+[LOG][2025-08-10T11:25:07.006Z] [State] No save state found for pageId 'lesson-l1b-congiuntivo'.
+[LOG][2025-08-10T11:26:27.584Z] [State] No save state found for pageId 'lesson-l1b-congiuntivo'.
+[LOG][2025-08-10T11:26:31.041Z] [State] No save state found for pageId 'lesson-l2b-causativo'.
+[LOG][2025-08-10T11:26:34.796Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
+[LOG][2025-08-10T11:41:46.673Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
+[LOG][2025-08-10T11:42:01.367Z] [State] No save state found for pageId 'lesson-l3b-passivo-avanzato'.
