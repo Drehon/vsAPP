@@ -49,9 +49,9 @@ L1 - expanded.md    to expand L1 - congiuntivo.html to make L1b.html
 L2 - expanded.md    to expand L2 - causativo.html   to make L2b.html
 L3 - expanded.md    to expand L3 - passivo avanzato.html    to make L3b.html
 
-L1AN - expanded.md    to expand L1 - congiuntivo.html to make L1AN.html
-L2AN - expanded.md    to expand L2 - causativo.html   to make L2AN.html
-L3AN - expanded.md    to expand L3 - passivo avanzato.html    to make L3AN.html
+L1AN - expanded.md    to expand L1 - congiuntivo.html to make L1ANb.html
+L2AN - expanded.md    to expand L2 - causativo.html   to make L2ANb.html
+L3AN - expanded.md    to expand L3 - passivo avanzato.html    to make L3ANb.html
 
 L1ES - expanded.md  to expand L1 - congiuntivoES.html    to make L1ESb.html
 L2ES - expanded.md  to expand L2 - causativoES.html      to make L2ESb.html
