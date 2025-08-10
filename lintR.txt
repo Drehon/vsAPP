@@ -322,4 +322,194 @@ The remaining files with significant errors are:
     src/sub-functions/tab-manager.js
     And a few minor issues in the webpack and tailwind configuration files.
 
+---
 
+(.venv) PS C:\Users\User\Documents\TEFL Personal> npm run lint
+
+> tutoring-app@1.4.3 lint
+> cross-env ESLINT_USE_FLAT_CONFIG=false eslint .
+
+
+C:\Users\User\Documents\TEFL Personal\forge.config.js
+   73:7  warning  Unexpected console statement  no-console
+   80:9  warning  Unexpected console statement  no-console
+   87:7  warning  Unexpected console statement  no-console
+   90:9  warning  Unexpected console statement  no-console
+   94:9  warning  Unexpected console statement  no-console
+  102:9  warning  Unexpected console statement  no-console
+  104:9  warning  Unexpected console statement  no-console
+  106:9  warning  Unexpected console statement  no-console
+
+C:\Users\User\Documents\TEFL Personal\scripts\generate-update-yaml.js
+  10:3  warning  Unexpected console statement  no-console
+  16:1  warning  Unexpected console statement  no-console
+  21:1  warning  Unexpected console statement  no-console
+  30:1  warning  Unexpected console statement  no-console
+  35:1  warning  Unexpected console statement  no-console
+  68:1  warning  Unexpected console statement  no-console
+
+C:\Users\User\Documents\TEFL Personal\scripts\prepare-release.js
+   6:5  warning  Unexpected console statement  no-console
+  17:5  warning  Unexpected console statement  no-console
+  26:7  warning  Unexpected console statement  no-console
+  31:5  warning  Unexpected console statement  no-console
+  45:5  warning  Unexpected console statement  no-console
+  47:5  warning  Unexpected console statement  no-console
+
+C:\Users\User\Documents\TEFL Personal\scripts\publisher-helper.js
+   7:1  warning  Unexpected console statement  no-console
+  19:3  warning  Unexpected console statement  no-console
+  23:1  warning  Unexpected console statement  no-console
+
+C:\Users\User\Documents\TEFL Personal\scripts\update-patch-notes.js
+  29:3  warning  Unexpected console statement  no-console
+  31:3  warning  Unexpected console statement  no-console
+
+C:\Users\User\Documents\TEFL Personal\src\main.js
+   32:23  warning  Unexpected console statement                     no-console
+   33:25  warning  Unexpected console statement                     no-console
+   34:24  warning  Unexpected console statement                     no-console
+   63:3   warning  Unexpected console statement                     no-console
+   68:3   warning  Unexpected console statement                     no-console
+   73:3   warning  Unexpected console statement                     no-console
+   91:11  error    'updateInfo' is assigned a value but never used  no-unused-vars
+  408:5   error    'logMessage' is assigned a value but never used  no-unused-vars
+
+C:\Users\User\Documents\TEFL Personal\src\patch-updater.js
+  11:3  warning  Unexpected console statement  no-console
+  41:5  warning  Unexpected console statement  no-console
+  43:5  warning  Unexpected console statement  no-console
+
+C:\Users\User\Documents\TEFL Personal\src\renderer.js
+  116:9   error  Use array destructuring                      prefer-destructuring
+  158:13  error  Use array destructuring                      prefer-destructuring
+  262:34  error  'renderTabs' was used before it was defined  no-use-before-define
+  270:7   error  'renderTabs' was used before it was defined  no-use-before-define
+  279:38  error  'renderTabs' was used before it was defined  no-use-before-define
+
+C:\Users\User\Documents\TEFL Personal\src\sub-functions\components\notes-component.js
+   9:1  error    This line has a length of 117. Maximum allowed is 100  max-len
+  11:1  error    Prefer default export on a file with single export     import/prefer-default-export
+  21:7  warning  Unexpected console statement                           no-console
+
+C:\Users\User\Documents\TEFL Personal\src\sub-functions\content-hydrator.js
+   1:33  error    Unexpected use of file extension "js" for "./handlers/exercise-handler.js"         import/extensions
+   2:39  error    Unexpected use of file extension "js" for "./handlers/diagnostic-test-handler.js"  import/extensions
+   7:42  error    '_tab' is defined but never used                                                   no-unused-vars
+   7:48  error    '_saveState' is defined but never used                                             no-unused-vars
+   8:3   warning  Unexpected console statement                                                       no-console
+  19:3   error    Assignment to property of function parameter 'tab'                                 no-param-reassign
+  28:3   error    Assignment to property of function parameter 'tab'                                 no-param-reassign
+  51:5   warning  Unexpected console statement                                                       no-console
+  59:5   warning  Unexpected console statement                                                       no-console
+  63:5   warning  Unexpected console statement                                                       no-console
+  68:3   error    Prefer default export on a file with single export                                 import/prefer-default-export
+
+C:\Users\User\Documents\TEFL Personal\src\sub-functions\content-loader.js
+    1:32  error    Unexpected use of file extension "js" for "./content-hydrator.js"  import/extensions
+    3:1   error    This line has a length of 134. Maximum allowed is 100              max-len
+   44:7   warning  Unexpected console statement                                       no-console
+   49:7   warning  Unexpected console statement                                       no-console
+   88:1   error    This line has a length of 112. Maximum allowed is 100              max-len
+  104:5   warning  Unexpected console statement                                       no-console
+  120:1   error    This line has a length of 116. Maximum allowed is 100              max-len
+  120:7   error    'attachHomeEventListeners' was used before it was defined          no-use-before-define
+  122:7   warning  Unexpected console statement                                       no-console
+  129:1   error    This line has a length of 113. Maximum allowed is 100              max-len
+  198:13  warning  Unexpected alert                                                   no-alert
+  203:11  warning  Unexpected console statement                                       no-console
+  204:11  warning  Unexpected alert                                                   no-alert
+  262:42  error    'handleYesClick' was used before it was defined                    no-use-before-define
+  263:41  error    'handleNoClick' was used before it was defined                     no-use-before-define
+  286:11  warning  Unexpected console statement                                       no-console
+  303:1   error    This line has a length of 114. Maximum allowed is 100              max-len
+  307:7   warning  Unexpected console statement                                       no-console
+  336:7   warning  Unexpected console statement                                       no-console
+
+C:\Users\User\Documents\TEFL Personal\src\sub-functions\handlers\diagnostic-test-handler.js
+   10:1   error    Prefer default export on a file with single export                                            import/prefer-default-export
+   18:5   warning  Unexpected console statement                                                                  no-console
+   26:7   warning  Unexpected console statement                                                                  no-console
+   33:7   error    'Chart' is not defined                                                                        no-undef
+   33:22  error    'ChartDataLabels' is not defined                                                              no-undef
+   36:7   warning  Unexpected console statement                                                                  no-console
+   39:9   warning  Unexpected console statement                                                                  no-console
+   46:7   warning  Unexpected console statement                                                                  no-console
+   49:5   warning  Unexpected console statement                                                                  no-console
+   59:7   warning  Unexpected console statement                                                                  no-console
+   74:7   warning  Unexpected console statement                                                                  no-console
+   82:5   warning  Unexpected console statement                                                                  no-console
+   93:7   warning  Unexpected console statement                                                                  no-console
+  177:7   warning  Unexpected console statement                                                                  no-console
+  242:13  error    Expected no linebreak before this expression                                                  implicit-arrow-linebreak
+  266:5   warning  Unexpected console statement                                                                  no-console
+  267:43  error    'Chart' is not defined                                                                        no-undef
+  291:9   error    Unary operator '++' used                                                                      no-plusplus
+  298:9   error    Unary operator '++' used                                                                      no-plusplus
+  313:11  error    Unary operator '++' used                                                                      no-plusplus
+  314:11  error    Unary operator '++' used                                                                      no-plusplus
+  319:1   error    This line has a length of 105. Maximum allowed is 100                                         max-len
+  487:5   warning  Unexpected console statement                                                                  no-console
+  504:7   error    Expected a default case                                                                       default-case
+  517:15  error    'allCorrect' is assigned a value but never used                                               no-unused-vars
+  534:49  error    Unexpected mix of '&&' and '||'. Use parentheses to clarify the intended order of operations  no-mixed-operators
+  534:72  error    Unexpected mix of '&&' and '||'. Use parentheses to clarify the intended order of operations  no-mixed-operators
+  550:7   warning  Unexpected console statement                                                                  no-console
+  595:7   error    Assignment to property of function parameter 'button'                                         no-param-reassign
+  767:5   warning  Unexpected console statement                                                                  no-console
+  779:5   warning  Unexpected console statement                                                                  no-console
+  831:1   error    This line has a length of 106. Maximum allowed is 100                                         max-len
+
+C:\Users\User\Documents\TEFL Personal\src\sub-functions\handlers\exercise-handler.js
+   10:1   error    Prefer default export on a file with single export                                                                import/prefer-default-export
+   18:5   warning  Unexpected console statement                                                                                      no-console
+   26:7   warning  Unexpected console statement                                                                                      no-console
+   32:7   warning  Unexpected console statement                                                                                      no-console
+   35:9   warning  Unexpected console statement                                                                                      no-console
+   42:7   warning  Unexpected console statement                                                                                      no-console
+   51:7   warning  Unexpected console statement                                                                                      no-console
+   56:1   error    This line has a length of 106. Maximum allowed is 100                                                             max-len
+   65:7   warning  Unexpected console statement                                                                                      no-console
+   73:5   warning  Unexpected console statement                                                                                      no-console
+   78:7   warning  Unexpected console statement                                                                                      no-console
+  140:7   error    Assignment to property of function parameter 'button'                                                             no-param-reassign
+  259:3   error    Expected 'this' to be used by class method 'renderTrueFalseQuestion'                                              class-methods-use-this
+  291:3   error    Expected 'this' to be used by class method 'renderMultipleChoiceQuestion'                                         class-methods-use-this
+  338:3   error    Expected 'this' to be used by class method 'renderFillInTheBlankQuestion'                                         class-methods-use-this
+  377:3   error    Expected 'this' to be used by class method 'createFeedbackArea'                                                   class-methods-use-this
+  388:3   error    Expected 'this' to be used by class method 'createNotesArea'                                                      class-methods-use-this
+  419:3   error    Expected 'this' to be used by class method 'createNavigation'                                                     class-methods-use-this
+  449:11  error    Unary operator '--' used                                                                                          no-plusplus
+  461:11  error    Unary operator '++' used                                                                                          no-plusplus
+  483:29  error    Missing radix parameter                                                                                           radix
+  484:14  error    Unexpected use of 'isNaN'. Use Number.isNaN instead https://github.com/airbnb/javascript#standard-library--isnan  no-restricted-globals
+  518:7   error    Expected a default case                                                                                           default-case
+  522:13  error    Assignment to property of function parameter 'btn'                                                                no-param-reassign
+  544:11  error    Unexpected lexical declaration in case block                                                                      no-case-declarations
+  545:11  error    Unexpected lexical declaration in case block                                                                      no-case-declarations
+
+C:\Users\User\Documents\TEFL Personal\src\sub-functions\tab-manager.js
+   1:1   error    This line has a length of 146. Maximum allowed is 100  max-len
+   1:1   error    Prefer default export on a file with single export     import/prefer-default-export
+  21:53  error    'addTab' was used before it was defined                no-use-before-define
+  23:11  error    'switchTab' was used before it was defined             no-use-before-define
+  29:9   error    'closeTab' was used before it was defined              no-use-before-define
+  38:9   error    Assignment to property of function parameter 'pane'    no-param-reassign
+  45:20  error    Arrow function should not return assignment            no-return-assign
+  45:27  error    Assignment to property of function parameter 't'       no-param-reassign
+  49:11  error    Unary operator '++' used                               no-plusplus
+  49:11  error    Assignment to function parameter 'nextTabId'           no-param-reassign
+  73:14  error    'switchTab' was used before it was defined             no-use-before-define
+  80:18  error    Arrow function should not return assignment            no-return-assign
+  80:25  error    Assignment to property of function parameter 't'       no-param-reassign
+  88:9   warning  Unexpected console statement                           no-console
+
+C:\Users\User\Documents\TEFL Personal\tailwind.config.js
+   2:24  error  Unable to resolve path to module 'tailwindcss/colors'                                          import/no-unresolved
+  61:5   error  '@tailwindcss/typography' should be listed in the project's dependencies, not devDependencies  import/no-extraneous-dependencies
+  61:5   error  Unexpected require()                                                                           global-require
+
+C:\Users\User\Documents\TEFL Personal\webpack.main.config.js
+  12:12  error  Unexpected require()  global-require
+
+✖ 150 problems (75 errors, 75 warnings)
