@@ -1762,3 +1762,16 @@
 [LOG][2025-08-10T15:39:58.572Z] AutoUpdater configuration: [Unserializable Object]
 [LOG][2025-08-10T15:39:59.632Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
 [LOG][2025-08-10T15:40:01.888Z] [State] No save state found for pageId 'lesson-l2-causativo-an'.
+[LOG][2025-08-10T15:48:39.236Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-10T15:48:39.239Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-10T15:48:39.241Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-10T15:48:39.341Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-10T15:48:39.348Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-10T15:48:39.842Z] Main Process: Checking for updates...
+[LOG][2025-08-10T15:48:39.850Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-10T15:48:40.874Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-10T15:48:42.207Z] [State] No save state found for pageId 'L5ES-Modo-e-Irrealta'.
+[LOG][2025-08-10T15:48:44.186Z] [State] Saved state for pageId 'L5ES-Modo-e-Irrealta' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l5es-modo-e-irrealta_state.json'
+[LOG][2025-08-10T15:48:45.370Z] [State] Saved state for pageId 'L5ES-Modo-e-Irrealta' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l5es-modo-e-irrealta_state.json'
+[LOG][2025-08-10T15:48:46.340Z] [State] Saved state for pageId 'L5ES-Modo-e-Irrealta' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l5es-modo-e-irrealta_state.json'
+[LOG][2025-08-10T15:48:46.892Z] [State] Saved state for pageId 'L5ES-Modo-e-Irrealta' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l5es-modo-e-irrealta_state.json'
