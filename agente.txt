@@ -1,0 +1,146 @@
+# Understanding and Using AGENTS.md
+
+This document explains the purpose of the `AGENTS.md` file, how to set it up, and best practices for its use. This file is a powerful tool for guiding AI software engineers like me, Jules, to work effectively within your repository.
+
+---
+
+## 1. What is `AGENTS.md`?
+
+The `AGENTS.md` file is a Markdown file where you can provide specific instructions, guidelines, and context about your project to an AI agent. Think of it as a "README for robots." By providing this information, you can significantly improve the agent's performance, ensuring it adheres to your project's standards and practices.
+
+The primary goals of `AGENTS.md` are:
+- To reduce the time an agent spends figuring out your project's setup.
+- To ensure the agent's contributions are consistent with your coding style and conventions.
+- To provide explicit instructions for building, testing, and verifying changes.
+
+---
+
+## 2. How does it work? (Scope and Precedence)
+
+The agent reads `AGENTS.md` files to understand the rules of the repository. The location of the file matters.
+
+- **Scope:** An `AGENTS.md` file's instructions apply to the directory it is in and all of its subdirectories.
+- **Precedence:** If there are multiple `AGENTS.md` files in nested directories, the instructions in the most deeply-nested file take precedence for the files within that deeper directory. This allows you to have general project-wide instructions at the root and more specific instructions for certain parts of your application (e.g., the frontend or a specific microservice).
+
+**Hierarchy of Instructions:**
+
+The agent prioritizes instructions in the following order:
+1.  **Direct instructions from the user:** What you explicitly tell the agent to do in the prompt always comes first.
+2.  **The problem description:** The initial task given to the agent.
+3.  **`AGENTS.md` files:** Instructions within these files are followed next.
+4.  **General knowledge:** The agent's built-in knowledge of software development.
+
+---
+
+## 3. What should I put in `AGENTS.md`?
+
+Here are the most important sections to include in your `AGENTS.md` file.
+
+- **Project Overview:** Briefly describe the project and its purpose.
+- **Code Organization:** Explain the directory structure. What are the key folders and what do they contain? (e.g., `src` for source code, `tests` for tests, `docs` for documentation).
+- **Coding Conventions:** Specify any coding style guides or patterns the agent must follow. (e.g., "All Python code must be formatted with Black," "Use camelCase for variable names in JavaScript.")
+- **Dependencies and Setup:** Explain how to install dependencies and set up the development environment. (e.g., "Run `npm install` to install dependencies.")
+- **Build Instructions:** How to compile or build the project. (e.g., "Run `npm run build` to create a production build in the `dist/` directory.")
+- **Testing Instructions:** This is one of the most critical sections. Provide the exact commands to run tests. (e.g., "Run `npm test` to execute the unit tests.")
+- **Programmatic Checks:** Provide any commands that the agent MUST run to verify its work before submitting. This could include linters, formatters, or specific test suites. The agent is obligated to run these checks. (e.g., "Before submitting, run `npm run lint` and fix all errors.")
+- **Preferred Libraries/Frameworks:** If you have preferences for certain tools, mention them. (e.g., "Use `axios` for HTTP requests," "Use `pytest` for testing in Python.")
+
+---
+
+## 4. `AGENTS.md` Template / Example
+
+You can use the following template as a starting point for your own `AGENTS.md` file.
+
+````markdown
+# AGENTS.md: Instructions for AI Agents
+
+Welcome, agent! This file contains instructions to help you work effectively in this repository. Please read it carefully before making any changes.
+
+## Project Overview
+
+This project is a web application that allows users to manage their tasks. The frontend is built with React and the backend is a Node.js/Express server.
+
+## Code Organization
+
+- `/src`: Contains all the source code.
+  - `/src/frontend`: React frontend application.
+  - `/src/backend`: Node.js backend server.
+- `/tests`: Contains all the tests.
+  - `/tests/frontend`: Frontend tests.
+  - `/tests/backend`: Backend tests.
+- `/docs`: Project documentation.
+- `AGENTS.md`: You are here!
+
+## Coding Conventions
+
+- **JavaScript:** Follow the Airbnb JavaScript Style Guide. Use `camelCase` for variables and functions.
+- **React:** Use functional components and hooks.
+- **Comments:** Write clear and concise comments for complex logic.
+
+## Dependencies and Setup
+
+To set up the development environment, run the following commands from the root directory:
+
+```bash
+# Install backend dependencies
+cd src/backend
+npm install
+
+# Install frontend dependencies
+cd ../frontend
+npm install
+```
+
+## How to Run the Application
+
+- **Backend:** From `src/backend`, run `npm start`. The server will run on `http://localhost:3001`.
+- **Frontend:** From `src/frontend`, run `npm start`. The React app will run on `http://localhost:3000`.
+
+## Testing Instructions
+
+This is very important. You **must** run the tests to ensure your changes are correct and do not break anything.
+
+- **Backend Tests:** From `src/backend`, run `npm test`.
+- **Frontend Tests:** From `src/frontend`, run `npm test`.
+- **End-to-End Tests:** From the root directory, run `npm run test:e2e`.
+
+## Programmatic Checks
+
+Before submitting your work, you **MUST** perform the following checks from the root directory:
+
+1.  **Linting:** Run `npm run lint` and fix all reported issues.
+2.  **Formatting:** Run `npm run format` to ensure consistent code style.
+3.  **All Tests:** Run `npm test` to execute all unit and integration tests. Make sure all tests pass.
+
+Thank you for your cooperation!
+````
+
+---
+
+## 5. Appendix: Explanation of Linting and Testing
+
+### What is Linting?
+
+Linting is the process of using a tool (a "linter") to perform static analysis of your source code, checking for programmatic errors, stylistic errors, and suspicious or problematic patterns. Think of it as a grammar and spell checker for your code.
+
+-   **Why is it useful?**
+    -   **Catches Errors Early:** It finds simple mistakes like syntax errors, unused variables, or calling undefined functions before you even run the code.
+    -   **Enforces Code Consistency:** It ensures that all code in a project follows the same style and formatting rules. This makes the code easier to read, understand, and maintain, especially when working in a team.
+    -   **Improves Code Quality:** It can be configured to discourage the use of error-prone patterns and encourage best practices.
+
+Common linting tools include ESLint for JavaScript, Pylint for Python, and RuboCop for Ruby.
+
+### What is Software Testing?
+
+Testing is the process of executing your code to verify that it works as expected. While linting checks the *style* and *static correctness* of your code, testing checks the *behavior* and *functional correctness*.
+
+-   **Why is it useful?**
+    -   **Ensures Correctness:** It provides confidence that the features you build actually work.
+    -   **Prevents Regressions:** A "regression" is when a change to the code breaks existing functionality. A good test suite acts as a safety net, allowing you to make changes and quickly verify that you haven't broken anything.
+    -   **Improves Code Design:** Writing code that is easy to test often leads to a more modular, loosely-coupled, and maintainable architecture.
+    -   **Serves as Documentation:** Tests provide a living document of how a piece of code is intended to be used.
+
+-   **Common Types of Tests:**
+    -   **Unit Tests:** These test the smallest, most isolated pieces of your code (like a single function or component). They are typically fast to run.
+    -   **Integration Tests:** These check how different parts of your system work together. For example, they might test the interaction between a function and a database.
+    -   **End-to-End (E2E) Tests:** These simulate a real user's workflow from start to finish, testing the entire application stack to ensure all integrated pieces work together correctly.

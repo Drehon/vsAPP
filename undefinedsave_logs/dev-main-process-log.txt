@@ -1648,3 +1648,6 @@
 [LOG][2025-08-10T10:08:16.495Z] [State] No save state found for pageId 'lesson-l2anb-causativo'.
 [LOG][2025-08-10T10:08:31.807Z] [State] Loaded state for pageId 'L3ESb-passivo-avanzato' from 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3esb-passivo-avanzato_state.json'
 [LOG][2025-08-10T10:08:34.843Z] [State] No save state found for pageId 'lesson-l3-passivo-avanzato-an'.
+[LOG][2025-08-10T10:42:02.328Z] [State] No save state found for pageId 'lesson-l1-congiuntivo-an'.
+[LOG][2025-08-10T10:42:08.439Z] [State] No save state found for pageId 'lesson-l2-causativo-an'.
+[LOG][2025-08-10T10:42:22.118Z] [State] No save state found for pageId 'lesson-l3-passivo-avanzato-an-b'.
