@@ -58,6 +58,10 @@ L1ES - expanded.md  to expand L1 - congiuntivoES.html    to make L1ESb.html
 L2ES - expanded.md  to expand L2 - causativoES.html      to make L2ESb.html
 L3ES - expanded.md  to expand L3 - passivo avanzatoES.html   to make L3ESb.html
 
+Note that the AN - expanded should contain MINIMAL modifications to existing cards in the original html
+And a new section (expansion) with new cards
+The separation between old and new material is important
+
 ---
 
 Write down below what you have done.
