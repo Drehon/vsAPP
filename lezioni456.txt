@@ -29,38 +29,18 @@ Note in the following section that can be useful documentation for this task
 -----
 
 List of files, only do the one specifically requested for the task
-Use the .md to create the html (same name in correct folder) being careful to respect style, structure etc of previous lessons
+Use the .md to create the html (same-name.html in correct folder) being careful to respect style, structure etc of previous lessons
 
-L4 - Grammatica dell'Irrealtà.md
-L4 - Grammatica dell'IrrealtàAN.md
-L4 - Grammatica dell'IrrealtàES.md
+L4 - Grammatica dell'Irreale.md 
+L4 - Grammatica dell'IrrealeAN.md
+L4 - Grammatica dell'IrrealeES.md
 
 L5 - Tempi, Verbi e Accordo.md
 L5 - Tempi, Verbi e AccordoAN.md
 L5 - Tempi, Verbi e AccordoES.md
 
----
-
-We also have to revise lessons 1,2 and 3
-And the excercises for these three lessons
-generate new versions of each html, using the original as base to make the new ones
-
-references for this, still in work folder
-L1 - expanded.md    to expand L1 - congiuntivo.html to make L1b.html
-L2 - expanded.md    to expand L2 - causativo.html   to make L2b.html
-L3 - expanded.md    to expand L3 - passivo avanzato.html    to make L3b.html
-
-L1AN - expanded.md    to expand L1 - congiuntivoAN.html to make L1ANb.html
-L2AN - expanded.md    to expand L2 - causativoAN.html   to make L2ANb.html
-L3AN - expanded.md    to expand L3 - passivo avanzatoAN.html    to make L3ANb.html
-
-L1ES - expanded.md  to expand L1 - congiuntivoES.html    to make L1ESb.html
-L2ES - expanded.md  to expand L2 - causativoES.html      to make L2ESb.html
-L3ES - expanded.md  to expand L3 - passivo avanzatoES.html   to make L3ESb.html
-
-Note that the AN - expanded should contain MINIMAL modifications to existing cards in the original html
-And a new section (expansion) with new cards
-The separation between old and new material is important
+REMEMBER to reference the files in lessons folder to understand how to write the html
+Use that as reference, code-wise and visually
 
 ---
 
