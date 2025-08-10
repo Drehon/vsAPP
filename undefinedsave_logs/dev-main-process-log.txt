@@ -1607,3 +1607,20 @@
 [LOG][2025-08-10T09:23:43.840Z] [State] No save state found for pageId 'L3ESb-passivo-avanzato'.
 [LOG][2025-08-10T09:23:45.396Z] [State] Saved state for pageId 'L3ESb-passivo-avanzato' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3esb-passivo-avanzato_state.json'
 [LOG][2025-08-10T09:23:46.301Z] [State] Saved state for pageId 'L3ESb-passivo-avanzato' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l3esb-passivo-avanzato_state.json'
+[LOG][2025-08-10T09:30:02.264Z] --- Logging initialized using synchronous file append ---
+[LOG][2025-08-10T09:30:02.268Z] --- setupLogging() has been called. This is the first log after setup. ---
+[LOG][2025-08-10T09:30:02.270Z] Main Process: createWindow called. Initializing main window.
+[LOG][2025-08-10T09:30:02.373Z] DEBUG: GITHUB_TOKEN loaded for autoUpdater request headers.
+[LOG][2025-08-10T09:30:02.388Z] [PostUpdate] No pending update file found. Checking for first run...
+[LOG][2025-08-10T09:30:03.997Z] Main Process: Checking for updates...
+[LOG][2025-08-10T09:30:04.004Z] AutoUpdater configuration: [Unserializable Object]
+[LOG][2025-08-10T09:30:04.971Z] Main Process: Update not available. {"tag":"v1.4.0","version":"1.4.0","files":[{"url":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","size":114462208}],"path":"vsAPP-1.4.0.Setup.exe","sha512":"yojeLqKb/t0LeWjwLvk+TERDQBOU0F1OyHoboxMbj1zO8J2YF80EZ5+VNSl+a1HZcgH0Liz2O1jxvM8SjWumxw==","releaseDate":"2025-08-06T08:51:20.843Z","provider":"github","url":"https://github.com/Drehon/vsAPP-public/releases/latest","disableWebInstaller":true,"updaterCacheDirName":"vsAPP-updater","releaseName":"v1.4.0","releaseNotes":"<p>Small tweaks. Complete shift to public repository.<br>\nAdjustements to the publish process and the upload process complete. Heavily expanded documentation.</p>"}
+[LOG][2025-08-10T09:30:05.553Z] [State] No save state found for pageId 'L1ESb'.
+[LOG][2025-08-10T09:30:07.912Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T09:30:08.570Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T09:30:09.273Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T09:30:10.942Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T09:30:11.677Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T09:30:12.720Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T09:30:13.736Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
+[LOG][2025-08-10T09:30:14.511Z] [State] Saved state for pageId 'L1ESb' to 'C:\Users\User\AppData\Roaming\vsAPP\save-states\l1esb_state.json'
