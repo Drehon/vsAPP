@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/prefer-default-export
 export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, contentPanes, loadHomeIntoTab, loadContentIntoTab, loadSettingsIntoTab, updateGlobalToolbar) {
   function renderTabs() {
     while (tabBar.children.length > 1) {

@@ -64,6 +64,7 @@ function hydrateContent(contentWrapper, tab, saveState) {
   }
 }
 
+// eslint-disable-next-line import/prefer-default-export
 export {
   hydrateContent,
 };

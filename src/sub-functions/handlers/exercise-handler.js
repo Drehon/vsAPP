@@ -7,6 +7,7 @@
  * exercise tab has an isolated instance, preventing state conflicts.
  */
 
+// eslint-disable-next-line import/prefer-default-export
 export class ExerciseHandler {
   /**
      * Initializes the interactive exercise based on the data provided in the DOM.
