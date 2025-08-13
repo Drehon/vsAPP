@@ -31,14 +31,11 @@ console.log("Unique ESLint Error Types:", errorTypes);
 ---
 
 
-(.venv) PS C:\Users\User\Documents\TEFL Personal> npm run lint
-
+(.venv) PS C:\Users\User\Documents\TEFL Personal> npm run lint                                                                                                                                            
+                    
 > tutoring-app@1.4.3 lint
 > cross-env ESLINT_USE_FLAT_CONFIG=false eslint .
 
-
-C:\Users\User\Documents\TEFL Personal\src\sub-functions\components\notes-component.js
-  9:1  error  This line has a length of 117. Maximum allowed is 100  max-len
 
 C:\Users\User\Documents\TEFL Personal\src\sub-functions\content-loader.js
     3:1  error  This line has a length of 114. Maximum allowed is 100  max-len
@@ -48,16 +45,15 @@ C:\Users\User\Documents\TEFL Personal\src\sub-functions\content-loader.js
   169:1  error  This line has a length of 113. Maximum allowed is 100  max-len
 
 C:\Users\User\Documents\TEFL Personal\src\sub-functions\handlers\diagnostic-test-handler.js
-  311:1   error  This line has a length of 105. Maximum allowed is 100  max-len
-  508:15  error  'allCorrect' is assigned a value but never used        no-unused-vars
-  823:1   error  This line has a length of 106. Maximum allowed is 100  max-len
+  311:1  error  This line has a length of 105. Maximum allowed is 100  max-len
+  819:1  error  This line has a length of 106. Maximum allowed is 100  max-len
 
 C:\Users\User\Documents\TEFL Personal\src\sub-functions\handlers\exercise-handler.js
-   53:1  error  This line has a length of 106. Maximum allowed is 100  max-len
-  235:1  error  This line has a length of 105. Maximum allowed is 100  max-len
-  479:1  error  This line has a length of 101. Maximum allowed is 100  max-len
+  237:1  error  This line has a length of 105. Maximum allowed is 100  max-len
+  484:1  error  This line has a length of 101. Maximum allowed is 100  max-len
+  554:1  error  This line has a length of 114. Maximum allowed is 100  max-len
 
 C:\Users\User\Documents\TEFL Personal\src\sub-functions\tab-manager.js
   2:1  error  This line has a length of 167. Maximum allowed is 100  max-len
 
-✖ 13 problems (13 errors, 0 warnings)
+✖ 11 problems (11 errors, 0 warnings)
