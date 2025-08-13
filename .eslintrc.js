@@ -20,6 +20,9 @@ module.exports = {
   globals: {
     MAIN_WINDOW_WEBPACK_ENTRY: 'readonly',
     MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: 'readonly',
+    api: 'readonly',
+    Chart: 'readonly',
+    ChartDataLabels: 'readonly',
   },
   overrides: [
     {
