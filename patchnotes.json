@@ -1,5 +1,11 @@
 [
       {
+    "body": "Addressed Deprecation warnings on publishing of new patches.",
+    "name": "v1.4.5",
+    "publishedAt": "2025-08-14T15:03:00Z",
+    "tagName": "v1.4.5"
+  }, 
+      {
     "body": "Completed linting process. Next is full testing environment implementation.",
     "name": "v1.4.4",
     "publishedAt": "2025-08-13T20:03:00Z",
