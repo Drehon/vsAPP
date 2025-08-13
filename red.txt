@@ -1,0 +1,23 @@
+# --- CRUCIAL INFORMATION ---
+# This section contains crucial information. Do not delete from here.
+
+- Task: Fix a large number of linting errors in multiple .js files.
+- Visual Studio Code is showing a lot of errors.
+- `red-lint.txt` contains a summary of the error types.
+
+
+# --- CURRENT THOUGHT PROCESS ---
+# This is a summary of my current thinking.
+
+I have read `red-lint.txt` and have a list of the error types. 
+Now I'm looking at the file structure to understand where the problematic files are. 
+I see a `src` directory which likely contains the main application logic. 
+I'll investigate that next.
+
+
+# --- LOG ---
+# Append-only log of actions and thoughts.
+
+[2024-05-21 12:00:00] - Jules: Initializing `red.txt`.
+[2024-05-21 12:01:00] - Jules: Read `red-lint.txt`. Error types are: import/no-extraneous-dependencies, no-unused-vars, prefer-destructuring, no-use-before-define, import/extensions, no-param-reassign, import/prefer-default-export, max-len, no-undef, implicit-arrow-linebreak, no-plusplus, default-case, no-mixed-operators, class-methods-use-this, radix, no-restricted-globals, no-case-declarations, no-return-assign, import/no-unresolved, global-require, no-console, no-alert.
+[2024-05-21 12:02:00] - Jules: Listed files in the root directory. Found `src`, `public`, `package.json`.
