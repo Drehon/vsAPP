@@ -14,10 +14,12 @@ module.exports = {
   },
   ignorePatterns: ['src/lib/**'],
   rules: {
-    // Add any specific rule overrides here
+    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
   },
   globals: {
     MAIN_WINDOW_WEBPACK_ENTRY: 'readonly',
     MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: 'readonly',
+    Chart: 'readonly',
+    ChartDataLabels: 'readonly',
   },
 };

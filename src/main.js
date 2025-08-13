@@ -29,8 +29,11 @@ const setupLogging = () => {
     devLogFilePath = path.join(devLogDir, 'dev-main-process-log.txt');
   }
 
+  // eslint-disable-next-line no-console
   const originalLog = console.log;
+  // eslint-disable-next-line no-console
   const originalError = console.error;
+  // eslint-disable-next-line no-console
   const originalWarn = console.warn;
 
   const logToFile = (type, ...args) => {
@@ -60,16 +63,19 @@ const setupLogging = () => {
     }
   };
 
+  // eslint-disable-next-line no-console
   console.log = (...args) => {
     originalLog(...args);
     logToFile('LOG', ...args);
   };
 
+  // eslint-disable-next-line no-console
   console.error = (...args) => {
     originalError(...args);
     logToFile('ERROR', ...args);
   };
 
+  // eslint-disable-next-line no-console
   console.warn = (...args) => {
     originalWarn(...args);
     logToFile('WARN', ...args);
@@ -88,7 +94,7 @@ const handlePostUpdateTasks = async () => {
   try {
     // Check if a pending update file exists.
     const pendingUpdateData = await fs.readFile(pendingUpdatePath, 'utf8');
-    const updateInfo = JSON.parse(pendingUpdateData);
+    JSON.parse(pendingUpdateData);
 
     // 1. Copy the canonical patchnotes.json from the app resources to userData.
     const basePath = app.isPackaged ? process.resourcesPath : app.getAppPath();
@@ -403,9 +409,6 @@ app.on('ready', () => {
   });
 
   autoUpdater.on('download-progress', (progressObj) => {
-    let logMessage = `Download speed: ${progressObj.bytesPerSecond}`;
-    logMessage = `${logMessage} - Downloaded ${progressObj.percent}%`;
-    logMessage = `${logMessage} (${progressObj.transferred}/${progressObj.total})`;
     if (mainWindow) { // Ensure mainWindow exists before sending
       mainWindow.webContents.send('download-progress', progressObj);
     }

@@ -1,6 +1,15 @@
-import { hydrateContent } from './content-hydrator.js';
+import hydrateContent from './content-hydrator';
 
-export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState, updateGlobalToolbar, options) {
+export async function loadContentIntoTab(
+  tabId,
+  filePath,
+  tabs,
+  renderTabs,
+  addTab,
+  saveExerciseState,
+  updateGlobalToolbar,
+  options,
+) {
   const tab = tabs.find((t) => t.id === tabId);
   if (!tab) return;
 
@@ -14,70 +23,52 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
   if (pane && content) {
     pane.innerHTML = ''; // Clear previous content
 
-    // The content wrapper now takes up the full height and handles its own scrolling
     const contentWrapper = document.createElement('div');
-    contentWrapper.className = 'lesson-content bg-white text-slate-800 h-full overflow-y-auto p-6 md:p-10';
+    const wrapperClasses = [
+      'lesson-content', 'bg-white', 'text-slate-800',
+      'h-full', 'overflow-y-auto', 'p-6', 'md:p-10',
+    ];
+    contentWrapper.className = wrapperClasses.join(' ');
 
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = content;
 
-    // Clean up old save/load buttons if they exist in the HTML file
     const oldButtonContainer = tempDiv.querySelector('#save-btn')?.parentNode;
     if (oldButtonContainer && oldButtonContainer.querySelector('#load-btn')) {
       oldButtonContainer.remove();
     }
 
-    // --- State Loading Fix ---
-    // 1. Extract pageId from the content BEFORE hydrating.
     const contentRoot = tempDiv.querySelector('[data-page-id]');
     const pageId = contentRoot ? contentRoot.dataset.pageId : null;
 
-    // Store the pageId on the tab object for universal access
     tab.pageId = pageId;
 
-    // 2. Load state using the correct pageId.
-    // The tab's title is used as a fallback to maintain compatibility with legacy content.
     const stateIdentifier = pageId || tab.title;
     const loadedState = await window.api.loadExerciseState(stateIdentifier);
     if (loadedState) {
       tab.exerciseState = loadedState;
-      console.log(`State successfully loaded for identifier: ${stateIdentifier}`);
     } else {
-      // CRITICAL: If no state is loaded, ensure any old in-memory state is cleared.
-      // This forces the handler to initialize a fresh state object.
       tab.exerciseState = null;
-      console.log(`No state found for identifier: ${stateIdentifier}. Clearing in-memory state.`);
     }
-    // --- End of Fix ---
 
-    // --- Toolbar Update ---
-    // The toolbar is updated *after* the pageId is known and state is loaded,
-    // ensuring all buttons are correctly configured.
     if (updateGlobalToolbar) {
       updateGlobalToolbar(tab);
     }
-    // --- End of Update ---
 
     contentWrapper.innerHTML = tempDiv.innerHTML;
     pane.appendChild(contentWrapper);
 
-    // The universal hydrator is now called. If state was loaded, the tab object
-    // will already have it, and the handler will use it instead of creating a new one.
     hydrateContent(contentWrapper, tab, saveExerciseState);
 
-    // After initialization, restore view state if options are provided
     if (options) {
-      // Restore active phase/tab by simulating a click
       if (options.activePhaseId) {
         const phaseButton = pane.querySelector(`#${options.activePhaseId}`);
         if (phaseButton) {
-          phaseButton.click(); // This will show the correct tab content
+          phaseButton.click();
         }
       }
 
-      // Restore scroll position
       if (options.scrollTop) {
-        // The scrollable element is the contentWrapper itself
         contentWrapper.scrollTop = options.scrollTop;
       }
     }
@@ -85,48 +76,13 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
   renderTabs();
 }
 
-export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerciseState, updateGlobalToolbar) {
-  const tab = tabs.find((t) => t.id === tabId);
-  if (!tab) return;
-
-  tab.view = 'home';
-  tab.filePath = null;
-  tab.title = 'Home';
-
-  if (updateGlobalToolbar) {
-    updateGlobalToolbar(tab);
-  }
-
-  let homeContent = '';
-  try {
-    homeContent = await window.api.getHomeContent();
-  } catch (error) {
-    console.error('Error fetching home content:', error);
-    homeContent = '<div class="p-6 text-red-700 bg-red-100 rounded-lg"><h2 class="font-bold text-lg">Error Loading Home Page</h2><p>Could not load the home page content.</p></div>';
-  }
-
-  const pane = document.getElementById(`pane-${tab.id}`);
-  if (pane) {
-    pane.innerHTML = ''; // Clear previous content
-
-    // Home content is wrapped in a div that allows scrolling
-    const scrollableContent = document.createElement('div');
-    scrollableContent.className = 'h-full overflow-y-auto';
-    scrollableContent.innerHTML = homeContent;
-    pane.appendChild(scrollableContent);
-
-    try {
-      // Attach listeners to the newly added home content
-      attachHomeEventListeners(scrollableContent, tabs, addTab, renderTabs, saveExerciseState, updateGlobalToolbar);
-    } catch (error) {
-      console.error('Error attaching home event listeners:', error);
-    }
-  }
-
-  renderTabs();
-}
-
-export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalToolbar, mostRecentlyLoadedFile) {
+export async function loadSettingsIntoTab(
+  tabId,
+  tabs,
+  renderTabs,
+  updateGlobalToolbar,
+  mostRecentlyLoadedFile,
+) {
   const tab = tabs.find((t) => t.id === tabId);
   if (!tab) return;
 
@@ -142,14 +98,13 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
   const pane = document.getElementById(`pane-${tab.id}`);
 
   if (pane && settingsContent) {
-    pane.innerHTML = ''; // Clear previous content
+    pane.innerHTML = '';
 
     const scrollableContent = document.createElement('div');
     scrollableContent.className = 'h-full overflow-y-auto p-8';
     scrollableContent.innerHTML = settingsContent;
     pane.appendChild(scrollableContent);
 
-    // --- Get DOM elements ---
     const autoSavePathInput = scrollableContent.querySelector('#auto-save-path');
     const browseAutoSavePathBtn = scrollableContent.querySelector('#browse-auto-save-path');
     const manualSavePathInput = scrollableContent.querySelector('#manual-save-path');
@@ -158,14 +113,12 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
     const activeSavesList = scrollableContent.querySelector('#active-saves-list');
     const recentLoadDisplay = scrollableContent.querySelector('#recent-load-display');
 
-    // --- Load and Display Configurable Paths ---
     const config = await window.api.getConfig();
     if (config) {
       if (autoSavePathInput) autoSavePathInput.value = config.autoSavePath || '';
       if (manualSavePathInput) manualSavePathInput.value = config.manualSavePath || '';
     }
 
-    // --- Add Event Listeners ---
     if (browseAutoSavePathBtn && autoSavePathInput) {
       browseAutoSavePathBtn.addEventListener('click', async () => {
         const result = await window.api.openDirectoryDialog();
@@ -195,21 +148,19 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
           };
           const result = await window.api.saveConfig(newConfig);
           if (result.success) {
-            alert('Settings saved successfully!');
+            window.dispatchEvent(new CustomEvent('show-feedback', { detail: { message: 'Settings saved successfully!' } }));
           } else {
             throw new Error(result.error);
           }
         } catch (error) {
-          console.error('Failed to save settings:', error);
-          alert(`Failed to save settings: ${error.message}`);
+          window.dispatchEvent(new CustomEvent('show-feedback', { detail: { message: `Failed to save settings: ${error.message}` } }));
         }
       });
     }
 
-    // --- Populate Save Display Information ---
     if (activeSavesList) {
       const saveFiles = await window.api.getActiveSaveStates();
-      activeSavesList.innerHTML = ''; // Clear placeholder
+      activeSavesList.innerHTML = '';
       if (saveFiles && saveFiles.length > 0) {
         saveFiles.forEach((file) => {
           const li = document.createElement('li');
@@ -229,11 +180,43 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
       }
     }
 
-    // --- Add Reset All Saves Logic ---
     const resetAllSavesBtn = scrollableContent.querySelector('#reset-all-saves-btn');
     if (resetAllSavesBtn) {
       const originalButtonParent = resetAllSavesBtn.parentNode;
       let confirmationContainer = null;
+
+      const hideConfirmation = () => {
+        if (confirmationContainer) {
+          confirmationContainer.remove();
+          confirmationContainer = null;
+        }
+        resetAllSavesBtn.style.display = 'inline-flex';
+      };
+
+      const handleYesClick = async () => {
+        try {
+          const result = await window.api.resetAllAutoSaves();
+          const detail = {
+            message: result.success
+              ? `Successfully deleted ${result.count} auto-save file(s).`
+              : `An error occurred: ${result.error}`,
+          };
+          window.dispatchEvent(new CustomEvent('show-feedback', { detail }));
+          if (result.success && activeSavesList) {
+            activeSavesList.innerHTML = '<li class="italic">No active auto-saves found.</li>';
+          }
+        } catch (error) {
+          window.dispatchEvent(
+            new CustomEvent('show-feedback', { detail: { message: `An error occurred: ${error.message}` } }),
+          );
+        } finally {
+          hideConfirmation();
+        }
+      };
+
+      const handleNoClick = () => {
+        hideConfirmation();
+      };
 
       const showConfirmation = () => {
         resetAllSavesBtn.style.display = 'none';
@@ -247,11 +230,19 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
 
         const yesBtn = document.createElement('button');
         yesBtn.textContent = 'Yes';
-        yesBtn.className = 'bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors';
+        const yesBtnClasses = [
+          'bg-red-600', 'hover:bg-red-700', 'text-white',
+          'font-bold', 'py-2', 'px-4', 'rounded-lg', 'transition-colors',
+        ];
+        yesBtn.className = yesBtnClasses.join(' ');
 
         const noBtn = document.createElement('button');
         noBtn.textContent = 'No';
-        noBtn.className = 'bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-colors';
+        const noBtnClasses = [
+          'bg-gray-600', 'hover:bg-gray-700', 'text-white',
+          'font-bold', 'py-2', 'px-4', 'rounded-lg', 'transition-colors',
+        ];
+        noBtn.className = noBtnClasses.join(' ');
 
         confirmationContainer.appendChild(areYouSure);
         confirmationContainer.appendChild(yesBtn);
@@ -263,48 +254,23 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
         noBtn.addEventListener('click', handleNoClick);
       };
 
-      const hideConfirmation = () => {
-        if (confirmationContainer) {
-          confirmationContainer.remove();
-          confirmationContainer = null;
-        }
-        resetAllSavesBtn.style.display = 'inline-flex';
-      };
-
-      const handleYesClick = async () => {
-        try {
-          const result = await window.api.resetAllAutoSaves();
-          if (result.success) {
-            window.dispatchEvent(new CustomEvent('show-feedback', { detail: { message: `Successfully deleted ${result.count} auto-save file(s).` } }));
-            if (activeSavesList) {
-              activeSavesList.innerHTML = '<li class="italic">No active auto-saves found.</li>';
-            }
-          } else {
-            throw new Error(result.error);
-          }
-        } catch (error) {
-          console.error('Failed to reset all auto-saves:', error);
-          window.dispatchEvent(new CustomEvent('show-feedback', { detail: { message: `An error occurred: ${error.message}` } }));
-        } finally {
-          hideConfirmation();
-        }
-      };
-
-      const handleNoClick = () => {
-        hideConfirmation();
-      };
-
       resetAllSavesBtn.addEventListener('click', showConfirmation);
     }
   }
   renderTabs();
 }
 
-function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExerciseState, updateGlobalToolbar) {
+function attachHomeEventListeners(
+  paneElement,
+  tabs,
+  addTab,
+  renderTabs,
+  saveExerciseState,
+  updateGlobalToolbar,
+) {
   const populateList = async (listId, getFiles, folder) => {
     const list = paneElement.querySelector(`#${listId}`);
     if (!list) {
-      console.warn(`Home: List element with ID '${listId}' not found.`);
       return;
     }
 
@@ -320,12 +286,24 @@ function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExe
         const link = document.createElement('a');
         link.href = '#';
         link.textContent = file.replace('.html', '').replace(/-/g, ' ');
-        link.className = 'block p-3 bg-slate-700 rounded-md hover:bg-indigo-600 transition-colors font-medium';
+        const linkClasses = [
+          'block', 'p-3', 'bg-slate-700', 'rounded-md',
+          'hover:bg-indigo-600', 'transition-colors', 'font-medium',
+        ];
+        link.className = linkClasses.join(' ');
         link.addEventListener('click', (e) => {
           e.preventDefault();
           const activeTab = tabs.find((t) => t.active);
           if (activeTab.view === 'home') {
-            loadContentIntoTab(activeTab.id, `${folder}/${file}`, tabs, renderTabs, addTab, saveExerciseState, updateGlobalToolbar);
+            loadContentIntoTab(
+              activeTab.id,
+              `${folder}/${file}`,
+              tabs,
+              renderTabs,
+              addTab,
+              saveExerciseState,
+              updateGlobalToolbar,
+            );
           } else {
             addTab(true, `${folder}/${file}`, 'content');
           }
@@ -333,7 +311,6 @@ function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExe
         list.appendChild(link);
       });
     } catch (error) {
-      console.error(`Home: Failed to load ${folder}:`, error);
       list.innerHTML = `<p class="text-red-400">Error loading ${folder}.</p>`;
     }
   };
@@ -342,4 +319,58 @@ function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExe
   populateList('lessons-an-list', window.api.getLessonsAN, 'lessonsAN');
   populateList('exercises-list', window.api.getExercises, 'exercises');
   populateList('tests-list', window.api.getTests, 'others');
+}
+
+export async function loadHomeIntoTab(
+  tabId,
+  tabs,
+  renderTabs,
+  addTab,
+  saveExerciseState,
+  updateGlobalToolbar,
+) {
+  const tab = tabs.find((t) => t.id === tabId);
+  if (!tab) return;
+
+  tab.view = 'home';
+  tab.filePath = null;
+  tab.title = 'Home';
+
+  if (updateGlobalToolbar) {
+    updateGlobalToolbar(tab);
+  }
+
+  let homeContent = '';
+  try {
+    homeContent = await window.api.getHomeContent();
+  } catch (error) {
+    homeContent = `<div class="p-6 text-red-700 bg-red-100 rounded-lg">
+<h2 class="font-bold text-lg">Error Loading Home Page</h2>
+<p>Could not load the home page content.</p></div>`;
+  }
+
+  const pane = document.getElementById(`pane-${tab.id}`);
+  if (pane) {
+    pane.innerHTML = '';
+
+    const scrollableContent = document.createElement('div');
+    scrollableContent.className = 'h-full overflow-y-auto';
+    scrollableContent.innerHTML = homeContent;
+    pane.appendChild(scrollableContent);
+
+    try {
+      attachHomeEventListeners(
+        scrollableContent,
+        tabs,
+        addTab,
+        renderTabs,
+        saveExerciseState,
+        updateGlobalToolbar,
+      );
+    } catch (error) {
+      // empty
+    }
+  }
+
+  renderTabs();
 }
