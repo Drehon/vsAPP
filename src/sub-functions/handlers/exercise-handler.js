@@ -223,13 +223,13 @@ export class ExerciseHandler {
     let questionHTML = '';
     switch (question.type) {
       case 'true-false':
-        questionHTML = this.renderTrueFalseQuestion(question, answerState);
+        questionHTML = ExerciseHandler.renderTrueFalseQuestion(question, answerState);
         break;
       case 'multiple-choice':
-        questionHTML = this.renderMultipleChoiceQuestion(question, answerState);
+        questionHTML = ExerciseHandler.renderMultipleChoiceQuestion(question, answerState);
         break;
       case 'fill-in-the-blank':
-        questionHTML = this.renderFillInTheBlankQuestion(question, answerState);
+        questionHTML = ExerciseHandler.renderFillInTheBlankQuestion(question, answerState);
         break;
       default:
         questionHTML = `<p class="text-red-500">Error: Unknown question type "${question.type}"</p>`;
@@ -239,14 +239,14 @@ export class ExerciseHandler {
     questionWrapper.appendChild(questionContent);
 
     if (answerState && answerState.userAnswer !== null) {
-      const feedbackEl = this.createFeedbackArea(answerState.isCorrect, question.explanation);
+      const feedbackEl = ExerciseHandler.createFeedbackArea(answerState.isCorrect, question.explanation);
       questionWrapper.appendChild(feedbackEl);
     }
 
-    const navigationEl = this.createNavigation();
+    const navigationEl = ExerciseHandler.createNavigation();
     questionWrapper.appendChild(navigationEl);
 
-    const notesEl = this.createNotesArea(blockIndex, questionIndex, answerState);
+    const notesEl = ExerciseHandler.createNotesArea(blockIndex, questionIndex, answerState);
     questionWrapper.appendChild(notesEl);
 
     const blockNotesEl = this.createBlockNotesArea(blockIndex);
@@ -258,7 +258,7 @@ export class ExerciseHandler {
   /**
      * Generates the HTML for a true/false question.
      */
-  renderTrueFalseQuestion(question, answerState) {
+  static renderTrueFalseQuestion(question, answerState) {
     const hasAnswered = answerState && answerState.userAnswer !== null;
     const isCorrect = answerState && answerState.isCorrect;
     const userAnswer = answerState && answerState.userAnswer;
@@ -290,7 +290,7 @@ export class ExerciseHandler {
   /**
      * Generates the HTML for a multiple-choice question.
      */
-  renderMultipleChoiceQuestion(question, answerState) {
+  static renderMultipleChoiceQuestion(question, answerState) {
     const hasAnswered = answerState && answerState.userAnswer !== null;
     const isCorrect = answerState && answerState.isCorrect;
     const userAnswer = answerState && answerState.userAnswer;
@@ -337,7 +337,7 @@ export class ExerciseHandler {
   /**
      * Generates the HTML for a fill-in-the-blank question.
      */
-  renderFillInTheBlankQuestion(question, answerState) {
+  static renderFillInTheBlankQuestion(question, answerState) {
     const hasAnswered = answerState && answerState.userAnswer !== null;
     const isCorrect = answerState && answerState.isCorrect;
     const userAnswer = answerState ? (answerState.userAnswer || '') : '';
@@ -376,7 +376,7 @@ export class ExerciseHandler {
   /**
      * Creates the feedback area for an answered question.
      */
-  createFeedbackArea(isCorrect, explanation) {
+  static createFeedbackArea(isCorrect, explanation) {
     const feedbackEl = document.createElement('div');
     feedbackEl.className = `feedback-container mt-4 p-4 border-l-4 rounded-r-lg ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
     const markCorrectBtn = !isCorrect ? '<button class="mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-yellow-800 font-bold py-1 px-2 rounded-lg ml-4">Segna come Corretta</button>' : '';
@@ -387,7 +387,7 @@ export class ExerciseHandler {
   /**
      * Creates the notes area for the current question.
      */
-  createNotesArea(blockIndex, questionIndex, answerState) {
+  static createNotesArea(blockIndex, questionIndex, answerState) {
     const notesArea = document.createElement('div');
     notesArea.className = 'mt-4 p-4 rounded-lg border border-slate-300 bg-slate-50';
     const noteId = `question-notes-${blockIndex}-${questionIndex}`;
@@ -418,7 +418,7 @@ export class ExerciseHandler {
   /**
      * Creates the navigation controls (previous/next).
      */
-  createNavigation() {
+  static createNavigation() {
     const el = document.createElement('div');
     el.id = 'navigation-controls';
     el.className = 'flex justify-center items-center gap-4 pt-4 mt-4 border-t border-slate-200';
@@ -448,7 +448,7 @@ export class ExerciseHandler {
       prevBtn.onclick = () => {
         if (questionIndex > 0) {
           state.answers[blockIndex][questionIndex].submitted = true;
-          state.currentQuestionIndexes[blockIndex]--;
+          state.currentQuestionIndexes[blockIndex] -= 1;
           this.render();
           this.autoSave(this.activeTab);
         }
@@ -460,7 +460,7 @@ export class ExerciseHandler {
       nextBtn.onclick = () => {
         if (questionIndex < totalQuestionsInBlock) {
           state.answers[blockIndex][questionIndex].submitted = true;
-          state.currentQuestionIndexes[blockIndex]++;
+          state.currentQuestionIndexes[blockIndex] += 1;
           this.render();
           this.autoSave(this.activeTab);
         }
@@ -482,8 +482,8 @@ export class ExerciseHandler {
 
     if (jumpInput && jumpBtn) {
       jumpBtn.onclick = () => {
-        const questionNum = parseInt(jumpInput.value);
-        if (!isNaN(questionNum) && questionNum >= 1 && questionNum <= totalQuestionsInBlock) {
+        const questionNum = parseInt(jumpInput.value, 10);
+        if (!Number.isNaN(questionNum) && questionNum >= 1 && questionNum <= totalQuestionsInBlock) {
           state.currentQuestionIndexes[blockIndex] = questionNum - 1;
           this.render();
           this.autoSave(this.activeTab);
@@ -543,7 +543,7 @@ export class ExerciseHandler {
           });
           break;
 
-        case 'fill-in-the-blank':
+        case 'fill-in-the-blank': {
           const checkBtn = questionElement.querySelector('#check-answer-btn');
           const inputEl = questionElement.querySelector('#fill-in-blank-input');
           if (checkBtn && inputEl) {
@@ -558,6 +558,10 @@ export class ExerciseHandler {
             checkBtn.onclick = handleCheck;
             inputEl.onkeydown = (e) => { if (e.key === 'Enter') handleCheck(); };
           }
+          break;
+        }
+        default:
+          // No other question types have answer listeners.
           break;
       }
     }

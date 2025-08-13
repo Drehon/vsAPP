@@ -107,7 +107,7 @@ window.addEventListener('api-ready', () => {
       // --- Show Feedback Message ---
       let objectName;
       const lessonMatch = tab.title.match(/^(L\d+)/);
-      const [pageIdPrefix] = pageId.split('-');
+      const pageIdPrefix = pageId.split('-')[0];
 
       // Use pageId for more reliable feedback
       if (pageId.includes('student-verbs')) {
@@ -149,7 +149,7 @@ window.addEventListener('api-ready', () => {
           // --- Show Feedback Message ---
           let objectName;
           const lessonMatch = tab.title.match(/^(L\d+)/);
-          const [pageIdPrefix] = pageId.split('-');
+          const pageIdPrefix = pageId.split('-')[0];
 
           if (pageId.includes('student-verbs')) {
             objectName = 'Verbs';

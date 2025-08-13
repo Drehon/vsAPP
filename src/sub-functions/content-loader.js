@@ -1,4 +1,4 @@
-import { hydrateContent } from './content-hydrator.js';
+import hydrateContent from './content-hydrator';
 
 function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExerciseState, updateGlobalToolbar) {
   const populateList = async (listId, getFiles, folder) => {

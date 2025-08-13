@@ -247,10 +247,8 @@ export class DiagnosticTestHandler {
             weight: 'bold',
             size: 14,
           },
-          formatter: (value) =>
           // Only show a label if the value is greater than 0
-            (value > 0 ? `${value}%` : null),
-
+          formatter: (value) => (value > 0 ? `${value}%` : null),
         },
         tooltip: {
           backgroundColor: '#1f2937', // slate-800
@@ -298,14 +296,14 @@ export class DiagnosticTestHandler {
       }
 
       block.exercises.forEach((question, questionIndex) => {
-        totalQuestions++;
+        totalQuestions += 1;
         const answerState = state.answers[blockIndex][questionIndex];
         const { category } = question;
 
         if (!categoryScores[category]) {
           categoryScores[category] = { correct: 0, total: 0 };
         }
-        categoryScores[category].total++;
+        categoryScores[category].total += 1;
 
         let isCorrect = false;
         if (question.type === 'paragraph_input') {
@@ -320,8 +318,8 @@ export class DiagnosticTestHandler {
         }
 
         if (isCorrect) {
-          totalCorrect++;
-          categoryScores[category].correct++;
+          totalCorrect += 1;
+          categoryScores[category].correct += 1;
         }
       });
     });
@@ -541,13 +539,16 @@ export class DiagnosticTestHandler {
           const isCorrect = {};
           question.blanks.forEach((blank, index) => {
             const blankId = `blank_${index}`;
-            const userBlankAnswer = (userAnswer && userAnswer[blankId] || '').trim().toLowerCase();
+            const userBlankAnswer = ((userAnswer && userAnswer[blankId]) || '').trim().toLowerCase();
             const correctBlankAnswer = blank.answer.toLowerCase();
             isCorrect[blankId] = userBlankAnswer === correctBlankAnswer;
           });
           answerState.isCorrect = isCorrect;
           break;
         }
+        default:
+          // No other question types are checked.
+          break;
       }
     });
 

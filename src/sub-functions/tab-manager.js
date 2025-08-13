@@ -54,7 +54,7 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
     }
 
     const newTab = {
-      id: localNextTabId++,
+      id: localNextTabId,
       title: 'Home',
       view: 'home',
       filePath: null,
@@ -62,6 +62,7 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
       active: true,
       exerciseState: null,
     };
+    localNextTabId += 1;
     tabs.push(newTab);
 
     const paneEl = document.createElement('div');

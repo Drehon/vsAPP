@@ -9,7 +9,7 @@ for this purpose, the txt has
 2) modifiable area in which you explain the current though process, sort of a summary
 3) appendable only area where you progressively log as we work, this is because i expect we'll use this txt for multiple tasks.
 
-currently we must complete TASK 6 and only TASK 6 from the plan in red.txt
+currently address ONLY all the warnings/error in forge.config.js 
 
 update red.txt at the end of each plan
 verify code integrity, but do not attempt to actually run the app, instead ask me to do any testing if that is needed
