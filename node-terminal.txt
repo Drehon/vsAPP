@@ -1,0 +1,139 @@
+(node:5888) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+    at node:internal/util:456:17
+    at new Promise (<anonymous>)
+    at AsyncFunction.<anonymous> (node:internal/util:441:12)
+    at C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:73
+    at Array.map (<anonymous>)
+    at promisifyHooks (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:29)
+    at packager (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\packager.js:234:38)
+(node:5888) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+    at node:internal/util:456:17
+    at new Promise (<anonymous>)
+    at node:internal/util:441:12
+    at AsyncFunction.<anonymous> (C:\Users\User\Documents\TEFL Personal\node_modules\@electron-forge\core\dist\api\package.js:44:59)
+    at node:internal/util:455:21
+    at new Promise (<anonymous>)
+    at AsyncFunction.<anonymous> (node:internal/util:441:12)
+    at C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:73
+    at Array.map (<anonymous>)
+    at promisifyHooks (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:29)
+    at Packager.extractElectronZip (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\packager.js:94:42)
+    at async Packager.createApp (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\packager.js:117:9)
+    at async Promise.all (index 0)
+    at async packager (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\packager.js:237:22)
+(node:5888) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+    at node:internal/util:456:17
+    at new Promise (<anonymous>)
+    at AsyncFunction.<anonymous> (node:internal/util:441:12)
+    at C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:73
+    at Array.map (<anonymous>)
+    at promisifyHooks (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:29)
+    at Packager.extractElectronZip (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\packager.js:94:42)
+    at async Packager.createApp (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\packager.js:117:9)
+    at async Promise.all (index 0)
+    at async packager (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\packager.js:237:22)
+(node:5888) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+    at node:internal/util:456:17
+    at new Promise (<anonymous>)
+    at node:internal/util:441:12
+    at AsyncFunction.<anonymous> (C:\Users\User\Documents\TEFL Personal\node_modules\@electron-forge\core\dist\api\package.js:44:59)
+    at node:internal/util:455:21
+    at new Promise (<anonymous>)
+    at AsyncFunction.<anonymous> (node:internal/util:441:12)
+    at C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:73
+    at Array.map (<anonymous>)
+    at promisifyHooks (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:29)
+    at WindowsApp.copyTemplate (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\platform.js:135:42)
+    at async WindowsApp.buildApp (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\platform.js:125:9)
+    at async WindowsApp.initialize (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\platform.js:120:13)
+    at async WindowsApp.create (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\win32.js:83:9)
+    at async Promise.all (index 0)
+    at async packager (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\packager.js:237:22)
+(node:5888) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+    at node:internal/util:456:17
+    at new Promise (<anonymous>)
+    at AsyncFunction.<anonymous> (node:internal/util:441:12)
+    at C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:73
+    at Array.map (<anonymous>)
+    at promisifyHooks (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:29)
+    at WindowsApp.copyTemplate (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\platform.js:135:42)
+    at async WindowsApp.buildApp (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\platform.js:125:9)
+    at async WindowsApp.initialize (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\platform.js:120:13)
+    at async WindowsApp.create (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\win32.js:83:9)
+    at async Promise.all (index 0)
+    at async packager (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\packager.js:237:22)
+(node:5888) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+    at node:internal/util:456:17
+    at new Promise (<anonymous>)
+    at node:internal/util:441:12
+    at AsyncFunction.<anonymous> (C:\Users\User\Documents\TEFL Personal\node_modules\@electron-forge\core\dist\api\package.js:44:59)
+(node:5888) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+    at node:internal/util:456:17
+    at new Promise (<anonymous>)
+    at node:internal/util:441:12
+    at AsyncFunction.<anonymous> (C:\Users\User\Documents\TEFL Personal\node_modules\@electron-forge\core\dist\api\package.js:44:59)
+(node:5888) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+    at node:internal/util:456:17
+    at new Promise (<anonymous>)
+    at node:internal/util:441:12
+    at AsyncFunction.<anonymous> (C:\Users\User\Documents\TEFL Personal\node_modules\@electron-forge\core\dist\api\package.js:44:59)
+(node:5888) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+    at node:internal/util:456:17
+    at new Promise (<anonymous>)
+    at node:internal/util:441:12
+    at AsyncFunction.<anonymous> (C:\Users\User\Documents\TEFL Personal\node_modules\@electron-forge\core\dist\api\package.js:44:59)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+(node:5888) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+    at node:internal/util:456:17
+    at new Promise (<anonymous>)
+    at node:internal/util:441:12
+    at AsyncFunction.<anonymous> (C:\Users\User\Documents\TEFL Personal\node_modules\@electron-forge\core\dist\api\package.js:44:59)
+    at node:internal/util:455:21
+    at new Promise (<anonymous>)
+    at AsyncFunction.<anonymous> (node:internal/util:441:12)
+    at C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:73
+    at Array.map (<anonymous>)
+    at promisifyHooks (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:29)
+    at WindowsApp.copyTemplate (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\platform.js:137:46)
+    at async WindowsApp.buildApp (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\platform.js:125:9)
+    at async WindowsApp.initialize (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\platform.js:120:13)
+    at async WindowsApp.create (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\win32.js:83:9)
+    at async Promise.all (index 0)
+    at async packager (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\packager.js:237:22)
+(node:5888) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+    at node:internal/util:456:17
+    at new Promise (<anonymous>)
+    at AsyncFunction.<anonymous> (node:internal/util:441:12)
+    at C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:73
+    at Array.map (<anonymous>)
+    at promisifyHooks (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:29)
+    at WindowsApp.copyTemplate (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\platform.js:137:46)
+    at async WindowsApp.buildApp (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\platform.js:125:9)
+    at async WindowsApp.initialize (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\platform.js:120:13)
+    at async WindowsApp.create (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\win32.js:83:9)
+    at async Promise.all (index 0)
+    at async packager (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\packager.js:237:22)
+(node:5888) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+    at node:internal/util:456:17
+    at new Promise (<anonymous>)
+    at node:internal/util:441:12
+    at AsyncFunction.<anonymous> (C:\Users\User\Documents\TEFL Personal\node_modules\@electron-forge\core\dist\api\package.js:44:59)
+    at node:internal/util:455:21
+    at new Promise (<anonymous>)
+    at AsyncFunction.<anonymous> (node:internal/util:441:12)
+    at C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:73
+    at Array.map (<anonymous>)
+    at promisifyHooks (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:29)
+    at WindowsApp.move (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\platform.js:244:46)
+    at async Promise.all (index 0)
+    at async packager (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\packager.js:237:22)
+(node:5888) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+    at node:internal/util:456:17
+    at new Promise (<anonymous>)
+    at AsyncFunction.<anonymous> (node:internal/util:441:12)
+    at C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:73
+    at Array.map (<anonymous>)
+    at promisifyHooks (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\hooks.js:9:29)
+    at WindowsApp.move (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\platform.js:244:46)
+    at async Promise.all (index 0)
+    at async packager (C:\Users\User\Documents\TEFL Personal\node_modules\@electron\packager\dist\packager.js:237:22)

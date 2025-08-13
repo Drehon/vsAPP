@@ -6,8 +6,10 @@
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
+    "start:trace": "cross-env NODE_OPTIONS='--trace-deprecation' electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
+    "make:trace": "cross-env NODE_OPTIONS='--trace-deprecation' electron-forge make",
     "publish": "electron-forge publish",
     "lint": "cross-env ESLINT_USE_FLAT_CONFIG=false eslint .",
     "lint:fix": "cross-env ESLINT_USE_FLAT_CONFIG=false eslint . --fix",
