@@ -309,7 +309,9 @@ export class DiagnosticTestHandler {
       });
     });
 
-    const overallPercentage = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+    const overallPercentage = totalQuestions > 0
+      ? Math.round((totalCorrect / totalQuestions) * 100)
+      : 0;
 
     return {
       totalQuestions,
@@ -817,7 +819,11 @@ export class DiagnosticTestHandler {
         questionHTML = this.renderParagraphInputQuestion(question, answerState, blockSubmitted);
         break;
       case 'paragraph_error_correction':
-        questionHTML = this.renderParagraphErrorCorrectionQuestion(question, answerState, blockSubmitted);
+        questionHTML = this.renderParagraphErrorCorrectionQuestion(
+          question,
+          answerState,
+          blockSubmitted,
+        );
         break;
       default:
         questionHTML = `<p class="text-red-500">Error: Unknown question type "${question.type}"</p>`;
