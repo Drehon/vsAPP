@@ -12,6 +12,10 @@
 
 I have successfully completed Task 1 of the linting refactor plan. I addressed the configuration-related ESLint errors: `import/no-extraneous-dependencies`, `import/no-unresolved`, and `global-require`. The next step, as per the plan, is to tackle Task 2: Unused Variables.
 
+I have successfully completed the task of fixing the `require` statement errors.
+The problem was not with the code itself, but with the ESLint configuration. I have corrected the `.eslintrc.js` file to properly distinguish between CommonJS and ES module files. This has resolved the linting errors as requested.
+
+
 
 # --- LOG ---
 # Append-only log of actions and thoughts.
@@ -30,6 +34,15 @@ I have successfully completed Task 1 of the linting refactor plan. I addressed t
 [2024-05-21 12:11:00] - Jules: Removed the unused `eslint-import-resolver-webpack` dependency.
 [2024-05-21 12:12:00] - Jules: Removed the non-functional `import/resolver` settings from `.eslintrc.js` to avoid confusion.
 
+[2025-08-13] - Jules: Received task to fix `require` statement linting errors.
+[2025-08-13] - Jules: Explored the codebase, reading `red.txt`, `red-lint.txt`, `AGENTS.md`, `package.json`, and `.eslintrc.js`.
+[2025-08-13] - Jules: Diagnosed the root cause: the ESLint configuration was forcing all files to be parsed as ES modules, which caused `no-undef` errors for `require` in CommonJS files.
+[2025-08-13] - Jules: Created a plan to modify `.eslintrc.js` to use `overrides` to apply the correct `sourceType` to different sets of files.
+[2025-08-13] - Jules: Modified `.eslintrc.js` to apply `sourceType: 'script'` to config files, main process files, and other scripts.
+[2025-08-13] - Jules: Ran `npm run lint` to verify the fix. Encountered new parsing errors because the override was too broad.
+[2025-08-13] - Jules: Refined the `overrides` in `.eslintrc.js` to be more specific.
+[2025-08-13] - Jules: Ran `npm run lint` again and confirmed that all module-related linting errors are resolved.
+[2025-08-13] - Jules: The task is complete.
 
 
 > PLAN
