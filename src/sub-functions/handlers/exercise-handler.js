@@ -50,12 +50,14 @@ export class ExerciseHandler {
       this.activeTab.exerciseState = {
         version: 2,
         currentBlockIndex: 0,
-        answers: this.pageData.blocks.map((block) => Array(block.exercises.length).fill(null).map(() => ({
-          userAnswer: null,
-          isCorrect: null,
-          note: '',
-          submitted: false,
-        }))),
+        answers: this.pageData.blocks.map((block) => (
+          Array(block.exercises.length).fill(null).map(() => ({
+            userAnswer: null,
+            isCorrect: null,
+            note: '',
+            submitted: false,
+          }))
+        )),
         blockNotes: Array(this.pageData.blocks.length).fill(''),
         currentQuestionIndexes: Array(this.pageData.blocks.length).fill(0),
       };
@@ -312,7 +314,10 @@ export class ExerciseHandler {
 
     let questionHTML = question.question;
     if (submitted && !hasAnswered) {
-      questionHTML = question.question.replace('______', '<span class="unanswered-blank" style="background-color: #FECACA;">______</span>');
+      questionHTML = question.question.replace(
+        '______',
+        '<span class="unanswered-blank" style="background-color: #FECACA;">______</span>',
+      );
     }
 
     return `
@@ -544,7 +549,9 @@ export class ExerciseHandler {
               const userAnswer = inputEl.value.trim();
               const correctAnswer = question.answer.trim();
               state.answers[blockIndex][questionIndex].userAnswer = userAnswer;
-              state.answers[blockIndex][questionIndex].isCorrect = userAnswer.toLowerCase().replace(/[.,]/g, '') === correctAnswer.toLowerCase().replace(/[.,]/g, '');
+              const formattedUserAnswer = userAnswer.toLowerCase().replace(/[.,]/g, '');
+              const formattedCorrectAnswer = correctAnswer.toLowerCase().replace(/[.,]/g, '');
+              state.answers[blockIndex][questionIndex].isCorrect = formattedUserAnswer === formattedCorrectAnswer;
               this.autoSave(this.activeTab);
               this.render();
             };
