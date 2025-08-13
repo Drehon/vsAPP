@@ -25,6 +25,7 @@ function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExe
           e.preventDefault();
           const activeTab = tabs.find((t) => t.active);
           if (activeTab.view === 'home') {
+            // eslint-disable-next-line no-use-before-define
             loadContentIntoTab(activeTab.id, `${folder}/${file}`, tabs, renderTabs, addTab, saveExerciseState, updateGlobalToolbar);
           } else {
             addTab(true, `${folder}/${file}`, 'content');
@@ -279,6 +280,18 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
       const originalButtonParent = resetAllSavesBtn.parentNode;
       let confirmationContainer = null;
 
+      const hideConfirmation = () => {
+        if (confirmationContainer) {
+          confirmationContainer.remove();
+          confirmationContainer = null;
+        }
+        resetAllSavesBtn.style.display = 'inline-flex';
+      };
+
+      const handleNoClick = () => {
+        hideConfirmation();
+      };
+
       const handleYesClick = async () => {
         try {
           const result = await window.api.resetAllAutoSaves();
@@ -296,18 +309,6 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
         } finally {
           hideConfirmation();
         }
-      };
-
-      const hideConfirmation = () => {
-        if (confirmationContainer) {
-          confirmationContainer.remove();
-          confirmationContainer = null;
-        }
-        resetAllSavesBtn.style.display = 'inline-flex';
-      };
-
-      const handleNoClick = () => {
-        hideConfirmation();
       };
 
       const showConfirmation = () => {

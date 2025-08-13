@@ -31,7 +31,7 @@ console.log("Unique ESLint Error Types:", errorTypes);
 ---
 
 
-(.venv) PS C:\Users\User\Documents\TEFL Personal> npm run lint 
+(.venv) PS C:\Users\User\Documents\TEFL Personal> npm run lint
 
 > tutoring-app@1.4.3 lint
 > cross-env ESLINT_USE_FLAT_CONFIG=false eslint .
@@ -88,11 +88,8 @@ C:\Users\User\Documents\TEFL Personal\src\patch-updater.js
   43:5  warning  Unexpected console statement  no-console
 
 C:\Users\User\Documents\TEFL Personal\src\renderer.js
-  116:9   error  Use array destructuring                      prefer-destructuring
-  158:13  error  Use array destructuring                      prefer-destructuring
-  262:34  error  'renderTabs' was used before it was defined  no-use-before-define
-  270:7   error  'renderTabs' was used before it was defined  no-use-before-define
-  279:38  error  'renderTabs' was used before it was defined  no-use-before-define
+  118:9   error  Use array destructuring  prefer-destructuring
+  159:13  error  Use array destructuring  prefer-destructuring
 
 C:\Users\User\Documents\TEFL Personal\src\sub-functions\components\notes-component.js
    9:1  error    This line has a length of 117. Maximum allowed is 100  max-len
@@ -111,24 +108,21 @@ C:\Users\User\Documents\TEFL Personal\src\sub-functions\content-hydrator.js
 
 C:\Users\User\Documents\TEFL Personal\src\sub-functions\content-loader.js
     1:32  error    Unexpected use of file extension "js" for "./content-hydrator.js"  import/extensions
-    3:1   error    This line has a length of 134. Maximum allowed is 100              max-len
-   44:7   warning  Unexpected console statement                                       no-console
-   49:7   warning  Unexpected console statement                                       no-console
-   88:1   error    This line has a length of 112. Maximum allowed is 100              max-len
-  104:5   warning  Unexpected console statement                                       no-console
-  120:1   error    This line has a length of 116. Maximum allowed is 100              max-len
-  120:7   error    'attachHomeEventListeners' was used before it was defined          no-use-before-define
-  122:7   warning  Unexpected console statement                                       no-console
-  129:1   error    This line has a length of 113. Maximum allowed is 100              max-len
-  198:13  warning  Unexpected alert                                                   no-alert
-  203:11  warning  Unexpected console statement                                       no-console
-  204:11  warning  Unexpected alert                                                   no-alert
-  262:42  error    'handleYesClick' was used before it was defined                    no-use-before-define
-  263:41  error    'handleNoClick' was used before it was defined                     no-use-before-define
-  286:11  warning  Unexpected console statement                                       no-console
-  303:1   error    This line has a length of 114. Maximum allowed is 100              max-len
-  307:7   warning  Unexpected console statement                                       no-console
-  336:7   warning  Unexpected console statement                                       no-console
+    3:1   error    This line has a length of 114. Maximum allowed is 100              max-len
+    7:7   warning  Unexpected console statement                                       no-console
+   37:7   warning  Unexpected console statement                                       no-console
+   48:1   error    This line has a length of 134. Maximum allowed is 100              max-len
+   89:7   warning  Unexpected console statement                                       no-console
+   94:7   warning  Unexpected console statement                                       no-console
+  133:1   error    This line has a length of 112. Maximum allowed is 100              max-len
+  149:5   warning  Unexpected console statement                                       no-console
+  165:1   error    This line has a length of 116. Maximum allowed is 100              max-len
+  167:7   warning  Unexpected console statement                                       no-console
+  174:1   error    This line has a length of 113. Maximum allowed is 100              max-len
+  243:13  warning  Unexpected alert                                                   no-alert
+  248:11  warning  Unexpected console statement                                       no-console
+  249:11  warning  Unexpected alert                                                   no-alert
+  307:11  warning  Unexpected console statement                                       no-console
 
 C:\Users\User\Documents\TEFL Personal\src\sub-functions\handlers\diagnostic-test-handler.js
    19:5   warning  Unexpected console statement                                                                  no-console
@@ -187,11 +181,7 @@ C:\Users\User\Documents\TEFL Personal\src\sub-functions\handlers\exercise-handle
 
 C:\Users\User\Documents\TEFL Personal\src\sub-functions\tab-manager.js
    2:1   error    This line has a length of 167. Maximum allowed is 100  max-len
-  24:53  error    'addTab' was used before it was defined                no-use-before-define
-  26:11  error    'switchTab' was used before it was defined             no-use-before-define
-  32:9   error    'closeTab' was used before it was defined              no-use-before-define
-  56:11  error    Unary operator '++' used                               no-plusplus
-  80:14  error    'switchTab' was used before it was defined             no-use-before-define
-  98:9   warning  Unexpected console statement                           no-console
+  57:11  error    Unary operator '++' used                               no-plusplus
+  99:9   warning  Unexpected console statement                           no-console
 
-✖ 129 problems (53 errors, 76 warnings)
+✖ 119 problems (43 errors, 76 warnings)

@@ -1,3 +1,5 @@
+/* eslint-disable no-use-before-define */
+
 import './style.css';
 import { initializeTabManager } from './sub-functions/tab-manager';
 import { loadContentIntoTab, loadHomeIntoTab, loadSettingsIntoTab } from './sub-functions/content-loader';
@@ -142,7 +144,6 @@ window.addEventListener('api-ready', () => {
         if (isValidState) {
           mostRecentlyLoadedFile = result.path; // Track the recently loaded file
           await window.api.saveExerciseState(pageId, loadedState); // Overwrite autosave
-          // eslint-disable-next-line no-use-before-define
           handleLoadContent(tab.id, tab.filePath); // Reload content
 
           // --- Show Feedback Message ---
@@ -195,17 +196,12 @@ window.addEventListener('api-ready', () => {
     globalGithubBtn.disabled = false; // Always enabled
 
     // Update onclick listeners to point to the active tab's context
-    // eslint-disable-next-line no-use-before-define
     globalHomeBtn.onclick = () => !isHome && handleLoadHome(tab.id);
     globalReloadBtn.onclick = () => {
-      // eslint-disable-next-line no-use-before-define
       if (isHome) handleLoadHome(tab.id);
-      // eslint-disable-next-line no-use-before-define
       if (isContent) handleLoadContent(tab.id, tab.filePath);
-      // eslint-disable-next-line no-use-before-define
       if (isSettings) handleLoadSettings(tab.id);
     };
-    // eslint-disable-next-line no-use-before-define
     globalSettingsBtn.onclick = () => !isSettings && addTab(true, null, 'settings');
     globalGithubBtn.onclick = () => window.api.openExternalLink('https://github.com/Drehon/vsapp');
 
@@ -240,7 +236,6 @@ window.addEventListener('api-ready', () => {
 
       // --- Reload content with view state ---
       // We still need tab.filePath to reload the content source
-      // eslint-disable-next-line no-use-before-define
       handleLoadContent(tab.id, tab.filePath, { activePhaseId, scrollTop });
 
       if (result.success) {
@@ -252,7 +247,6 @@ window.addEventListener('api-ready', () => {
   // --- WRAPPER FUNCTIONS for Tab Manager ---
   // These wrappers ensure the activeTab and toolbar are always updated
   async function addTab(setActive = true, filePath = null, type = 'home') {
-    // eslint-disable-next-line no-use-before-define
     activeTab = await _addTab(setActive, filePath, type);
     updateGlobalToolbar(activeTab);
   }
