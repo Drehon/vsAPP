@@ -8,6 +8,7 @@
 
 # --- CURRENT THOUGHT PROCESS ---
 # This is a summary of my current thinking.
+# I'll modify this as we proceed in addressing the current issues.
 
 I have read `red-lint.txt` and have a list of the error types. 
 Now I'm looking at the file structure to understand where the problematic files are. 
