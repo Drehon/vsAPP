@@ -45,14 +45,11 @@ console.log("Unique ESLint Error Types:", errorTypes);
 
 C:\Users\User\Documents\TEFL Personal\src\sub-functions\handlers\diagnostic-test-handler.js
   312:1  error  This line has a length of 105. Maximum allowed is 100  max-len
-  820:1  error  This line has a length of 106. Maximum allowed is 100  max-len
+  819:1  error  This line has a length of 106. Maximum allowed is 100  max-len
 
 C:\Users\User\Documents\TEFL Personal\src\sub-functions\handlers\exercise-handler.js
   240:1  error  This line has a length of 105. Maximum allowed is 100  max-len
   488:1  error  This line has a length of 101. Maximum allowed is 100  max-len
   558:1  error  This line has a length of 114. Maximum allowed is 100  max-len
 
-C:\Users\User\Documents\TEFL Personal\src\sub-functions\tab-manager.js
-  2:1  error  This line has a length of 167. Maximum allowed is 100  max-len
-
-✖ 6 problems (6 errors, 0 warnings)
+✖ 5 problems (5 errors, 0 warnings)
