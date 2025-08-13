@@ -7,7 +7,8 @@
  * to ensure each diagnostic test tab has an isolated instance.
  */
 
-export default class DiagnosticTestHandler {
+// eslint-disable-next-line import/prefer-default-export
+export class DiagnosticTestHandler {
   /**
      * Initializes the diagnostic test.
      * @param {HTMLElement} container - The root element of the exercise content.
@@ -15,7 +16,6 @@ export default class DiagnosticTestHandler {
      * @param {function} saveFunc - The function to call to auto-save the exercise state.
      */
   constructor(container, tab, saveFunc) {
-    // console.log('Initializing DiagnosticTestHandler instance...');
     this.containerElement = container;
     this.activeTab = tab;
     this.autoSave = saveFunc;
@@ -23,30 +23,21 @@ export default class DiagnosticTestHandler {
 
     const pageDataElement = this.containerElement.querySelector('#page-data');
     if (!pageDataElement) {
-      // console.error('Could not find #page-data element. Cannot initialize diagnostic test.');
       return;
     }
 
-    try {
-      // Explicitly register the datalabels plugin.
-      // This is a more robust approach than relying on automatic registration from the script tag.
-      Chart.register(ChartDataLabels);
+    // Explicitly register the datalabels plugin.
+    // This is a more robust approach than relying on automatic registration from the script tag.
+    Chart.register(ChartDataLabels);
 
-      this.pageData = JSON.parse(pageDataElement.textContent);
-      // console.log('Diagnostic test data loaded:', this.pageData);
+    this.pageData = JSON.parse(pageDataElement.textContent);
 
-      if (!this.pageData.blocks) {
-        // console.error("No 'blocks' array found in page data.");
-        return;
-      }
-
-      this.initializeState();
-      this.render();
-    } catch (error) {
-      // console.error('Failed to parse page data JSON or initialize diagnostic test.', error);
+    if (!this.pageData.blocks) {
+      return;
     }
 
-    // console.log('DiagnosticTestHandler instance created for tab:', this.activeTab.id);
+    this.initializeState();
+    this.render();
   }
 
   /**
@@ -55,8 +46,9 @@ export default class DiagnosticTestHandler {
      * storing answers and tracking submitted blocks.
      */
   initializeState() {
-    if (this.activeTab.exerciseState && this.activeTab.exerciseState.version === 'diagnostic-1.2') {
-      // console.log('Using existing diagnostic test state:', this.activeTab.exerciseState);
+    const { exerciseState } = this.activeTab;
+    if (exerciseState && exerciseState.version === 'diagnostic-1.2') {
+      // State already exists, do nothing.
     } else {
       // Create a fresh state object for the diagnostic test.
       this.activeTab.exerciseState = {
@@ -71,7 +63,6 @@ export default class DiagnosticTestHandler {
         }))),
         teacherNotes: '', // New field for teacher's overall notes
       };
-      // console.log('Initialized new diagnostic test state:', this.activeTab.exerciseState);
     }
   }
 
@@ -79,14 +70,12 @@ export default class DiagnosticTestHandler {
      * Main rendering function that orchestrates the UI update.
      */
   render() {
-    // console.log('Render triggered for Diagnostic Test. Current state:', this.activeTab.exerciseState);
     if (!this.containerElement) return;
 
     // --- Defensive State Check ---
     // If the state is missing (e.g., cleared by a content reload), re-initialize it.
     // This prevents crashes when switching back to a tab whose state was unexpectedly cleared.
     if (!this.activeTab.exerciseState) {
-      console.warn('Diagnostic test state was missing. Re-initializing.');
       this.initializeState();
     }
     // --- End of Defensive Check ---
@@ -99,7 +88,6 @@ export default class DiagnosticTestHandler {
 
     const contentBody = this.containerElement.querySelector('#content-body');
     if (!contentBody) {
-      // console.error('Fatal: #content-body not found. Cannot render.');
       return;
     }
     contentBody.innerHTML = ''; // Clear existing content
@@ -141,15 +129,13 @@ export default class DiagnosticTestHandler {
 
     const diagnosticsContainer = document.createElement('div');
     diagnosticsContainer.id = 'diagnostic-header';
-    diagnosticsContainer.className = 'p-4 md:p-6 mb-8 bg-slate-900/50 rounded-lg shadow-xl border-slate-700';
+    diagnosticsContainer.className = 'p-4 md:p-6 mb-8 bg-slate-900/50 rounded-lg shadow-xl border border-slate-700';
 
     let headerHTML = `
             <div class="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8">
                 <!-- Overall Score -->
                 <div class="text-center flex-shrink-0" style="background-color: #1e293b; color: #f1f5f9; border-radius: 8px; padding: 10px;">
-                    <h2 class="text-base font-bold uppercase tracking-wider" style="color: #f1f5f9;">
-                    Overall Score
-                    </h2>
+                    <h2 class="text-base font-bold uppercase tracking-wider" style="color: #f1f5f9;">Overall Score</h2>
                     <p class="text-4xl md:text-5xl font-bold mt-1">${scores.overallPercentage}%</p>
                     <p class="text-sm mt-1">${scores.totalCorrect} / ${scores.totalQuestions} Correct</p>
                 </div>
@@ -185,7 +171,6 @@ export default class DiagnosticTestHandler {
   renderOrUpdateChart(scores) {
     const ctx = this.containerElement.querySelector('#diagnostics-chart');
     if (!ctx) {
-      // console.error('Could not find canvas element for diagnostics chart.');
       return;
     }
 
@@ -248,6 +233,7 @@ export default class DiagnosticTestHandler {
             weight: 'bold',
             size: 14,
           },
+          // Only show a label if the value is greater than 0
           formatter: (value) => (value > 0 ? `${value}%` : null),
         },
         tooltip: {
@@ -271,7 +257,6 @@ export default class DiagnosticTestHandler {
       },
     };
 
-    // console.log('Creating new diagnostics chart.');
     this.activeTab.diagnosticsChart = new Chart(ctx, {
       type: 'bar',
       data: chartData,
@@ -324,7 +309,9 @@ export default class DiagnosticTestHandler {
       });
     });
 
-    const overallPercentage = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+    const overallPercentage = totalQuestions > 0
+      ? Math.round((totalCorrect / totalQuestions) * 100)
+      : 0;
 
     return {
       totalQuestions,
@@ -344,8 +331,7 @@ export default class DiagnosticTestHandler {
     const block = this.pageData.blocks[blockIndex];
 
     const blockContainer = document.createElement('div');
-    blockContainer.className = 'p-6 bg-white rounded-lg shadow-lg border '
-      + 'border-t-0 rounded-t-none border-slate-300';
+    blockContainer.className = 'p-6 bg-white rounded-lg shadow-lg border border-t-0 rounded-t-none border-slate-300';
     blockContainer.dataset.blockIndex = blockIndex;
 
     let blockHTML = `<h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4 mb-4">${block.name}</h2>`;
@@ -392,8 +378,8 @@ export default class DiagnosticTestHandler {
       const submissionArea = document.createElement('div');
       submissionArea.className = 'mt-8 text-center';
       const submitButton = document.createElement('button');
-      submitButton.className = 'bg-indigo-600 hover:bg-indigo-700 text-white font-bold '
-        + 'py-3 px-8 rounded-lg shadow-md transition-colors';
+      submitButton.className = `bg-indigo-600 hover:bg-indigo-700 text-white 
+        font-bold py-3 px-8 rounded-lg shadow-md transition-colors`;
       submitButton.textContent = `Submit Block ${String.fromCharCode(65 + blockIndex)}`;
       submitButton.dataset.blockIndex = blockIndex;
       submissionArea.appendChild(submitButton);
@@ -494,7 +480,6 @@ export default class DiagnosticTestHandler {
      * @param {number} blockIndex - The index of the block to check.
      */
   checkAnswers(blockIndex) {
-    // console.log(`Checking answers for block ${blockIndex}`);
     const blockData = this.pageData.blocks[blockIndex];
 
     blockData.exercises.forEach((question, questionIndex) => {
@@ -527,8 +512,7 @@ export default class DiagnosticTestHandler {
           Object.keys(question.answer).forEach((blankId) => {
             const userBlankAnswer = (userAnswer[blankId] || '').trim().toLowerCase();
             const correctBlankAnswer = question.answer[blankId].toLowerCase();
-            const correct = userBlankAnswer === correctBlankAnswer;
-            isCorrect[blankId] = correct;
+            isCorrect[blankId] = userBlankAnswer === correctBlankAnswer;
           });
           answerState.isCorrect = isCorrect;
           break;
@@ -545,6 +529,7 @@ export default class DiagnosticTestHandler {
           break;
         }
         default:
+          // No other question types are checked.
           break;
       }
     });
@@ -555,7 +540,6 @@ export default class DiagnosticTestHandler {
     // Check if all blocks are now submitted to enter "review mode"
     const allBlocksSubmitted = this.activeTab.exerciseState.submittedBlocks.every((s) => s);
     if (allBlocksSubmitted) {
-      // console.log('All blocks submitted. Finalizing test into review mode.');
       this.activeTab.exerciseState.isComplete = true;
     }
 
@@ -600,14 +584,15 @@ export default class DiagnosticTestHandler {
      */
   addBlockTabListeners() {
     this.containerElement.querySelectorAll('.flex.border-b button').forEach((button) => {
-      button.addEventListener('click', (e) => {
+      const buttonToModify = button;
+      buttonToModify.onclick = (e) => {
         const blockIndex = parseInt(e.target.dataset.blockIndex, 10);
         if (this.activeTab.exerciseState.currentBlockIndex !== blockIndex) {
           this.activeTab.exerciseState.currentBlockIndex = blockIndex;
           this.autoSave(this.activeTab);
           this.render();
         }
-      });
+      };
     });
   }
 
@@ -772,7 +757,6 @@ export default class DiagnosticTestHandler {
      * @param {number} blockIndex - The index of the block to un-submit.
      */
   unsubmitBlock(blockIndex) {
-    // console.log(`Un-submitting block ${blockIndex}`);
     this.activeTab.exerciseState.submittedBlocks[blockIndex] = false;
     this.activeTab.exerciseState.isComplete = false; // The test is no longer complete
     this.autoSave(this.activeTab);
@@ -784,7 +768,6 @@ export default class DiagnosticTestHandler {
      * @param {number} blockIndex - The index of the block to reset.
      */
   resetBlock(blockIndex) {
-    // console.log(`Resetting block ${blockIndex}`);
     const block = this.pageData.blocks[blockIndex];
     // Reset answers for this block
     this.activeTab.exerciseState.answers[blockIndex] = block.exercises.map(() => ({
@@ -836,7 +819,11 @@ export default class DiagnosticTestHandler {
         questionHTML = this.renderParagraphInputQuestion(question, answerState, blockSubmitted);
         break;
       case 'paragraph_error_correction':
-        questionHTML = this.renderParagraphErrorCorrectionQuestion(question, answerState, blockSubmitted);
+        questionHTML = this.renderParagraphErrorCorrectionQuestion(
+          question,
+          answerState,
+          blockSubmitted,
+        );
         break;
       default:
         questionHTML = `<p class="text-red-500">Error: Unknown question type "${question.type}"</p>`;
@@ -855,7 +842,8 @@ export default class DiagnosticTestHandler {
     notesDetails.appendChild(notesSummary);
 
     const notesTextarea = document.createElement('textarea');
-    notesTextarea.className = 'mt-2 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 bg-slate-50';
+    notesTextarea.className = `mt-2 block w-full rounded-md border-slate-300 shadow-sm 
+      focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 bg-slate-50`;
     notesTextarea.rows = 3;
     notesTextarea.placeholder = 'Jot down your thoughts or reasoning here...';
     notesTextarea.dataset.notesFor = `${blockIndex}-${questionIndex}`;

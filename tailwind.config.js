@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
-const typography = require('@tailwindcss/typography');
+// eslint-disable-next-line import/no-unresolved
+const colors = require('tailwindcss/colors');
 
 module.exports = {
   content: [
@@ -13,6 +14,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        orange: colors.orange,
+      },
       typography: ({ theme }) => ({
         slate: {
           css: {
@@ -55,6 +59,6 @@ module.exports = {
     },
   },
   plugins: [
-    typography,
+    require('@tailwindcss/typography'),
   ],
 };

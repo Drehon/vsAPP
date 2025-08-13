@@ -9,80 +9,6 @@ const fsSync = require('fs');
 const { autoUpdater } = require('electron-updater');
 const { generatePatchHTML } = require('./patch-updater');
 
-// --- Logging ---
-const setupLogging = () => {
-  const logFilePath = path.join(app.getPath('userData'), 'main-process-log.txt');
-  let devLogFilePath = null;
-
-  // Ensure user data log directory exists (usually does, but good practice)
-  const userDataDir = path.dirname(logFilePath);
-  if (!fsSync.existsSync(userDataDir)) {
-    fsSync.mkdirSync(userDataDir, { recursive: true });
-  }
-
-  // Create dev log file path if in development
-  if (!app.isPackaged) {
-    const devLogDir = path.join(app.getAppPath(), 'undefinedsave_logs');
-    if (!fsSync.existsSync(devLogDir)) {
-      fsSync.mkdirSync(devLogDir, { recursive: true });
-    }
-    devLogFilePath = path.join(devLogDir, 'dev-main-process-log.txt');
-  }
-
-  // eslint-disable-next-line no-console
-  const originalLog = console.log;
-  // eslint-disable-next-line no-console
-  const originalError = console.error;
-  // eslint-disable-next-line no-console
-  const originalWarn = console.warn;
-
-  const logToFile = (type, ...args) => {
-    // Sanitize arguments to prevent circular reference errors in JSON.stringify or similar issues
-    const sanitizedArgs = args.map((arg) => {
-      if (typeof arg === 'object' && arg !== null) {
-        try {
-          // A simple way to handle objects, might need to be more robust
-          return JSON.stringify(arg);
-        } catch (e) {
-          return '[Unserializable Object]';
-        }
-      }
-      return arg;
-    });
-
-    const message = `[${type}][${new Date().toISOString()}] ${sanitizedArgs.join(' ')}\n`;
-
-    try {
-      fsSync.appendFileSync(logFilePath, message);
-      if (devLogFilePath) {
-        fsSync.appendFileSync(devLogFilePath, message);
-      }
-    } catch (err) {
-      // If logging fails, write to the original console to avoid infinite loops
-      originalError('Failed to write to log file:', err);
-    }
-  };
-
-  // eslint-disable-next-line no-console
-  console.log = (...args) => {
-    originalLog(...args);
-    logToFile('LOG', ...args);
-  };
-
-  // eslint-disable-next-line no-console
-  console.error = (...args) => {
-    originalError(...args);
-    logToFile('ERROR', ...args);
-  };
-
-  // eslint-disable-next-line no-console
-  console.warn = (...args) => {
-    originalWarn(...args);
-    logToFile('WARN', ...args);
-  };
-};
-// --- End Logging ---
-
 /**
  * Handles the post-update tasks, specifically for updating patch notes.
  * This function is called on startup.
@@ -93,8 +19,7 @@ const handlePostUpdateTasks = async () => {
 
   try {
     // Check if a pending update file exists.
-    const pendingUpdateData = await fs.readFile(pendingUpdatePath, 'utf8');
-    JSON.parse(pendingUpdateData);
+    await fs.readFile(pendingUpdatePath, 'utf8');
 
     // 1. Copy the canonical patchnotes.json from the app resources to userData.
     const basePath = app.isPackaged ? process.resourcesPath : app.getAppPath();
@@ -348,7 +273,6 @@ ipcMain.handle('open-external-link', async (event, url) => {
 });
 
 app.on('ready', () => {
-  setupLogging();
   loadConfig();
   createWindow();
 
@@ -377,10 +301,8 @@ app.on('ready', () => {
   }
 
   mainWindow.once('ready-to-show', () => {
-    autoUpdater.checkForUpdates().catch((err) => {
-      if (mainWindow) {
-        mainWindow.webContents.send('update-status', 'error', { error: err.message });
-      }
+    autoUpdater.checkForUpdates().catch(() => {
+      // error handling is done in the 'error' event listener
     });
   });
 

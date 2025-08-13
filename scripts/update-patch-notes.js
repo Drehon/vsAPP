@@ -23,11 +23,7 @@ try {
   }).join('');
 
   const outputHtml = template.replace('<!-- PATCH_NOTES_CONTENT -->', patchNotesHtml);
-
   fs.writeFileSync(outputPath, outputHtml);
-
-  // console.log('Successfully updated patch-notes.html');
 } catch (error) {
-  // console.error('Error updating patch-notes.html:', error);
   process.exit(1);
 }

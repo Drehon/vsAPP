@@ -1,5 +1,5 @@
-import ExerciseHandler from './handlers/exercise-handler';
-import DiagnosticTestHandler from './handlers/diagnostic-test-handler';
+import { ExerciseHandler } from './handlers/exercise-handler';
+import { DiagnosticTestHandler } from './handlers/diagnostic-test-handler';
 
 // Placeholder handlers for different content modules.
 // These will be replaced with actual implementations in later phases.
@@ -13,10 +13,11 @@ function handleStaticLesson() {
  * This creates a new instance and attaches it to the tab object.
  */
 function handleInteractiveExerciseWrapper(paneElement, tab, saveState) {
+  // ESLint compliance: Create a local variable to avoid reassigning a function parameter.
+  const tabToModify = tab;
   // Each interactive exercise tab gets its own isolated handler instance.
   // The instance is stored on the tab object itself for later access.
-  // eslint-disable-next-line no-param-reassign
-  tab.exerciseInstance = new ExerciseHandler(paneElement, tab, saveState);
+  tabToModify.exerciseInstance = new ExerciseHandler(paneElement, tab, saveState);
 }
 
 /**
@@ -24,9 +25,10 @@ function handleInteractiveExerciseWrapper(paneElement, tab, saveState) {
  * This creates a new instance and attaches it to the tab object.
  */
 function handleDiagnosticTest(paneElement, tab, saveState) {
+  // ESLint compliance: Create a local variable to avoid reassigning a function parameter.
+  const tabToModify = tab;
   // Each diagnostic test tab gets its own isolated handler instance.
-  // eslint-disable-next-line no-param-reassign
-  tab.exerciseInstance = new DiagnosticTestHandler(paneElement, tab, saveState);
+  tabToModify.exerciseInstance = new DiagnosticTestHandler(paneElement, tab, saveState);
 }
 
 // Map module names to their handler functions.

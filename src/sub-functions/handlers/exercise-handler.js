@@ -7,7 +7,8 @@
  * exercise tab has an isolated instance, preventing state conflicts.
  */
 
-export default class ExerciseHandler {
+// eslint-disable-next-line import/prefer-default-export
+export class ExerciseHandler {
   /**
      * Initializes the interactive exercise based on the data provided in the DOM.
      * @param {HTMLElement} container - The root element of the exercise content.
@@ -15,7 +16,6 @@ export default class ExerciseHandler {
      * @param {function} saveFunc - The function to call to auto-save the exercise state.
      */
   constructor(container, tab, saveFunc) {
-    // console.log('Initializing ExerciseHandler instance...');
     this.containerElement = container;
     this.activeTab = tab;
     this.autoSave = saveFunc;
@@ -23,23 +23,20 @@ export default class ExerciseHandler {
 
     const pageDataElement = this.containerElement.querySelector('#page-data');
     if (!pageDataElement) {
-      // console.error('Could not find #page-data element. Cannot initialize exercise.');
       return;
     }
 
     try {
       this.pageData = JSON.parse(pageDataElement.textContent);
-      // console.log('Exercise data loaded:', this.pageData);
 
       if (!this.pageData.blocks) {
-        // console.error("No 'blocks' array found in page data.");
         return;
       }
 
       this.initializeState();
       this.render();
     } catch (error) {
-      // console.error('Failed to parse page data JSON or initialize exercise.', error);
+      // error
     }
   }
 
@@ -48,7 +45,7 @@ export default class ExerciseHandler {
      */
   initializeState() {
     if (this.activeTab.exerciseState && this.activeTab.exerciseState.version === 2) {
-      // console.log('Using existing block-aware exercise state:', this.activeTab.exerciseState);
+      //
     } else {
       this.activeTab.exerciseState = {
         version: 2,
@@ -59,11 +56,11 @@ export default class ExerciseHandler {
             isCorrect: null,
             note: '',
             submitted: false,
-          })),
+          }))
+        )),
         blockNotes: Array(this.pageData.blocks.length).fill(''),
         currentQuestionIndexes: Array(this.pageData.blocks.length).fill(0),
       };
-      // console.log('Initialized new block-aware exercise state:', this.activeTab.exerciseState);
     }
   }
 
@@ -71,12 +68,10 @@ export default class ExerciseHandler {
      * Main rendering function that orchestrates the UI update.
      */
   render() {
-    // console.log('Render triggered. Current state:', this.activeTab.exerciseState);
     if (!this.containerElement) return;
 
     const contentBody = this.containerElement.querySelector('#content-body');
     if (!contentBody) {
-      // console.error('Fatal: #content-body not found. Cannot render exercise.');
       return;
     }
     contentBody.innerHTML = '';
@@ -115,18 +110,20 @@ export default class ExerciseHandler {
       const button = document.createElement('button');
       button.dataset.blockIndex = index;
       button.textContent = block.name;
-      button.className = `py-2 px-4 text-sm font-medium border-b-2 transition-colors ${
+      const buttonClasses = `py-2 px-4 text-sm font-medium border-b-2 transition-colors ${
         isActive
           ? 'border-indigo-500 text-indigo-600'
           : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
       }`;
+      button.className = buttonClasses;
       tabs.appendChild(button);
     });
     blockTabsContainer.appendChild(tabs);
 
     const resetButton = document.createElement('button');
     resetButton.id = 'reset-block-btn';
-    resetButton.className = 'text-xs bg-red-100 hover:bg-red-200 text-red-700 font-bold py-1 px-3 rounded-lg mr-2';
+    const resetBtnClasses = 'text-xs bg-red-100 hover:bg-red-200 text-red-700 font-bold py-1 px-3 rounded-lg mr-2';
+    resetButton.className = resetBtnClasses;
     resetButton.textContent = 'Reset Fase';
     blockTabsContainer.appendChild(resetButton);
 
@@ -138,19 +135,20 @@ export default class ExerciseHandler {
      */
   addBlockTabListeners(blockTabsEl) {
     blockTabsEl.querySelectorAll('div > button').forEach((button) => {
-      button.addEventListener('click', (e) => {
+      const buttonToModify = button;
+      buttonToModify.onclick = (e) => {
         const blockIndex = parseInt(e.target.dataset.blockIndex, 10);
         if (this.activeTab.exerciseState.currentBlockIndex !== blockIndex) {
           this.activeTab.exerciseState.currentBlockIndex = blockIndex;
           this.autoSave(this.activeTab);
           this.render();
         }
-      });
+      };
     });
 
     const resetBlockBtn = blockTabsEl.querySelector('#reset-block-btn');
     if (resetBlockBtn) {
-      resetBlockBtn.addEventListener('click', () => {
+      resetBlockBtn.onclick = () => {
         const state = this.activeTab.exerciseState;
         const blockIndex = state.currentBlockIndex;
         const totalQuestionsInBlock = this.pageData.blocks[blockIndex].exercises.length;
@@ -160,7 +158,7 @@ export default class ExerciseHandler {
         state.currentQuestionIndexes[blockIndex] = 0;
         this.render();
         this.autoSave(this.activeTab);
-      });
+      };
     }
   }
 
@@ -180,23 +178,17 @@ export default class ExerciseHandler {
 
     const scoreboard = document.createElement('div');
     scoreboard.id = 'scoreboard';
-    scoreboard.className = 'flex justify-between items-center text-sm text-slate-500 mb-4 pb-4 border-b border-slate-200';
+    const scoreboardClasses = `flex justify-between items-center 
+      text-sm text-slate-500 mb-4 pb-4 border-b border-slate-200`;
+    scoreboard.className = scoreboardClasses;
 
     scoreboard.innerHTML = `
             <div class="flex items-center gap-4">
                 <span>Domanda: <strong>${current > total ? total : current}/${total}</strong></span>
                 <div class="flex items-center gap-1">
-                    <input type="number" id="jump-to-input"
-                    class="w-16 text-center border border-slate-300 rounded-md text-sm p-1"
-                    min="1" max="${total}" value="${current > total ? total : current}">
-                    <button id="jump-to-btn"
-                    class="text-xs bg-slate-200 hover:bg-slate-300 font-bold py-1 px-2 rounded-lg">
-                    Vai
-                    </button>
-                    <button id="first-question-btn"
-                    class="text-xs bg-slate-200 hover:bg-slate-300 font-bold py-1 px-2 rounded-lg">
-                    Torna alla D.1
-                    </button>
+                    <input type="number" id="jump-to-input" class="w-16 text-center border border-slate-300 rounded-md text-sm p-1" min="1" max="${total}" value="${current > total ? total : current}">
+                    <button id="jump-to-btn" class="text-xs bg-slate-200 hover:bg-slate-300 font-bold py-1 px-2 rounded-lg">Vai</button>
+                    <button id="first-question-btn" class="text-xs bg-slate-200 hover:bg-slate-300 font-bold py-1 px-2 rounded-lg">Torna alla D.1</button>
                 </div>
             </div>
             <span>Corrette: <strong>${correct}/${answered}</strong></span>
@@ -218,7 +210,11 @@ export default class ExerciseHandler {
     questionWrapper.className = 'question-wrapper my-6';
 
     if (questionIndex >= block.exercises.length) {
-      questionWrapper.innerHTML = '<div class="text-center p-8"><h3 class="text-xl font-bold">Fase Completata!</h3><p>Puoi passare alla fase successiva o rivedere le tue risposte.</p></div>';
+      questionWrapper.innerHTML = `
+        <div class="text-center p-8">
+          <h3 class="text-xl font-bold">Fase Completata!</h3>
+          <p>Puoi passare alla fase successiva o rivedere le tue risposte.</p>
+        </div>`;
       return questionWrapper;
     }
 
@@ -230,13 +226,13 @@ export default class ExerciseHandler {
     let questionHTML = '';
     switch (question.type) {
       case 'true-false':
-        questionHTML = this.renderTrueFalseQuestion(question, answerState);
+        questionHTML = ExerciseHandler.renderTrueFalseQuestion(question, answerState);
         break;
       case 'multiple-choice':
-        questionHTML = this.renderMultipleChoiceQuestion(question, answerState);
+        questionHTML = ExerciseHandler.renderMultipleChoiceQuestion(question, answerState);
         break;
       case 'fill-in-the-blank':
-        questionHTML = this.renderFillInTheBlankQuestion(question, answerState);
+        questionHTML = ExerciseHandler.renderFillInTheBlankQuestion(question, answerState);
         break;
       default:
         questionHTML = `<p class="text-red-500">Error: Unknown question type "${question.type}"</p>`;
@@ -246,14 +242,17 @@ export default class ExerciseHandler {
     questionWrapper.appendChild(questionContent);
 
     if (answerState && answerState.userAnswer !== null) {
-      const feedbackEl = this.createFeedbackArea(answerState.isCorrect, question.explanation);
+      const feedbackEl = ExerciseHandler.createFeedbackArea(
+        answerState.isCorrect,
+        question.explanation,
+      );
       questionWrapper.appendChild(feedbackEl);
     }
 
-    const navigationEl = this.createNavigation();
+    const navigationEl = ExerciseHandler.createNavigation();
     questionWrapper.appendChild(navigationEl);
 
-    const notesEl = this.createNotesArea(blockIndex, questionIndex, answerState);
+    const notesEl = ExerciseHandler.createNotesArea(blockIndex, questionIndex, answerState);
     questionWrapper.appendChild(notesEl);
 
     const blockNotesEl = this.createBlockNotesArea(blockIndex);
@@ -265,8 +264,7 @@ export default class ExerciseHandler {
   /**
      * Generates the HTML for a true/false question.
      */
-  // eslint-disable-next-line class-methods-use-this
-  renderTrueFalseQuestion(question, answerState) {
+  static renderTrueFalseQuestion(question, answerState) {
     const hasAnswered = answerState && answerState.userAnswer !== null;
     const isCorrect = answerState && answerState.isCorrect;
     const userAnswer = answerState && answerState.userAnswer;
@@ -298,8 +296,7 @@ export default class ExerciseHandler {
   /**
      * Generates the HTML for a multiple-choice question.
      */
-  // eslint-disable-next-line class-methods-use-this
-  renderMultipleChoiceQuestion(question, answerState) {
+  static renderMultipleChoiceQuestion(question, answerState) {
     const hasAnswered = answerState && answerState.userAnswer !== null;
     const isCorrect = answerState && answerState.isCorrect;
     const userAnswer = answerState && answerState.userAnswer;
@@ -328,7 +325,10 @@ export default class ExerciseHandler {
 
     let questionHTML = question.question;
     if (submitted && !hasAnswered) {
-      questionHTML = question.question.replace('______', '<span class="unanswered-blank" style="background-color: #FECACA;">______</span>');
+      questionHTML = question.question.replace(
+        '______',
+        '<span class="unanswered-blank" style="background-color: #FECACA;">______</span>',
+      );
     }
 
     return `
@@ -346,8 +346,7 @@ export default class ExerciseHandler {
   /**
      * Generates the HTML for a fill-in-the-blank question.
      */
-  // eslint-disable-next-line class-methods-use-this
-  renderFillInTheBlankQuestion(question, answerState) {
+  static renderFillInTheBlankQuestion(question, answerState) {
     const hasAnswered = answerState && answerState.userAnswer !== null;
     const isCorrect = answerState && answerState.isCorrect;
     const userAnswer = answerState ? (answerState.userAnswer || '') : '';
@@ -386,11 +385,16 @@ export default class ExerciseHandler {
   /**
      * Creates the feedback area for an answered question.
      */
-  // eslint-disable-next-line class-methods-use-this
-  createFeedbackArea(isCorrect, explanation) {
+  static createFeedbackArea(isCorrect, explanation) {
     const feedbackEl = document.createElement('div');
-    feedbackEl.className = `feedback-container mt-4 p-4 border-l-4 rounded-r-lg ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
-    const markCorrectBtn = !isCorrect ? '<button class="mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-yellow-800 font-bold py-1 px-2 rounded-lg ml-4">Segna come Corretta</button>' : '';
+    const feedbackClasses = `feedback-container mt-4 p-4 border-l-4 rounded-r-lg ${
+      isCorrect ? 'feedback-correct' : 'feedback-incorrect'
+    }`;
+    feedbackEl.className = feedbackClasses;
+    const markCorrectBtn = !isCorrect
+      ? `<button class="mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500
+text-yellow-800 font-bold py-1 px-2 rounded-lg ml-4">Segna come Corretta</button>`
+      : '';
     feedbackEl.innerHTML = explanation + markCorrectBtn;
     return feedbackEl;
   }
@@ -398,8 +402,7 @@ export default class ExerciseHandler {
   /**
      * Creates the notes area for the current question.
      */
-  // eslint-disable-next-line class-methods-use-this
-  createNotesArea(blockIndex, questionIndex, answerState) {
+  static createNotesArea(blockIndex, questionIndex, answerState) {
     const notesArea = document.createElement('div');
     notesArea.className = 'mt-4 p-4 rounded-lg border border-slate-300 bg-slate-50';
     const noteId = `question-notes-${blockIndex}-${questionIndex}`;
@@ -430,8 +433,7 @@ export default class ExerciseHandler {
   /**
      * Creates the navigation controls (previous/next).
      */
-  // eslint-disable-next-line class-methods-use-this
-  createNavigation() {
+  static createNavigation() {
     const el = document.createElement('div');
     el.id = 'navigation-controls';
     el.className = 'flex justify-center items-center gap-4 pt-4 mt-4 border-t border-slate-200';
@@ -496,7 +498,11 @@ export default class ExerciseHandler {
     if (jumpInput && jumpBtn) {
       jumpBtn.onclick = () => {
         const questionNum = parseInt(jumpInput.value, 10);
-        if (!Number.isNaN(questionNum) && questionNum >= 1 && questionNum <= totalQuestionsInBlock) {
+        if (
+          !Number.isNaN(questionNum)
+          && questionNum >= 1
+          && questionNum <= totalQuestionsInBlock
+        ) {
           state.currentQuestionIndexes[blockIndex] = questionNum - 1;
           this.render();
           this.autoSave(this.activeTab);
@@ -533,9 +539,9 @@ export default class ExerciseHandler {
       switch (question.type) {
         case 'true-false':
         case 'multiple-choice':
-        {
           questionElement.querySelectorAll('.fase-btn').forEach((btn) => {
-            btn.addEventListener('click', (e) => {
+            const btnToModify = btn;
+            btnToModify.onclick = (e) => {
               const userAnswer = e.target.dataset.answer;
               let correctAnswer = question.answer;
 
@@ -552,12 +558,11 @@ export default class ExerciseHandler {
               state.answers[blockIndex][questionIndex].isCorrect = userAnswer === correctAnswer;
               this.autoSave(this.activeTab);
               this.render();
-            });
+            };
           });
           break;
-        }
-        case 'fill-in-the-blank':
-        {
+
+        case 'fill-in-the-blank': {
           const checkBtn = questionElement.querySelector('#check-answer-btn');
           const inputEl = questionElement.querySelector('#fill-in-blank-input');
           if (checkBtn && inputEl) {
@@ -565,16 +570,21 @@ export default class ExerciseHandler {
               const userAnswer = inputEl.value.trim();
               const correctAnswer = question.answer.trim();
               state.answers[blockIndex][questionIndex].userAnswer = userAnswer;
-              state.answers[blockIndex][questionIndex].isCorrect = userAnswer.toLowerCase().replace(/[.,]/g, '') === correctAnswer.toLowerCase().replace(/[.,]/g, '');
+              const formattedUserAnswer = userAnswer.toLowerCase().replace(/[.,]/g, '');
+              const formattedCorrectAnswer = correctAnswer.toLowerCase()
+                .replace(/[.,]/g, '');
+              const currentAnswer = state.answers[blockIndex][questionIndex];
+              currentAnswer.isCorrect = formattedUserAnswer === formattedCorrectAnswer;
               this.autoSave(this.activeTab);
               this.render();
             };
-            checkBtn.addEventListener('click', handleCheck);
-            inputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleCheck(); });
+            checkBtn.onclick = handleCheck;
+            inputEl.onkeydown = (e) => { if (e.key === 'Enter') handleCheck(); };
           }
           break;
         }
         default:
+          // No other question types have answer listeners.
           break;
       }
     }

@@ -8,7 +8,6 @@ const fs = require('fs').promises;
  * @param {Array<object>} patchNotesData - The array of patch note objects to render.
  */
 const generatePatchHTML = async (app, patchNotesData) => {
-  // console.log('[PatchNotes] Generating patch-notes.html from provided data.');
   const userDataPath = app.getPath('userData');
 
   // The HTML template is always loaded from the application's bundled resources.
@@ -37,8 +36,6 @@ const generatePatchHTML = async (app, patchNotesData) => {
 
   const outputHtml = template.replace('<!-- PATCH_NOTES_CONTENT -->', patchNotesHtml);
   await fs.writeFile(userOutputPath, outputHtml);
-  // console.log('[PatchNotes] Successfully generated and saved patch-notes.html to '
-  //   + `${userOutputPath}`);
 };
 
 module.exports = { generatePatchHTML };

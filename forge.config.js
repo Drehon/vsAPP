@@ -70,25 +70,15 @@ module.exports = {
   ],
   hooks: {
     postMake: async (forgeConfig, makeResults) => {
-      // console.log('Post-make hook: Triggered.');
-
-      const squirrelWindowsResult = makeResults.find((result) => (
-        result.artifacts.some((artifact) => (
-          artifact.endsWith('.exe')
-        ))
-      ));
+      const squirrelWindowsResult = makeResults.find(
+        (result) => result.artifacts.some((artifact) => artifact.endsWith('.exe')),
+      );
 
       if (!squirrelWindowsResult) {
-        // console.warn('Post-make hook: Could not find squirrel.windows build artifacts. Skipping YAML generation.');
         return;
       }
 
       const exePath = squirrelWindowsResult.artifacts.find((artifact) => artifact.endsWith('.exe'));
-
-      // *** ADDED LOG HERE ***
-      // console.log('Post-make hook: Identified EXE path:', exePath);
-
-      // console.log(`Post-make hook: Generating latest.yml for installer at ${exePath}`);
       const scriptPath = path.join(__dirname, 'scripts', 'generate-update-yaml.js');
       execSync(`node "${scriptPath}" "${exePath}"`, { stdio: 'inherit' });
 
@@ -96,12 +86,8 @@ module.exports = {
       const yamlPath = path.join(outputDir, 'latest.yml');
 
       if (fs.existsSync(yamlPath)) {
-        // console.log(`Post-make hook: Found ${yamlPath}.`);
         squirrelWindowsResult.artifacts.push(yamlPath);
-        // console.log('Post-make hook: Added latest.yml to artifacts for publishing.');
       } else {
-        // console.error('Post-make hook: ERROR - Could not find latest.yml at '
-        //   + `${yamlPath} after generation.`);
         throw new Error('latest.yml not found after generation');
       }
     },

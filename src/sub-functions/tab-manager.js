@@ -1,5 +1,19 @@
-export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, contentPanes, loadHomeIntoTab, loadContentIntoTab, loadSettingsIntoTab, updateGlobalToolbar) {
-  function renderTabs() {
+// eslint-disable-next-line import/prefer-default-export
+export function initializeTabManager(
+  tabs,
+  nextTabId,
+  tabBar,
+  newTabBtn,
+  contentPanes,
+  loadHomeIntoTab,
+  loadContentIntoTab,
+  loadSettingsIntoTab,
+  updateGlobalToolbar,
+) {
+  let localNextTabId = nextTabId;
+  const manager = {};
+
+  manager.renderTabs = () => {
     while (tabBar.children.length > 1) {
       tabBar.removeChild(tabBar.firstChild);
     }
@@ -18,15 +32,15 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
       tabEl.addEventListener('click', (e) => {
         if (e.target.closest('.close-tab-btn')) return;
         if (tab.active && tab.view !== 'home') {
-          loadHomeIntoTab(tab.id, tabs, renderTabs, addTab);
+          loadHomeIntoTab(tab.id, tabs, manager.renderTabs, manager.addTab);
         } else if (!tab.active) {
-          switchTab(tab.id);
+          manager.switchTab(tab.id);
         }
       });
 
       tabEl.querySelector('.close-tab-btn').addEventListener('click', (e) => {
         e.stopPropagation();
-        closeTab(tab.id);
+        manager.closeTab(tab.id);
       });
 
       tabBar.insertBefore(tabEl, newTabBtn);
@@ -35,18 +49,22 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
     const activeTab = tabs.find((t) => t.active);
     if (activeTab) {
       document.querySelectorAll('.content-pane').forEach((pane) => {
-        pane.style.display = pane.id === `pane-${activeTab.id}` ? 'block' : 'none';
+        const paneToModify = pane;
+        paneToModify.style.display = pane.id === `pane-${activeTab.id}` ? 'block' : 'none';
       });
     }
-  }
+  };
 
-  async function addTab(setActive = true, filePath = null, type = 'home') {
+  manager.addTab = async (setActive = true, filePath = null, type = 'home') => {
     if (setActive) {
-      tabs.forEach((t) => t.active = false);
+      tabs.forEach((t) => {
+        const tabToModify = t;
+        tabToModify.active = false;
+      });
     }
 
     const newTab = {
-      id: nextTabId++,
+      id: localNextTabId,
       title: 'Home',
       view: 'home',
       filePath: null,
@@ -54,6 +72,7 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
       active: true,
       exerciseState: null,
     };
+    localNextTabId += 1;
     tabs.push(newTab);
 
     const paneEl = document.createElement('div');
@@ -62,22 +81,25 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
     contentPanes.appendChild(paneEl);
 
     if (type === 'content' && filePath) {
-      await loadContentIntoTab(newTab.id, filePath, tabs, renderTabs, addTab);
+      await loadContentIntoTab(newTab.id, filePath, tabs, manager.renderTabs, manager.addTab);
     } else if (type === 'settings') {
-      await loadSettingsIntoTab(newTab.id, tabs, renderTabs);
+      await loadSettingsIntoTab(newTab.id, tabs, manager.renderTabs);
     } else {
-      await loadHomeIntoTab(newTab.id, tabs, renderTabs, addTab);
+      await loadHomeIntoTab(newTab.id, tabs, manager.renderTabs, manager.addTab);
     }
 
     if (setActive) {
-      return switchTab(newTab.id);
+      return manager.switchTab(newTab.id);
     }
-    renderTabs();
+    manager.renderTabs();
     return newTab;
-  }
+  };
 
-  async function switchTab(tabId) {
-    tabs.forEach((t) => t.active = (t.id === tabId));
+  manager.switchTab = async (tabId) => {
+    tabs.forEach((t) => {
+      const tabToModify = t;
+      tabToModify.active = (t.id === tabId);
+    });
     const newActiveTab = tabs.find((t) => t.active);
 
     if (newActiveTab) {
@@ -85,7 +107,6 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
       // After switching tabs, we check if the newly active tab has an
       // exercise handler instance attached to it.
       if (newActiveTab.exerciseInstance && typeof newActiveTab.exerciseInstance.render === 'function') {
-        console.log(`Tab ${newActiveTab.id} has an exercise instance. Triggering re-render.`);
         // If it does, we call its render() method. This forces the UI
         // of the exercise to be completely redrawn using its own correct,
         // isolated state, ensuring the view is always in sync.
@@ -96,11 +117,11 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
       updateGlobalToolbar(newActiveTab);
     }
 
-    renderTabs();
+    manager.renderTabs();
     return newActiveTab;
-  }
+  };
 
-  function closeTab(tabId) {
+  manager.closeTab = (tabId) => {
     const tabIndex = tabs.findIndex((t) => t.id === tabId);
     if (tabIndex === -1) return null;
 
@@ -112,16 +133,19 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
 
     if (wasActive && tabs.length > 0) {
       const newActiveIndex = Math.max(0, tabIndex - 1);
-      return switchTab(tabs[newActiveIndex].id);
+      return manager.switchTab(tabs[newActiveIndex].id);
     } if (tabs.length === 0) {
-      return addTab();
+      return manager.addTab();
     }
 
-    renderTabs();
+    manager.renderTabs();
     return tabs.find((t) => t.active) || null;
-  }
+  };
 
   return {
-    renderTabs, addTab, switchTab, closeTab,
+    renderTabs: manager.renderTabs,
+    addTab: manager.addTab,
+    switchTab: manager.switchTab,
+    closeTab: manager.closeTab,
   };
 }

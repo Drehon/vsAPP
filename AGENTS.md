@@ -64,14 +64,29 @@ You can build the application using the following commands:
 
 ## Testing and Verification
 
--   **Testing:** There is currently no configured test script (e.g., `npm test`). When adding new features, please consider adding relevant tests.
--   **Linting:** The linting script is not configured (`"lint": "echo \"No linting configured\""`). Adherence to a consistent code style is still expected. Please match the style of the existing code.
+-   **Testing:** This project uses Jest for testing. You can run the test suite using the following command:
+    ```bash
+    npm test
+    ```
+    Please add tests for new features and ensure all tests pass before submitting changes.
+
+-   **Linting:** This project uses ESLint to enforce code style. You can check for linting errors with:
+    ```bash
+    npm run lint
+    ```
+    To automatically fix many common issues, you can run:
+    ```bash
+    npm run lint:fix
+    ```
+    Please ensure your code adheres to the linting rules before submitting. The configuration can be found in `.eslintrc.js`.
 
 ## Programmatic Checks
 
 Before submitting, please ensure the following:
 
 1.  **Application Runs:** The application must start and run without errors using `npm start`.
-2.  **Functionality Works:** Manually verify that your changes work as expected within the running application.
+2.  **Linter Passes:** The code must pass all ESLint checks. Run `npm run lint` to verify.
+3.  **Tests Pass:** All tests must pass. Run `npm test` to verify.
+4.  **Functionality Works:** Manually verify that your changes work as expected within the running application.
 
 Thank you for your cooperation!
