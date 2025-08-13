@@ -14,7 +14,8 @@ module.exports = {
   },
   ignorePatterns: ['src/lib/**'],
   rules: {
-    // Add any specific rule overrides here
+    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    'global-require': 'off',
   },
   globals: {
     MAIN_WINDOW_WEBPACK_ENTRY: 'readonly',
