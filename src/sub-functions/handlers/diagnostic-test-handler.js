@@ -376,7 +376,8 @@ export class DiagnosticTestHandler {
       const submissionArea = document.createElement('div');
       submissionArea.className = 'mt-8 text-center';
       const submitButton = document.createElement('button');
-      submitButton.className = 'bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-colors';
+      submitButton.className = `bg-indigo-600 hover:bg-indigo-700 text-white 
+        font-bold py-3 px-8 rounded-lg shadow-md transition-colors`;
       submitButton.textContent = `Submit Block ${String.fromCharCode(65 + blockIndex)}`;
       submitButton.dataset.blockIndex = blockIndex;
       submissionArea.appendChild(submitButton);
@@ -835,7 +836,8 @@ export class DiagnosticTestHandler {
     notesDetails.appendChild(notesSummary);
 
     const notesTextarea = document.createElement('textarea');
-    notesTextarea.className = 'mt-2 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 bg-slate-50';
+    notesTextarea.className = `mt-2 block w-full rounded-md border-slate-300 shadow-sm 
+      focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 bg-slate-50`;
     notesTextarea.rows = 3;
     notesTextarea.placeholder = 'Jot down your thoughts or reasoning here...';
     notesTextarea.dataset.notesFor = `${blockIndex}-${questionIndex}`;

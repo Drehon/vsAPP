@@ -210,7 +210,11 @@ export class ExerciseHandler {
     questionWrapper.className = 'question-wrapper my-6';
 
     if (questionIndex >= block.exercises.length) {
-      questionWrapper.innerHTML = '<div class="text-center p-8"><h3 class="text-xl font-bold">Fase Completata!</h3><p>Puoi passare alla fase successiva o rivedere le tue risposte.</p></div>';
+      questionWrapper.innerHTML = `
+        <div class="text-center p-8">
+          <h3 class="text-xl font-bold">Fase Completata!</h3>
+          <p>Puoi passare alla fase successiva o rivedere le tue risposte.</p>
+        </div>`;
       return questionWrapper;
     }
 
@@ -380,9 +384,8 @@ export class ExerciseHandler {
      */
   static createFeedbackArea(isCorrect, explanation) {
     const feedbackEl = document.createElement('div');
-    const feedbackClasses = `feedback-container mt-4 p-4 border-l-4 rounded-r-lg ${
-      isCorrect ? 'feedback-correct' : 'feedback-incorrect'
-    }`;
+    const feedbackClasses = `feedback-container mt-4 p-4 border-l-4 rounded-r-lg 
+      ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
     feedbackEl.className = feedbackClasses;
     const markCorrectBtn = !isCorrect ? '<button class="mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-yellow-800 font-bold py-1 px-2 rounded-lg ml-4">Segna come Corretta</button>' : '';
     feedbackEl.innerHTML = explanation + markCorrectBtn;
@@ -557,7 +560,8 @@ export class ExerciseHandler {
               const correctAnswer = question.answer.trim();
               state.answers[blockIndex][questionIndex].userAnswer = userAnswer;
               const formattedUserAnswer = userAnswer.toLowerCase().replace(/[.,]/g, '');
-              const formattedCorrectAnswer = correctAnswer.toLowerCase().replace(/[.,]/g, '');
+              const formattedCorrectAnswer = correctAnswer.toLowerCase()
+                .replace(/[.,]/g, '');
               state.answers[blockIndex][questionIndex].isCorrect =
                 formattedUserAnswer === formattedCorrectAnswer;
               this.autoSave(this.activeTab);
