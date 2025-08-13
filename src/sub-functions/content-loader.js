@@ -1,5 +1,49 @@
 import { hydrateContent } from './content-hydrator.js';
 
+function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExerciseState, updateGlobalToolbar) {
+  const populateList = async (listId, getFiles, folder) => {
+    const list = paneElement.querySelector(`#${listId}`);
+    if (!list) {
+      console.warn(`Home: List element with ID '${listId}' not found.`);
+      return;
+    }
+
+    list.innerHTML = '<p class="text-slate-400">Loading...</p>';
+    try {
+      const files = await getFiles();
+      list.innerHTML = '';
+      if (files.length === 0) {
+        list.innerHTML = `<p class="text-slate-400">No ${folder} found.</p>`;
+        return;
+      }
+      files.forEach((file) => {
+        const link = document.createElement('a');
+        link.href = '#';
+        link.textContent = file.replace('.html', '').replace(/-/g, ' ');
+        link.className = 'block p-3 bg-slate-700 rounded-md hover:bg-indigo-600 transition-colors font-medium';
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const activeTab = tabs.find((t) => t.active);
+          if (activeTab.view === 'home') {
+            loadContentIntoTab(activeTab.id, `${folder}/${file}`, tabs, renderTabs, addTab, saveExerciseState, updateGlobalToolbar);
+          } else {
+            addTab(true, `${folder}/${file}`, 'content');
+          }
+        });
+        list.appendChild(link);
+      });
+    } catch (error) {
+      console.error(`Home: Failed to load ${folder}:`, error);
+      list.innerHTML = `<p class="text-red-400">Error loading ${folder}.</p>`;
+    }
+  };
+
+  populateList('lessons-list', window.api.getLessons, 'lessons');
+  populateList('lessons-an-list', window.api.getLessonsAN, 'lessonsAN');
+  populateList('exercises-list', window.api.getExercises, 'exercises');
+  populateList('tests-list', window.api.getTests, 'others');
+}
+
 export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addTab, saveExerciseState, updateGlobalToolbar, options) {
   const tab = tabs.find((t) => t.id === tabId);
   if (!tab) return;
@@ -235,6 +279,37 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
       const originalButtonParent = resetAllSavesBtn.parentNode;
       let confirmationContainer = null;
 
+      const handleYesClick = async () => {
+        try {
+          const result = await window.api.resetAllAutoSaves();
+          if (result.success) {
+            window.dispatchEvent(new CustomEvent('show-feedback', { detail: { message: `Successfully deleted ${result.count} auto-save file(s).` } }));
+            if (activeSavesList) {
+              activeSavesList.innerHTML = '<li class="italic">No active auto-saves found.</li>';
+            }
+          } else {
+            throw new Error(result.error);
+          }
+        } catch (error) {
+          console.error('Failed to reset all auto-saves:', error);
+          window.dispatchEvent(new CustomEvent('show-feedback', { detail: { message: `An error occurred: ${error.message}` } }));
+        } finally {
+          hideConfirmation();
+        }
+      };
+
+      const hideConfirmation = () => {
+        if (confirmationContainer) {
+          confirmationContainer.remove();
+          confirmationContainer = null;
+        }
+        resetAllSavesBtn.style.display = 'inline-flex';
+      };
+
+      const handleNoClick = () => {
+        hideConfirmation();
+      };
+
       const showConfirmation = () => {
         resetAllSavesBtn.style.display = 'none';
 
@@ -263,83 +338,8 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
         noBtn.addEventListener('click', handleNoClick);
       };
 
-      const hideConfirmation = () => {
-        if (confirmationContainer) {
-          confirmationContainer.remove();
-          confirmationContainer = null;
-        }
-        resetAllSavesBtn.style.display = 'inline-flex';
-      };
-
-      const handleYesClick = async () => {
-        try {
-          const result = await window.api.resetAllAutoSaves();
-          if (result.success) {
-            window.dispatchEvent(new CustomEvent('show-feedback', { detail: { message: `Successfully deleted ${result.count} auto-save file(s).` } }));
-            if (activeSavesList) {
-              activeSavesList.innerHTML = '<li class="italic">No active auto-saves found.</li>';
-            }
-          } else {
-            throw new Error(result.error);
-          }
-        } catch (error) {
-          console.error('Failed to reset all auto-saves:', error);
-          window.dispatchEvent(new CustomEvent('show-feedback', { detail: { message: `An error occurred: ${error.message}` } }));
-        } finally {
-          hideConfirmation();
-        }
-      };
-
-      const handleNoClick = () => {
-        hideConfirmation();
-      };
-
       resetAllSavesBtn.addEventListener('click', showConfirmation);
     }
   }
   renderTabs();
-}
-
-function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExerciseState, updateGlobalToolbar) {
-  const populateList = async (listId, getFiles, folder) => {
-    const list = paneElement.querySelector(`#${listId}`);
-    if (!list) {
-      console.warn(`Home: List element with ID '${listId}' not found.`);
-      return;
-    }
-
-    list.innerHTML = '<p class="text-slate-400">Loading...</p>';
-    try {
-      const files = await getFiles();
-      list.innerHTML = '';
-      if (files.length === 0) {
-        list.innerHTML = `<p class="text-slate-400">No ${folder} found.</p>`;
-        return;
-      }
-      files.forEach((file) => {
-        const link = document.createElement('a');
-        link.href = '#';
-        link.textContent = file.replace('.html', '').replace(/-/g, ' ');
-        link.className = 'block p-3 bg-slate-700 rounded-md hover:bg-indigo-600 transition-colors font-medium';
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          const activeTab = tabs.find((t) => t.active);
-          if (activeTab.view === 'home') {
-            loadContentIntoTab(activeTab.id, `${folder}/${file}`, tabs, renderTabs, addTab, saveExerciseState, updateGlobalToolbar);
-          } else {
-            addTab(true, `${folder}/${file}`, 'content');
-          }
-        });
-        list.appendChild(link);
-      });
-    } catch (error) {
-      console.error(`Home: Failed to load ${folder}:`, error);
-      list.innerHTML = `<p class="text-red-400">Error loading ${folder}.</p>`;
-    }
-  };
-
-  populateList('lessons-list', window.api.getLessons, 'lessons');
-  populateList('lessons-an-list', window.api.getLessonsAN, 'lessonsAN');
-  populateList('exercises-list', window.api.getExercises, 'exercises');
-  populateList('tests-list', window.api.getTests, 'others');
 }
