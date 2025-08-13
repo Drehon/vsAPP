@@ -106,7 +106,7 @@ window.addEventListener('api-ready', () => {
     if (result.success) {
       // --- Show Feedback Message ---
       let objectName;
-      const lessonMatch = tab.title.match(/^(L\d+)/);
+      const [, lessonNumber] = tab.title.match(/^(L\d+)/) || [];
       const pageIdPrefix = pageId.split('-')[0];
 
       // Use pageId for more reliable feedback
@@ -114,8 +114,8 @@ window.addEventListener('api-ready', () => {
         objectName = 'Verbs';
       } else if (pageId.includes('student-grammar')) {
         objectName = 'Grammar';
-      } else if (lessonMatch) {
-        objectName = lessonMatch[1];
+      } else if (lessonNumber) {
+        objectName = lessonNumber;
       } else {
         objectName = pageIdPrefix || 'File'; // Fallback
       }
@@ -148,15 +148,15 @@ window.addEventListener('api-ready', () => {
 
           // --- Show Feedback Message ---
           let objectName;
-          const lessonMatch = tab.title.match(/^(L\d+)/);
+          const [, lessonNumber] = tab.title.match(/^(L\d+)/) || [];
           const pageIdPrefix = pageId.split('-')[0];
 
           if (pageId.includes('student-verbs')) {
             objectName = 'Verbs';
           } else if (pageId.includes('student-grammar')) {
             objectName = 'Grammar';
-          } else if (lessonMatch) {
-            objectName = lessonMatch[1];
+          } else if (lessonNumber) {
+            objectName = lessonNumber;
           } else {
             objectName = pageIdPrefix || 'File'; // Fallback
           }

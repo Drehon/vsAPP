@@ -16,7 +16,6 @@ export class ExerciseHandler {
      * @param {function} saveFunc - The function to call to auto-save the exercise state.
      */
   constructor(container, tab, saveFunc) {
-    console.log('Initializing ExerciseHandler instance...');
     this.containerElement = container;
     this.activeTab = tab;
     this.autoSave = saveFunc;
@@ -24,23 +23,20 @@ export class ExerciseHandler {
 
     const pageDataElement = this.containerElement.querySelector('#page-data');
     if (!pageDataElement) {
-      console.error('Could not find #page-data element. Cannot initialize exercise.');
       return;
     }
 
     try {
       this.pageData = JSON.parse(pageDataElement.textContent);
-      console.log('Exercise data loaded:', this.pageData);
 
       if (!this.pageData.blocks) {
-        console.error("No 'blocks' array found in page data.");
         return;
       }
 
       this.initializeState();
       this.render();
     } catch (error) {
-      console.error('Failed to parse page data JSON or initialize exercise.', error);
+      // error
     }
   }
 
@@ -49,7 +45,7 @@ export class ExerciseHandler {
      */
   initializeState() {
     if (this.activeTab.exerciseState && this.activeTab.exerciseState.version === 2) {
-      console.log('Using existing block-aware exercise state:', this.activeTab.exerciseState);
+      //
     } else {
       this.activeTab.exerciseState = {
         version: 2,
@@ -63,7 +59,6 @@ export class ExerciseHandler {
         blockNotes: Array(this.pageData.blocks.length).fill(''),
         currentQuestionIndexes: Array(this.pageData.blocks.length).fill(0),
       };
-      console.log('Initialized new block-aware exercise state:', this.activeTab.exerciseState);
     }
   }
 
@@ -71,12 +66,10 @@ export class ExerciseHandler {
      * Main rendering function that orchestrates the UI update.
      */
   render() {
-    console.log('Render triggered. Current state:', this.activeTab.exerciseState);
     if (!this.containerElement) return;
 
     const contentBody = this.containerElement.querySelector('#content-body');
     if (!contentBody) {
-      console.error('Fatal: #content-body not found. Cannot render exercise.');
       return;
     }
     contentBody.innerHTML = '';

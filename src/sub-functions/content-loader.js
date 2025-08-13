@@ -4,7 +4,6 @@ function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExe
   const populateList = async (listId, getFiles, folder) => {
     const list = paneElement.querySelector(`#${listId}`);
     if (!list) {
-      console.warn(`Home: List element with ID '${listId}' not found.`);
       return;
     }
 
@@ -34,7 +33,6 @@ function attachHomeEventListeners(paneElement, tabs, addTab, renderTabs, saveExe
         list.appendChild(link);
       });
     } catch (error) {
-      console.error(`Home: Failed to load ${folder}:`, error);
       list.innerHTML = `<p class="text-red-400">Error loading ${folder}.</p>`;
     }
   };
@@ -86,12 +84,10 @@ export async function loadContentIntoTab(tabId, filePath, tabs, renderTabs, addT
     const loadedState = await window.api.loadExerciseState(stateIdentifier);
     if (loadedState) {
       tab.exerciseState = loadedState;
-      console.log(`State successfully loaded for identifier: ${stateIdentifier}`);
     } else {
       // CRITICAL: If no state is loaded, ensure any old in-memory state is cleared.
       // This forces the handler to initialize a fresh state object.
       tab.exerciseState = null;
-      console.log(`No state found for identifier: ${stateIdentifier}. Clearing in-memory state.`);
     }
     // --- End of Fix ---
 
@@ -146,7 +142,6 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerc
   try {
     homeContent = await window.api.getHomeContent();
   } catch (error) {
-    console.error('Error fetching home content:', error);
     homeContent = '<div class="p-6 text-red-700 bg-red-100 rounded-lg"><h2 class="font-bold text-lg">Error Loading Home Page</h2><p>Could not load the home page content.</p></div>';
   }
 
@@ -164,7 +159,7 @@ export async function loadHomeIntoTab(tabId, tabs, renderTabs, addTab, saveExerc
       // Attach listeners to the newly added home content
       attachHomeEventListeners(scrollableContent, tabs, addTab, renderTabs, saveExerciseState, updateGlobalToolbar);
     } catch (error) {
-      console.error('Error attaching home event listeners:', error);
+      // empty
     }
   }
 
@@ -240,13 +235,12 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
           };
           const result = await window.api.saveConfig(newConfig);
           if (result.success) {
-            alert('Settings saved successfully!');
+            window.dispatchEvent(new CustomEvent('show-feedback', { detail: { message: 'Settings saved successfully!' } }));
           } else {
             throw new Error(result.error);
           }
         } catch (error) {
-          console.error('Failed to save settings:', error);
-          alert(`Failed to save settings: ${error.message}`);
+          window.dispatchEvent(new CustomEvent('show-feedback', { detail: { message: `Failed to save settings: ${error.message}` } }));
         }
       });
     }
@@ -304,7 +298,6 @@ export async function loadSettingsIntoTab(tabId, tabs, renderTabs, updateGlobalT
             throw new Error(result.error);
           }
         } catch (error) {
-          console.error('Failed to reset all auto-saves:', error);
           window.dispatchEvent(new CustomEvent('show-feedback', { detail: { message: `An error occurred: ${error.message}` } }));
         } finally {
           hideConfirmation();

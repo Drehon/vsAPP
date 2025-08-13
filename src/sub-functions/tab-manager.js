@@ -97,7 +97,6 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
       // After switching tabs, we check if the newly active tab has an
       // exercise handler instance attached to it.
       if (newActiveTab.exerciseInstance && typeof newActiveTab.exerciseInstance.render === 'function') {
-        console.log(`Tab ${newActiveTab.id} has an exercise instance. Triggering re-render.`);
         // If it does, we call its render() method. This forces the UI
         // of the exercise to be completely redrawn using its own correct,
         // isolated state, ensuring the view is always in sync.

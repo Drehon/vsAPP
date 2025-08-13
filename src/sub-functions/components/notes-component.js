@@ -19,7 +19,6 @@ export function initializeNotes(container, notesState = {}, onUpdate = () => {})
     const textarea = component.querySelector('textarea');
 
     if (!noteId || !toggleBtn || !content || !textarea) {
-      console.warn('Skipping invalid notes component:', component);
       return;
     }
 

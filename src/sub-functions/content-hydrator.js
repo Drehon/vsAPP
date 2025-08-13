@@ -4,8 +4,7 @@ import { DiagnosticTestHandler } from './handlers/diagnostic-test-handler';
 // Placeholder handlers for different content modules.
 // These will be replaced with actual implementations in later phases.
 
-function handleStaticLesson(paneElement, _tab, _saveState) {
-  console.log('Hydrating a static lesson.', paneElement);
+function handleStaticLesson() {
   // Future logic for static lessons (e.g., initializing notes component) will go here.
 }
 
@@ -52,7 +51,6 @@ function hydrateContent(contentWrapper, tab, saveState) {
   const contentRoot = contentWrapper.firstElementChild;
 
   if (!contentRoot || !contentRoot.hasAttribute('data-module')) {
-    console.warn('Content loaded without a "data-module" attribute on its root element. No hydration will occur.', contentWrapper);
     return;
   }
 
@@ -60,11 +58,8 @@ function hydrateContent(contentWrapper, tab, saveState) {
   const handler = moduleHandlers[moduleName];
 
   if (handler) {
-    console.log(`Found module "${moduleName}", delegating to handler.`);
     // Pass the wrapper, tab, and save function to the appropriate handler.
     handler(contentWrapper, tab, saveState);
-  } else {
-    console.warn(`No handler found for module: "${moduleName}".`);
   }
 }
 
