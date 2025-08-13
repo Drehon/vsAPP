@@ -1,5 +1,6 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
+const rules = require('./webpack.rules');
 
 module.exports = {
   /**
@@ -9,7 +10,7 @@ module.exports = {
   entry: './src/main.js',
   // Put your normal webpack config below here
   module: {
-    rules: require('./webpack.rules'),
+    rules,
   },
   plugins: [
     new CopyWebpackPlugin({
