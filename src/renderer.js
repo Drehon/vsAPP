@@ -375,6 +375,7 @@ window.addEventListener('api-ready', () => {
     handleLoadHome,
     handleLoadContent,
     handleLoadSettings,
+    updateGlobalToolbar,
   );
 
   async function displayAppVersion() {

@@ -82,6 +82,15 @@ export default class DiagnosticTestHandler {
     // console.log('Render triggered for Diagnostic Test. Current state:', this.activeTab.exerciseState);
     if (!this.containerElement) return;
 
+    // --- Defensive State Check ---
+    // If the state is missing (e.g., cleared by a content reload), re-initialize it.
+    // This prevents crashes when switching back to a tab whose state was unexpectedly cleared.
+    if (!this.activeTab.exerciseState) {
+      console.warn('Diagnostic test state was missing. Re-initializing.');
+      this.initializeState();
+    }
+    // --- End of Defensive Check ---
+
     // Destroy old chart instance to prevent memory leaks
     if (this.activeTab.diagnosticsChart) {
       this.activeTab.diagnosticsChart.destroy();

@@ -1,55 +1,13 @@
-export default function initializeTabManager(
-  tabs,
-  nextTabId,
-  tabBar,
-  newTabBtn,
-  contentPanes,
-  loadHomeIntoTab,
-  loadContentIntoTab,
-  loadSettingsIntoTab,
-) {
-  let nextTabIdState = nextTabId;
-
-  function closeTab(tabId, tabsData, render, add, switchT) {
-    const tabIndex = tabsData.findIndex((t) => t.id === tabId);
-    if (tabIndex === -1) return null;
-
-    const pane = document.getElementById(`pane-${tabId}`);
-    if (pane) pane.remove();
-
-    const wasActive = tabsData[tabIndex].active;
-    const updatedTabs = tabsData.filter((t) => t.id !== tabId);
-
-    if (wasActive && updatedTabs.length > 0) {
-      const newActiveIndex = Math.max(0, tabIndex - 1);
-      return switchT(updatedTabs[newActiveIndex].id, updatedTabs, render, add);
-    } if (updatedTabs.length === 0) {
-      return add(updatedTabs, render, add, switchT);
+export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, contentPanes, loadHomeIntoTab, loadContentIntoTab, loadSettingsIntoTab, updateGlobalToolbar) {
+  function renderTabs() {
+    while (tabBar.children.length > 1) {
+      tabBar.removeChild(tabBar.firstChild);
     }
 
-    render(updatedTabs, tabBar, newTabBtn, loadHomeIntoTab, add, switchT, closeTab);
-    return updatedTabs.find((t) => t.active) || null;
-  }
-
-  function renderTabs(
-    tabsData,
-    tabBarEl,
-    newTabBtnEl,
-    loadHome,
-    add,
-    switchT,
-  ) {
-    while (tabBarEl.children.length > 1) {
-      tabBarEl.removeChild(tabBarEl.firstChild);
-    }
-
-    tabsData.forEach((tab) => {
+    tabs.forEach((tab) => {
       const tabEl = document.createElement('div');
       tabEl.id = `tab-${tab.id}`;
-      const tabClasses = `flex items-center justify-between h-9 px-4 cursor-pointer border-r border-slate-700 ${
-        tab.active ? 'bg-indigo-600' : 'bg-slate-800 hover:bg-slate-700'
-      }`;
-      tabEl.className = tabClasses;
+      tabEl.className = `flex items-center justify-between h-9 px-4 cursor-pointer border-r border-slate-700 ${tab.active ? 'bg-indigo-600' : 'bg-slate-800 hover:bg-slate-700'}`;
       tabEl.innerHTML = `
         <span class="truncate pr-2">${tab.title}</span>
         <button class="close-tab-btn w-6 h-6 rounded-full hover:bg-slate-600 flex-shrink-0 flex items-center justify-center">
@@ -60,68 +18,43 @@ export default function initializeTabManager(
       tabEl.addEventListener('click', (e) => {
         if (e.target.closest('.close-tab-btn')) return;
         if (tab.active && tab.view !== 'home') {
-          loadHome(tab.id, tabsData, renderTabs, add);
+          loadHomeIntoTab(tab.id, tabs, renderTabs, addTab);
         } else if (!tab.active) {
-          switchT(tab.id);
+          switchTab(tab.id);
         }
       });
 
       tabEl.querySelector('.close-tab-btn').addEventListener('click', (e) => {
         e.stopPropagation();
-        closeTab(tab.id, tabsData, renderTabs, add, switchT);
+        closeTab(tab.id);
       });
 
-      tabBarEl.insertBefore(tabEl, newTabBtnEl);
+      tabBar.insertBefore(tabEl, newTabBtn);
     });
 
-    const activeTab = tabsData.find((t) => t.active);
+    const activeTab = tabs.find((t) => t.active);
     if (activeTab) {
       document.querySelectorAll('.content-pane').forEach((pane) => {
-        const p = pane;
-        p.style.display = p.id === `pane-${activeTab.id}` ? 'block' : 'none';
+        pane.style.display = pane.id === `pane-${activeTab.id}` ? 'block' : 'none';
       });
     }
   }
 
-  async function switchTab(tabId, tabsData, render, add) {
-    const updatedTabs = tabsData.map((t) => ({ ...t, active: t.id === tabId }));
-    const newActiveTab = updatedTabs.find((t) => t.active);
-
-    if (newActiveTab) {
-      if (newActiveTab.exerciseInstance && typeof newActiveTab.exerciseInstance.render === 'function') {
-        newActiveTab.exerciseInstance.render();
-      }
-    }
-
-    render(updatedTabs, tabBar, newTabBtn, loadHomeIntoTab, add, switchTab, closeTab);
-    return newActiveTab;
-  }
-
-  async function addTab(
-    tabsData,
-    render,
-    add,
-    switchT,
-    setActive = true,
-    filePath = null,
-    type = 'home',
-  ) {
-    let updatedTabs = tabsData;
+  async function addTab(setActive = true, filePath = null, type = 'home') {
     if (setActive) {
-      updatedTabs = tabsData.map((t) => ({ ...t, active: false }));
+      tabs.forEach((t) => t.active = false);
     }
 
     const newTab = {
-      id: nextTabIdState,
+      id: nextTabId++,
       title: 'Home',
       view: 'home',
       filePath: null,
-      pageId: null,
+      pageId: null, // Add pageId property
       active: true,
       exerciseState: null,
     };
-    nextTabIdState += 1;
-    updatedTabs.push(newTab);
+    tabs.push(newTab);
 
     const paneEl = document.createElement('div');
     paneEl.id = `pane-${newTab.id}`;
@@ -129,49 +62,66 @@ export default function initializeTabManager(
     contentPanes.appendChild(paneEl);
 
     if (type === 'content' && filePath) {
-      await loadContentIntoTab(newTab.id, filePath, updatedTabs, render, add);
+      await loadContentIntoTab(newTab.id, filePath, tabs, renderTabs, addTab);
     } else if (type === 'settings') {
-      await loadSettingsIntoTab(newTab.id, updatedTabs, render);
+      await loadSettingsIntoTab(newTab.id, tabs, renderTabs);
     } else {
-      await loadHomeIntoTab(newTab.id, updatedTabs, render, add);
+      await loadHomeIntoTab(newTab.id, tabs, renderTabs, addTab);
     }
 
     if (setActive) {
-      return switchT(newTab.id, updatedTabs, render, add);
+      return switchTab(newTab.id);
     }
-    render(updatedTabs, tabBar, newTabBtn, loadHomeIntoTab, add, switchT, closeTab);
+    renderTabs();
     return newTab;
   }
 
+  async function switchTab(tabId) {
+    tabs.forEach((t) => t.active = (t.id === tabId));
+    const newActiveTab = tabs.find((t) => t.active);
+
+    if (newActiveTab) {
+      // This is the critical fix for the unresponsive UI bug.
+      // After switching tabs, we check if the newly active tab has an
+      // exercise handler instance attached to it.
+      if (newActiveTab.exerciseInstance && typeof newActiveTab.exerciseInstance.render === 'function') {
+        console.log(`Tab ${newActiveTab.id} has an exercise instance. Triggering re-render.`);
+        // If it does, we call its render() method. This forces the UI
+        // of the exercise to be completely redrawn using its own correct,
+        // isolated state, ensuring the view is always in sync.
+        newActiveTab.exerciseInstance.render();
+      }
+    }
+    if (updateGlobalToolbar) {
+      updateGlobalToolbar(newActiveTab);
+    }
+
+    renderTabs();
+    return newActiveTab;
+  }
+
+  function closeTab(tabId) {
+    const tabIndex = tabs.findIndex((t) => t.id === tabId);
+    if (tabIndex === -1) return null;
+
+    const pane = document.getElementById(`pane-${tabId}`);
+    if (pane) pane.remove();
+
+    const wasActive = tabs[tabIndex].active;
+    tabs.splice(tabIndex, 1);
+
+    if (wasActive && tabs.length > 0) {
+      const newActiveIndex = Math.max(0, tabIndex - 1);
+      return switchTab(tabs[newActiveIndex].id);
+    } if (tabs.length === 0) {
+      return addTab();
+    }
+
+    renderTabs();
+    return tabs.find((t) => t.active) || null;
+  }
+
   return {
-    renderTabs: (tabsData) => renderTabs(
-      tabsData,
-      tabBar,
-      newTabBtn,
-      loadHomeIntoTab,
-      (data, render, a, s) => addTab(data, render, a, s),
-      (id, data, render, a) => switchTab(id, data, render, a),
-    ),
-    addTab: (tabsData, setActive, filePath, type) => addTab(
-      tabsData,
-      (d, r, a, s) => addTab(d, r, a, s),
-      (id, d, r, a) => switchTab(id, d, r, a),
-      setActive,
-      filePath,
-      type,
-    ),
-    switchTab: (tabId, tabsData) => switchTab(
-      tabId,
-      tabsData,
-      (d, r, a, s) => renderTabs(d, r, a, s),
-      (d, r, a, s) => addTab(d, r, a, s),
-    ),
-    closeTab: (tabId, tabsData) => closeTab(
-      tabId,
-      tabsData,
-      (d, r, a, s) => renderTabs(d, r, a, s),
-      (d, r, a, s) => addTab(d, r, a, s),
-      (id, d, r, a) => switchTab(id, d, r, a),
-    ),
+    renderTabs, addTab, switchTab, closeTab,
   };
 }
