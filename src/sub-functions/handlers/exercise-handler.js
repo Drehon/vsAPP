@@ -110,18 +110,20 @@ export class ExerciseHandler {
       const button = document.createElement('button');
       button.dataset.blockIndex = index;
       button.textContent = block.name;
-      button.className = `py-2 px-4 text-sm font-medium border-b-2 transition-colors ${
+      const buttonClasses = `py-2 px-4 text-sm font-medium border-b-2 transition-colors ${
         isActive
           ? 'border-indigo-500 text-indigo-600'
           : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
       }`;
+      button.className = buttonClasses;
       tabs.appendChild(button);
     });
     blockTabsContainer.appendChild(tabs);
 
     const resetButton = document.createElement('button');
     resetButton.id = 'reset-block-btn';
-    resetButton.className = 'text-xs bg-red-100 hover:bg-red-200 text-red-700 font-bold py-1 px-3 rounded-lg mr-2';
+    const resetBtnClasses = 'text-xs bg-red-100 hover:bg-red-200 text-red-700 font-bold py-1 px-3 rounded-lg mr-2';
+    resetButton.className = resetBtnClasses;
     resetButton.textContent = 'Reset Fase';
     blockTabsContainer.appendChild(resetButton);
 
@@ -176,7 +178,8 @@ export class ExerciseHandler {
 
     const scoreboard = document.createElement('div');
     scoreboard.id = 'scoreboard';
-    scoreboard.className = 'flex justify-between items-center text-sm text-slate-500 mb-4 pb-4 border-b border-slate-200';
+    const scoreboardClasses = 'flex justify-between items-center text-sm text-slate-500 mb-4 pb-4 border-b border-slate-200';
+    scoreboard.className = scoreboardClasses;
 
     scoreboard.innerHTML = `
             <div class="flex items-center gap-4">
@@ -376,7 +379,8 @@ export class ExerciseHandler {
      */
   static createFeedbackArea(isCorrect, explanation) {
     const feedbackEl = document.createElement('div');
-    feedbackEl.className = `feedback-container mt-4 p-4 border-l-4 rounded-r-lg ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+    const feedbackClasses = `feedback-container mt-4 p-4 border-l-4 rounded-r-lg ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+    feedbackEl.className = feedbackClasses;
     const markCorrectBtn = !isCorrect ? '<button class="mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-yellow-800 font-bold py-1 px-2 rounded-lg ml-4">Segna come Corretta</button>' : '';
     feedbackEl.innerHTML = explanation + markCorrectBtn;
     return feedbackEl;

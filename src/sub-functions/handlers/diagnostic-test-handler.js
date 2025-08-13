@@ -46,7 +46,8 @@ export class DiagnosticTestHandler {
      * storing answers and tracking submitted blocks.
      */
   initializeState() {
-    if (this.activeTab.exerciseState && this.activeTab.exerciseState.version === 'diagnostic-1.2') {
+    const { exerciseState } = this.activeTab;
+    if (exerciseState && exerciseState.version === 'diagnostic-1.2') {
       // State already exists, do nothing.
     } else {
       // Create a fresh state object for the diagnostic test.
