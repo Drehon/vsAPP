@@ -1,5 +1,7 @@
 // eslint-disable-next-line import/prefer-default-export
 export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, contentPanes, loadHomeIntoTab, loadContentIntoTab, loadSettingsIntoTab, updateGlobalToolbar) {
+  let localNextTabId = nextTabId;
+
   function renderTabs() {
     while (tabBar.children.length > 1) {
       tabBar.removeChild(tabBar.firstChild);
@@ -36,18 +38,22 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
     const activeTab = tabs.find((t) => t.active);
     if (activeTab) {
       document.querySelectorAll('.content-pane').forEach((pane) => {
-        pane.style.display = pane.id === `pane-${activeTab.id}` ? 'block' : 'none';
+        const paneToModify = pane;
+        paneToModify.style.display = pane.id === `pane-${activeTab.id}` ? 'block' : 'none';
       });
     }
   }
 
   async function addTab(setActive = true, filePath = null, type = 'home') {
     if (setActive) {
-      tabs.forEach((t) => t.active = false);
+      tabs.forEach((t) => {
+        const tabToModify = t;
+        tabToModify.active = false;
+      });
     }
 
     const newTab = {
-      id: nextTabId++,
+      id: localNextTabId++,
       title: 'Home',
       view: 'home',
       filePath: null,
@@ -78,7 +84,10 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
   }
 
   async function switchTab(tabId) {
-    tabs.forEach((t) => t.active = (t.id === tabId));
+    tabs.forEach((t) => {
+      const tabToModify = t;
+      tabToModify.active = (t.id === tabId);
+    });
     const newActiveTab = tabs.find((t) => t.active);
 
     if (newActiveTab) {

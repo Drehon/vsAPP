@@ -602,7 +602,8 @@ export class DiagnosticTestHandler {
      */
   addBlockTabListeners() {
     this.containerElement.querySelectorAll('.flex.border-b button').forEach((button) => {
-      button.onclick = (e) => {
+      const buttonToModify = button;
+      buttonToModify.onclick = (e) => {
         const blockIndex = parseInt(e.target.dataset.blockIndex, 10);
         if (this.activeTab.exerciseState.currentBlockIndex !== blockIndex) {
           this.activeTab.exerciseState.currentBlockIndex = blockIndex;

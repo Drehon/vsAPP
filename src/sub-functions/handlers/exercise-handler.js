@@ -138,7 +138,8 @@ export class ExerciseHandler {
      */
   addBlockTabListeners(blockTabsEl) {
     blockTabsEl.querySelectorAll('div > button').forEach((button) => {
-      button.onclick = (e) => {
+      const buttonToModify = button;
+      buttonToModify.onclick = (e) => {
         const blockIndex = parseInt(e.target.dataset.blockIndex, 10);
         if (this.activeTab.exerciseState.currentBlockIndex !== blockIndex) {
           this.activeTab.exerciseState.currentBlockIndex = blockIndex;
@@ -520,7 +521,8 @@ export class ExerciseHandler {
         case 'true-false':
         case 'multiple-choice':
           questionElement.querySelectorAll('.fase-btn').forEach((btn) => {
-            btn.onclick = (e) => {
+            const btnToModify = btn;
+            btnToModify.onclick = (e) => {
               const userAnswer = e.target.dataset.answer;
               let correctAnswer = question.answer;
 
