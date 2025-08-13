@@ -1,4 +1,4 @@
-export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, contentPanes, loadHomeIntoTab, loadContentIntoTab, loadSettingsIntoTab) {
+export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, contentPanes, loadHomeIntoTab, loadContentIntoTab, loadSettingsIntoTab, updateGlobalToolbar) {
   function renderTabs() {
     while (tabBar.children.length > 1) {
       tabBar.removeChild(tabBar.firstChild);
@@ -91,6 +91,9 @@ export function initializeTabManager(tabs, nextTabId, tabBar, newTabBtn, content
         // isolated state, ensuring the view is always in sync.
         newActiveTab.exerciseInstance.render();
       }
+    }
+    if (updateGlobalToolbar) {
+      updateGlobalToolbar(newActiveTab);
     }
 
     renderTabs();
