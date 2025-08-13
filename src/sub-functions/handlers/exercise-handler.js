@@ -178,7 +178,8 @@ export class ExerciseHandler {
 
     const scoreboard = document.createElement('div');
     scoreboard.id = 'scoreboard';
-    const scoreboardClasses = 'flex justify-between items-center text-sm text-slate-500 mb-4 pb-4 border-b border-slate-200';
+    const scoreboardClasses = 'flex justify-between items-center text-sm text-slate-500'
+      + ' mb-4 pb-4 border-b border-slate-200';
     scoreboard.className = scoreboardClasses;
 
     scoreboard.innerHTML = `
@@ -379,7 +380,9 @@ export class ExerciseHandler {
      */
   static createFeedbackArea(isCorrect, explanation) {
     const feedbackEl = document.createElement('div');
-    const feedbackClasses = `feedback-container mt-4 p-4 border-l-4 rounded-r-lg ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+    const feedbackClasses = `feedback-container mt-4 p-4 border-l-4 rounded-r-lg ${
+      isCorrect ? 'feedback-correct' : 'feedback-incorrect'
+    }`;
     feedbackEl.className = feedbackClasses;
     const markCorrectBtn = !isCorrect ? '<button class="mark-correct-btn text-xs bg-yellow-400 hover:bg-yellow-500 text-yellow-800 font-bold py-1 px-2 rounded-lg ml-4">Segna come Corretta</button>' : '';
     feedbackEl.innerHTML = explanation + markCorrectBtn;
@@ -555,7 +558,8 @@ export class ExerciseHandler {
               state.answers[blockIndex][questionIndex].userAnswer = userAnswer;
               const formattedUserAnswer = userAnswer.toLowerCase().replace(/[.,]/g, '');
               const formattedCorrectAnswer = correctAnswer.toLowerCase().replace(/[.,]/g, '');
-              state.answers[blockIndex][questionIndex].isCorrect = formattedUserAnswer === formattedCorrectAnswer;
+              state.answers[blockIndex][questionIndex].isCorrect =
+                formattedUserAnswer === formattedCorrectAnswer;
               this.autoSave(this.activeTab);
               this.render();
             };

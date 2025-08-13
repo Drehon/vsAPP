@@ -329,8 +329,7 @@ export class DiagnosticTestHandler {
     const block = this.pageData.blocks[blockIndex];
 
     const blockContainer = document.createElement('div');
-    blockContainer.className = 'p-6 bg-white rounded-lg shadow-lg border border-t-0 rounded-t-none '
-      + 'border-slate-300';
+    blockContainer.className = 'p-6 bg-white rounded-lg shadow-lg border border-t-0 rounded-t-none border-slate-300';
     blockContainer.dataset.blockIndex = blockIndex;
 
     let blockHTML = `<h2 class="text-2xl font-bold text-slate-800 border-b border-slate-200 pb-4 mb-4">${block.name}</h2>`;
@@ -836,8 +835,7 @@ export class DiagnosticTestHandler {
     notesDetails.appendChild(notesSummary);
 
     const notesTextarea = document.createElement('textarea');
-    notesTextarea.className = 'mt-2 block w-full rounded-md border-slate-300 shadow-sm '
-      + 'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 bg-slate-50';
+    notesTextarea.className = 'mt-2 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 bg-slate-50';
     notesTextarea.rows = 3;
     notesTextarea.placeholder = 'Jot down your thoughts or reasoning here...';
     notesTextarea.dataset.notesFor = `${blockIndex}-${questionIndex}`;

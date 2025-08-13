@@ -10,12 +10,8 @@ for this purpose, the txt has
 3) appendable only area where you progressively log as we work, this is because i expect we'll use this txt for multiple tasks.
 
 currently we have attempted all tasks, but a small number of errors persists
-currently - ✖ 11 problems (11 errors, 0 warnings)
+currently - ✖ 5 problems (6 errors, 0 warnings)
 address the remaining issues, all MAX LEN
 
 update red.txt at the end of each plan
 verify code integrity, but do not attempt to actually run the app, instead ask me to do any testing if that is needed
-
-
-
-
