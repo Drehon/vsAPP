@@ -1,6 +1,6 @@
 [
       {
-    "body": "Addressed Deprecation warnings on publishing of new patches.",
+    "body": "Addressed Deprecation warnings on publishing of new patches. \r\nFocusing on more permanently fixing templates.\r\nVerification of package updates and expansion of testing environments.",
     "name": "v1.4.5",
     "publishedAt": "2025-08-14T15:03:00Z",
     "tagName": "v1.4.5"
@@ -12,7 +12,7 @@
     "tagName": "v1.4.4"
   }, 
       {
-    "body": "Restored stability of the app. Lint partially completed, but now multiple files are red in visual studio code. Target - Solving issues and finalizing Lint by next patch. ",
+    "body": "Restored stability of the app. Lint partially completed, but now multiple files are red in visual studio code. \r\nTarget - Solving issues and finalizing Lint by next patch. ",
     "name": "v1.4.3",
     "publishedAt": "2025-08-13T18:03:00Z",
     "tagName": "v1.4.3"
