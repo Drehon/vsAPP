@@ -229,3 +229,16 @@ On running npm run test the following shows in terminal, fix this issue:
 
   Configuration Documentation:
   https://jestjs.io/docs/configuration
+
+---
+
+ISSUES FROM STEP 7
+- STEP 7-1
+On running npm run start the following shows in terminal, fix this issue:
+
+App threw an error during load
+ReferenceError: __dirname is not defined in ES module scope
+This file is being treated as an ES module because it has a '.js' file extension and 'C:\Users\User\Documents\TEFL Personal\package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+    at file:///C:/Users/User/Documents/TEFL%20Personal/.webpack/main/index.js:21925:84
+    at file:///C:/Users/User/Documents/TEFL%20Personal/.webpack/main/index.js:22510:12
+    at ModuleJob.run (node:internal/modules/esm/module_job:194:25)

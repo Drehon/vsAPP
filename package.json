@@ -45,6 +45,7 @@
     "@electron-forge/publisher-github": "^7.8.3",
     "@eslint/js": "^9.33.0",
     "@eslint/json": "^0.13.1",
+    "@playwright/test": "^1.44.1",
     "@tailwindcss/typography": "^0.5.16",
     "@vercel/webpack-asset-relocator-loader": "^1.7.3",
     "cross-env": "^10.0.0",
@@ -53,11 +54,11 @@
     "eslint": "^9.33.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jest": "^29.0.1",
+    "eslint-plugin-n": "^17.21.3",
     "globals": "^16.3.0",
     "jest": "^30.0.5",
-    "@playwright/test": "^1.44.1",
-    "playwright": "^1.44.1",
     "node-loader": "^2.0.0",
+    "playwright": "^1.44.1",
     "style-loader": "^4.0.0",
     "tailwindcss": "^4.1.11"
   }
