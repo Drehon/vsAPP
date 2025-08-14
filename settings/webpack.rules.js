@@ -1,0 +1,28 @@
+module.exports = [
+  // Add support for native node modules
+  {
+    // We're specifying native_modules in the test because the asset relocator loader generates a
+    // "fake" .node file which is really a cjs file.
+    test: /native_modules\/.+\.node$/,
+    use: 'node-loader',
+  },
+  {
+    test: /\.(m?js|node)$/,
+    parser: { amd: false },
+    use: {
+      loader: '@vercel/webpack-asset-relocator-loader',
+      options: {
+        outputAssetBase: 'native_modules',
+      },
+    },
+  },
+  // Rule for handling font files (e.g., .ttf, .woff, .woff2)
+  // This will emit font files into the output directory and provide their public URL.
+  {
+    test: /\.(woff|woff2|eot|ttf|otf)$/i,
+    type: 'asset/resource',
+    generator: {
+      filename: 'fonts/[name][ext]', // Output fonts to a 'fonts' subdirectory
+    },
+  },
+];
