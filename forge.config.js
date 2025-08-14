@@ -9,11 +9,10 @@ module.exports = {
   packagerConfig: {
     asar: true,
     extraResource: [
-      './lessons',
-      './exercises',
-      // THE FIX IS HERE: Added the new content directories
-      './lessonsAN',
-      './others',
+      './pages/lessons',
+      './pages/exercises',
+      './pages/lessonsAN',
+      './pages/others',
       './app-update.yml',
       './patchnotes.json',
     ],

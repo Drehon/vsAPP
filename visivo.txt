@@ -1,0 +1,56 @@
+### Introduction: A Plan for Visual Verification
+
+This document outlines a plan to enable automated visual verification of the vsAPP Electron application. 
+The primary goal is to provide a reliable way for me, the AI agent, to "see" the application's user interface exactly as a user would.
+
+Currently, I can only read the source code (HTML, CSS, JavaScript). I cannot render it to see the final visual output. 
+This makes it difficult to debug layout issues, verify styling changes, or confirm that dynamically generated content is appearing correctly.
+
+By implementing the plan below, we will be able to automatically launch the application and capture screenshots of different pages and states. 
+These screenshots will serve as a ground truth for visual testing, ensuring that any changes to the code do not unintentionally alter the application's appearance. 
+This will lead to more effective debugging and a shared understanding of the visual state of the app.
+
+### The Plan: Implementing Visual Verification
+
+Here is the step-by-step plan to set up and execute visual verification tests:
+
+**Part 1: Setup and Configuration**
+
+1.  **Install Playwright:**
+    *   I will add `playwright` to the `devDependencies` in `package.json`.
+    *   I will then run `npm install` to install the new dependency. 
+        Playwright is a powerful browser automation library that also has experimental support for Electron, making it the ideal tool for this task.
+
+2.  **Create a New Test Suite for Visuals:**
+    *   I will create a new test file at `tests/visual.spec.js`. 
+        This file will contain all the tests related to visual verification. This keeps the visual tests separate from the existing unit tests.
+
+**Part 2: The Visual Verification Script**
+
+3.  **Write the Core Test Logic in `tests/visual.spec.js`:**
+    *   **Import necessary modules:** I will import `test` and `expect` from `@playwright/test`, and `_electron` from `playwright`.
+    *   **Launch the application:** Before each test run, I will programmatically launch the Electron application. I will use Playwright's `electron.launch()` function. I will need to determine the correct path to the application's executable after it has been packaged by Electron Forge. The path is typically in the `out/` directory.
+    *   **Define a helper function for navigation and screenshots:** I will create a reusable function that takes a page identifier (e.g., a lesson ID or an exercise name) as input. This function will:
+        a.  Perform the necessary clicks to navigate to the specified page within the running application. This will involve using Playwright locators to find and click on the correct buttons or links in the app's navigation UI.
+        b.  Wait for the page content to be fully loaded.
+        c.  Take a screenshot of the entire application window using `window.screenshot()`.
+        d.  Save the screenshot to a designated directory, e.g., `tests/screenshots/`.
+
+**Part 3: Creating the Visual Tests**
+
+4.  **Implement Tests for Key Pages:**
+    *   I will add individual tests for a representative set of pages:
+        *   A `lesson` page from `pages/lessons`.
+        *   A `lessonAN` (flashcard) page from `pages/lessonsAN`.
+        *   An `exercise` page from `pages/exercises`.
+        *   The `patch-notes` page from `pages/others`.
+    *   Each test will call the helper function created in the previous step to navigate to the page and capture a screenshot.
+
+**Part 4: Execution and Verification**
+
+5.  **Integrate with `npm test`:**
+    *   I will update the `test` script in `package.json` to run both the existing Jest tests and the new Playwright visual tests. This might involve creating a new script like `test:visual` and chaining it with the existing `test` script. For example: `"test": "jest && npx playwright test tests/visual.spec.js"`.
+
+6.  **Run and Verify:**
+    *   I will execute the full test suite.
+    *   I will then inspect the generated screenshots to confirm that they correctly represent the application's UI for the tested pages.

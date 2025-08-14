@@ -18,7 +18,7 @@ The fragment **must** have a single root element. This root element must have at
 A simple static lesson needs no special logic, so it uses the `static-lesson` module.
 
 ```html
-<!-- lessons/my-new-lesson.html -->
+<!-- pages/lessons/my-new-lesson.html -->
 <div class="content-container p-6 md:p-10"
      data-page-id="my-new-lesson"
      data-module="static-lesson">
@@ -44,7 +44,7 @@ For any content that requires interactivity, the logic should be driven by a **J
 An interactive HTML fragment follows this pattern:
 
 ```html
-<!-- exercises/my-new-exercise.html -->
+<!-- pages/exercises/my-new-exercise.html -->
 <div class="content-container p-6 md:p-10"
      data-page-id="my-new-exercise"
      data-module="interactive-exercise">

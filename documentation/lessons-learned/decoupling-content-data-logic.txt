@@ -16,7 +16,7 @@ The entire refactoring project was a successful effort to address these problems
 ### The Three Pillars of the New Architecture:
 
 1.  **Content (The "What"): HTML Fragments**
-    -   All content pages (`lessons/`, `exercises/`, etc.) are now pure, standardized HTML fragments. They contain no `<html>` or `<body>` tags.
+    -   All content pages (`pages/lessons/`, `pages/exercises/`, etc.) are now pure, standardized HTML fragments. They contain no `<html>` or `<body>` tags.
     -   Their only job is to define the basic structure of the page and to act as a container for data and a declaration of required functionality.
 
 2.  **Data (The "Information"): The JSON Island**

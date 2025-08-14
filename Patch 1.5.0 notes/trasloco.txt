@@ -1,0 +1,126 @@
+# Directory Structure Change Report
+
+This document outlines the necessary changes to move the `lessons`, `lessonsAN`, `exercises`, and `others` directories into a new `pages` directory.
+
+## 1. File & Directory Moves
+
+The following directories and all their contents must be moved:
+
+- `lessons/` -> `pages/lessons/`
+- `lessonsAN/` -> `pages/lessonsAN/`
+- `exercises/` -> `pages/exercises/`
+- `others/` -> `pages/others/`
+
+## 2. Required Code and Configuration Changes
+
+The following files need to be updated to reflect the new directory structure.
+
+---
+
+### File: `.gitignore`
+
+- **Change:** Update the path for the ignored patch notes file.
+- **Line 99:**
+  - **OLD:** `others/patch-notes.html`
+  - **NEW:** `pages/others/patch-notes.html`
+
+---
+
+### File: `documentation/creating-content.txt`
+
+- **Change:** Update example paths.
+- **Line 21:**
+  - **OLD:** `<!-- lessons/my-new-lesson.html -->`
+  - **NEW:** `<!-- pages/lessons/my-new-lesson.html -->`
+- **Line 47:**
+  - **OLD:** `<!-- exercises/my-new-exercise.html -->`
+  - **NEW:** `<!-- pages/exercises/my-new-exercise.html -->`
+
+---
+
+### File: `documentation/lessons-learned/decoupling-content-data-logic.txt`
+
+- **Change:** Update path references in the documentation.
+- **Line 19:**
+  - **OLD:** `(`lessons/`, `exercises/`, etc.)`
+  - **NEW:** `(`pages/lessons/`, `pages/exercises/`, etc.)`
+
+---
+
+### File: `repository-tree.txt`
+
+- **Change:** The content of this file, which represents the repository's file tree, needs to be updated to reflect the new directory structure. The `lessons`, `lessonsAN`, `exercises`, and `others` directories should be shown inside the new `pages` directory.
+
+---
+
+### File: `security.txt`
+
+- **Change:** The content of this file, which represents the repository's file tree, needs to be updated to reflect the new directory structure. The `lessons`, `lessonsAN`, `exercises`, and `others` directories should be shown inside the new `pages` directory.
+
+---
+
+### File: `src/main.js`
+
+- **Change:** Update the path for the patch notes file.
+- **Line 237:**
+  - **OLD:** `if (relativePath === 'others/patch-notes.html')`
+  - **NEW:** `if (relativePath === 'pages/others/patch-notes.html')`
+
+---
+
+### File: `src/sub-functions/content-loader.js`
+
+- **Change:** Update the folder paths used for loading content.
+- **Line 56:**
+  - **OLD:** `populateList('lessons-list', window.api.getLessons, 'lessons');`
+  - **NEW:** `populateList('lessons-list', window.api.getLessons, 'pages/lessons');`
+- **Line 57:**
+  - **OLD:** `populateList('lessons-an-list', window.api.getLessonsAN, 'lessonsAN');`
+  - **NEW:** `populateList('lessons-an-list', window.api.getLessonsAN, 'pages/lessonsAN');`
+- **Line 58:**
+  - **OLD:** `populateList('exercises-list', window.api.getExercises, 'exercises');`
+  - **NEW:** `populateList('exercises-list', window.api.getExercises, 'pages/exercises');`
+- **Line 59:**
+  - **OLD:** `populateList('tests-list', window.api.getTests, 'others');`
+  - **NEW:** `populateList('tests-list', window.api.getTests, 'pages/others');`
+
+---
+
+### File: `tailwind.config.js`
+
+- **Change:** Update the content paths for Tailwind CSS to scan.
+- **Line 8:**
+  - **OLD:** `'./lessons/**/*.html',`
+  - **NEW:** `'./pages/lessons/**/*.html',`
+- **Line 9:**
+  - **OLD:** `'./exercises/**/*.html',`
+  - **NEW:** `'./pages/exercises/**/*.html',`
+- **Line 12:**
+  - **OLD:** `'./lessonsAN/**/*.html',`
+  - **NEW:** `'./pages/lessonsAN/**/*.html',`
+- **Line 13:**
+  - **OLD:** `'./others/**/*.html',`
+  - **NEW:** `'./pages/others/**/*.html',`
+
+---
+
+## Task Summary
+
+**Date:** 2025-08-14
+
+**Objective:** Relocate the `lessons`, `lessonsAN`, `exercises`, and `others` directories into a new, centralized `pages` directory to improve project organization.
+
+**Actions Performed:**
+1.  **Directory Relocation:** The specified content directories were moved into the `pages` directory.
+2.  **Path Updates:** All hard-coded paths and configuration references pointing to the old directory locations were updated across the following files:
+    -   `.gitignore`
+    -   `documentation/creating-content.txt`
+    -   `documentation/lessons-learned/decoupling-content-data-logic.txt`
+    -   `repository-tree.txt`
+    -   `security.txt`
+    -   `src/main.js`
+    -   `src/sub-functions/content-loader.js`
+    -   `tailwind.config.js`
+3.  **Verification:** The application's content loading and navigation functionalities were checked to ensure they work correctly with the new directory structure.
+
+**Outcome:** The directory structure has been successfully reorganized, and all relevant file paths have been updated to maintain application functionality. This change improves the project's scalability and makes the content hierarchy more intuitive.

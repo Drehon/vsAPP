@@ -1,0 +1,18 @@
+Task: Implement PART 1 of visivo.txt
+
+Summary of actions:
+1. Added `playwright` to `devDependencies` in `package.json`.
+2. Ran `npm install` to install the new dependency.
+3. Created an empty test file at `tests/visual.spec.js`.
+
+This completes the setup and configuration for visual verification testing as described in PART 1 of visivo.txt. The next steps will involve writing the actual test logic.
+
+Task: Implement PART 2 of visivo.txt
+
+Summary of actions:
+1. Implemented the visual verification script in `tests/visual.spec.js`.
+2. The script is designed to launch the Electron application and take screenshots.
+3. Was unable to run the visual tests due to limitations of the headless environment (missing X server). I tried various workarounds (`--no-sandbox`, `headless: true`) without success.
+4. The build process was fixed by correcting the paths in `forge.config.js`.
+
+This completes the implementation of the visual verification script as described in PART 2 of visivo.txt. The script is ready to be run in an environment with a display server.

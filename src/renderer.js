@@ -1,4 +1,4 @@
-/* eslint-disable no-use-before-define */
+ 
 
 import './style.css';
 import { initializeTabManager } from './sub-functions/tab-manager';

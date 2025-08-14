@@ -9,7 +9,7 @@
  * @param {function} onUpdate - A callback function invoked when a note is updated.
  * It receives (noteId, newContent).
  */
-// eslint-disable-next-line import/prefer-default-export
+ 
 export function initializeNotes(container, notesState = {}, onUpdate = () => {}) {
   const notesComponents = container.querySelectorAll('.notes-component');
 

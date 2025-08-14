@@ -7,7 +7,7 @@
  * to ensure each diagnostic test tab has an isolated instance.
  */
 
-// eslint-disable-next-line import/prefer-default-export
+ 
 export class DiagnosticTestHandler {
   /**
      * Initializes the diagnostic test.
