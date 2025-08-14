@@ -38,14 +38,21 @@ export default [
     rules: {
       'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
       'global-require': 'off',
-      'no-console': 'off',
       'no-undef': 'off',
-      'no-unused-vars': 'off',
       'no-use-before-define': 'off',
       'no-restricted-syntax': 'off',
       'no-await-in-loop': 'off',
       'class-methods-use-this': 'off',
       'no-redeclare': 'off',
+      // Stricter rules enabled
+      'no-var': 'error',
+      'eqeqeq': ['error', 'always'],
+      'no-extra-semi': 'error',
+      'quotes': ['warn', 'single'],
+      'semi': ['warn', 'always'],
+      'indent': ['warn', 2],
+      'no-unused-vars': 'warn',
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
     },
     settings: {
       'import/resolver': {

@@ -225,17 +225,17 @@ export class ExerciseHandler {
 
     let questionHTML = '';
     switch (question.type) {
-      case 'true-false':
-        questionHTML = ExerciseHandler.renderTrueFalseQuestion(question, answerState);
-        break;
-      case 'multiple-choice':
-        questionHTML = ExerciseHandler.renderMultipleChoiceQuestion(question, answerState);
-        break;
-      case 'fill-in-the-blank':
-        questionHTML = ExerciseHandler.renderFillInTheBlankQuestion(question, answerState);
-        break;
-      default:
-        questionHTML = `<p class="text-red-500">Error: Unknown question type "${question.type}"</p>`;
+    case 'true-false':
+      questionHTML = ExerciseHandler.renderTrueFalseQuestion(question, answerState);
+      break;
+    case 'multiple-choice':
+      questionHTML = ExerciseHandler.renderMultipleChoiceQuestion(question, answerState);
+      break;
+    case 'fill-in-the-blank':
+      questionHTML = ExerciseHandler.renderFillInTheBlankQuestion(question, answerState);
+      break;
+    default:
+      questionHTML = `<p class="text-red-500">Error: Unknown question type "${question.type}"</p>`;
     }
 
     questionContent.innerHTML = questionHTML;
@@ -537,55 +537,55 @@ text-yellow-800 font-bold py-1 px-2 rounded-lg ml-4">Segna come Corretta</button
       }
     } else {
       switch (question.type) {
-        case 'true-false':
-        case 'multiple-choice':
-          questionElement.querySelectorAll('.fase-btn').forEach((btn) => {
-            const btnToModify = btn;
-            btnToModify.onclick = (e) => {
-              const userAnswer = e.target.dataset.answer;
-              let correctAnswer = question.answer;
+      case 'true-false':
+      case 'multiple-choice':
+        questionElement.querySelectorAll('.fase-btn').forEach((btn) => {
+          const btnToModify = btn;
+          btnToModify.onclick = (e) => {
+            const userAnswer = e.target.dataset.answer;
+            let correctAnswer = question.answer;
 
-              if (typeof correctAnswer === 'boolean') {
-                correctAnswer = correctAnswer ? 'A' : 'B';
-              } else if (question.type === 'multiple-choice' && !/^[A-D]$/.test(correctAnswer)) {
-                const correctIndex = question.options.indexOf(correctAnswer);
-                if (correctIndex !== -1) {
-                  correctAnswer = String.fromCharCode(65 + correctIndex);
-                }
+            if (typeof correctAnswer === 'boolean') {
+              correctAnswer = correctAnswer ? 'A' : 'B';
+            } else if (question.type === 'multiple-choice' && !/^[A-D]$/.test(correctAnswer)) {
+              const correctIndex = question.options.indexOf(correctAnswer);
+              if (correctIndex !== -1) {
+                correctAnswer = String.fromCharCode(65 + correctIndex);
               }
+            }
 
-              state.answers[blockIndex][questionIndex].userAnswer = userAnswer;
-              state.answers[blockIndex][questionIndex].isCorrect = userAnswer === correctAnswer;
-              this.autoSave(this.activeTab);
-              this.render();
-            };
-          });
-          break;
+            state.answers[blockIndex][questionIndex].userAnswer = userAnswer;
+            state.answers[blockIndex][questionIndex].isCorrect = userAnswer === correctAnswer;
+            this.autoSave(this.activeTab);
+            this.render();
+          };
+        });
+        break;
 
-        case 'fill-in-the-blank': {
-          const checkBtn = questionElement.querySelector('#check-answer-btn');
-          const inputEl = questionElement.querySelector('#fill-in-blank-input');
-          if (checkBtn && inputEl) {
-            const handleCheck = () => {
-              const userAnswer = inputEl.value.trim();
-              const correctAnswer = question.answer.trim();
-              state.answers[blockIndex][questionIndex].userAnswer = userAnswer;
-              const formattedUserAnswer = userAnswer.toLowerCase().replace(/[.,]/g, '');
-              const formattedCorrectAnswer = correctAnswer.toLowerCase()
-                .replace(/[.,]/g, '');
-              const currentAnswer = state.answers[blockIndex][questionIndex];
-              currentAnswer.isCorrect = formattedUserAnswer === formattedCorrectAnswer;
-              this.autoSave(this.activeTab);
-              this.render();
-            };
-            checkBtn.onclick = handleCheck;
-            inputEl.onkeydown = (e) => { if (e.key === 'Enter') handleCheck(); };
-          }
-          break;
+      case 'fill-in-the-blank': {
+        const checkBtn = questionElement.querySelector('#check-answer-btn');
+        const inputEl = questionElement.querySelector('#fill-in-blank-input');
+        if (checkBtn && inputEl) {
+          const handleCheck = () => {
+            const userAnswer = inputEl.value.trim();
+            const correctAnswer = question.answer.trim();
+            state.answers[blockIndex][questionIndex].userAnswer = userAnswer;
+            const formattedUserAnswer = userAnswer.toLowerCase().replace(/[.,]/g, '');
+            const formattedCorrectAnswer = correctAnswer.toLowerCase()
+              .replace(/[.,]/g, '');
+            const currentAnswer = state.answers[blockIndex][questionIndex];
+            currentAnswer.isCorrect = formattedUserAnswer === formattedCorrectAnswer;
+            this.autoSave(this.activeTab);
+            this.render();
+          };
+          checkBtn.onclick = handleCheck;
+          inputEl.onkeydown = (e) => { if (e.key === 'Enter') handleCheck(); };
         }
-        default:
-          // No other question types have answer listeners.
-          break;
+        break;
+      }
+      default:
+        // No other question types have answer listeners.
+        break;
       }
     }
 
