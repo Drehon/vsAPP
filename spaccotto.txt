@@ -41,12 +41,18 @@ A script could be created to switch between these configurations, for example by
 
 Here is a list of potential future tasks related to the new configuration system:
 
--   1) **Review and refactor `package.json` scripts:** The scripts in `package.json` could be reviewed and refactored for clarity and consistency.
--   2) **Fully document the build process:** The `documentation` directory should be updated with a document that explains the new build process in detail, including the role of each configuration file.
+-   1) **Verify past changes have been correctly implemented and issues indicated in the 'issues area below' solved.
+-   2) **Review and refactor `package.json` scripts:** The scripts in `package.json` could be reviewed and refactored for clarity and consistency.
+-   3) **Fully document the build process:** The `documentation` directory should be updated with a document that explains the new build process in detail, including the role of each configuration file.
 
+More future tasks, to be ignored for now
 -   **Implement environment-specific configurations:** Create separate configuration directories for development, production, and testing.
 -   **Create a configuration switcher script:** Write a script to easily switch between the different configuration sets.
 -   **Fix the tests:** The user mentioned that `npm run test` is not working. This should be investigated and fixed. The issue is likely in the `settings/jest.config.cjs` or the test setup itself.
-
 -   **Investigate using a single `webpack.config.js`:** The current setup uses multiple webpack config files. It might be possible to simplify this by using a single `webpack.config.js` file that exports a function. This function would return the correct configuration based on an environment variable.
 
+---
+
+ISSUES AREA 
+on npm run start, app starts but loads nothing, returning this error repeatedly in console
+WebSocketClient.js:18 WebSocket connection to 'ws://0.0.0.0:3000/ws' failed: 
