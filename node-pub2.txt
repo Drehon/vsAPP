@@ -162,6 +162,8 @@ The update of `style-loader` to v4 is **safe**. The project's usage is not affec
 ---
 
 USER NOTES
-updated everything in package.json except for electron and eslint.
-verify i did it correctly
-then, append below the detailed, multi steps plan for the update of eslint
+I updated everything in package.json as listed above, except for electron and eslint, which i left for later.
+1) verify i did the updates for the mentioned outdated packages correctly
+2) below, append a detailed, multi steps plan for the update of eslint, which you indicated as requiring certain modifications
+
+---
