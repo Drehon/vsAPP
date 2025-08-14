@@ -37,7 +37,7 @@ const main = async () => {
 
     // Write the updated file
     await fs.writeFile(patchNotesPath, JSON.stringify(updatedPatchNotes, null, 2));
-  } catch (error) {
+  } catch {
     process.exit(1); // Exit with an error code
   }
 };

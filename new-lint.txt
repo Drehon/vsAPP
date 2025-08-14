@@ -124,3 +124,25 @@ Step 1 of the ESLint strengthening project is complete. The configuration has be
 
 **Conclusion**:
 Step 2 of the ESLint strengthening project is complete. The investigation has concluded that installing the Airbnb config is not feasible. As per the project plan, the next phase of work should proceed with manually adding or enabling rules, using the Airbnb style guide as a reference.
+
+---
+
+### Project: Strengthening ESLint Configuration - Step 3
+
+**Task**: Complete Step 3 of the "Strengthening ESLint Configuration" project: "Incremental Codebase Cleanup".
+
+**Summary of actions taken**:
+- After the new rules were enabled in Step 1, `npm run lint` reported 16 warnings for the `no-unused-vars` rule.
+- Investigated a `MODULE_NOT_FOUND` error for the `globals` package and resolved it by running `npm install`.
+- Systematically went through all reported files and removed the unused variables from the code. The affected files included:
+  - `scripts/prepare-release.js`
+  - `scripts/update-patch-notes.js`
+  - `src/main.js`
+  - `src/renderer.js`
+  - `src/sub-functions/content-loader.js`
+  - `src/sub-functions/handlers/exercise-handler.js`
+  - `tests/visual.spec.js`
+- Verified the fixes by running `npm run lint` again, which now completes without any errors or warnings.
+
+**Conclusion**:
+Step 3 of the ESLint strengthening project is complete. The codebase is now clean of all linting issues reported by the newly enabled rules. The project's static analysis has been successfully enhanced.

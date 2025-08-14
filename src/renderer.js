@@ -1,5 +1,3 @@
- 
-
 import './style.css';
 import { initializeTabManager } from './sub-functions/tab-manager';
 import { loadContentIntoTab, loadHomeIntoTab, loadSettingsIntoTab } from './sub-functions/content-loader';
@@ -52,7 +50,7 @@ window.addEventListener('api-ready', () => {
     if (tab && tab.pageId && tab.exerciseState) {
       try {
         await window.api.saveExerciseState(tab.pageId, tab.exerciseState);
-      } catch (error) {
+      } catch {
         // error handling
       }
     }
@@ -163,7 +161,7 @@ window.addEventListener('api-ready', () => {
           showFeedbackMessage(`Loaded ${objectName}`);
           // --- End Feedback Message ---
         }
-      } catch (e) {
+      } catch {
         // error handling
       }
     }

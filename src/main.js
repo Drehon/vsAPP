@@ -82,7 +82,7 @@ function loadConfig() {
       };
       fsSync.writeFileSync(configPath, JSON.stringify(appConfig, null, 2));
     }
-  } catch (error) {
+  } catch {
     // Fallback to defaults in case of error
     appConfig = {
       autoSavePath: path.join(app.getPath('userData'), 'save-states'),
@@ -217,7 +217,7 @@ ipcMain.handle('get-home-content', async () => {
   const filePath = path.join(basePath, 'home-template.html');
   try {
     return await fs.readFile(filePath, 'utf-8');
-  } catch (err) {
+  } catch {
     return null;
   }
 });
@@ -227,7 +227,7 @@ ipcMain.handle('get-settings-content', async () => {
   const filePath = path.join(basePath, 'settings-template.html');
   try {
     return await fs.readFile(filePath, 'utf-8');
-  } catch (err) {
+  } catch {
     return null;
   }
 });
@@ -241,7 +241,7 @@ ipcMain.handle('get-file-content', async (event, relativePath) => {
       // The generation now happens on startup if an update occurred.
       const content = await fs.readFile(userPatchNotesPath, 'utf-8');
       return content; // Return full HTML
-    } catch (error) {
+    } catch {
       // If it doesn't exist, it means it's the first run or something went wrong.
       // We'll let the post-update/first-run handler deal with creating it.
       // For now, return a helpful message.
@@ -256,7 +256,7 @@ ipcMain.handle('get-file-content', async (event, relativePath) => {
     const content = await fs.readFile(filePath, 'utf-8');
     const bodyContentMatch = content.match(/<body[^>]*>([\s\S]*)<\/body>/i);
     return bodyContentMatch ? bodyContentMatch[1] : content;
-  } catch (err) {
+  } catch {
     return null;
   }
 });
@@ -542,7 +542,7 @@ const getContents = async (dir) => {
         && file !== 'L - template.html'
         && file !== 'LAN - template.html'
         && file !== 'EX - template.html');
-  } catch (err) {
+  } catch {
     return [];
   }
 };
@@ -558,7 +558,7 @@ ipcMain.handle('get-active-save-states', async () => {
     const files = await fs.readdir(savesDir);
     // Optional: Filter for only .json files if other files might be present
     return files.filter((file) => file.endsWith('.json'));
-  } catch (err) {
+  } catch {
     return []; // Return empty array on error
   }
 });

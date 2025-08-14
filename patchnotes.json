@@ -1,6 +1,6 @@
 [
       {
-    "body": "Addressed Deprecation warnings on publishing of new patches. \r\nFocusing on more permanently fixing templates.\r\nVerification of package updates and expansion of testing environments. \r\nReorganized in-app directories by adding directory and moved others inside.\r\nSpecifically updated linting. \r\nIntroduced a visual testing via playwright and more for Jules.",
+    "body": "Addressed Deprecation warnings on publishing of new patches.\r\nVerification of package updates and expansion of testing environments. \r\nReorganized in-app directories by adding directory and moved others inside.\r\nSpecifically updated linting. Stricter linting implemented. \r\nFocusing on more permanently fixing templates, begun work on visual tests. \r\nIntroduced a visual testing via playwright and more for Jules.",
     "name": "v1.4.5",
     "publishedAt": "2025-08-14T15:03:00Z",
     "tagName": "v1.4.5"

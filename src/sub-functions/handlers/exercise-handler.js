@@ -35,7 +35,7 @@ export class ExerciseHandler {
 
       this.initializeState();
       this.render();
-    } catch (error) {
+    } catch {
       // error
     }
   }

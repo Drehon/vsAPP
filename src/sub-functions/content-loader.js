@@ -48,7 +48,7 @@ function attachHomeEventListeners(
         });
         list.appendChild(link);
       });
-    } catch (error) {
+    } catch {
       list.innerHTML = `<p class="text-red-400">Error loading ${folder}.</p>`;
     }
   };
@@ -154,7 +154,7 @@ export async function loadHomeIntoTab(
   let homeContent = '';
   try {
     homeContent = await window.api.getHomeContent();
-  } catch (error) {
+  } catch {
     const errorHtml = `
       <div class="p-6 text-red-700 bg-red-100 rounded-lg">
         <h2 class="font-bold text-lg">Error Loading Home Page</h2>
@@ -181,7 +181,7 @@ export async function loadHomeIntoTab(
         saveExerciseState,
         updateGlobalToolbar,
       );
-    } catch (error) {
+    } catch {
       // empty
     }
   }
