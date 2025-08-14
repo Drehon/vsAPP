@@ -36,3 +36,9 @@ This section has been added to document the troubleshooting steps taken to ident
 3.  **User Feedback:** You reported that running `npm run start:trace` did not show any deprecation warnings in the terminal. However, you confirmed that the warnings do appear when running the `npm run make` command. This was a crucial piece of information, as it told us the warnings are related to the application's build process, not its runtime startup.
 
 4.  **Added `make:trace` script:** Based on your feedback, I added a second npm script, `make:trace`, to `package.json`. This script is designed to run the `make` command with the `--trace-deprecation` flag enabled. You can now run `npm run make:trace` to see the full stack traces for the deprecation warnings, which should help pinpoint exactly where in the build process they are coming from.
+
+5.  **Dependency Analysis:** The stack traces from `npm run make:trace` pointed to dependencies (`@electron/packager` and `@electron-forge/core`) as the source of the warnings. This indicated the issue was with the build tools themselves, not the application's own code.
+
+6.  **Updated Dependencies:** The `@electron-forge/*` packages were updated from version `7.4.0` to `7.8.3` in `package.json`.
+
+7.  **Verification:** After updating the dependencies, `npm run make` was run again. The `DeprecationWarning`s no longer appeared in the output, confirming that the issue has been resolved. All programmatic checks (`npm start`, `npm run lint`, `npm test`) also passed, ensuring the application remains stable.
