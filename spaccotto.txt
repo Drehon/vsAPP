@@ -56,4 +56,4 @@ More future tasks, to be ignored for now
 ISSUES AREA 
 on npm run start, app starts, loads toolbar, tabs, etc
 seems like index.html is loading, but home isn't. 
-i see no content at all, whole page is just background. 
+I see no content at all, whole page is just background. 
