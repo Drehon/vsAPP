@@ -207,7 +207,7 @@ PS C:\Users\User\Documents\TEFL Personal> npm run lint
 > tutoring-app@1.4.5 lint
 > eslint .
 
-(node:2496) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/User/Documents/TEFL%20Personal/eslint.config.js?mtime=1755172867019 is not specified and it doesn't parse as CommonJS.
+(node:13840) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/User/Documents/TEFL%20Personal/eslint.config.js?mtime=1755172867019 is not specified and it doesn't parse as CommonJS.
 Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
 To eliminate this warning, add "type": "module" to C:\Users\User\Documents\TEFL Personal\package.json.
 (Use `node --trace-warnings ...` to show where the warning was created)
