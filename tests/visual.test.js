@@ -1,5 +1,4 @@
 const { Application } = require('spectron');
-const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
 const { PNG } = require('pngjs');
@@ -25,7 +24,6 @@ describe('Visual Regression Tests', function () {
   });
 
   it('should match the baseline snapshot of the main window', function () {
-    const screenshotPath = path.join(__dirname, 'screenshots', 'main-window.png');
     const baselinePath = path.join(__dirname, 'baselines', 'main-window.png');
 
     return app.client.getWindowHandle().then(() => {
@@ -46,12 +44,15 @@ describe('Visual Regression Tests', function () {
             { threshold: 0.1 }
           );
 
-          assert.strictEqual(numDiffPixels, 0, 'The screenshot does not match the baseline.');
+          // eslint-disable-next-line jest/no-conditional-expect
+          expect(numDiffPixels).toBe(0);
         } else {
           // Baseline does not exist, create it
           fs.mkdirSync(path.dirname(baselinePath), { recursive: true });
           fs.writeFileSync(baselinePath, imageBuffer);
-          console.log(`Baseline created at: ${baselinePath}`);
+          console.warn(`Baseline created at: ${baselinePath}`);
+          // eslint-disable-next-line jest/no-conditional-expect
+          expect(fs.existsSync(baselinePath)).toBe(true);
         }
       });
     });

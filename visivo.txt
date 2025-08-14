@@ -59,12 +59,8 @@ Here is the step-by-step plan to set up and execute visual verification tests:
     *   I will evaluate the error log indicated below to fix the implementation of the new tests.
 
 ERROR pasted below
-(.venv) PS C:\Users\User\Documents\TEFL Personal> npm run test
-
-> tutoring-app@1.4.4 test
-> jest && npx playwright test tests/visual.spec.js
-
- FAIL  tests/visual.test.js
+                                                                                                                                                                      
+ FAIL  tests/visual.test.js                                                                                                                                                                             
   ● Test suite failed to run
                                                                                                                                                                                                         
     Jest encountered an unexpected token
@@ -95,13 +91,13 @@ ERROR pasted below
 
     SyntaxError: Unexpected token 'export'
 
-      4 | const fs = require('fs');
-      5 | const { PNG } = require('pngjs');
-    > 6 | const pixelmatch = require('pixelmatch');
+      3 | const fs = require('fs');
+      4 | const { PNG } = require('pngjs');
+    > 5 | const pixelmatch = require('pixelmatch');
         |                    ^
-      7 |
-      8 | describe('Visual Regression Tests', function () {
-      9 |   this.timeout(10000);
+      6 |
+      7 | describe('Visual Regression Tests', function () {
+      8 |   this.timeout(10000);
 
       at Runtime.createScriptFromCode (node_modules/jest-runtime/build/index.js:1316:40)
-      at Object.require (tests/visual.test.js:6:20)
+      at Object.require (tests/visual.test.js:5:20)
