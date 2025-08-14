@@ -45,6 +45,7 @@ export default [
       'no-restricted-syntax': 'off',
       'no-await-in-loop': 'off',
       'class-methods-use-this': 'off',
+      'no-redeclare': 'off',
     },
     settings: {
       'import/resolver': {
@@ -69,7 +70,6 @@ export default [
   // 5. Overrides for script files
   {
     files: [
-      'eslint.config.js',
       'forge.config.js',
       'jest.config.js',
       'tailwind.config.js',

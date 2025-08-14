@@ -116,7 +116,7 @@ function getManualSavesDir() {
 }
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-// eslint-disable-next-line global-require
+ 
 if (require('electron-squirrel-startup')) {
   app.quit();
 }

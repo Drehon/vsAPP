@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-// eslint-disable-next-line import/no-unresolved
+ 
 const colors = require('tailwindcss/colors');
 
 module.exports = {

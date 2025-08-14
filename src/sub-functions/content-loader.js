@@ -32,7 +32,7 @@ function attachHomeEventListeners(
           e.preventDefault();
           const activeTab = tabs.find((t) => t.active);
           if (activeTab.view === 'home') {
-            // eslint-disable-next-line no-use-before-define
+             
             loadContentIntoTab(
               activeTab.id,
               `${folder}/${file}`,
