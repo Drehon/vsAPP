@@ -1,6 +1,6 @@
 [
       {
-    "body": "Continuing work on visual testing for Jules cooperation.",
+    "body": "Continuing work on visual testing for Jules cooperation.\r\nMoved various settings file to settings folder and generally cleaned up.\r\nVisual testing currently bugged still and lightening of package.json for better code stability not completed.",
     "name": "v1.4.6",
     "publishedAt": "2025-08-14T19:03:00Z",
     "tagName": "v1.4.6"
