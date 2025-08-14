@@ -54,5 +54,6 @@ More future tasks, to be ignored for now
 ---
 
 ISSUES AREA 
-on npm run start, app starts but loads nothing, returning this error repeatedly in console
-C:\Users\User\Documents\TEFL Personal\.webpack\renderer\main_window\preload.js:85 WebSocket connection to 'ws://0.0.0.0:3000/ws' failed: 
+on npm run start, app starts, loads toolbar, tabs, etc
+seems like index.html is loading, but home isn't. 
+i see no content at all, whole page is just background. 

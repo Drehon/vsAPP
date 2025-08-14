@@ -22,9 +22,9 @@ module.exports = {
     {
       name: '@electron-forge/plugin-webpack',
       config: {
-        mainConfig: './settings/webpack.main.config.js',
+        mainConfig: path.join(__dirname, 'webpack.main.config.js'),
         renderer: {
-          config: './settings/webpack.renderer.config.js',
+          config: path.join(__dirname, 'webpack.renderer.config.js'),
           nodeIntegration: true,
           entryPoints: [
             {

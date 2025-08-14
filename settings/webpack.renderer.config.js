@@ -21,6 +21,9 @@ module.exports = {
 
   devServer: {
     host: 'localhost',
+    client: {
+      webSocketURL: 'ws://localhost:3000/ws',
+    },
   },
 
   // REQUIRED FOR THIS TEMPLATE: Provide Node.js globals.
