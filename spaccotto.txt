@@ -1,0 +1,52 @@
+# Spaccotto: A summary of the new configuration system
+
+This document outlines the changes made to the project's configuration management system, future plans, and a list of future tasks.
+
+## What was done
+
+The project's configuration files were scattered and managed in a way that could lead to inconsistencies. To address this, a new centralized system has been put in place.
+
+### The `settings` directory
+
+All configuration files have been moved to a new `settings` directory in the root of the project. This includes configurations for:
+
+-   Electron Forge (`forge.config.js`)
+-   Webpack (`webpack.main.config.js`, `webpack.renderer.config.js`, `webpack.rules.js`)
+-   Jest (`jest.config.cjs`)
+-   ESLint (`eslint.config.mjs`)
+-   Tailwind CSS (`tailwind.config.js`)
+-   PostCSS (`postcss.config.js`)
+
+### Explicit PostCSS Configuration
+
+The build process for CSS was made more explicit. Previously, it was relying on an implicit, "magic" PostCSS loader from `electron-forge`. This has been replaced with an explicit PostCSS configuration.
+
+-   `postcss`, `postcss-loader`, and `autoprefixer` have been added as explicit dev dependencies.
+-   A new `settings/postcss.config.js` file has been created to configure PostCSS, Tailwind CSS, and Autoprefixer.
+-   The webpack configuration (`settings/webpack.renderer.config.js`) has been updated to use this explicit PostCSS loader.
+
+This change makes the build process more transparent, easier to debug, and less prone to breaking when dependencies are updated.
+
+### Root directory cleanup
+
+The redundant configuration files from the root of the project have been deleted. The `package.json` scripts have been updated to point to the new locations of the configuration files in the `settings` directory.
+
+## Future Plans
+
+The new configuration system is designed to be extensible. In the future, we could have different sets of configurations for different environments (e.g., `settings/development`, `settings/production`, `settings/testing`). This would allow us to, for example, have different API keys or feature flags for each environment.
+
+A script could be created to switch between these configurations, for example by setting an environment variable that the `package.json` scripts would use to point to the correct configuration directory.
+
+## Future Tasks
+
+Here is a list of potential future tasks related to the new configuration system:
+
+-   1) **Review and refactor `package.json` scripts:** The scripts in `package.json` could be reviewed and refactored for clarity and consistency.
+-   2) **Fully document the build process:** The `documentation` directory should be updated with a document that explains the new build process in detail, including the role of each configuration file.
+
+-   **Implement environment-specific configurations:** Create separate configuration directories for development, production, and testing.
+-   **Create a configuration switcher script:** Write a script to easily switch between the different configuration sets.
+-   **Fix the tests:** The user mentioned that `npm run test` is not working. This should be investigated and fixed. The issue is likely in the `settings/jest.config.cjs` or the test setup itself.
+
+-   **Investigate using a single `webpack.config.js`:** The current setup uses multiple webpack config files. It might be possible to simplify this by using a single `webpack.config.js` file that exports a function. This function would return the correct configuration based on an environment variable.
+
