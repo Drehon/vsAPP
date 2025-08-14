@@ -1,0 +1,49 @@
+## Checking for Outdated Dependencies
+
+Keeping your project's dependencies up-to-date is crucial for security, performance, and accessing new features. Over time, packages can become outdated, leaving your application vulnerable to security risks or causing it to miss out on important bug fixes.
+
+### How to Check for Outdated Packages
+
+The simplest way to see which of your dependencies are outdated is to run the following command in your project's root directory:
+
+```bash
+npm outdated
+```
+
+This command will check the npm registry and show you a list of all the packages that have newer versions available. The output will look something like this:
+
+| Package | Current | Wanted | Latest | Location |
+|---|---|---|---|---|
+| some-package | 1.2.3 | 1.2.4 | 2.0.0 | node_modules/some-package |
+| another-package | 3.1.0 | 3.1.0 | 3.5.2 | node_modules/another-package |
+
+- **Current:** The version you have installed in your project.
+- **Wanted:** The latest version that satisfies the version range in your `package.json` (e.g., `^1.2.3`).
+- **Latest:** The absolute latest version of the package.
+
+### How to Update Dependencies Safely
+
+1.  **Review the `npm outdated` output:** Pay close attention to the "Wanted" and "Latest" columns. A change in the major version number (e.g., from `1.x.x` to `2.x.x`) often indicates breaking changes.
+
+2.  **Consult the documentation for major updates:** Before updating a package to a new major version, always check its official documentation, release notes, or changelog. This will help you understand what has changed and if you need to modify your code to support the new version.
+
+3.  **Update `package.json`:** You can manually update the version numbers in your `package.json` file. For minor and patch updates, this is usually safe. For major updates, be prepared to make code changes.
+
+4.  **Install the new packages:** After updating `package.json`, run `npm install` to download and install the new versions of the packages.
+
+5.  **Test your application thoroughly:** After any dependency update, it is essential to test your application to make sure everything still works as expected. Run all your tests and manually check the application's functionality. This is especially important after major version updates.
+
+By following this process, you can keep your dependencies current while minimizing the risk of introducing breaking changes into your project.
+
+--- 
+
+USER NOTES
+I ran npm outdated and got this:
+PS C:\Users\User\Documents\TEFL Personal> npm outdated
+Package              Current  Wanted  Latest  Location                          Depended by
+copy-webpack-plugin   12.0.2  12.0.2  13.0.1  node_modules/copy-webpack-plugin  TEFL Personal
+css-loader            6.11.0  6.11.0   7.1.2  node_modules/css-loader           TEFL Personal
+dotenv                16.6.1  16.6.1  17.2.1  node_modules/dotenv               TEFL Personal
+electron              28.1.0  28.1.0  37.2.6  node_modules/electron             TEFL Personal
+eslint                8.57.1  8.57.1  9.33.0  node_modules/eslint               TEFL Personal
+style-loader           3.3.4   3.3.4   4.0.0  node_modules/style-loader         TEFL Personal
