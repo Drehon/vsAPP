@@ -110,3 +110,17 @@ This approach will resolve the `npm run start` error while preserving the new ES
 
 **Conclusion**:
 Step 1 of the ESLint strengthening project is complete. The configuration has been updated, and the new rules are active. The next step will be to address the new linting warnings and errors.
+
+---
+
+### Project: Strengthening ESLint Configuration - Step 2
+
+**Task**: Complete Step 2 of the "Strengthening ESLint Configuration" project: "Investigate Airbnb Config Compatibility".
+
+**Summary of actions taken**:
+- Researched the compatibility of `eslint-config-airbnb-base` with ESLint v9 and its "flat config" format.
+- The investigation confirmed that `eslint-config-airbnb-base` is not currently compatible. The related `eslint-config-airbnb-typescript` package is archived and no longer maintained, and there is no official support for the flat config structure.
+- This confirms the findings from the previous ESLint v9 migration, where the package had to be removed.
+
+**Conclusion**:
+Step 2 of the ESLint strengthening project is complete. The investigation has concluded that installing the Airbnb config is not feasible. As per the project plan, the next phase of work should proceed with manually adding or enabling rules, using the Airbnb style guide as a reference.
