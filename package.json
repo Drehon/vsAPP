@@ -7,8 +7,8 @@
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
+    "make": "cross-env electron-forge make",
+    "publish": "cross-env electron-forge publish",
     "lint": "cross-env ESLINT_USE_FLAT_CONFIG=true eslint --config settings/eslint.config.mjs .",
     "lint:fix": "cross-env ESLINT_USE_FLAT_CONFIG=true eslint --config settings/eslint.config.mjs . --fix",
     "test": "jest --config settings/jest.config.cjs && npx playwright test tests/visual.spec.js",
