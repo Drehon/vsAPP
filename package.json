@@ -55,6 +55,7 @@
     "eslint-plugin-jest": "^29.0.1",
     "globals": "^16.3.0",
     "jest": "^30.0.5",
+    "playwright": "^1.44.1",
     "node-loader": "^2.0.0",
     "style-loader": "^4.0.0",
     "tailwindcss": "^4.1.11"
