@@ -15,13 +15,13 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: path.resolve(__dirname, 'src', 'home-template.html'),
-          to: path.resolve(__dirname, '.webpack/main', 'home-template.html'),
+          from: path.resolve(__dirname, '..', 'src', 'home-template.html'),
+          to: path.resolve(__dirname, '..', '.webpack/main', 'home-template.html'),
         },
         // ADDED: Ensure the settings template is also copied to the build output.
         {
-          from: path.resolve(__dirname, 'src', 'settings-template.html'),
-          to: path.resolve(__dirname, '.webpack/main', 'settings-template.html'),
+          from: path.resolve(__dirname, '..', 'src', 'settings-template.html'),
+          to: path.resolve(__dirname, '..', '.webpack/main', 'settings-template.html'),
         },
       ],
     }),
