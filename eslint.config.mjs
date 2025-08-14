@@ -10,6 +10,7 @@ export default [
       '**/node_modules/',
       '**/.webpack/',
       'src/lib/**',
+      '.venv/',
     ],
   },
 
