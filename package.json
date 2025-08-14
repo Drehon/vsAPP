@@ -4,7 +4,6 @@
   "version": "1.4.5",
   "description": "My Electron application description",
   "main": ".webpack/main",
-  "type": "module",
   "scripts": {
     "start": "electron-forge start",
     "start:trace": "cross-env NODE_OPTIONS='--trace-deprecation' electron-forge start",
