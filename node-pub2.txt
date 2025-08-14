@@ -197,6 +197,34 @@ This plan outlines the steps required to update ESLint from v8 to v9 and migrate
 - In `package.json`, find the `lint` and `lint:fix` scripts.
 - Remove the `cross-env ESLINT_USE_FLAT_CONFIG=false` part from both scripts, as it is no longer necessary with the new configuration file.
 
+>>
+
+User post step 4 testing
+STEP B4 - assess the following and fix
+
+PS C:\Users\User\Documents\TEFL Personal> npm run lint
+
+> tutoring-app@1.4.5 lint
+> eslint .
+
+(node:2496) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/User/Documents/TEFL%20Personal/eslint.config.js?mtime=1755172867019 is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\User\Documents\TEFL Personal\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+Oops! Something went wrong! :(
+
+ESLint: 9.33.0
+
+A configuration object specifies rule "import/no-extraneous-dependencies", but could not find plugin "import".
+
+Common causes of this problem include:
+
+1. The "import" plugin is not defined in your configuration file.
+2. The "import" plugin is not defined within the same configuration object in which the "import/no-extraneous-dependencies" rule is applied.
+
+>>
+
 **5. Clean Up Old Configuration:**
 - Once the new `eslint.config.js` is working correctly, delete the old `.eslintrc.js` file to avoid conflicts.
 
