@@ -89,3 +89,60 @@ This will be achieved by:
 This approach will resolve the `npm run start` error while preserving the new ESLint v9 configuration.
 
 ---
+
+### Project: Strengthening ESLint Configuration - Step 1
+
+**Task**: Complete Step 1 of the "Strengthening ESLint Configuration" project: "Re-enable Stricter Rules".
+
+**Summary of actions taken**:
+- Modified `eslint.config.mjs` to enable a set of stricter, modern ESLint rules as outlined in `refine-lint.txt`.
+- The following rules were added or updated:
+  - `no-var`: 'error'
+  - `eqeqeq`: ['error', 'always']
+  - `no-extra-semi`: 'error'
+  - `quotes`: ['warn', 'single']
+  - `semi`: ['warn', 'always']
+  - `indent`: ['warn', 2]
+  - `no-unused-vars`: 'warn'
+  - `no-console`: ['warn', { allow: ['warn', 'error'] }]
+- Encountered and resolved a `MODULE_NOT_FOUND` error for the `globals` package by running `npm install` to refresh dependencies.
+- Verified the changes by running `npm run lint`, which now correctly reports violations for the newly enabled rules across the codebase.
+
+**Conclusion**:
+Step 1 of the ESLint strengthening project is complete. The configuration has been updated, and the new rules are active. The next step will be to address the new linting warnings and errors.
+
+---
+
+### Project: Strengthening ESLint Configuration - Step 2
+
+**Task**: Complete Step 2 of the "Strengthening ESLint Configuration" project: "Investigate Airbnb Config Compatibility".
+
+**Summary of actions taken**:
+- Researched the compatibility of `eslint-config-airbnb-base` with ESLint v9 and its "flat config" format.
+- The investigation confirmed that `eslint-config-airbnb-base` is not currently compatible. The related `eslint-config-airbnb-typescript` package is archived and no longer maintained, and there is no official support for the flat config structure.
+- This confirms the findings from the previous ESLint v9 migration, where the package had to be removed.
+
+**Conclusion**:
+Step 2 of the ESLint strengthening project is complete. The investigation has concluded that installing the Airbnb config is not feasible. As per the project plan, the next phase of work should proceed with manually adding or enabling rules, using the Airbnb style guide as a reference.
+
+---
+
+### Project: Strengthening ESLint Configuration - Step 3
+
+**Task**: Complete Step 3 of the "Strengthening ESLint Configuration" project: "Incremental Codebase Cleanup".
+
+**Summary of actions taken**:
+- After the new rules were enabled in Step 1, `npm run lint` reported 16 warnings for the `no-unused-vars` rule.
+- Investigated a `MODULE_NOT_FOUND` error for the `globals` package and resolved it by running `npm install`.
+- Systematically went through all reported files and removed the unused variables from the code. The affected files included:
+  - `scripts/prepare-release.js`
+  - `scripts/update-patch-notes.js`
+  - `src/main.js`
+  - `src/renderer.js`
+  - `src/sub-functions/content-loader.js`
+  - `src/sub-functions/handlers/exercise-handler.js`
+  - `tests/visual.spec.js`
+- Verified the fixes by running `npm run lint` again, which now completes without any errors or warnings.
+
+**Conclusion**:
+Step 3 of the ESLint strengthening project is complete. The codebase is now clean of all linting issues reported by the newly enabled rules. The project's static analysis has been successfully enhanced.

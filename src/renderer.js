@@ -1,5 +1,3 @@
- 
-
 import './style.css';
 import { initializeTabManager } from './sub-functions/tab-manager';
 import { loadContentIntoTab, loadHomeIntoTab, loadSettingsIntoTab } from './sub-functions/content-loader';
@@ -52,7 +50,7 @@ window.addEventListener('api-ready', () => {
     if (tab && tab.pageId && tab.exerciseState) {
       try {
         await window.api.saveExerciseState(tab.pageId, tab.exerciseState);
-      } catch (error) {
+      } catch {
         // error handling
       }
     }
@@ -163,7 +161,7 @@ window.addEventListener('api-ready', () => {
           showFeedbackMessage(`Loaded ${objectName}`);
           // --- End Feedback Message ---
         }
-      } catch (e) {
+      } catch {
         // error handling
       }
     }
@@ -317,46 +315,46 @@ window.addEventListener('api-ready', () => {
     if (!updateIndicator || !updateContainer) return;
 
     switch (status) {
-      case 'available':
-        updateIndicator.className = 'w-3 h-3 bg-blue-500 rounded-full mr-2';
-        updateContainer.innerHTML = `
+    case 'available':
+      updateIndicator.className = 'w-3 h-3 bg-blue-500 rounded-full mr-2';
+      updateContainer.innerHTML = `
           <span class="mr-2">Update ${info.version} available.</span>
           <button id="download-btn" class="ml-2 px-2 py-0.5 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs">Download</button>
           <button id="later-btn" class="ml-1 px-2 py-0.5 bg-gray-600 text-white rounded hover:bg-gray-700 text-xs">Later</button>
         `;
-        document.getElementById('download-btn').addEventListener('click', () => {
-          window.api.startDownload();
-          updateIndicator.className = 'w-3 h-3 bg-blue-500 rounded-full mr-2 animate-pulse';
-          updateContainer.innerText = 'Downloading... (0%)';
-        });
-        document.getElementById('later-btn').addEventListener('click', () => {
-          updateIndicator.className = 'w-3 h-3 bg-green-500 rounded-full mr-2';
-          updateContainer.innerText = 'Up to date';
-        });
-        break;
-
-      case 'not-available':
+      document.getElementById('download-btn').addEventListener('click', () => {
+        window.api.startDownload();
+        updateIndicator.className = 'w-3 h-3 bg-blue-500 rounded-full mr-2 animate-pulse';
+        updateContainer.innerText = 'Downloading... (0%)';
+      });
+      document.getElementById('later-btn').addEventListener('click', () => {
         updateIndicator.className = 'w-3 h-3 bg-green-500 rounded-full mr-2';
         updateContainer.innerText = 'Up to date';
-        break;
+      });
+      break;
 
-      case 'downloaded':
-        updateIndicator.className = 'w-3 h-3 bg-green-500 rounded-full mr-2';
-        updateContainer.innerHTML = `
+    case 'not-available':
+      updateIndicator.className = 'w-3 h-3 bg-green-500 rounded-full mr-2';
+      updateContainer.innerText = 'Up to date';
+      break;
+
+    case 'downloaded':
+      updateIndicator.className = 'w-3 h-3 bg-green-500 rounded-full mr-2';
+      updateContainer.innerHTML = `
           <span class="mr-2">Update ready to install.</span>
           <button id="restart-btn" class="ml-2 px-2 py-0.5 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs">Restart Now</button>
         `;
-        document.getElementById('restart-btn').addEventListener('click', () => {
-          window.api.restartApp();
-        });
-        break;
+      document.getElementById('restart-btn').addEventListener('click', () => {
+        window.api.restartApp();
+      });
+      break;
 
-      case 'error':
-        updateIndicator.className = 'w-3 h-3 bg-red-500 rounded-full mr-2';
-        updateContainer.innerText = 'Update failed';
-        break;
-      default:
-        break;
+    case 'error':
+      updateIndicator.className = 'w-3 h-3 bg-red-500 rounded-full mr-2';
+      updateContainer.innerText = 'Update failed';
+      break;
+    default:
+      break;
     }
   }
 

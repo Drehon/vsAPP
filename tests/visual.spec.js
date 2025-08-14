@@ -1,4 +1,4 @@
-const { test, expect, _electron } = require('@playwright/test');
+const { test, _electron } = require('@playwright/test');
 const fs = require('fs');
 const path = require('path');
 
@@ -38,14 +38,31 @@ test.describe('Visual Tests', () => {
     await takeScreenshot(window, 'main-window');
   });
 
-  // Example of a test that navigates and then takes a screenshot
-  test('should navigate to a lesson and take a screenshot', async () => {
-    // This is a placeholder for the actual navigation logic.
-    // You will need to replace this with the correct locators and actions
-    // to navigate to the desired page.
-    // For example:
-    // await window.click('text=Lessons');
-    // await window.click('text=Lesson 1');
+  test('should navigate to a lesson page and take a screenshot', async () => {
+    await window.evaluate((filePath) => window.api.navigate(filePath), 'pages/lessons/L1 - congiuntivo.html');
+    // Wait for the content to load
+    await window.waitForTimeout(1000);
     await takeScreenshot(window, 'lesson-page');
+  });
+
+  test('should navigate to a lessonAN page and take a screenshot', async () => {
+    await window.evaluate((filePath) => window.api.navigate(filePath), 'pages/lessonsAN/L1 - congiuntivo AN.html');
+    // Wait for the content to load
+    await window.waitForTimeout(1000);
+    await takeScreenshot(window, 'lessonAN-page');
+  });
+
+  test('should navigate to an exercise page and take a screenshot', async () => {
+    await window.evaluate((filePath) => window.api.navigate(filePath), 'pages/exercises/L1 - congiuntivo ES.html');
+    // Wait for the content to load
+    await window.waitForTimeout(1000);
+    await takeScreenshot(window, 'exercise-page');
+  });
+
+  test('should navigate to the patch notes page and take a screenshot', async () => {
+    await window.evaluate((filePath) => window.api.navigate(filePath), 'pages/others/patch-notes.html');
+    // Wait for the content to load
+    await window.waitForTimeout(1000);
+    await takeScreenshot(window, 'patch-notes-page');
   });
 });

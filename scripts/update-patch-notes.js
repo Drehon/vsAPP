@@ -24,6 +24,6 @@ try {
 
   const outputHtml = template.replace('<!-- PATCH_NOTES_CONTENT -->', patchNotesHtml);
   fs.writeFileSync(outputPath, outputHtml);
-} catch (error) {
+} catch {
   process.exit(1);
 }

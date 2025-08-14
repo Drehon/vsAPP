@@ -54,3 +54,54 @@ Here is the step-by-step plan to set up and execute visual verification tests:
 6.  **Run and Verify:**
     *   I will execute the full test suite.
     *   I will then inspect the generated screenshots to confirm that they correctly represent the application's UI for the tested pages.
+
+**Part 5: Address errors reported from user**
+    *   I will evaluate the error log indicated below to fix the implementation of the new tests.
+
+ERROR pasted below
+(.venv) PS C:\Users\User\Documents\TEFL Personal> npm run test
+
+> tutoring-app@1.4.4 test
+> jest && npx playwright test tests/visual.spec.js
+
+ FAIL  tests/visual.test.js
+  ● Test suite failed to run
+                                                                                                                                                                                                        
+    Jest encountered an unexpected token
+
+    Jest failed to parse a file. This happens e.g. when your code or its dependencies use non-standard JavaScript syntax, or when Jest is not configured to support such syntax.
+
+    Out of the box Jest supports Babel, which will be used to transform your files into valid JS based on your Babel configuration.
+
+    By default "node_modules" folder is ignored by transformers.
+
+    Here's what you can do:
+     • If you are trying to use ECMAScript Modules, see https://jestjs.io/docs/ecmascript-modules for how to enable it.
+     • If you are trying to use TypeScript, see https://jestjs.io/docs/getting-started#using-typescript
+     • To have some of your "node_modules" files transformed, you can specify a custom "transformIgnorePatterns" in your config.
+     • If you need a custom transformation, specify a "transform" option in your config.
+     • If you simply want to mock your non-JS modules (e.g. binary assets) you can stub them out with the "moduleNameMapper" config option.
+
+    You'll find more details and examples of these config options in the docs:
+    https://jestjs.io/docs/configuration
+    For information about custom transformations, see:
+    https://jestjs.io/docs/code-transformation
+
+    Details:
+
+    C:\Users\User\Documents\TEFL Personal\node_modules\pixelmatch\index.js:21
+    export default function pixelmatch(img1, img2, output, width, height, options = {}) {
+    ^^^^^^
+
+    SyntaxError: Unexpected token 'export'
+
+      4 | const fs = require('fs');
+      5 | const { PNG } = require('pngjs');
+    > 6 | const pixelmatch = require('pixelmatch');
+        |                    ^
+      7 |
+      8 | describe('Visual Regression Tests', function () {
+      9 |   this.timeout(10000);
+
+      at Runtime.createScriptFromCode (node_modules/jest-runtime/build/index.js:1316:40)
+      at Object.require (tests/visual.test.js:6:20)

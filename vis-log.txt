@@ -16,3 +16,41 @@ Summary of actions:
 4. The build process was fixed by correcting the paths in `forge.config.js`.
 
 This completes the implementation of the visual verification script as described in PART 2 of visivo.txt. The script is ready to be run in an environment with a display server.
+
+Task: Implement PART 3 of visivo.txt
+
+Summary of actions:
+1. Added four new visual tests to `tests/visual.spec.js`.
+2. The tests cover a `lesson` page, a `lessonAN` page, an `exercise` page, and the `patch-notes` page.
+3. The tests use the `window.api.navigate()` function to programmatically load the different pages.
+4. Attempted to run the tests, but they failed due to the known issue of running UI tests in a headless environment without a display server.
+
+This completes the creation of the visual tests as described in PART 3 of visivo.txt. The tests are now part of the codebase and can be executed in a suitable environment.
+
+Task: Verify completion of PART 1 of visivo.txt
+
+Summary of actions:
+1. Verified that `playwright` was missing from `devDependencies` in `package.json`.
+2. Added `playwright` to `devDependencies`.
+3. Ran `npm install` to install the dependency.
+4. Verified that `tests/visual.spec.js` already existed and contained test code.
+
+This confirms that the setup and configuration for visual verification testing as described in PART 1 of visivo.txt is now complete.
+
+---
+
+Task: Verify completion of PART 2 of visivo.txt
+
+Summary of actions:
+1.  Read `visivo.txt` to understand the requirements of Part 2.
+2.  Read `tests/visual.spec.js` to inspect the implementation.
+3.  Confirmed that the script correctly implements the core logic for visual verification as described in Part 2 of `visivo.txt`. The script imports the necessary modules, launches the application, and includes functionality for taking and saving screenshots.
+
+This verifies the completion of the visual verification script as described in PART 2 of visivo.txt.
+
+---
+
+
+
+
+---

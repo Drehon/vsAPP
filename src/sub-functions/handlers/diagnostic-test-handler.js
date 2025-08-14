@@ -497,40 +497,40 @@ export class DiagnosticTestHandler {
       }
 
       switch (question.type) {
-        case 'mc': {
-          answerState.isCorrect = userAnswer === question.answer;
-          break;
-        }
-        case 'input_correction':
-        case 'input_rewrite': {
-          // Simple case-insensitive and punctuation-insensitive comparison
-          answerState.isCorrect = userAnswer.trim().toLowerCase().replace(/[.,]/g, '') === question.answer.toLowerCase().replace(/[.,]/g, '');
-          break;
-        }
-        case 'paragraph_input': {
-          const isCorrect = {};
-          Object.keys(question.answer).forEach((blankId) => {
-            const userBlankAnswer = (userAnswer[blankId] || '').trim().toLowerCase();
-            const correctBlankAnswer = question.answer[blankId].toLowerCase();
-            isCorrect[blankId] = userBlankAnswer === correctBlankAnswer;
-          });
-          answerState.isCorrect = isCorrect;
-          break;
-        }
-        case 'paragraph_error_correction': {
-          const isCorrect = {};
-          question.blanks.forEach((blank, index) => {
-            const blankId = `blank_${index}`;
-            const userBlankAnswer = ((userAnswer && userAnswer[blankId]) || '').trim().toLowerCase();
-            const correctBlankAnswer = blank.answer.toLowerCase();
-            isCorrect[blankId] = userBlankAnswer === correctBlankAnswer;
-          });
-          answerState.isCorrect = isCorrect;
-          break;
-        }
-        default:
-          // No other question types are checked.
-          break;
+      case 'mc': {
+        answerState.isCorrect = userAnswer === question.answer;
+        break;
+      }
+      case 'input_correction':
+      case 'input_rewrite': {
+        // Simple case-insensitive and punctuation-insensitive comparison
+        answerState.isCorrect = userAnswer.trim().toLowerCase().replace(/[.,]/g, '') === question.answer.toLowerCase().replace(/[.,]/g, '');
+        break;
+      }
+      case 'paragraph_input': {
+        const isCorrect = {};
+        Object.keys(question.answer).forEach((blankId) => {
+          const userBlankAnswer = (userAnswer[blankId] || '').trim().toLowerCase();
+          const correctBlankAnswer = question.answer[blankId].toLowerCase();
+          isCorrect[blankId] = userBlankAnswer === correctBlankAnswer;
+        });
+        answerState.isCorrect = isCorrect;
+        break;
+      }
+      case 'paragraph_error_correction': {
+        const isCorrect = {};
+        question.blanks.forEach((blank, index) => {
+          const blankId = `blank_${index}`;
+          const userBlankAnswer = ((userAnswer && userAnswer[blankId]) || '').trim().toLowerCase();
+          const correctBlankAnswer = blank.answer.toLowerCase();
+          isCorrect[blankId] = userBlankAnswer === correctBlankAnswer;
+        });
+        answerState.isCorrect = isCorrect;
+        break;
+      }
+      default:
+        // No other question types are checked.
+        break;
       }
     });
 
@@ -806,27 +806,27 @@ export class DiagnosticTestHandler {
     const blockSubmitted = this.activeTab.exerciseState.submittedBlocks[blockIndex];
 
     switch (question.type) {
-      case 'mc':
-        questionHTML = this.renderMultipleChoiceQuestion(question, answerState, blockSubmitted);
-        break;
-      case 'input_correction':
-        questionHTML = this.renderInputCorrectionQuestion(question, answerState, blockSubmitted);
-        break;
-      case 'input_rewrite':
-        questionHTML = this.renderInputRewriteQuestion(question, answerState, blockSubmitted);
-        break;
-      case 'paragraph_input':
-        questionHTML = this.renderParagraphInputQuestion(question, answerState, blockSubmitted);
-        break;
-      case 'paragraph_error_correction':
-        questionHTML = this.renderParagraphErrorCorrectionQuestion(
-          question,
-          answerState,
-          blockSubmitted,
-        );
-        break;
-      default:
-        questionHTML = `<p class="text-red-500">Error: Unknown question type "${question.type}"</p>`;
+    case 'mc':
+      questionHTML = this.renderMultipleChoiceQuestion(question, answerState, blockSubmitted);
+      break;
+    case 'input_correction':
+      questionHTML = this.renderInputCorrectionQuestion(question, answerState, blockSubmitted);
+      break;
+    case 'input_rewrite':
+      questionHTML = this.renderInputRewriteQuestion(question, answerState, blockSubmitted);
+      break;
+    case 'paragraph_input':
+      questionHTML = this.renderParagraphInputQuestion(question, answerState, blockSubmitted);
+      break;
+    case 'paragraph_error_correction':
+      questionHTML = this.renderParagraphErrorCorrectionQuestion(
+        question,
+        answerState,
+        blockSubmitted,
+      );
+      break;
+    default:
+      questionHTML = `<p class="text-red-500">Error: Unknown question type "${question.type}"</p>`;
     }
 
     questionContent.innerHTML = questionHTML;
