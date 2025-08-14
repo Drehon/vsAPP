@@ -205,8 +205,14 @@ This plan outlines the steps required to update ESLint from v8 to v9 and migrate
 - Address any errors reported by the linter. This may involve fixing code style issues or a djusting rules in `eslint.config.js`.
 - Run `npm run lint:fix` to automatically correct any fixable issues.
 
-ISSUES FROM STEP 6
-- STEP 6-1
+**7. Final Verification:**
+- After all linting issues are resolved, run the application with `npm start` to ensure no runtime errors were introduced.
+- Run the full test suite with `npm test` to confirm that all tests still pass and the application's behavior remains unchanged.
+
+---
+
+ISSUES FROM STEP 7
+- STEP 7-1
 On running npm run test the following shows in terminal, fix this issue:
 (.venv) PS C:\Users\User\Documents\TEFL Personal> npm run test 
 
@@ -223,8 +229,3 @@ On running npm run test the following shows in terminal, fix this issue:
 
   Configuration Documentation:
   https://jestjs.io/docs/configuration
-
-
-**7. Final Verification:**
-- After all linting issues are resolved, run the application with `npm start` to ensure no runtime errors were introduced.
-- Run the full test suite with `npm test` to confirm that all tests still pass and the application's behavior remains unchanged.
