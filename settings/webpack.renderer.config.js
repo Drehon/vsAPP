@@ -18,6 +18,11 @@ module.exports = {
       ],
     }),
   ],
+
+  devServer: {
+    host: 'localhost',
+  },
+
   // REQUIRED FOR THIS TEMPLATE: Provide Node.js globals.
   node: {
     __dirname: true,

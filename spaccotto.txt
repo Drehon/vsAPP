@@ -55,4 +55,4 @@ More future tasks, to be ignored for now
 
 ISSUES AREA 
 on npm run start, app starts but loads nothing, returning this error repeatedly in console
-WebSocketClient.js:18 WebSocket connection to 'ws://0.0.0.0:3000/ws' failed: 
+C:\Users\User\Documents\TEFL Personal\.webpack\renderer\main_window\preload.js:85 WebSocket connection to 'ws://0.0.0.0:3000/ws' failed: 
