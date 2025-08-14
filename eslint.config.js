@@ -1,6 +1,7 @@
 import globals from 'globals';
 import pluginJs from '@eslint/js';
 import pluginJest from 'eslint-plugin-jest';
+import pluginImport from 'eslint-plugin-import';
 
 export default [
   // 1. Global ignores
@@ -18,6 +19,9 @@ export default [
   // 3. Custom rules and globals for all JS files
   {
     files: ['**/*.js'],
+    plugins: {
+      import: pluginImport,
+    },
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -41,6 +45,13 @@ export default [
       'no-restricted-syntax': 'off',
       'no-await-in-loop': 'off',
       'class-methods-use-this': 'off',
+    },
+    settings: {
+      'import/resolver': {
+        node: {
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        },
+      },
     },
   },
 

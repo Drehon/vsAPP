@@ -202,26 +202,43 @@ This plan outlines the steps required to update ESLint from v8 to v9 and migrate
 User post step 4 testing
 STEP B4 - assess the following and fix
 
-PS C:\Users\User\Documents\TEFL Personal> npm run lint
-
-> tutoring-app@1.4.5 lint
-> eslint .
-
-(node:13840) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/User/Documents/TEFL%20Personal/eslint.config.js?mtime=1755172867019 is not specified and it doesn't parse as CommonJS.
-Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
-To eliminate this warning, add "type": "module" to C:\Users\User\Documents\TEFL Personal\package.json.
-(Use `node --trace-warnings ...` to show where the warning was created)
-
-Oops! Something went wrong! :(
-
-ESLint: 9.33.0
-
-A configuration object specifies rule "import/no-extraneous-dependencies", but could not find plugin "import".
-
-Common causes of this problem include:
-
-1. The "import" plugin is not defined in your configuration file.
-2. The "import" plugin is not defined within the same configuration object in which the "import/no-extraneous-dependencies" rule is applied.
+(.venv) PS C:\Users\User\Documents\TEFL Personal> npm install
+npm error code ERESOLVE
+npm error ERESOLVE could not resolve
+npm error
+npm error While resolving: eslint-config-airbnb-base@15.0.0
+npm error Found: eslint@9.33.0
+npm error node_modules/eslint
+npm error   dev eslint@"^9.33.0" from the root project
+npm error   peer eslint@"^6.0.0 || ^7.0.0 || >=8.0.0" from @eslint-community/eslint-utils@4.7.0
+npm error   node_modules/@eslint-community/eslint-utils
+npm error     @eslint-community/eslint-utils@"^4.7.0" from @typescript-eslint/utils@8.39.0
+npm error     node_modules/@typescript-eslint/utils
+npm error       @typescript-eslint/utils@"^8.0.0" from eslint-plugin-jest@29.0.1
+npm error       node_modules/eslint-plugin-jest
+npm error         dev eslint-plugin-jest@"^29.0.1" from the root project
+npm error     @eslint-community/eslint-utils@"^4.2.0" from eslint@9.33.0
+npm error   3 more (@typescript-eslint/utils, eslint-plugin-import, eslint-plugin-jest)
+npm error
+npm error Could not resolve dependency:
+npm error peer eslint@"^7.32.0 || ^8.2.0" from eslint-config-airbnb-base@15.0.0
+npm error node_modules/eslint-config-airbnb-base
+npm error   dev eslint-config-airbnb-base@"^15.0.0" from the root project
+npm error
+npm error Conflicting peer dependency: eslint@8.57.1
+npm error node_modules/eslint
+npm error   peer eslint@"^7.32.0 || ^8.2.0" from eslint-config-airbnb-base@15.0.0
+npm error   node_modules/eslint-config-airbnb-base
+npm error     dev eslint-config-airbnb-base@"^15.0.0" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry
+npm error this command with --force or --legacy-peer-deps
+npm error to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error C:\Users\User\AppData\Local\npm-cache\_logs\2025-08-14T12_41_21_108Z-eresolve-report.txt
+npm error A complete log of this run can be found in: C:\Users\User\AppData\Local\npm-cache\_logs\2025-08-14T12_41_21_108Z-debug-0.log
 
 >>
 
