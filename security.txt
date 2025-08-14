@@ -172,23 +172,24 @@ This tree shows the current layout, focusing on the HTML files in `lessons/` and
 │   ├── renderer.js
 │   └── ... (other core files)
 │
-├── lessons/
-│   ├── L - template.html
-│   ├── L1 - congiuntivo.html
-│   ├── L2 - causativo.html
-│   └── L3 - passivo avanzato.html
-│
-├── lessonsAN/
-│   ├── LAN - template.html
-│   ├── L1 - congiuntivoAN.html
-│   ├── L2 - causativoAN.html
-│   └── L3 - passivo avanzatoAN.html
-│
-└── exercises/
-    ├── EX - template.html
-    ├── L1 - congiuntivoES.html
-    ├── L2 - causativoES.html
-    └── L3 - passivo avanzatoES.html
+├── pages/
+│   ├── lessons/
+│   │   ├── L - template.html
+│   │   ├── L1 - congiuntivo.html
+│   │   ├── L2 - causativo.html
+│   │   └── L3 - passivo avanzato.html
+│   │
+│   ├── lessonsAN/
+│   │   ├── LAN - template.html
+│   │   ├── L1 - congiuntivoAN.html
+│   │   ├── L2 - causativoAN.html
+│   │   └── L3 - passivo avanzatoAN.html
+│   │
+│   └── exercises/
+│       ├── EX - template.html
+│       ├── L1 - congiuntivoES.html
+│       ├── L2 - causativoES.html
+│       └── L3 - passivo avanzatoES.html
 ```
 
 ### Future Relevant Project Tree (Post-Refactoring)

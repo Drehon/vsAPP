@@ -5,12 +5,12 @@ const colors = require('tailwindcss/colors');
 module.exports = {
   content: [
     './src/**/*.{html,js}',
-    './lessons/**/*.html',
-    './exercises/**/*.html',
-    './tests/**/*.html',
+    './pages/lessons/**/*.html',
+    './pages/exercises/**/*.html',
+    './pages/tests/**/*.html',
     // ADDED: Paths to the new content folders
-    './lessonsAN/**/*.html',
-    './others/**/*.html',
+    './pages/lessonsAN/**/*.html',
+    './pages/others/**/*.html',
   ],
   theme: {
     extend: {

@@ -234,7 +234,7 @@ ipcMain.handle('get-settings-content', async () => {
 
 ipcMain.handle('get-file-content', async (event, relativePath) => {
   // Special handling for patch notes
-  if (relativePath === 'others/patch-notes.html') {
+  if (relativePath === 'pages/others/patch-notes.html') {
     const userPatchNotesPath = path.join(app.getPath('userData'), 'patch-notes.html');
     try {
       // Always try to read the generated file from userData.
@@ -547,10 +547,10 @@ const getContents = async (dir) => {
   }
 };
 
-ipcMain.handle('get-lessons', () => getContents('lessons'));
-ipcMain.handle('get-exercises', () => getContents('exercises'));
-ipcMain.handle('get-lessons-an', () => getContents('lessonsAN'));
-ipcMain.handle('get-tests', () => getContents('others'));
+ipcMain.handle('get-lessons', () => getContents('pages/lessons'));
+ipcMain.handle('get-exercises', () => getContents('pages/exercises'));
+ipcMain.handle('get-lessons-an', () => getContents('pages/lessonsAN'));
+ipcMain.handle('get-tests', () => getContents('pages/others'));
 
 ipcMain.handle('get-active-save-states', async () => {
   const savesDir = getAutoSavesDir();

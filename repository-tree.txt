@@ -41,27 +41,28 @@ This tree shows the repository structure, including the proposed new files/direc
 │   ├── project_tutoring.txt
 │   ├── publishing-and-updates.md
 │   └── refactoring-guide.md (*)
-├── exercises/
-│   ├── EX - template.html
-│   ├── L1 - congiuntivoES.html
-│   ├── L2 - causativoES.html
-│   └── L3 - passivo avanzatoES.html
 ├── forge.config.js
-├── lessons/
-│   ├── L - template.html
-│   ├── L1 - congiuntivo.html
-│   ├── L2 - causativo.html
-│   └── L3 - passivo avanzato.html
-├── lessonsAN/
-│   ├── L1 - congiuntivoAN.html
-│   ├── L2 - causativoAN.html
-│   ├── L3 - passivo avanzatoAN.html
-│   └── LAN - template.html
-├── others/
-│   ├── patch-notes-template.html
-│   ├── patch-notes.html
-│   ├── student-grammar.html
-│   └── student-verbs.html
+├── pages/
+│   ├── exercises/
+│   │   ├── EX - template.html
+│   │   ├── L1 - congiuntivoES.html
+│   │   ├── L2 - causativoES.html
+│   │   └── L3 - passivo avanzatoES.html
+│   ├── lessons/
+│   │   ├── L - template.html
+│   │   ├── L1 - congiuntivo.html
+│   │   ├── L2 - causativo.html
+│   │   └── L3 - passivo avanzato.html
+│   ├── lessonsAN/
+│   │   ├── L1 - congiuntivoAN.html
+│   │   ├── L2 - causativoAN.html
+│   │   ├── L3 - passivo avanzatoAN.html
+│   │   └── LAN - template.html
+│   └── others/
+│       ├── patch-notes-template.html
+│       ├── patch-notes.html
+│       ├── student-grammar.html
+│       └── student-verbs.html
 ├── package-lock.json
 ├── package.json
 ├── patchnotes.json

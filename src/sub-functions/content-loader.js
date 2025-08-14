@@ -53,10 +53,10 @@ function attachHomeEventListeners(
     }
   };
 
-  populateList('lessons-list', window.api.getLessons, 'lessons');
-  populateList('lessons-an-list', window.api.getLessonsAN, 'lessonsAN');
-  populateList('exercises-list', window.api.getExercises, 'exercises');
-  populateList('tests-list', window.api.getTests, 'others');
+  populateList('lessons-list', window.api.getLessons, 'pages/lessons');
+  populateList('lessons-an-list', window.api.getLessonsAN, 'pages/lessonsAN');
+  populateList('exercises-list', window.api.getExercises, 'pages/exercises');
+  populateList('tests-list', window.api.getTests, 'pages/others');
 }
 
 export async function loadContentIntoTab(
