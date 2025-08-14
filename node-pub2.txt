@@ -205,6 +205,26 @@ This plan outlines the steps required to update ESLint from v8 to v9 and migrate
 - Address any errors reported by the linter. This may involve fixing code style issues or a djusting rules in `eslint.config.js`.
 - Run `npm run lint:fix` to automatically correct any fixable issues.
 
+ISSUES FROM STEP 6
+- STEP 6-1
+On running npm run test the following shows in terminal, fix this issue:
+(.venv) PS C:\Users\User\Documents\TEFL Personal> npm run test 
+
+> tutoring-app@1.4.5 test
+> jest
+
+● Multiple configurations found:
+
+    * C:/Users/User/Documents/TEFL Personal/jest.config.js
+    * C:/Users/User/Documents/TEFL Personal/jest.config.cjs
+
+  Implicit config resolution does not allow multiple configuration files.
+  Either remove unused config files or select one explicitly with `--config`.
+
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration
+
+
 **7. Final Verification:**
 - After all linting issues are resolved, run the application with `npm start` to ensure no runtime errors were introduced.
 - Run the full test suite with `npm test` to confirm that all tests still pass and the application's behavior remains unchanged.
