@@ -9,3 +9,12 @@ The ESLint configuration has been successfully updated as per the requirements o
 
 ---
 
+Issue: `npm run lint` was failing with a 'Cannot find module' error for the 'globals' package.
+
+Resolution:
+1. Modified `package.json` to include `"type": "module"`. This tells Node.js to treat .js files as ES modules, which is necessary for the new `eslint.config.js` format.
+2. Deleted `node_modules` and `package-lock.json` and ran `npm install` to ensure a clean and correct installation of all dependencies.
+
+The `npm run lint` command now runs successfully without errors.
+
+---
